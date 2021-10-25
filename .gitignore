@@ -50,3 +50,6 @@ yarn-error.log*
 
 ## Storybook 
 storybook-static
+
+## Visual Regression tests
+src/stories/__image_snapshots__/__diff_output__/

@@ -2,121 +2,45 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 import React from 'react';
 import Color from './Color';
+import docs from './docs.mdx';
 
 export default {
-  title: 'Example/Color',
+  title: 'Foundations/Colors/All Stories',
   component: Color,
-  argTypes: {},
+  argTypes: {
+    name: {
+      table: { disable: true },
+    },
+  },
+  parameters: {
+    docs: {
+      page: docs,
+    },
+    controls: {
+      hideNoControlsWarning: true,
+    },
+  },
 } as ComponentMeta<typeof Color>;
 
-const Template: ComponentStory<typeof Color> = (args) => <Color {...args} />;
-
-export const ActionBase = Template.bind({});
-ActionBase.args = {
-  name: 'action-base',
-};
-
-export const ActionDark = Template.bind({});
-ActionDark.args = {
-  name: 'action-dark',
-};
-
-export const ActionLight = Template.bind({});
-ActionLight.args = {
-  name: 'action-light',
-};
-
-export const AlertBase = Template.bind({});
-AlertBase.args = {
-  name: 'alert-base',
-};
-
-export const AlertDark = Template.bind({});
-AlertDark.args = {
-  name: 'alert-dark',
-};
-
-export const AlertLight = Template.bind({});
-AlertLight.args = {
-  name: 'alert-light',
-};
-
-export const BrandBase = Template.bind({});
-BrandBase.args = {
-  name: 'brand-base',
-};
-
-export const BrandDark = Template.bind({});
-BrandDark.args = {
-  name: 'brand-dark',
-};
-
-export const BrandLight = Template.bind({});
-BrandLight.args = {
-  name: 'brand-light',
-};
-
-export const ErrorBase = Template.bind({});
-ErrorBase.args = {
-  name: 'error-base',
-};
-
-export const ErrorDark = Template.bind({});
-ErrorDark.args = {
-  name: 'error-dark',
-};
-
-export const ErrorLight = Template.bind({});
-ErrorLight.args = {
-  name: 'error-light',
-};
-
-export const Neutral25 = Template.bind({});
-Neutral25.args = {
-  name: 'neutral25',
-};
-
-export const Neutral50 = Template.bind({});
-Neutral50.args = {
-  name: 'neutral50',
-};
-
-export const Neutral75 = Template.bind({});
-Neutral75.args = {
-  name: 'neutral75',
-};
-
-export const Neutral85 = Template.bind({});
-Neutral85.args = {
-  name: 'neutral85',
-};
-
-export const Neutral95 = Template.bind({});
-Neutral95.args = {
-  name: 'neutral95',
-};
-
-export const NeutralBase = Template.bind({});
-NeutralBase.args = {
-  name: 'neutral-base',
-};
-
-export const NeutralLight = Template.bind({});
-NeutralLight.args = {
-  name: 'neutral-light',
-};
-
-export const SuccessBase = Template.bind({});
-SuccessBase.args = {
-  name: 'success-base',
-};
-
-export const SuccessDark = Template.bind({});
-SuccessDark.args = {
-  name: 'success-dark',
-};
-
-export const SuccessLight = Template.bind({});
-SuccessLight.args = {
-  name: 'success-light',
-};
+export const ActionBaseToken: ComponentStory<typeof Color> = () => <Color name="action-base" />;
+export const ActionDarkToken: ComponentStory<typeof Color> = () => <Color name="action-dark" />;
+export const ActionLightToken: ComponentStory<typeof Color> = () => <Color name="action-light" />;
+export const AlertBaseToken: ComponentStory<typeof Color> = () => <Color name="alert-base" />;
+export const AlertDarkToken: ComponentStory<typeof Color> = () => <Color name="alert-dark" />;
+export const AlertLightToken: ComponentStory<typeof Color> = () => <Color name="alert-light" />;
+export const BrandBaseToken: ComponentStory<typeof Color> = () => <Color name="brand-base" />;
+export const BrandDarkToken: ComponentStory<typeof Color> = () => <Color name="brand-dark" />;
+export const BrandLightToken: ComponentStory<typeof Color> = () => <Color name="brand-light" />;
+export const ErrorBaseToken: ComponentStory<typeof Color> = () => <Color name="error-base" />;
+export const ErrorDarkToken: ComponentStory<typeof Color> = () => <Color name="error-dark" />;
+export const ErrorLightToken: ComponentStory<typeof Color> = () => <Color name="error-light" />;
+export const Neutral25Token: ComponentStory<typeof Color> = () => <Color name="neutral-25" />;
+export const Neutral50Token: ComponentStory<typeof Color> = () => <Color name="neutral-50" />;
+export const Neutral75Token: ComponentStory<typeof Color> = () => <Color name="neutral-75" />;
+export const Neutral85Token: ComponentStory<typeof Color> = () => <Color name="neutral-85" />;
+export const Neutral95Token: ComponentStory<typeof Color> = () => <Color name="neutral-95" />;
+export const NeutralBaseToken: ComponentStory<typeof Color> = () => <Color name="neutral-base" />;
+export const NeutralLightToken: ComponentStory<typeof Color> = () => <Color name="neutral-light" />;
+export const SuccessBaseToken: ComponentStory<typeof Color> = () => <Color name="success-base" />;
+export const SuccessDarkToken: ComponentStory<typeof Color> = () => <Color name="success-dark" />;
+export const SuccessLightToken: ComponentStory<typeof Color> = () => <Color name="success-light" />;
