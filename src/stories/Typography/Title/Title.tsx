@@ -1,11 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-interface TitleProps {
-    size: 'xl' | 'l' | 'm' | 's',
-    weight: 'book' | 'bold'
-}
-
-const Title = ({ size, weight }: TitleProps) => {
+const Title: FC<TitleProps> = ({ size, weight }) => {
   const className = `title-${size}--${weight}`;
 
   switch (size) {
@@ -22,3 +17,11 @@ const Title = ({ size, weight }: TitleProps) => {
 };
 
 export default Title;
+
+interface TitleProps {
+  size: TitleSize,
+  weight: TitleWeight,
+}
+
+export type TitleSize = 'xl' | 'l' | 'm' | 's';
+export type TitleWeight = 'book' | 'bold';

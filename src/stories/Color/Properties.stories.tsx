@@ -1,19 +1,22 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-
 import React from 'react';
 import Color from './Color';
+import { storyTitleGenerator } from './Story.config';
 
-export default {
-  title: 'Foundations/Colors/Properties',
+const componentMeta: ComponentMeta<typeof Color> = {
+  title: storyTitleGenerator('Properties'),
   component: Color,
   argTypes: {
     name: { controls: false },
   },
-} as ComponentMeta<typeof Color>;
+};
 
-const Template: ComponentStory<typeof Color> = (args) => <Color {...args} />;
+export default componentMeta;
 
-export const ColorToken = Template.bind({});
-ColorToken.args = {
+export const ColorStory: ComponentStory<typeof Color> = ({ name }) => (
+  <Color name={name} />
+);
+
+ColorStory.args = {
   name: 'action-base',
 };

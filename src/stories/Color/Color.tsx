@@ -1,8 +1,13 @@
+import React, { FC } from 'react';
 import './Color.scss';
 
-import React from 'react';
+const Color: FC<ColorProps> = ({ name }) => (
+  <div className={`storybook-color bg-${name}`}>{name}</div>
+);
 
-type PyxisColor =
+export default Color;
+
+export type PyxisColor =
   | 'action-base'
   | 'action-dark'
   | 'action-light'
@@ -29,7 +34,3 @@ type PyxisColor =
 interface ColorProps {
   name: PyxisColor;
 }
-
-const Color = ({ name }: ColorProps) => <div className={`storybook-color bg-${name}`}>{name}</div>;
-
-export default Color;
