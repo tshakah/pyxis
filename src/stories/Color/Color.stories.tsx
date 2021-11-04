@@ -1,8 +1,8 @@
 import { ComponentMeta, storiesOf } from '@storybook/react';
 import React from 'react';
+import { kebabToStartCase } from 'utils';
 import Color from './Color';
 import docs from './docs.mdx';
-import { capitalize } from '../../utils';
 import { pyxisColors, storyTitleGenerator } from './Story.config';
 
 const title = storyTitleGenerator('All Stories');
@@ -30,9 +30,8 @@ export default componentMeta;
 const stories = storiesOf(title, module);
 
 pyxisColors.forEach((pyxisClass) => {
-  const storyName = pyxisClass.split('-').map((s) => capitalize(s)).join(' ');
   stories.add(
-    storyName,
+    kebabToStartCase(pyxisClass),
     () => <Color name={pyxisClass} />,
   );
 });

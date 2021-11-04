@@ -1,7 +1,7 @@
 import { ComponentMeta, storiesOf } from '@storybook/react';
 import React from 'react';
+import { capitalize } from 'utils';
 import Title, { TitleSize, TitleWeight } from './Title';
-import { capitalize } from '../../../utils';
 
 const storyTitle = 'Foundations/Typography/Title/All Stories';
 

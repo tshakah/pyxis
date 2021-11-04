@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Canvas, Story } from '@storybook/addon-docs';
-import { capitalize } from '../../utils';
+import { capitalize } from 'utils';
 
 const DocStoryGenerator: FC<DocsProps> = ({ storyPath, storyNameList }) => (
   <>

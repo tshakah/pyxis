@@ -8,3 +8,20 @@ export const kebabToPascalCase = (str: string): string => str
   .split('-')
   .map((s) => capitalize(s))
   .join('');
+
+export const pascalToKebab = (str: string): string => str
+  .replace(/([a-z])([A-Z])/g, '$1-$2')
+  .replace(/\s+/g, '-')
+  .toLowerCase();
+
+export const kebabToStartCase = (str: string): string => str
+  .split('-')
+  .map((s) => capitalize(s))
+  .join(' ');
+
+export function repeat<T>(element: T, times: number): T[] {
+  const array = (new Array(times));
+  array.fill(element);
+
+  return array;
+}

@@ -1,6 +1,6 @@
 import { ComponentMeta, storiesOf } from '@storybook/react';
 import React from 'react';
-import { capitalize } from '../../../utils';
+import { capitalize } from 'utils';
 import Text from './index';
 import { TextSize, TextWeight } from './Text';
 

@@ -7,6 +7,7 @@ module.exports = {
   extends: [
     'plugin:react/recommended',
     'airbnb',
+    'plugin:@typescript-eslint/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -19,20 +20,26 @@ module.exports = {
   plugins: [
     'jest',
     'react',
+    'react-hooks',
     '@typescript-eslint',
   ],
   rules: {
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
+    'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
     'react/prop-types': 'off',
-    'import/extensions': 'off',
+    'import/extensions': ['error', 'ignorePackages', { ts: 'never', tsx: 'never' }],
+    'react/react-in-jsx-scope': 'off',
+    'react/require-default-props': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
+    'max-len': ['error', { code: 130 }],
   },
   settings: {
     'import/resolver': {
-      node: {
-        extensions: ['.ts', '.tsx'],
-      },
+      typescript: {},
     },
   },
 };

@@ -1,0 +1,26 @@
+@use "../config" as pyxis;
+
+.wrapper {
+  border: 1px dotted red;
+  display: inline-block;
+  background-color: pyxis.color(neutral75);
+
+  &.is-vertical {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &.is-grid {
+    display: grid;
+  }
+
+  &[class^='column-gap']{
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.content {
+  .wrapper & {
+    background-color: pyxis.color(neutralLight);
+  }
+}
