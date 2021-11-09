@@ -1,0 +1,7 @@
+@use '../config' as pyxis;
+
+.radius {
+  border: 1px solid pyxis.color(neutralBase);
+  display: inline-block;
+  @include pyxis.padding(m);
+}
