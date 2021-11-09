@@ -1,6 +1,6 @@
 import { PyxisColor } from './Color';
 
-export const storyTitleGenerator = (section: string) => `Foundations/Colors/${section}`;
+export const storyTitleGenerator = (section: string):string => `Foundations/Colors/${section}`;
 
 export const pyxisColors: PyxisColor[] = [
   'action-base',
