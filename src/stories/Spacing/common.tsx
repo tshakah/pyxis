@@ -6,7 +6,7 @@ const baseTitle = 'Foundations/Spacing';
 const component = Spacing;
 export const spacingSizes: SpacingSize[] = ['xxxl', 'xxl', 'xl', 'l', 'm', 's', 'xs', 'xxs', 'xxxs'];
 
-export const generatePropertiesComponentMeta: GeneratePropertiesComponentMeta<typeof Spacing> = (
+export const generatePropertiesComponentMeta: GeneratePropertiesComponentMeta<typeof component> = (
   storyName,
 ) => ({
   title: `${baseTitle}/${storyName}/Properties`,
@@ -16,7 +16,7 @@ export const generatePropertiesComponentMeta: GeneratePropertiesComponentMeta<ty
   },
 });
 
-export const generateAllStoriesComponentMeta: GenerateAllStoriesComponentMeta<typeof Spacing> = (
+export const generateAllStoriesComponentMeta: GenerateAllStoriesComponentMeta<typeof component> = (
   storyName,
 ) => ({
   title: `${baseTitle}/${storyName}/All Stories`,

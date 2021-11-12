@@ -1,0 +1,27 @@
+@use "../pyxis";
+
+.wrapper {
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.grid {
+  @include pyxis.horizontalSpacing(l);
+  @include pyxis.rowGap(xl);
+  display: grid;
+}
+
+.row {
+  @include pyxis.columnGap(l);
+  align-items: center;
+  display: grid;
+  grid-template-columns: pyxis.rem(150px) auto;
+}
+
+.item {
+  @include pyxis.padding(m);
+  @include pyxis.radius(l);
+  @include pyxis.text(l, book);
+  color: pyxis.color(neutralLight);
+  height: pyxis.rem(100px);
+}

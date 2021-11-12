@@ -1,6 +1,6 @@
-@use "../config" as pyxis;
+@use "../pyxis";
 
-.wrapper {
+.headerWrapper {
   border: 1px dotted red;
   display: inline-block;
   background-color: pyxis.color(neutral75);
@@ -20,7 +20,7 @@
 }
 
 .content {
-  .wrapper & {
+  .headerWrapper & {
     background-color: pyxis.color(neutralLight);
   }
 }

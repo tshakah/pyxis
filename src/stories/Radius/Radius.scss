@@ -1,4 +1,4 @@
-@use '../config' as pyxis;
+@use '../pyxis';
 
 .radius {
   border: 1px solid pyxis.color(neutralBase);
