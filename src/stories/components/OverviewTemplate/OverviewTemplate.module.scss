@@ -1,22 +1,9 @@
 @use "../../pyxis";
 
-.headerWrapper {
-  @include pyxis.columnGap(l);
-  @include pyxis.verticalSpacing(l);
-  display: grid;
-  grid-template-columns: pyxis.rem(90px) auto;
-  grid-template-rows: pyxis.rem(90px);
-}
-
-.logo {
-  @include pyxis.radius(xl);
-  background-color: pyxis.color(brandLight);
-  display: grid;
-  place-items: center;
-}
-
-.content {
-  align-self: center;
+.header {
+  @include pyxis.verticalSpacing(s);
+  border-bottom: pyxis.rem(1px) solid pyxis.color(neutral85);
+  padding-bottom: pyxis.rem(10px);
 }
 
 .category {
@@ -24,13 +11,18 @@
   color: pyxis.color(neutral25);
 }
 
-.title {
+.mainTitle {
   @include pyxis.title(xl, bold);
+}
+
+.title {
+  @include pyxis.title(l, bold);
 }
 
 .description {
   @include pyxis.verticalSpacing(m);
   @include pyxis.rowGap(xs);
-  @include pyxis.text(l, light);
+  @include pyxis.text(l, book);
+  color: pyxis.color(neutral25);
   display: grid;
 }

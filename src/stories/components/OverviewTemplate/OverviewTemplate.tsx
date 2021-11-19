@@ -1,5 +1,4 @@
 import { FC, ReactNode } from 'react';
-import logo from 'stories/assets/logo.svg';
 import styles from './OverviewTemplate.module.scss';
 
 const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
@@ -8,18 +7,14 @@ const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
     description,
     category,
     children,
+    isMain,
   },
 ) => (
   <>
-    <header className={styles.headerWrapper}>
-      <div className={styles.logo}>
-        <img src={logo} alt="" height="20" />
-      </div>
-      <div className={styles.content}>
-        <div className={styles.category}>{category}</div>
-        <h2 className={styles.title}>{title}</h2>
-      </div>
-    </header>
+    <div className={styles.header}>
+      {category && isMain && <div className={styles.category}>{category}</div>}
+      <h2 className={isMain ? styles.mainTitle : styles.title}>{title}</h2>
+    </div>
 
     <div className={styles.description}>
       {description}
@@ -32,7 +27,8 @@ const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
 export default OverviewTemplate;
 
 interface AllStoriesOverviewGeneratorProps {
-  category: string,
   description: ReactNode,
   title: string,
+  category?: string,
+  isMain?: boolean,
 }

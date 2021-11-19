@@ -1,36 +1,24 @@
 import React, { FC } from 'react';
-import './Color.scss';
+import classNames from 'classnames';
+import styles from './Color.module.scss';
 
-const Color: FC<ColorProps> = ({ name }) => (
-  <div className={`storybook-color bg-${name}`}>{name}</div>
+const getClasses = (name: string, type: BackgroundColor): string => classNames(
+  styles.item,
+  {
+    [`bg-${name}`]: type === 'solid',
+    [`gradient-${name}`]: type === 'gradient',
+  },
+);
+
+const Color: FC<ColorProps> = ({ name, type = 'solid' }) => (
+  <div className={getClasses(name, type)} />
 );
 
 export default Color;
 
-export type PyxisColor =
-  | 'action-base'
-  | 'action-dark'
-  | 'action-light'
-  | 'alert-base'
-  | 'alert-dark'
-  | 'alert-light'
-  | 'brand-base'
-  | 'brand-dark'
-  | 'brand-light'
-  | 'error-base'
-  | 'error-dark'
-  | 'error-light'
-  | 'neutral-25'
-  | 'neutral-50'
-  | 'neutral-75'
-  | 'neutral-85'
-  | 'neutral-95'
-  | 'neutral-base'
-  | 'neutral-light'
-  | 'success-base'
-  | 'success-dark'
-  | 'success-light';
-
 interface ColorProps {
-  name: PyxisColor;
+  name: string;
+  type?: BackgroundColor;
 }
+
+export type BackgroundColor = 'solid' | 'gradient';

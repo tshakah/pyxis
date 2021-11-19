@@ -9,8 +9,13 @@ export const kebabToPascalCase = (str: string): string => str
   .map((s) => capitalize(s))
   .join('');
 
+export const kebabToCamelCase = (str: string): string => str
+  .split('-')
+  .map((s, index) => (index !== 0 ? capitalize(s) : s))
+  .join('');
+
 export const pascalToKebab = (str: string): string => str
-  .replace(/([a-z])([A-Z])/g, '$1-$2')
+  .replace(/([a-z])([A-Z]|[\d])/g, '$1-$2')
   .replace(/\s+/g, '-')
   .toLowerCase();
 

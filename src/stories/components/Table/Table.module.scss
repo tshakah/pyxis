@@ -1,0 +1,35 @@
+@use "../../pyxis";
+
+.wrapper {
+  @include pyxis.verticalSpacing(xl);
+  display: grid;
+}
+
+.head,
+.row {
+  @include pyxis.columnGap(s);
+  align-items: center;
+  border-bottom: pyxis.rem(2px) solid pyxis.color(neutral85);
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+}
+
+.head {
+  @include pyxis.text(l, bold);
+  @include pyxis.verticalPadding(xxs);
+}
+
+.row {
+  @include pyxis.verticalPadding(s);
+  border-bottom-width: pyxis.rem(1px);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.cell {
+  align-items: center;
+  display: flex;
+}
