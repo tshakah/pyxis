@@ -16,7 +16,7 @@ steps:
     PLUGIN_DEPTH: 5
 
 - name: cache-restore
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.2
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-restore
@@ -27,13 +27,11 @@ steps:
     path: /etc/profile.d/ecs-credentials-endpoint
   - name: docker
     path: /var/run/docker.sock
-  - name: docker-conf
-    path: /root/.docker
   depends_on:
   - git-clone
 
 - name: check-secrets
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.2
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - check-secrets-grants
@@ -44,22 +42,20 @@ steps:
   - git-clone
 
 - name: check-public-docker-images
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.2
   commands:
   - check-public-docker-images
   depends_on:
   - git-clone
 
 - name: build-image
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.2
   commands:
   - sed -i 's/USER node/USER root/g' ./Dockerfile
   - docker build -t prima/pyxis-react-ci:${DRONE_COMMIT} ./
   volumes:
   - name: docker
     path: /var/run/docker.sock
-  - name: docker-conf
-    path: /root/.docker
   depends_on:
   - cache-restore
 
@@ -100,7 +96,7 @@ steps:
   - react:build
 
 - name: cache-save
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.2
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-save .cache node_modules
@@ -111,8 +107,6 @@ steps:
     path: /etc/profile.d/ecs-credentials-endpoint
   - name: docker
     path: /var/run/docker.sock
-  - name: docker-conf
-    path: /root/.docker
   when:
     branch:
     - master
@@ -129,9 +123,6 @@ volumes:
 - name: ecs
   host:
     path: /etc/profile.d/ecs-credentials-endpoint
-- name: docker-conf
-  host:
-    path: /home/ec2-user/.docker
 
 trigger:
   event:
@@ -174,6 +165,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: b2839dd92cd4f0a3505f2e6c71cc11387125fc08288a658ad781f535ed549338
+hmac: ea7acb02af81408dfb4f71938b078e9b93ce49fe6e3d1bb48d3160c88e88b556
 
 ...
