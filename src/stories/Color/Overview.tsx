@@ -47,17 +47,17 @@ const tableUsageBody: TableRow[] = [
   [
     'Background Color',
     <CopyableCode text="color($key)" key={shortid.generate()} />,
-    <CopyableCode text="bg-$key" key={shortid.generate()} />,
+    <CopyableCode text=".bg-$key" key={shortid.generate()} />,
   ],
   [
     'Color',
     <CopyableCode text="color($key)" key={shortid.generate()} />,
-    <CopyableCode text="c-$key" key={shortid.generate()} />,
+    <CopyableCode text=".c-$key" key={shortid.generate()} />,
   ],
   [
     'Gradient',
     <CopyableCode text="gradient($key)" key={shortid.generate()} />,
-    <CopyableCode text="gradient-$key" key={shortid.generate()} />,
+    <CopyableCode text=".gradient-$key" key={shortid.generate()} />,
   ],
 ];
 
