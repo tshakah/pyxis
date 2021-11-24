@@ -4,7 +4,7 @@ import Table, { TableRow } from 'stories/components/Table';
 import shortid from 'shortid';
 import { pascalToKebab } from 'utils';
 import CopyableCode from 'stories/components/CopyableCode';
-import { pyxisColors, PyxisColor } from './common';
+import { ColorRow, colors } from './common';
 import Color from './Color';
 
 const colorDescription = (
@@ -37,7 +37,7 @@ const usageDescription = (
   </p>
 );
 
-const generateRow = ({ name, value, type }: PyxisColor): TableRow => [
+const generateRow = ({ name, value, type }: ColorRow): TableRow => [
   <Color name={pascalToKebab(name)} key={pascalToKebab(name)} type={type} />,
   <CopyableCode text={name} key={name} />,
   <code key={value}>{value}</code>,
@@ -66,14 +66,14 @@ const Overview: FC = () => (
     <OverviewTemplate title="Colors" description={colorDescription} category="Foundation" isMain>
       <Table
         head={['Sample', 'Key', 'Value']}
-        body={pyxisColors.filter(({ type }) => type === 'solid').map(generateRow)}
+        body={colors.filter(({ type }) => type === 'solid').map(generateRow)}
         gridTemplateColumns="100px"
       />
     </OverviewTemplate>
     <OverviewTemplate title="Gradients" description={gradientDescription}>
       <Table
         head={['Sample', 'Key', 'Value']}
-        body={pyxisColors.filter(({ type }) => type === 'gradient').map(generateRow)}
+        body={colors.filter(({ type }) => type === 'gradient').map(generateRow)}
         gridTemplateColumns="100px"
       />
     </OverviewTemplate>

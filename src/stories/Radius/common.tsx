@@ -1,38 +1,64 @@
-import { storiesOf } from '@storybook/react';
-import React from 'react';
-import Radius, { RadiusSize } from './Radius';
+import Radius, { Size } from './Radius';
 
-const baseTitle = 'Foundations/Radius';
-const component = Radius;
-const radiusSizes: RadiusSize[] = ['xl', 'l', 'm', 's', 'xs'];
-
-export const generatePropertiesComponentMeta: GeneratePropertiesComponentMeta<typeof component> = () => ({
-  title: `${baseTitle}/Properties`,
-  component,
+export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Radius> = () => ({
+  title: 'Test/Radius',
+  component: Radius,
 });
 
-export const generateAllStoriesComponentMeta: GenerateAllStoriesComponentMeta<typeof component> = () => ({
-  title: `${baseTitle}/All Stories`,
-  component,
-  argTypes: {
-    size: { table: { disable: true } },
-  },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-    },
-  },
-});
+export interface RadiusRow {
+  size: Size;
+  value: string;
+}
 
-export const generateAllStories: GenerateAllStories<undefined> = (
-  module, storyName,
-) => {
-  const stories = storiesOf(`${baseTitle}/All Stories`, module);
+export interface EdgeRow {
+  name: 'all' | 'right' | 'top' | 'left' | 'bottom' ;
+  value: string;
+}
 
-  radiusSizes.forEach((size) => {
-    stories.add(
-      `${storyName} ${size.toUpperCase()}`,
-      () => <Radius size={size} />,
-    );
-  });
-};
+// TODO: to be replaced with design tokens
+export const radius: RadiusRow[] = [
+  {
+    size: 'xl',
+    value: '25px',
+  },
+  {
+    size: 'l',
+    value: '20px',
+  },
+  {
+    size: 'm',
+    value: '15px',
+  },
+  {
+    size: 's',
+    value: '10px',
+  },
+  {
+    size: 'xs',
+    value: '5px',
+  },
+];
+
+// TODO: to be replaced with design tokens
+export const edges: EdgeRow[] = [
+  {
+    name: 'all',
+    value: '$size',
+  },
+  {
+    name: 'top',
+    value: '$size $size 0 0',
+  },
+  {
+    name: 'right',
+    value: '0 $size $size 0',
+  },
+  {
+    name: 'bottom',
+    value: '0 0 $size $size',
+  },
+  {
+    name: 'left',
+    value: '$size 0 0 $size',
+  },
+];

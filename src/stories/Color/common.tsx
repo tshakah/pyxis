@@ -6,13 +6,14 @@ export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof C
   component: Color,
 });
 
-export interface PyxisColor {
+export interface ColorRow {
   name: string,
   value: string;
   type: BackgroundColor;
 }
 
-export const pyxisColors: PyxisColor[] = Object.entries(styles)
+// TODO: to be replaced with design tokens
+export const colors: ColorRow[] = Object.entries(styles)
   .filter(([key]) => key.startsWith('colorMap-') || key.startsWith('gradientMap-'))
   .map(([key, value]) => ({
     name: key.replace(/(colorMap-)|(gradientMap-)/g, ''),

@@ -1,16 +1,14 @@
 import { FC } from 'react';
-import './Radius.scss';
+import styles from './Radius.module.scss';
 
 const Radius: FC<RadiusProps> = ({ size }) => (
-  <div className={`radius radius-${size}`}>
-    {`radius-${size}`}
-  </div>
+  <div className={`${styles.radius} radius-${size}`} />
 );
 
 export default Radius;
 
 interface RadiusProps {
-  size: RadiusSize
+  size: Size
 }
 
-export type RadiusSize = 'xl' | 'l' | 'm' | 's' | 'xs';
+export type Size = 'xl' | 'l' | 'm' | 's' | 'xs';

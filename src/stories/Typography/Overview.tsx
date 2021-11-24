@@ -4,7 +4,7 @@ import Table, { TableRow } from 'stories/components/Table';
 import shortid from 'shortid';
 import CopyableCode from 'stories/components/CopyableCode';
 import Typography from './Typography';
-import { pyxisText, pyxisTitle, PyxisTypography } from './common';
+import { text, title, TypographyRow } from './common';
 
 const typographyDescription = (
   <>
@@ -41,7 +41,7 @@ const usageDescription = (
   </p>
 );
 
-const generateBody = ({ sizes, weights, type }: PyxisTypography): TableRow[] => (
+const generateBody = ({ sizes, weights, type }: TypographyRow): TableRow[] => (
   sizes.flatMap(
     (size) => weights.map(
       (weight) => [
@@ -72,14 +72,14 @@ const Overview: FC = () => (
     <OverviewTemplate title="Title" description={titleDescription}>
       <Table
         head={['Sample', 'Size', 'Weight']}
-        body={generateBody(pyxisTitle)}
+        body={generateBody(title)}
         gridTemplateColumns="200px"
       />
     </OverviewTemplate>
     <OverviewTemplate title="Text" description={textDescription}>
       <Table
         head={['Sample', 'Size', 'Weight']}
-        body={generateBody(pyxisText)}
+        body={generateBody(text)}
         gridTemplateColumns="200px"
       />
     </OverviewTemplate>

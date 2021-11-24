@@ -5,19 +5,21 @@ export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof T
   component: Typography,
 });
 
-export interface PyxisTypography {
+export interface TypographyRow {
   type: Type
   sizes: Size[],
   weights: Weight[];
 }
 
-export const pyxisTitle: PyxisTypography = {
+// TODO: to be replaced with design tokens
+export const title: TypographyRow = {
   type: 'title',
   sizes: ['xl', 'l', 'm', 's'],
   weights: ['bold', 'book'],
 };
 
-export const pyxisText: PyxisTypography = {
+// TODO: to be replaced with design tokens
+export const text: TypographyRow = {
   type: 'text',
   sizes: ['l', 'm', 's'],
   weights: ['bold', 'book', 'light'],

@@ -1,0 +1,7 @@
+@use '../pyxis';
+
+.radius {
+  background: pyxis.gradient(neutral);
+  height: pyxis.rem(80px);
+  width: pyxis.rem(80px);
+}

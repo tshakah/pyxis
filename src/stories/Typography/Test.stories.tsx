@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import {
-  generateTestComponentMeta, pyxisText, pyxisTitle, PyxisTypography,
+  generateTestComponentMeta, text, title, TypographyRow,
 } from './common';
 import Table, { TableRow } from '../components/Table';
 import Typography from './Typography';
 
 export default generateTestComponentMeta();
 
-const generateBody = ({ sizes, weights, type }: PyxisTypography): TableRow[] => (
+const generateBody = ({ sizes, weights, type }: TypographyRow): TableRow[] => (
   sizes.flatMap(
     (size) => weights.map(
       (weight) => [
@@ -22,6 +22,6 @@ const generateBody = ({ sizes, weights, type }: PyxisTypography): TableRow[] => 
 export const Test: FC = () => (
   <Table
     head={['Sample', 'Size', 'Weight']}
-    body={[pyxisTitle, pyxisText].flatMap(generateBody)}
+    body={[title, text].flatMap(generateBody)}
   />
 );
