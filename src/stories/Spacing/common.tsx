@@ -1,46 +1,61 @@
-import React from 'react';
-import { storiesOf } from '@storybook/react';
-import Spacing, { SpacingSize, SpacingType } from './Spacing';
+import Spacing, { Size } from './Spacing';
 
-const baseTitle = 'Foundations/Spacing';
-const component = Spacing;
-export const spacingSizes: SpacingSize[] = ['xxxl', 'xxl', 'xl', 'l', 'm', 's', 'xs', 'xxs', 'xxxs'];
-
-export const generatePropertiesComponentMeta: GeneratePropertiesComponentMeta<typeof component> = (
-  storyName,
-) => ({
-  title: `${baseTitle}/${storyName}/Properties`,
-  component,
-  argTypes: {
-    spacingType: { table: { disable: true } },
-  },
+export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Spacing> = () => ({
+  title: 'Test/Spacing',
+  component: Spacing,
 });
 
-export const generateAllStoriesComponentMeta: GenerateAllStoriesComponentMeta<typeof component> = (
-  storyName,
-) => ({
-  title: `${baseTitle}/${storyName}/All Stories`,
-  component,
-  argTypes: {
-    size: { table: { disable: true } },
-    spacingType: { table: { disable: true } },
-  },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-    },
-  },
-});
+export interface SpacingRow {
+  size: Size;
+  baseValue: string;
+  maxValue: string;
+}
 
-export const generateAllStories: GenerateAllStories<{ spacingType: SpacingType }> = (
-  module, storyName, { spacingType },
-) => {
-  const stories = storiesOf(`${baseTitle}/${storyName}/All Stories`, module);
-
-  spacingSizes.forEach((size) => {
-    stories.add(
-      `${storyName} ${size.toUpperCase()}`,
-      () => <Spacing size={size} spacingType={spacingType} />,
-    );
-  });
-};
+// TODO: to be replaced with design tokens
+export const spacing:SpacingRow[] = [
+  {
+    size: 'xxxl',
+    baseValue: '50px',
+    maxValue: '120px',
+  },
+  {
+    size: 'xxl',
+    baseValue: '40px',
+    maxValue: '80px',
+  },
+  {
+    size: 'xl',
+    baseValue: '35px',
+    maxValue: '60px',
+  },
+  {
+    size: 'l',
+    baseValue: '30px',
+    maxValue: '40px',
+  },
+  {
+    size: 'm',
+    baseValue: '25px',
+    maxValue: '30px',
+  },
+  {
+    size: 's',
+    baseValue: '20px',
+    maxValue: '20px',
+  },
+  {
+    size: 'xs',
+    baseValue: '15px',
+    maxValue: '15px',
+  },
+  {
+    size: 'xxs',
+    baseValue: '10px',
+    maxValue: '10px',
+  },
+  {
+    size: 'xxxs',
+    baseValue: '5px',
+    maxValue: '5px',
+  },
+];
