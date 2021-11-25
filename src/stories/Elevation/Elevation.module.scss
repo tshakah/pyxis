@@ -1,27 +1,18 @@
 @use "../pyxis";
 
-.wrapper {
-  display: grid;
-  grid-auto-flow: column;
-}
-
-.grid {
-  @include pyxis.horizontalSpacing(l);
-  @include pyxis.rowGap(xl);
-  display: grid;
-}
-
-.row {
-  @include pyxis.columnGap(l);
-  align-items: center;
-  display: grid;
-  grid-template-columns: pyxis.rem(150px) auto;
-}
-
+// TODO: replace margin properties with spacing mixin once it's available in pyxis
 .item {
-  @include pyxis.padding(m);
-  @include pyxis.radius(l);
-  @include pyxis.text(l, book);
-  color: pyxis.color(neutralLight);
-  height: pyxis.rem(100px);
+  @include pyxis.radius(m);
+  height: pyxis.rem(70px);
+  margin-bottom: pyxis.rem(20px);
+  margin-top: pyxis.rem(20px);
+  width: pyxis.rem(100px);
+}
+
+$borderColors: ('brand', 'action', 'neutral');
+
+@each $color in $borderColors {
+  .border-#{$color} {
+    border: pyxis.rem(2px) solid pyxis.color(#{$color}Base);
+  }
 }

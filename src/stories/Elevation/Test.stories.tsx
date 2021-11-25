@@ -1,23 +1,23 @@
 import React, { FC } from 'react';
 import Elevation from './Elevation';
-import {
-  elevationColors,
-  elevationSizes,
-  generateTestComponentMeta,
-} from './common';
-import '../pyxis.scss';
-import styles from './Elevation.module.scss';
+import { ElevationRow, elevations, generateTestComponentMeta } from './common';
+import Table, { TableRow } from '../components/Table';
 
 export default generateTestComponentMeta();
 
+const generateBody = ({ sizes, colors }: ElevationRow): TableRow[] => (
+  colors.flatMap(
+    (color) => sizes.map((size) => [
+      <Elevation size={size} color={color} />,
+      color,
+      size,
+    ]),
+  ));
+
 export const Test: FC = () => (
-  <div className={`row-gap-xxxl padding-l ${styles.grid}`}>
-    {elevationColors.map(
-      (color) => (
-        elevationSizes.map(
-          (size) => <Elevation key={color + size} size={size} color={color} />,
-        )
-      ),
-    )}
-  </div>
+  <Table
+    head={['Sample', 'Color', 'Size']}
+    body={generateBody(elevations)}
+    gridTemplateColumns="100px"
+  />
 );

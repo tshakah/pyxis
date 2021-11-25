@@ -1,11 +1,19 @@
-import Elevation, { ElevationColor, ElevationSize } from './Elevation';
-
-export const elevationSizes: ElevationSize[] = ['s', 'm', 'l'];
-export const elevationColors: ElevationColor[] = [
-  'action-40', 'brand-40', 'neutral-40', 'action-15', 'brand-15', 'neutral-15',
-];
+import Elevation, { Color, Size } from './Elevation';
 
 export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Elevation> = () => ({
   title: 'Test/Elevation',
   component: Elevation,
 });
+
+export interface ElevationRow {
+  sizes: Size[];
+  colors: Color[];
+}
+
+// TODO: to be replaced with design tokens
+export const elevations: ElevationRow = {
+  sizes: ['s', 'm', 'l'],
+  colors: [
+    'action40', 'brand40', 'neutral40', 'action15', 'brand15', 'neutral15',
+  ],
+};

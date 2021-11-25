@@ -1,66 +1,75 @@
 import React, { FC } from 'react';
 import OverviewTemplate from 'stories/components/OverviewTemplate';
-import { elevationColors, elevationSizes } from './common';
-import Elevation, { ElevationColor } from './Elevation';
-import styles from './Elevation.module.scss';
-
-const opacity15 = elevationColors.filter((c) => c.endsWith('15'));
-const opacity40 = elevationColors.filter((c) => c.endsWith('40'));
+import shortid from 'shortid';
+import { ElevationRow, elevations } from './common';
+import Table, { TableRow } from '../components/Table';
+import CopyableCode from '../components/CopyableCode';
+import Elevation from './Elevation';
 
 const description = (
   <>
     <p>
       Elevation is the relative distance between two surfaces along the z-axis.
-      It&apos;s a way of thinking that&apos;s less about the actual aesthetic and more about creating an
-      experience that feels like it was designed by Google. Material Design is where shadows were
-      born: a simple concept to effectively represent elevation on the screen.
-    </p>
-    <p>We apply this concept to Pyxis as well.</p>
-    <p>
-      Components normally rest over your screen (a surface), but that component can go up or down over
-      that surface, that is what we call Z-index. As an example a button can live resting on your
-      screen (surface) but when that button goes hover, the component suffers an elevation and a
-      shadow will appear beneath the button.
     </p>
     <p>
-      We are trying to fix some points at the Z-index level where components can live. By default we
-      have three levels of elevation between layers or between the components themselves with respect
-      to the base. The elevation level of each layer is indicated by its shadow.
+      It&apos;s a way of thinking that&apos;s less about the actual aesthetic and more about creating an experience
+      that feels like it was designed by Google. Material Design is where shadows were born: a simple concept to
+      effectively represent elevation on the screen.
     </p>
   </>
 );
 
-const Column: FC<ColumnProps> = ({ title, colors }) => (
-  <div>
-    <h2 className="title-m--bold spacing-v-m">
-      {title}
-    </h2>
-    {colors.map(
-      (color) => (
-        <div key={color} className="spacing-v-l">
-          <div className={styles.grid}>
-            {elevationSizes.map(
-              (size) => <Elevation key={color + size} size={size} color={color} />,
-            )}
-          </div>
-        </div>
-      ),
-    )}
-  </div>
+const usageDescription = (
+  <>
+    <p>
+      Elevation can be used via mixin and atomic classes.
+      It is recommended that you use the mixin as specified in the user guide.
+    </p>
+    <p>
+      <strong>Please note</strong>
+      : Remember to generate the atomic class with the kebab-case version of the&nbsp;
+      <code>$color</code>
+      &nbsp;key - e.g. atomic class for &quot;brand15&quot; color with size &quot;s&quot; will be&nbsp;
+      <code>.elevation-s-brand-15 </code>
+      .
+    </p>
+  </>
 );
+
+const generateBody = ({ sizes, colors }: ElevationRow): TableRow[] => (
+  colors.flatMap(
+    (color) => sizes.map((size) => [
+      <Elevation size={size} color={color} />,
+      <CopyableCode text={color} />,
+      <CopyableCode text={size} />,
+    ]),
+  ));
+
+const tableUsageBody: TableRow[] = [
+  [
+    'Elevation',
+    <CopyableCode text="@include elevation($size, $color)" key={shortid.generate()} />,
+    <CopyableCode text=".elevation-$size-$color" key={shortid.generate()} />,
+  ],
+];
 
 const Overview: FC = () => (
-  <OverviewTemplate title="Elevation" description={description} category="Foundation">
-    <div className={styles.wrapper}>
-      <Column title="Opacity 40" colors={opacity40} />
-      <Column title="Opacity 15" colors={opacity15} />
-    </div>
-  </OverviewTemplate>
+  <>
+    <OverviewTemplate title="Elevation" description={description} category="Foundation" isMain>
+      <Table
+        head={['Sample', 'Color and Opacity', 'Size']}
+        body={generateBody(elevations)}
+        gridTemplateColumns="100px"
+      />
+    </OverviewTemplate>
+    <OverviewTemplate title="Usage" description={usageDescription}>
+      <Table
+        head={['Name', 'Mixin', 'Atomic class']}
+        body={tableUsageBody}
+        gridTemplateColumns="20%"
+      />
+    </OverviewTemplate>
+  </>
 );
 
-interface ColumnProps {
-  title: string,
-  colors: ElevationColor[]
-}
-
-export default React.memo(Overview);
+export default Overview;

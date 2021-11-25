@@ -1,33 +1,30 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import styles from './Elevation.module.scss';
+import { pascalToKebab } from '../../utils';
 
 const getItemClasses = (size: string, color: string, opacity: string): string => classNames(
   styles.item,
   `elevation-${size}-${color}-${opacity}`,
   {
     [`gradient-${color}`]: opacity === '40',
+    [styles[`border-${color}`]]: opacity === '15',
   },
 );
 const Elevation: FC<ElevationProps> = ({ size, color }) => {
-  const [colorName, opacity] = color.split('-');
+  const [colorName, opacity] = pascalToKebab(color).split('-');
   return (
-    <div className={styles.row}>
-      <div className={getItemClasses(size, colorName, opacity)} />
-      <code>
-        {`.elevation-${size}-${color}`}
-      </code>
-    </div>
+    <div className={getItemClasses(size, colorName, opacity)} />
   );
 };
 
 export default Elevation;
 
 interface ElevationProps {
-  size: ElevationSize,
-  color: ElevationColor,
+  size: Size,
+  color: Color,
 }
 
-export type ElevationSize = 's' | 'm' | 'l';
-export type ElevationColor =
-  'action-15' | 'action-40' | 'brand-15' | 'brand-40' | 'neutral-15' | 'neutral-40';
+export type Size = 's' | 'm' | 'l';
+export type Color =
+  'action15' | 'action40' | 'brand15' | 'brand40' | 'neutral15' | 'neutral40';
