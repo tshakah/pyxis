@@ -1,0 +1,22 @@
+////
+/// Atoms are CSS classes meant to be used directly on your HTML tag
+/// They follow single responsibility principle.
+///
+/// @group  ATOMS
+////
+
+@use "../foundations/colors";
+@use "../foundations/containers";
+@use "../foundations/elevations";
+@use "../foundations/hiding";
+@use "../foundations/radius";
+@use "../foundations/spacings";
+@use "../foundations/typography";
+
+@include colors.createAtoms();
+@include containers.createAtoms();
+@include elevations.createAtoms();
+@include hiding.createAtoms();
+@include radius.createAtoms();
+@include spacings.createAtoms();
+@include typography.createAtoms();

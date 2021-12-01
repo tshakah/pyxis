@@ -1,0 +1,40 @@
+////
+/// Title is part of Typography. It's used in order to set the styles for an heading, a section title,
+/// or a generic content where hierarchy is important.
+/// @group TYPOGRAPHY
+////
+
+/// Responsive title map
+/// The first key is the name of size (xl, l, m, s)
+/// The second key is breakpoint (base, small, large)
+///
+/// @type Map
+/// @access public
+$fontSizes: (
+  xl: (
+    base: 28px,
+    small: 32px,
+    large: 40px,
+  ),
+  l: (
+    base: 24px,
+    small: 26px,
+    large: 32px,
+  ),
+  m: (
+    base: 20px,
+    small: 22px,
+    large: 24px,
+  ),
+  s: (
+    base: 16px,
+    small: 18px,
+    large: 20px,
+  ),
+);
+
+/// List of allowed font weights for common titles
+///
+/// @type List
+/// @access public
+$allowedFontWeights: (book, bold);

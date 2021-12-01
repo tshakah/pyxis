@@ -1,0 +1,107 @@
+////
+/// Radius is used to smooth our components borders.
+/// @group RADIUS
+////
+
+@use "../lib";
+@use "breakpoints";
+
+/// Border radius map
+///
+/// @type Map
+/// @access private
+$_radius: (
+  xl: 25px,
+  l: 20px,
+  m: 15px,
+  s: 10px,
+  xs: 5px,
+);
+
+/// Border radius map.  
+/// <em style="font-size:small;">This variable is private.</em>
+///
+/// @prop {Number} xl [25px]
+/// @prop {Number} l [20px]
+/// @prop {Number} m [15px]
+/// @prop {Number} s [10px]
+/// @prop {Number} xs [5px]
+///
+/// @type Map
+$_radiusMap: ();
+
+/// List of allowed edges for border-radius
+///
+/// @type List
+/// @access private
+$_edges: (all, top, right, bottom, left);
+
+/// List of allowed edges for border-radius.  
+/// <em style="font-size:small;">This variable is private.</em>
+/// 
+/// @prop {String} all
+/// @prop {String} top
+/// @prop {String} right
+/// @prop {String} bottom
+/// @prop {String} left
+///
+/// @type List
+$_edgesList: ();
+
+/// Returns the radius value from map $_radius
+///
+/// @param {String} $size - Size of radius
+/// @return {String} Representation of radius size
+/// @throw {Error}
+/// @access private
+@function _radius($size) {
+  @return lib.rem(lib.getOrDie($_radius, $size));
+}
+
+/// Includes border-radius by size and edge.
+///
+/// @param {String} $size - Name of the size
+/// @param {String} $edge [all] - Edge to apply the border-radius
+///
+/// @output `border-radius` property.
+///
+/// @example scss - Set radius to all edges
+///   .element {
+///     @include radius(s);
+///   }
+/// @example scss - Set radius only on bottom right and bottom left edges
+///   .element {
+///     @include radius(l, bottom);
+///   }
+///
+/// @throw Error if `$edge` in input is not present in `$_edgesList`
+/// @access public
+@mixin radius($size, $edge: all) {
+  @if index($_edges, $edge) {
+    @if $edge == top {
+      border-radius: _radius($size) _radius($size) 0 0;
+    } @else if $edge == right {
+      border-radius: 0 _radius($size) _radius($size) 0;
+    } @else if $edge == bottom {
+      border-radius: 0 0 _radius($size) _radius($size);
+    } @else if $edge == left {
+      border-radius: _radius($size) 0 0 _radius($size);
+    } @else {
+      border-radius: _radius($size);
+    }
+  } @else {
+    @error "Edge `#{$edge}` is not present in map `$_edges`";
+  }
+}
+
+/// Create atom classes for all radius in $_radius map
+///
+/// @alias createAtoms
+/// @access public
+@mixin createAtoms() {
+  @each $size, $_ in $_radius {
+    .radius-#{$size} {
+      @include radius($size);
+    }
+  }
+}

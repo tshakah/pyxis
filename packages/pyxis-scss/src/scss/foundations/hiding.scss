@@ -1,0 +1,68 @@
+////
+/// Hiding Rules define all rules for hiding content based on device width.
+/// @group HIDING
+////
+
+@use "../lib";
+@use "breakpoints";
+
+/// Hide an element from `$fromBreakpoint` to `$untilBreakpoint` value.
+/// Outside the indicated breakpoints the element will have the assigned display value.
+///
+/// @param {String} $fromBreakpoint - Name of start breakpoint
+/// @param {String} $untilBreakpoint - Name of end breakpoint
+///
+/// @output `display:none;` between breakpoints in input.
+///
+/// @example scss - Hide element for every breakpoint
+///  .element {
+///     @include hide();
+///  }
+///
+/// @example scss - Hide element from breakpoint medium
+///  .element {
+///     @include hide(medium);
+///     display: grid;
+///  }
+///  // Before medium breakpoint the display property is set 
+///  // to `grid`, after to `none`.
+///
+/// @example scss - Hide element between breakpoint small and large
+///  .element {
+///     @include hide(small, large);
+///     display: grid;
+///  }
+///  // Outside the range between small and large breakpoint the display property 
+///  // is set to `grid`, inside to `none`.
+///
+/// @throw Error if `$untilBreakpoint` is smaller or equal to `$fromBreakpoint`.
+/// @access public
+@mixin hide($fromBreakpoint: base, $untilBreakpoint: null) {
+  @if(lib.isNotNull($untilBreakpoint) and breakpoints.isGreaterOrEqualTo($fromBreakpoint, $untilBreakpoint)) {
+    @error "You cannot use a `$untilBreakpoint` value smaller or equal than `$fromBreakpoint` value";
+  }
+
+  @include breakpoints.mq($fromBreakpoint, $untilBreakpoint) {
+    display: none;
+  }
+}
+
+/// Create atom classes for hiding
+///
+/// @alias createAtoms
+/// @access public
+@mixin createAtoms() {
+  $breakpointMap: breakpoints.breakpoints();
+  @each $breakpointName, $breakpointValue in $breakpointMap {
+    $append: if(breakpoints.isBase($breakpointName), "", "-from-#{$breakpointName}");
+    .hide#{$append} {
+      @include hide($breakpointName);
+    }
+    @if(not breakpoints.isBase($breakpointName)) {
+      $nextBreakpoint: lib.getNextElementKey($breakpointMap, $breakpointName $breakpointValue);
+      .hide-on-#{$breakpointName} {
+        @include hide($breakpointName, $nextBreakpoint);
+      }
+    }
+  }
+}

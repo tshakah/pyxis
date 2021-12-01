@@ -1,0 +1,44 @@
+{
+  "name": "@pyxis/scss",
+  "version": "0.0.9",
+  "description": "Pyxis is the Prima Assicurazioni's design system.",
+  "main": "src/scss/pyxis.scss",
+  "repository": "git@github.com:primait/pyxis-scss.git",
+  "author": "Prima Assicurazioni",
+  "license": "ISC",
+  "private": false,
+  "scripts": {
+    "build": "webpack build --config webpack.prod.js",
+    "lint": "stylelint \"src/scss/**/*.scss\"",
+    "lint:fix": "stylelint \"src/scss/**/*.scss\" --fix",
+    "sassdocs:build": "sassdoc src --config sassdoc.config.json",
+    "serve": "webpack serve --config webpack.common.js"
+  },
+  "dependencies": {
+    "webpack-merge": "^5.8.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.3.7",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.3.0",
+    "cssnano": "^5.0.8",
+    "mini-css-extract-plugin": "^2.4.2",
+    "postcss": "^8.3.9",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-loader": "^6.1.1",
+    "postcss-preset-env": "^6.7.0",
+    "postcss-sort-media-queries": "^4.1.0",
+    "sass": "^1.42.1",
+    "sass-loader": "^12.1.0",
+    "sassdoc": "^2.7.3",
+    "stylelint": "^13.13.1",
+    "stylelint-config-recommended": "^5.0.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.4.0",
+    "stylelint-order": "^4.1.0",
+    "stylelint-scss": "^3.21.0",
+    "stylelint-webpack-plugin": "^3.0.1",
+    "webpack": "^5.57.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.3.1"
+  }
+}

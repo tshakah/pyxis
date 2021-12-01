@@ -1,0 +1,103 @@
+////
+/// Elevation is needed in order to give depth to our components.
+/// @group ELEVATION
+////
+
+@use "../lib";
+@use "breakpoints";
+@use "colors";
+
+/// Elevations sizing map
+///
+/// @type Map
+/// @access private
+$_elevationSize: (
+  s: 0 lib.rem(5px) lib.rem(10px) lib.rem(-2px),
+  m: 0 lib.rem(15px) lib.rem(30px) lib.rem(-5px),
+  l: 0 lib.rem(30px) lib.rem(60px) lib.rem(-10px),
+);
+
+/// Elevations sizing map.  
+/// <em style="font-size:small;">This variable is private.</em>
+///
+/// @prop {String} s [0 5px 10px -2px]
+/// @prop {String} m [0 15px 30px -5px]
+/// @prop {String} l [0 30px 60px -10px]
+/// 
+/// @type Map
+$_elevationSizeMap: ();
+
+/// Elevations color map
+///
+/// @type Map
+/// @access private
+$_elevationColor: (
+  action15: rgba(colors.color(actionBase), 0.15),
+  action40: rgba(colors.color(actionBase), 0.4),
+  brand15: rgba(colors.color(brandBase), 0.15),
+  brand40: rgba(colors.color(brandBase), 0.4),
+  neutral15: rgba(colors.color(neutral25), 0.15),
+  neutral40: rgba(colors.color(neutral25), 0.4),
+);
+
+/// Elevations color map.  
+/// <em style="font-size:small;">This variable is private.</em>
+///
+/// @prop {Color} action15 [rgba(#067f96, 0.15)]
+/// @prop {Color} action40 [rgba(#067f96, 0.4)]
+/// @prop {Color} brand15 [rgba(#8334c2, 0.15)]
+/// @prop {Color} brand40 [rgba(#8334c2, 0.4)]
+/// @prop {Color} neutral15 [rgba(#595d6a, 0.15)]
+/// @prop {Color} neutral40 [rgba(#595d6a, 0.4)]
+///
+/// @type Map
+$_elevationColorMap: ();
+
+/// Returns the elevation size from map $_elevationSize
+///
+/// @param {String} $size - Name of size
+/// @throw {Error}
+/// @access private
+@function _elevationSize($size) {
+  @return lib.getOrDie($_elevationSize, $size);
+}
+
+/// Returns the elevation color from map $_elevationColor
+///
+/// @param {String} $color - Name of size
+/// @throw {Error}
+/// @access private
+@function _elevationColor($color) {
+  @return lib.getOrDie($_elevationColor, $color);
+}
+
+/// Includes correct `box-shadow` based on size and color in input.
+///
+/// @param {String} $size - Name of the size from `$_elevationSizeMap`
+/// @param {String} $color - Name of the color from `$_elevationColorMap`
+/// 
+/// @output `box-shadow` property.
+/// 
+/// @example scss - Set element elevation through box shadow
+///   .element {
+///     @include elevation(s, brand15);
+///   }
+/// 
+/// @access public
+@mixin elevation($size, $color) {
+  box-shadow: _elevationSize($size) _elevationColor($color);
+}
+
+/// Create atom classes for all elevation sizes and colors
+///
+/// @alias createAtoms
+/// @access public
+@mixin createAtoms() {
+  @each $size, $_ in $_elevationSize {
+    @each $color, $_ in $_elevationColor {
+      .elevation-#{$size}-#{lib.camelToKebabCase($color)} {
+        @include elevation($size, $color);
+      }
+    }
+  }
+}

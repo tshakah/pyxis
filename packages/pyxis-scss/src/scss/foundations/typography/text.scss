@@ -1,0 +1,31 @@
+////
+/// Text is part of Typography. It's used in order to set the styles for a paragraph,
+/// or a generic content where hierarchy is not a matter.
+/// @group TYPOGRAPHY
+////
+
+/// Responsive text map
+/// The first key is the name of size (l, m, s)
+/// The second key is breakpoint (base, small)
+///
+/// @type Map
+/// @access public
+$fontSizes: (
+  l: (
+    base: 14px,
+    small: 16px,
+  ),
+  m: (
+    base: 12px,
+    small: 14px,
+  ),
+  s: (
+    base: 12px,
+  ),
+);
+
+/// List of allowed font weights for common text
+///
+/// @type List
+/// @access public
+$allowedFontWeights: (light, book, bold);

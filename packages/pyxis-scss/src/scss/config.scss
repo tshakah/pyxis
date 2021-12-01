@@ -1,0 +1,18 @@
+////
+/// Configuration is the only part of Pyxis which can be overridden by final user.
+/// Take a look to the documentation on extending Pyxis for your needs.
+/// @group CONFIGURATION
+////
+
+/// Font size root
+///
+/// @type Number
+/// @access public
+$fontSizeRoot: 16px !default;
+
+///
+/// Font display settings
+///
+/// @type String
+/// @access public
+$fontDisplay: swap !default;

@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/stories",
+    "src/App.tsx"
+  ],
+}

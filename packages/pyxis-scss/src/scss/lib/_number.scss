@@ -1,0 +1,49 @@
+////
+/// Utilities for Math which are not part of sass:math module.
+/// @group  LIB
+////
+
+@use "sass:math";
+@use "../config";
+
+/// Convert pixels to rem.
+/// The `$fontSizeRoot` (defined in `foundations/_typography.scss`)
+/// must be configured to match the `font-size` of your root (html) element.
+///
+/// @param {Number} $value - Length in pixels
+/// @return {Number} - Length in rems
+///
+/// @example scss - Convert pixels to rem
+///   rem(24px)
+///   // 1.5rem
+/// @example scss - Convert unitless value to rem
+///   rem(24)
+///   // 1.5rem
+///
+/// @access public
+@function rem($value) {
+  @if (unitless($value)) {
+    $value: $value * 1px;
+  }
+
+  @return math.div($value, config.$fontSizeRoot) * 1rem;
+}
+
+/// Strips the unit from a `$number`.
+///
+/// @param {Number} $number - Number to remove unit from
+/// @return {Number} - Unitless number
+///
+/// @example scss - Remove unit from a number
+///   stripUnit(18px)
+///   // 18
+///
+/// @throw Error if `$number` in input is not a number or it is already unitless.
+/// @access public
+@function stripUnit($number) {
+  @if type-of($number) == "number" and not unitless($number) {
+    @return math.div($number, ($number * 0 + 1));
+  } @else {
+    @error "Cannot strip the unit from #{$number}.";
+  }
+}

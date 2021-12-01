@@ -1,0 +1,28 @@
+{
+    "autofill": [],
+    "display": {
+        "access": [
+            "public"
+        ],
+        "alias": false,
+        "watermark": false
+    },
+    "exclude": [
+        "scss/foundations/typography/text.scss",
+        "scss/foundations/typography/title.scss"
+    ],
+    "groups": {
+        "ATOMS": "Atoms",
+        "BREAKPOINTS": "Breakpoints",
+        "COLORS": "Colors",
+        "CONFIGURATION": "Configuration",
+        "CONTAINERS": "Containers",
+        "ELEVATION": "Elevation",
+        "HIDING": "Hiding",
+        "LIB": "Core functions",
+        "RADIUS": "Radius",
+        "SPACINGS": "Spacings",
+        "TYPOGRAPHY": "Typography",
+        "undefined": "Globals"
+    }
+}

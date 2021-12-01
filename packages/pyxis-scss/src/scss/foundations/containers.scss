@@ -1,0 +1,143 @@
+////
+/// Containers defines all container rules based on device width.
+/// @group CONTAINERS
+////
+
+@use "../lib";
+@use "breakpoints";
+
+/// The variables of containers
+///
+/// @type Number
+/// @access private
+$_containerMedium: lib.rem(960px);
+$_containerLarge: lib.rem(1140px);
+$_containerXLarge: lib.rem(1370px);
+
+/// The gutter of container
+///
+/// @type Number
+/// @access private
+$_gutter: lib.rem(20px);
+
+/// Fluid dimension for small sizes
+///
+/// @type Number
+/// @access private
+$_fluidWidth: calc(100vw - (#{$_gutter} * 2));
+
+/// The breakpoints of Pyxis
+///
+/// @type Map
+/// @access private
+$_containers: (
+  base: $_fluidWidth,
+  xxsmall: $_fluidWidth,
+  xsmall: $_fluidWidth,
+  small: $_fluidWidth,
+  medium: $_containerMedium,
+  large: $_containerLarge,
+  xlarge: $_containerXLarge,
+);
+
+/// Returns the $breakpoint value from map $_containers
+///
+/// @param {String} $breakpoint - Name of breakpoint
+/// @return {Number} The max-value of container in breakpoint
+/// @throw {Error}
+/// @access private
+@function _container($breakpoint) {
+  @return lib.getOrDie($_containers, $breakpoint);
+}
+
+/// Return the length of cycle
+///
+/// @param {String} $breakpoint - Name of breakpoint
+/// @return {Number} The length of @for cycle
+/// @throw {Error}
+/// @access private
+@function _lengthOfBreakpointCycle($breakpoint) {
+  @if lib.isNotNull($breakpoint) {
+    @return index($_containers, $breakpoint _container($breakpoint)) - 1;
+  }
+
+  @return length($_containers);
+}
+
+/// Returns the breakpoint name
+///
+/// @param {String:Null} $breakpoint - Name of breakpoint
+/// @param {Number} $index - Index of breakpoint in $_containers
+/// @return {String:Null} The name of container or null
+/// @access private
+@function _untilBreakpoint($breakpoint, $index) {
+  @if lib.isNotNull($breakpoint) {
+    @return nth(nth($_containers, $index + 1), 1);
+  }
+
+  @return null;
+}
+
+/// Include a container by `$fromBreakpoint` to `$toBreakpoint` value,
+/// outside the indicated breakpoints the container will be fluid.
+/// The container is based on `display: grid;` property.
+///
+/// @param {String} $fromBreakpoint [base] - Name of start breakpoint
+/// @param {String} $toBreakpoint [null] - Name of end breakpoint
+///
+/// @output Appropriate `max-width` based on breakpoints. Also `display: grid;`
+/// and `margin: 0 auto;`.
+///
+/// @example scss - Include a container with different width for every breakpoint
+///   .wrapper {
+///     @include container();
+///   }
+///
+/// @example scss - Include container from breakpoint small.
+///   .wrapper {
+///     @include container(small);
+///   }
+///   // Until breakpoint small, the container will be fluid
+///
+/// @example scss - Include container between breakpoint small and large
+///   .wrapper {
+///     @include container(small, large);
+///   }
+///   // Out of the range the container will be fluid
+///
+/// @throw Error if `$fromBreakpoint` value is lower or equal to `$untilBreakpoint` value
+/// @access public
+@mixin container($fromBreakpoint: base, $untilBreakpoint: null) {
+  display: grid;
+  margin: 0 auto;
+
+  @if(lib.isNotNull($untilBreakpoint) and breakpoints.isGreaterOrEqualTo($fromBreakpoint, $untilBreakpoint)) {
+    @error "You cannot use a `$untilBreakpoint` value smaller or equal than `$fromBreakpoint` value";
+  }
+
+  $_indexFromBreakpoint: index($_containers, $fromBreakpoint _container($fromBreakpoint));
+
+  @for $i from $_indexFromBreakpoint through _lengthOfBreakpointCycle($untilBreakpoint) {
+    $_containerFromBreakpoint: nth(nth($_containers, $i), 1);
+
+    @include breakpoints.mq($_containerFromBreakpoint, _untilBreakpoint($untilBreakpoint, $i)) {
+      max-width: _container($_containerFromBreakpoint);
+    }
+  }
+}
+
+/// Create atom classes for containers
+///
+/// @alias createAtoms
+/// @access public
+@mixin createAtoms() {
+  .container {
+    @include container();
+  }
+
+  @each $breakpoint, $value in map-remove($_containers, base) {
+    .container-from-#{$breakpoint} {
+      @include container($breakpoint);
+    }
+  }
+}

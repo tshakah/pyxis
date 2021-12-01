@@ -1,0 +1,98 @@
+////
+/// Utilities for SCSS maps.
+/// @group LIB
+////
+
+/// Retrieve the value corresponding to
+/// the key in a given map.
+///
+/// @param {Map} $map - A map
+/// @param {Args} $keys - Keys in map
+/// @return {Sass::Script::Value::Base} The corresponding value
+///
+/// @example scss - Retrieve brand base color from colors map
+///   $colors: (
+///     brandBase: #8334c2,
+///     brandDark: #5b2488,
+///     brandLight: #f2eaf8,
+///   );
+///   
+///   getOrDie($colors, brandBase)
+///   // #8334c2
+/// @example scss - Retrieve an unexpected color from colors map
+///   $colors: (
+///     brandBase: #8334c2,
+///     brandDark: #5b2488,
+///     brandLight: #f2eaf8,
+///   );
+///   
+///   getOrDie($colors, successColor)
+///   // ERROR: Unknown key `successColor` in map
+///
+/// @throw Error if `$keys` is not in map.
+/// @access public
+@function getOrDie($map, $keys...) {
+  @each $key in $keys {
+    @if not map-has-key($map, $key) {
+      @error "Unknown key `#{$keys}` in map";
+    }
+    $map: map-get($map, $key);
+  }
+
+  @return $map;
+}
+
+/// Return the key corresponding to the index in input
+/// in a given map.
+///
+/// @param {Number} $index - The index
+/// @param {Map} $map - A map
+/// @return {String} The corrisponding key
+///
+/// @example scss - Retrieve the key at index 5 in colors map
+///   $colors: (
+///     brandBase: #8334c2,
+///     brandDark: #5b2488,
+///     brandLight: #f2eaf8,
+///   );
+///
+///   indexToKey(2, $colors)
+///   // brandDark
+///
+/// @access public
+@function indexToKey($index, $map) {
+  $keys: map-keys($map);
+  @return nth($keys, $index);
+}
+
+/// Return the key of the element with the
+/// index following the item in input in a given map.
+///
+/// @param {Map} $map - A map
+/// @param {String} $currentItem - The current item (Key value)
+/// @return {String:Null} The corrisponding key or null
+///
+/// @example scss - Retrieve the key of the item next to `actionDark` in colors map
+///   $colors: (
+///     brandBase: #8334c2,
+///     brandDark: #5b2488,
+///     brandLight: #f2eaf8,
+///   );
+///
+///   getNextElementKey($colors, brandDark #5b2488)
+///   // brandLight
+///
+/// @throw Error if `$currentItem` is not in map.
+/// @access public
+@function getNextElementKey($map, $currentItem) {
+  $currentIndex: index($map, $currentItem);
+  @if $currentIndex {
+    $nextElementIndex: $currentIndex + 1;
+    @if($currentIndex != length($map)) {
+      @return indexToKey($nextElementIndex, $map);
+    } @else {
+      @return null;
+    }
+  }
+  @error "Unknown key `#{$currentItem}` in map";
+}
