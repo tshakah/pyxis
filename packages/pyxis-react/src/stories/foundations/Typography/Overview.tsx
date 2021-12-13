@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import OverviewTemplate from 'stories/components/OverviewTemplate';
-import Table, { TableRow } from 'stories/components/Table';
+import React, {FC} from 'react';
+import OverviewTemplate from 'stories/utils/OverviewTemplate';
+import Table, {TableRow} from 'stories/utils/Table';
 import shortid from 'shortid';
-import CopyableCode from 'stories/components/CopyableCode';
+import CopyableCode from 'stories/utils/CopyableCode';
 import Typography from './Typography';
-import { text, title, TypographyRow } from './common';
+import {text, title, TypographyRow} from './common';
 
 const typographyDescription = (
   <>
@@ -57,12 +57,12 @@ const tableUsageBody: TableRow[] = [
   [
     'Title',
     <CopyableCode text="@include title($size, $weight)" key={shortid.generate()} />,
-    <CopyableCode text=".title-$size--$weight" key={shortid.generate()} />,
+    <CopyableCode text=".title-$size-$weight" key={shortid.generate()} />,
   ],
   [
     'Text',
     <CopyableCode text="@include text($size, $weight)" key={shortid.generate()} />,
-    <CopyableCode text=".text-$size--$weight" key={shortid.generate()} />,
+    <CopyableCode text=".text-$size-$weight" key={shortid.generate()} />,
   ],
 ];
 

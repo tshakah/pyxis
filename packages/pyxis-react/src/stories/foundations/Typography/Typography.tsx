@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import classNames from 'classnames';
-import { capitalize } from '../../utils';
+import {capitalize} from 'utils';
 
 const getClasses = (size: Size, weight: Weight, type: Type): string => classNames(
   {
-    [`text-${size}--${weight}`]: type === 'text',
-    [`title-${size}--${weight}`]: type === 'title',
+    [`text-${size}-${weight}`]: type === 'text',
+    [`title-${size}-${weight}`]: type === 'title',
   },
 );
 

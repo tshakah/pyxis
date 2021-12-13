@@ -7,6 +7,7 @@
 
 $_colorActionBase: #067f96;
 $_colorActionDark: #045767;
+$_colorActionEndGradient: #07a5b5;
 $_colorActionLight: #e5f1f4;
 
 $_colorAlertBase: #ffdc50;
@@ -33,7 +34,7 @@ $_colorSuccessBase: #1d8147;
 $_colorSuccessDark: #145a31;
 $_colorSuccessLight: #e8f2ec;
 
-$_gradientAction: linear-gradient(45deg, $_colorActionDark, $_colorActionBase);
+$_gradientAction: linear-gradient(45deg, $_colorActionBase, $_colorActionEndGradient);
 $_gradientBrand: linear-gradient(45deg, $_colorBrandDark, $_colorBrandBase);
 $_gradientNeutral: linear-gradient(45deg, $_colorNeutralBase, $_colorNeutral25);
 
@@ -117,9 +118,9 @@ $_gradients: (
 /// described below to retrieve a single value from the map.</em>
 ///
 /// @type Map
-/// @prop {Color} action [linear-gradient(45deg, #067f96, #e5f1f4)]
-/// @prop {Color} brand [linear-gradient(45deg, #8334c2, #f2eaf8)]
-/// @prop {Color} neutral [linear-gradient(45deg, #595d6a, #21283b)]
+/// @prop {Color} action [linear-gradient(45deg, #07a5b5, #067f96)]
+/// @prop {Color} brand [linear-gradient(45deg, #5b2488, #8334c2)]
+/// @prop {Color} neutral [linear-gradient(45deg, #21283b, #595d6a)]
 $_gradientsMap: ();
 
 /// Returns the `$color` hex from map `$_colorsMap`.
@@ -133,7 +134,7 @@ $_gradientsMap: ();
 ///
 /// @access public
 @function color($color) {
-  @return lib.getOrDie($_colors, $color);
+  @return lib.get($_colors, $color);
 }
 
 /// Returns the `$gradient` from `$_gradientsMap`.
@@ -147,7 +148,7 @@ $_gradientsMap: ();
 ///
 /// @access public
 @function gradient($gradient) {
-  @return lib.getOrDie($_gradients, $gradient);
+  @return lib.get($_gradients, $gradient);
 }
 
 /// Create atom classes for all colors and gradient in $_colors map and $_gradients map

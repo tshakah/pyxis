@@ -1,11 +1,9 @@
-import React, { FC } from 'react';
-import OverviewTemplate from 'stories/components/OverviewTemplate';
-import Table, { TableRow } from 'stories/components/Table';
+import React, {FC} from 'react';
+import OverviewTemplate from 'stories/utils/OverviewTemplate';
+import Table, {TableRow} from 'stories/utils/Table';
 import shortid from 'shortid';
-import CopyableCode from 'stories/components/CopyableCode';
-import {
-  EdgeRow, edges, radius, RadiusRow,
-} from './common';
+import CopyableCode from 'stories/utils/CopyableCode';
+import {EdgeRow, edges, radius, RadiusRow,} from './common';
 import Radius from './Radius';
 
 const radiusDescription = (

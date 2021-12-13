@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { generateTestComponentMeta, radius, RadiusRow } from './common';
-import '../pyxis.scss';
-import Table, { TableRow } from '../components/Table';
+import React, {FC} from 'react';
+import {generateTestComponentMeta, radius, RadiusRow} from './common';
+import 'stories/pyxis.scss';
+import Table, {TableRow} from 'stories/utils/Table';
 import Radius from './Radius';
 
 export default generateTestComponentMeta();

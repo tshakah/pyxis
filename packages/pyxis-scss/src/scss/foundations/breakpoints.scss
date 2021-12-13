@@ -61,7 +61,7 @@ $_boundDiff: 1px;
 ///
 /// @access public
 @function breakpoint($breakpoint) {
-  @return lib.getOrDie($_breakpoints, $breakpoint);
+  @return lib.get($_breakpoints, $breakpoint);
 }
 
 /// Returns the entire `$_breakpointMap`.

@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import classNames from 'classnames';
 import styles from './Elevation.module.scss';
-import { pascalToKebab } from '../../utils';
+import {pascalToKebab} from 'utils';
 
 const getItemClasses = (size: string, color: string, opacity: string): string => classNames(
   styles.item,

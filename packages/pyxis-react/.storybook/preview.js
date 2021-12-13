@@ -10,4 +10,9 @@ module.exports = {
       },
     },
   },
+  options: {
+    storySort: {
+      order: ['Introduction', 'Foundations', 'Components'],
+    },
+  },
 };

@@ -1,5 +1,6 @@
-@use "../typography";
+@use "../colors";
 @use "../spacings";
+@use "../typography";
 @use "form";
 
 *,
@@ -12,6 +13,7 @@
 html {
   @include typography.globalSettings();
   box-sizing: border-box;
+  color: colors.color(neutralBase);
   overflow-x: hidden;
 }
 

@@ -1,8 +1,6 @@
-import React, { FC } from 'react';
-import {
-  generateTestComponentMeta, text, title, TypographyRow,
-} from './common';
-import Table, { TableRow } from '../components/Table';
+import React, {FC} from 'react';
+import {generateTestComponentMeta, text, title, TypographyRow,} from './common';
+import Table, {TableRow} from 'stories/utils/Table';
 import Typography from './Typography';
 
 export default generateTestComponentMeta();

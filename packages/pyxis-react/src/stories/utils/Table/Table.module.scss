@@ -1,4 +1,4 @@
-@use "../../pyxis";
+@use "stories/pyxis";
 
 .wrapper {
   @include pyxis.verticalSpacing(xl);
@@ -17,7 +17,7 @@
 
 .head {
   @include pyxis.text(l, bold);
-  @include pyxis.verticalPadding(xxs);
+  @include pyxis.verticalPadding(2xs);
 }
 
 .row {

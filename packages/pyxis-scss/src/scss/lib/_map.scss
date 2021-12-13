@@ -17,7 +17,7 @@
 ///     brandLight: #f2eaf8,
 ///   );
 ///   
-///   getOrDie($colors, brandBase)
+///   get($colors, brandBase)
 ///   // #8334c2
 /// @example scss - Retrieve an unexpected color from colors map
 ///   $colors: (
@@ -26,12 +26,12 @@
 ///     brandLight: #f2eaf8,
 ///   );
 ///   
-///   getOrDie($colors, successColor)
+///   get($colors, successColor)
 ///   // ERROR: Unknown key `successColor` in map
 ///
 /// @throw Error if `$keys` is not in map.
 /// @access public
-@function getOrDie($map, $keys...) {
+@function get($map, $keys...) {
   @each $key in $keys {
     @if not map-has-key($map, $key) {
       @error "Unknown key `#{$keys}` in map";
@@ -47,7 +47,7 @@
 ///
 /// @param {Number} $index - The index
 /// @param {Map} $map - A map
-/// @return {String} The corrisponding key
+/// @return {String} The corresponding key
 ///
 /// @example scss - Retrieve the key at index 5 in colors map
 ///   $colors: (
@@ -70,7 +70,7 @@
 ///
 /// @param {Map} $map - A map
 /// @param {String} $currentItem - The current item (Key value)
-/// @return {String:Null} The corrisponding key or null
+/// @return {String:Null} The corresponding key or null
 ///
 /// @example scss - Retrieve the key of the item next to `actionDark` in colors map
 ///   $colors: (

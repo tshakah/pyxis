@@ -1,4 +1,4 @@
-@use '../pyxis';
+@use 'stories/pyxis';
 
 .radius {
   background: pyxis.gradient(neutral);

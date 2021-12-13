@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import OverviewTemplate from 'stories/components/OverviewTemplate';
+import React, {FC} from 'react';
+import OverviewTemplate from 'stories/utils/OverviewTemplate';
 import shortid from 'shortid';
-import { ElevationRow, elevations } from './common';
-import Table, { TableRow } from '../components/Table';
-import CopyableCode from '../components/CopyableCode';
+import {ElevationRow, elevations} from './common';
+import Table, {TableRow} from 'stories/utils/Table';
+import CopyableCode from 'stories/utils/CopyableCode';
 import Elevation from './Elevation';
 
 const description = (

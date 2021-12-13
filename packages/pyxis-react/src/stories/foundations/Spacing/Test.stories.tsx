@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import { generateTestComponentMeta, spacing, SpacingRow } from './common';
-import Table, { TableRow } from '../components/Table';
+import React, {FC} from 'react';
+import {generateTestComponentMeta, spacing, SpacingRow} from './common';
+import Table, {TableRow} from 'stories/utils/Table';
 import Spacing from './Spacing';
 
 export default generateTestComponentMeta();

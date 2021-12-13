@@ -1,8 +1,8 @@
-@use "../../pyxis";
+@use "stories/pyxis";
 
 .wrapper {
-  @include pyxis.horizontalPadding(xxs);
-  @include pyxis.horizontalSpacing(xxs);
+  @include pyxis.horizontalPadding(2xs);
+  @include pyxis.horizontalSpacing(2xs);
   @include pyxis.radius(xs);
   background-color: pyxis.color(neutral95);
   cursor: pointer;
@@ -13,7 +13,7 @@
 }
 
 .badge {
-  @include pyxis.horizontalPadding(xxs);
+  @include pyxis.horizontalPadding(2xs);
   @include pyxis.radius(s);
   @include pyxis.text(s, bold);
   align-items: center;

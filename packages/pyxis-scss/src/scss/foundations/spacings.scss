@@ -7,66 +7,79 @@
 @use "breakpoints";
 
 /// Responsive spacing map
-/// The first key is the name of size (xxxl, xxl, xl, l, m, s, xs, xxs, xxxs)
+/// The first key is the name of size (3xl, 2xl, xl, l, m, s, xs, 2xs, 3xs, 4xs)
 /// The second key is breakpoint (base, medium, large, xlarge)
 ///
 /// @type Map
 /// @access private
 $_spacings: (
-  xxxl: (
-    base: 50px,
-    medium: 60px,
+  3xl: (
+    base: 60px,
+    medium: 80px,
     large: 100px,
     xlarge: 120px,
   ),
-  xxl: (
+  2xl: (
     base: 40px,
-    medium: 50px,
+    medium: 60px,
     large: 80px,
   ),
   xl: (
-    base: 35px,
+    base: 32px,
     medium: 40px,
     large: 60px,
   ),
   l: (
-    base: 30px,
-    medium: 35px,
+    base: 24px,
+    medium: 32px,
     large: 40px,
   ),
   m: (
-    base: 25px,
-    medium: 30px,
+    base: 20px,
+    medium: 24px,
   ),
   s: (
-    base: 20px,
+    base: 16px,
   ),
   xs: (
-    base: 15px,
+    base: 12px,
   ),
-  xxs: (
-    base: 10px,
+  2xs: (
+    base: 8px,
   ),
-  xxxs: (
-    base: 5,
+  3xs: (
+    base: 4px,
+  ),
+  4xs: (
+    base: 2px,
   ),
 );
 
 /// Spacing list.  
 /// <em style="font-size:small;">This variable is private.</em>
 ///
-/// @prop {String} xxxl
-/// @prop {String} xxl
+/// @prop {String} 3xl
+/// @prop {String} 2xl
 /// @prop {String} xl
 /// @prop {String} l
 /// @prop {String} m
 /// @prop {String} s
 /// @prop {String} xs
-/// @prop {String} xxs
-/// @prop {String} xxxs
+/// @prop {String} 2xs
+/// @prop {String} 3xs
+/// @prop {String} 4xs
 ///
 /// @type List
 $_spacingsList: ();
+
+/// Includes the size contained in the spacings map with base breakpoint
+///
+/// @param {String} $size - Name of the size
+/// @throw {Error}
+/// @access public
+@function spacing($size) {
+  @return lib.get($_spacings, $size, base);
+}
 
 /// Includes the size contained in the spacings map on property in every breakpoints
 ///
@@ -74,11 +87,11 @@ $_spacingsList: ();
 /// @param {String | Number} $size - Name of the size or 0 value
 /// @throw {Error}
 /// @access private
-@mixin _spacing($property, $size) {
+@mixin _responsiveSpacing($property, $size) {
   @if $size == 0 {
     #{$property}: 0;
   } @else {
-    @each $breakpoint, $space in lib.getOrDie($_spacings, $size) {
+    @each $breakpoint, $space in lib.get($_spacings, $size) {
       @include breakpoints.mq($breakpoint) {
         #{$property}: lib.rem($space);
       }
@@ -99,7 +112,7 @@ $_spacingsList: ();
 ///
 /// @access public
 @mixin padding($size) {
-  @include _spacing("padding", $size);
+  @include _responsiveSpacing("padding", $size);
 }
 
 /// Includes padding by size for vertical edges in every breakpoints.
@@ -115,8 +128,8 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin verticalPadding($size) {
-  @include _spacing("padding-bottom", $size);
-  @include _spacing("padding-top", $size);
+  @include _responsiveSpacing("padding-bottom", $size);
+  @include _responsiveSpacing("padding-top", $size);
 }
 
 /// Includes padding by size for horizontal edges in every breakpoints.
@@ -132,8 +145,8 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin horizontalPadding($size) {
-  @include _spacing("padding-left", $size);
-  @include _spacing("padding-right", $size);
+  @include _responsiveSpacing("padding-left", $size);
+  @include _responsiveSpacing("padding-right", $size);
 }
 
 /// Includes `margin-bottom` by size in every breakpoint.
@@ -150,7 +163,7 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin verticalSpacing($size) {
-  @include _spacing("margin-bottom", $size);
+  @include _responsiveSpacing("margin-bottom", $size);
 
   &:last-child {
     margin-bottom: 0;
@@ -171,7 +184,7 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin horizontalSpacing($size) {
-  @include _spacing("margin-right", $size);
+  @include _responsiveSpacing("margin-right", $size);
 
   &:last-child {
     margin-right: 0;
@@ -194,7 +207,7 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin rowGap($size) {
-  @include _spacing("grid-row-gap", $size);
+  @include _responsiveSpacing("grid-row-gap", $size);
 }
 
 /// Includes `grid-column-gap` by size in every breakpoints
@@ -213,7 +226,7 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin columnGap($size) {
-  @include _spacing("grid-column-gap", $size);
+  @include _responsiveSpacing("grid-column-gap", $size);
 }
 
 /// Create atom classes for all spacing in $_spacings map

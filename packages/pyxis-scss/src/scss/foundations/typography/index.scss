@@ -7,6 +7,7 @@
 @use "../../config.scss";
 @use "../../lib";
 @use "../breakpoints";
+@use "sass:math";
 @use "text";
 @use "title";
 
@@ -32,15 +33,6 @@ $_font: (
   ),
 );
 
-/// The line-height map
-///
-/// @type Map
-/// @access private
-$_lineHeight: (
-  base: 150%,
-  golden: 161.8%,
-);
-
 /// The letter-spacing map
 ///
 /// @type Map
@@ -58,7 +50,7 @@ $_letterSpacing: (
 /// @throw {Error}
 /// @access private
 @function _fontFamily($font) {
-  @return #{lib.getOrDie($font, name), lib.getOrDie($font, fallback)};
+  @return #{lib.get($font, name), lib.get($font, fallback)};
 }
 
 /// Returns a line-height by `$fontSize`
@@ -69,8 +61,10 @@ $_letterSpacing: (
 /// @access private
 @function _lineHeight($fontSize) {
   $shouldUseBaseLineHeight: lib.stripUnit($fontSize) >= 32;
+  $baseToRem: lib.rem(math.floor($fontSize * 1.5));
+  $goldenToRem: lib.rem(math.floor($fontSize * 1.618));
 
-  @return if($shouldUseBaseLineHeight, lib.getOrDie($_lineHeight, base), lib.getOrDie($_lineHeight, golden));
+  @return if($shouldUseBaseLineHeight, $baseToRem, $goldenToRem);
 }
 
 /// Returns a letter-spacing by `$fontSize`
@@ -84,12 +78,12 @@ $_letterSpacing: (
   $shouldUseSmallLetterSpacing: lib.stripUnit($fontSize) >= 14;
 
   @if ($shouldUseBaseLetterSpacing) {
-    @return lib.rem(lib.getOrDie($_letterSpacing, base));
+    @return lib.rem(lib.get($_letterSpacing, base));
   } @else {
     @return if(
       $shouldUseSmallLetterSpacing,
-      lib.rem(lib.getOrDie($_letterSpacing, small)),
-      lib.rem(lib.getOrDie($_letterSpacing, medium))
+      lib.rem(lib.get($_letterSpacing, small)),
+      lib.rem(lib.get($_letterSpacing, medium))
     );
   }
 }
@@ -102,7 +96,7 @@ $_letterSpacing: (
 @mixin globalSettings() {
   @include _fontWeight(book);
   font-family: _fontFamily($_font);
-  font-feature-settings: lib.getOrDie($_font, featureSettings);
+  font-feature-settings: lib.get($_font, featureSettings);
   font-size: config.$fontSizeRoot;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -117,7 +111,7 @@ $_letterSpacing: (
 /// @throw {Error}
 /// @access private
 @mixin _fontWeight($weight) {
-  font-weight: #{lib.getOrDie($_font, weights, $weight)};
+  font-weight: #{lib.get($_font, weights, $weight)};
 }
 
 /// Includes the properties contained in the typography map for every breakpoint
@@ -127,9 +121,9 @@ $_letterSpacing: (
 /// @throw {Error}
 /// @access private
 @mixin _size($fontSizes, $size) {
-  @each $breakpoint, $value in lib.getOrDie($fontSizes, $size) {
+  @each $breakpoint, $value in lib.get($fontSizes, $size) {
     @include breakpoints.mq($breakpoint) {
-      $fontSize: lib.getOrDie($fontSizes, $size, $breakpoint);
+      $fontSize: lib.get($fontSizes, $size, $breakpoint);
 
       font-size: lib.rem($fontSize);
       letter-spacing: _letterSpacing($fontSize);
@@ -194,12 +188,12 @@ $_letterSpacing: (
 ///
 /// @access public
 @mixin fontFaces() {
-  @each $name, $weight in lib.getOrDie($_font, weights) {
-    $fileName: #{lib.getOrDie($_font, name)}-#{lib.capitalize($name)};
+  @each $name, $weight in lib.get($_font, weights) {
+    $fileName: #{lib.get($_font, name)}-#{lib.capitalize($name)};
 
     @font-face {
       font-display: config.$fontDisplay;
-      font-family: lib.getOrDie($_font, name);
+      font-family: lib.get($_font, name);
       font-style: normal;
       font-weight: $weight;
       src: url("#{$_fontPath}/#{$fileName}.woff") format("woff"),
@@ -215,7 +209,7 @@ $_letterSpacing: (
 @mixin createAtoms() {
   @each $size, $_ in title.$fontSizes {
     @each $weight in title.$allowedFontWeights {
-      .title-#{lib.camelToKebabCase($size)}--#{$weight} {
+      .title-#{lib.camelToKebabCase($size)}-#{$weight} {
         @include title($size, $weight);
       }
     }
@@ -223,7 +217,7 @@ $_letterSpacing: (
 
   @each $size, $_ in text.$fontSizes {
     @each $weight in text.$allowedFontWeights {
-      .text-#{lib.camelToKebabCase($size)}--#{$weight} {
+      .text-#{lib.camelToKebabCase($size)}-#{$weight} {
         @include text($size, $weight);
       }
     }

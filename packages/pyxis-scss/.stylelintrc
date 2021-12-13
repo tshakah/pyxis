@@ -65,7 +65,7 @@
     "shorthand-property-no-redundant-values": true,
     "string-quotes": "double",
     "unit-case": "lower",
-    "unit-no-unknown": true,
+    "unit-no-unknown": null,
     "value-no-vendor-prefix": null
   }
 }

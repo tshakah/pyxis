@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import Elevation from './Elevation';
-import { ElevationRow, elevations, generateTestComponentMeta } from './common';
-import Table, { TableRow } from '../components/Table';
+import {ElevationRow, elevations, generateTestComponentMeta} from './common';
+import Table, {TableRow} from 'stories/utils/Table';
 
 export default generateTestComponentMeta();
 

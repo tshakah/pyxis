@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import Color from './Color';
-import { ColorRow, colors, generateTestComponentMeta } from './common';
-import '../pyxis.scss';
-import Table, { TableRow } from '../components/Table';
-import { pascalToKebab } from '../../utils';
+import {ColorRow, colors, generateTestComponentMeta} from './common';
+import 'stories/pyxis.scss';
+import Table, {TableRow} from 'stories/utils/Table';
+import {pascalToKebab} from 'utils';
 
 export default generateTestComponentMeta();
 

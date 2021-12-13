@@ -59,7 +59,7 @@ $_elevationColorMap: ();
 /// @throw {Error}
 /// @access private
 @function _elevationSize($size) {
-  @return lib.getOrDie($_elevationSize, $size);
+  @return lib.get($_elevationSize, $size);
 }
 
 /// Returns the elevation color from map $_elevationColor
@@ -68,7 +68,7 @@ $_elevationColorMap: ();
 /// @throw {Error}
 /// @access private
 @function _elevationColor($color) {
-  @return lib.getOrDie($_elevationColor, $color);
+  @return lib.get($_elevationColor, $color);
 }
 
 /// Includes correct `box-shadow` based on size and color in input.

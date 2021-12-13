@@ -1,4 +1,4 @@
-@use "../pyxis";
+@use "stories/pyxis";
 
 // TODO: replace with design tokens
 $_spacings: (
@@ -50,7 +50,7 @@ $_spacings: (
 // TODO: refactor after the introduction of design tokens
 @each $size, $values in $_spacings {
   .space-#{$size} {
-    @each $breakpoint, $space in pyxis.getOrDie($_spacings, $size) {
+    @each $breakpoint, $space in pyxis.get($_spacings, $size) {
       @include pyxis.mq($breakpoint) {
         width: pyxis.rem($space);
       }

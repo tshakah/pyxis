@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import OverviewTemplate from 'stories/components/OverviewTemplate';
-import Table, { TableRow } from 'stories/components/Table';
+import React, {FC} from 'react';
+import OverviewTemplate from 'stories/utils/OverviewTemplate';
+import Table, {TableRow} from 'stories/utils/Table';
 import shortid from 'shortid';
-import { pascalToKebab } from 'utils';
-import CopyableCode from 'stories/components/CopyableCode';
-import { ColorRow, colors } from './common';
+import {pascalToKebab} from 'utils';
+import CopyableCode from 'stories/utils/CopyableCode';
+import {ColorRow, colors} from './common';
 import Color from './Color';
 
 const colorDescription = (

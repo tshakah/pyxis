@@ -47,7 +47,7 @@ $_containers: (
 /// @throw {Error}
 /// @access private
 @function _container($breakpoint) {
-  @return lib.getOrDie($_containers, $breakpoint);
+  @return lib.get($_containers, $breakpoint);
 }
 
 /// Return the length of cycle
