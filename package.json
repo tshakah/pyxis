@@ -15,6 +15,7 @@
     "build": "lerna run build --stream",
     "install": "lerna bootstrap",
     "lint": "lerna run lint --stream",
+    "lint:fix": "lerna run lint:fix --stream",
     "sassdocs:build": "lerna run sassdocs:build --stream",
     "storybook:build": "lerna run storybook:build --stream",
     "storybook:serve": "lerna run storybook:serve --stream"

@@ -1,0 +1,27 @@
+@use "../../pyxis.scss";
+
+// TODO: delete when icon classes and button story are added.
+.wrapper {
+  @include pyxis.columnGap(m);
+  @include pyxis.verticalSpacing(m);
+  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-items: start;
+}
+
+.icon {
+  .button--huge & {
+    width:24px;
+    height:24px;
+  }
+  .button--large & {
+    width:20px;
+    height:20px;
+  }
+  .button--small &,
+  .button--medium & {
+    width:16px;
+    height:16px;
+  }
+}

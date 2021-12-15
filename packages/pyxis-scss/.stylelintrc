@@ -8,6 +8,7 @@
   "rules": {
     "at-rule-no-unknown": null,
     "block-no-empty": true,
+    "block-opening-brace-space-before": "always",
     "color-hex-case": "lower",
     "color-hex-length": "long",
     "color-named": "never",

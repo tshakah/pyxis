@@ -9,6 +9,11 @@ module.exports = {
         date: /Date$/,
       },
     },
+    options: {
+      storySort: {
+        order: ['Introduction', 'Foundations', 'Components'],
+      },
+    },
   },
   options: {
     storySort: {

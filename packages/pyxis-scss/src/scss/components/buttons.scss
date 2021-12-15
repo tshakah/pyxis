@@ -1,0 +1,345 @@
+////
+/// Generated classes for button styling.
+////
+
+@use "sass:math";
+@use "../lib";
+@use "../foundations";
+
+$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
+$_colorActionEndGradient: #07a5b5;
+$_borderWidth: lib.rem(2px);
+
+/// Sizes of Pyxis' buttons.
+/// Each size has direct influence on properties in the sub-maps.
+///
+/// @type Map
+/// @access private
+$_sizes: (
+  huge: (
+    columnGap: 2xs,
+    dimension: lib.rem(50px),
+    loaderSize: lib.rem(24px),
+    minWidth: lib.rem(220px),
+    padding: l,
+    iconSpacing: l,
+    radius: m,
+    textSize: l,
+  ),
+  large: (
+    columnGap: 2xs,
+    dimension: lib.rem(40px),
+    loaderSize: lib.rem(20px),
+    minWidth: lib.rem(160px),
+    padding: l,
+    iconSpacing: s,
+    radius: 2xl,
+    textSize: l,
+  ),
+  medium: (
+    columnGap: 3xs,
+    dimension: lib.rem(30px),
+    loaderSize: lib.rem(20px),
+    minWidth: lib.rem(120px),
+    padding: s,
+    iconSpacing: xs,
+    radius: 2xl,
+    textSize: m,
+  ),
+  small: (
+    columnGap: 3xs,
+    dimension: lib.rem(24px),
+    loaderSize: lib.rem(16px),
+    minWidth: lib.rem(80px),
+    padding: xs,
+    iconSpacing: 2xs,
+    radius: 2xl,
+    textSize: s,
+  )
+);
+
+/// Set background and fill colors of loader
+///
+/// @param {Color} $background - Value of background color
+/// @param {Color} $fill - Value of fill color
+///
+/// @access private
+@mixin _loaderColors ($background, $fill) {
+  border: $_borderWidth solid $background;
+  border-top-color: $fill;
+}
+
+/// Set properties for filled button types: primary and brand button.
+///
+/// @param {String} $gradient - Gradient color used for background
+/// @param {String} $elevationColor - Name of color + opacity for elevation, i.e. `brand40`
+///
+/// @access private
+@mixin _filled ($gradient, $elevationColor) {
+  background-image: $gradient;
+  background-position: 100% 0;
+  background-size: 200%;
+  color: foundations.color(neutralLight);
+
+  &:hover {
+    background-position: 0 100%;
+  }
+
+  &:disabled,
+  &[disabled] {
+    background: foundations.color(neutral85);
+  }
+
+  &.button--shadow {
+    @include foundations.elevation(m, $elevationColor);
+
+    &:hover,
+    &:focus,
+    &:active {
+      @include foundations.elevation(s, $elevationColor);
+    }
+
+    &:disabled,
+    &[disabled] {
+      box-shadow: none;
+    }
+  }
+
+  &.button--loading:after {
+    @include _loaderColors(rgba(foundations.color(neutralLight), 0.15), foundations.color(neutralLight));
+  }
+
+  &.button--alt {
+    background: foundations.color(neutralLight);
+    color: foundations.color(neutralBase);
+
+    &:hover {
+      color: foundations.color(actionBase);
+    }
+
+    &:disabled,
+    &[disabled] {
+      background: rgba(foundations.color(neutralLight), 0.4);
+      color: rgba(foundations.color(neutralLight), 0.75);
+    }
+
+    &.button--shadow {
+      box-shadow: none;
+    }
+
+    &.button--loading:after {
+      @include _loaderColors(foundations.color(actionLight), foundations.color(actionBase));
+    }
+  }
+}
+
+/// Set properties for outlined button types: secondary and tertiary button.
+///
+/// @param {Color} $borderColor - Name of the color used as border
+///
+/// @access private
+@mixin _outlined ($borderColor) {
+  border: $_borderWidth solid $borderColor;
+  color: foundations.color(actionBase);
+
+  &:hover {
+    @include foundations.elevation(s, action15);
+    border-color: foundations.color(actionBase);
+  }
+
+  &:disabled,
+  &[disabled] {
+    border-color: foundations.color(neutral85);
+    box-shadow: none;
+  }
+
+  &.button--loading:after {
+    @include _loaderColors(foundations.color(actionLight), foundations.color(actionBase));
+  }
+
+  &.button--alt {
+    border-color: foundations.color(neutralLight);
+    color: foundations.color(neutralLight);
+
+    &:hover {
+      background-color: rgba(foundations.color(neutralLight), 0.15);
+      box-shadow: none;
+    }
+
+    &:disabled,
+    &[disabled] {
+      background-color: transparent;
+      border-color: rgba(foundations.color(neutralLight), 0.4);
+      color: rgba(foundations.color(neutralLight), 0.4);
+    }
+
+    &.button--loading:after {
+      @include _loaderColors(rgba(foundations.color(neutralLight), 0.15), foundations.color(neutralLight));
+    }
+  }
+}
+
+/// Set general properties for button component
+///
+/// @access private
+.button {
+  cursor: pointer;
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: center;
+  place-items: center;
+  position: relative;
+  transition: all $_transitionTiming;
+  user-select: none;
+  will-change: transform;
+
+  &:focus {
+    outline: rgba(foundations.color(actionBase), 0.2) solid lib.rem(3px);
+    outline-offset: $_borderWidth;
+
+    &.button--alt {
+      outline-color: rgba(foundations.color(neutralLight), 0.2);
+    }
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:disabled,
+  &[disabled] {
+    color: foundations.color(neutral50);
+    cursor: not-allowed;
+  }
+}
+
+/// Generate classes for sizing and set related properties
+///
+/// @access private
+@each $size, $properties in $_sizes {
+  .button--#{$size} {
+    $dimension: lib.get($properties, dimension);
+    $padding: lib.get($properties, padding);
+    $iconSpacing: foundations.spacing(lib.get($properties, iconSpacing));
+
+    @include foundations.columnGap(lib.get($properties, columnGap));
+    @include foundations.text(lib.get($properties, textSize), bold);
+    height: $dimension;
+
+    &:not(.button--ghost) {
+      @include foundations.radius(lib.get($properties, radius));
+      min-width: lib.get($properties, minWidth);
+      padding: 0 foundations.spacing($padding);
+    }
+
+    &.button--trailing-icon {
+      padding-right: $iconSpacing;
+    }
+
+    &.button--leading-icon {
+      padding-left: $iconSpacing;
+    }
+
+    &.button--only-icon {
+      min-width: initial;
+      padding: 0;
+      width: $dimension;
+    }
+
+    &.button--loading:after {
+      height: lib.get($properties, loaderSize);
+      width: lib.get($properties, loaderSize);
+    }
+  }
+}
+
+/// Sequence of classes that defines variants of button component:
+/// primary, brand, secondary, tertiary and ghost.
+///
+/// @access private
+.button--primary {
+  @include _filled(linear-gradient(45deg, foundations.color(actionBase) 50%, $_colorActionEndGradient), action40); }
+
+.button--brand {
+  @include _filled(linear-gradient(45deg, foundations.color(brandDark) 50%, foundations.color(brandBase)), brand40); }
+
+.button--secondary {
+  @include _outlined(foundations.color(actionBase));
+}
+
+.button--tertiary {
+  @include _outlined(foundations.color(neutral85));
+}
+
+.button--ghost {
+  border-bottom: $_borderWidth solid transparent;
+  color: foundations.color(actionBase);
+  padding-top: foundations.spacing(4xs);
+
+  &:hover:not(:disabled, [disabled]) {
+    border-bottom-color: foundations.color(actionBase);
+  }
+
+  &:focus {
+    border-radius: lib.rem(1px);
+  }
+
+  &.button--alt {
+    color: foundations.color(neutralLight);
+
+    &:hover:not(:disabled, [disabled]) {
+      border-bottom-color: foundations.color(neutralLight);
+    }
+
+    &:disabled,
+    &[disabled] {
+      color: rgba(foundations.color(neutralLight), 0.4);
+    }
+  }
+}
+
+/// Reset the min-width of button
+///
+/// @access private
+.button.button--content–width {
+  min-width: initial;
+}
+
+/// Define properties for loading mode
+///
+/// @access private
+.button--loading,
+.button--loading.button--alt {
+  color: transparent;
+  pointer-events: none;
+  position: relative;
+
+  &:after {
+    animation: loading 1s infinite linear, loadingEntry $_transitionTiming;
+    border-radius: 50%;
+    content: "";
+    left: 50%;
+    position: absolute;
+    top: 50%;
+  }
+
+  @keyframes loading {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @keyframes loadingEntry {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+
