@@ -1,4 +1,4 @@
-@use "stories/pyxis";
+@use "src/stories/pyxis";
 
 .wrapper {
   @include pyxis.verticalSpacing(xl);

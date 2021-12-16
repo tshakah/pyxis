@@ -32,3 +32,15 @@ sassdoc
 
 ## Visual Regression tests
 __diff_output__
+
+# Distribution
+build/
+
+# elm-package generated files
+elm-stuff
+
+# elm-repl generated files
+repl-temp-*
+
+# Cache dirs
+.cache

@@ -1,0 +1,33 @@
+@use "../foundations";
+@use "../lib";
+
+$_size: (
+  s: 16px,
+  m: 20px,
+  l: 24px
+);
+
+.icon {
+  display: block;
+}
+
+@each $sizeName, $sizeValue in $_size {
+  .icon--size-#{$sizeName} {
+    height: lib.rem($sizeValue);
+    width: lib.rem($sizeValue);
+  }
+}
+
+.icon--boxed {
+  @include foundations.padding(xs);
+  @include foundations.radius(m);
+  background-color: foundations.color(brandLight);
+  box-sizing: content-box;
+  color: foundations.color(brandBase);
+  display: flex;
+  place-items: center;
+
+  &.icon--alt {
+    background-color: foundations.color(neutralLight);
+  }
+}
