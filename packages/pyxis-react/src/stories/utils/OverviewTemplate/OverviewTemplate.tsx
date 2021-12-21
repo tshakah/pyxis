@@ -1,5 +1,6 @@
-import React, { FC, ReactNode } from 'react';
+import React, {FC, ReactNode} from 'react';
 import styles from './OverviewTemplate.module.scss';
+import {pascalToKebab} from "utils";
 
 const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
   {
@@ -13,12 +14,12 @@ const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
   <>
     <div className={styles.header}>
       {category && isMain && <div className={styles.category}>{category}</div>}
-      <h2 className={isMain ? styles.mainTitle : styles.title}>{title}</h2>
+      <h2 className={isMain ? styles.mainTitle : styles.title} id={pascalToKebab(title)}>{title}</h2>
     </div>
 
-    <div className={styles.description}>
+    {description && <div className={styles.description}>
       {description}
-    </div>
+    </div>}
 
     {children}
   </>
@@ -27,7 +28,7 @@ const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
 export default OverviewTemplate;
 
 interface AllStoriesOverviewGeneratorProps {
-  description: ReactNode,
+  description?: ReactNode,
   title: string,
   category?: string,
   isMain?: boolean,

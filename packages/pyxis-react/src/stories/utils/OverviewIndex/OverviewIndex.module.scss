@@ -1,0 +1,21 @@
+@use "src/stories/pyxis";
+
+.wrapper {
+  @include pyxis.verticalSpacing(m);
+  list-style-type: none;
+  margin-top: 0;
+  padding-left: pyxis.spacing(m);
+}
+
+.item {
+  @include pyxis.verticalSpacing(3xs);
+}
+
+.link {
+  color: pyxis.color(actionBase);
+
+  &:hover {
+    color: pyxis.color(actionDark);
+    text-decoration: underline;
+  }
+}

@@ -1,22 +1,9 @@
-import React, { FC, useState } from 'react';
+import React, {FC} from 'react';
 import styles from './CopyableCode.module.scss';
+import useCopy from "stories/hooks/useCopy";
 
 const CopyableCode: FC<CopyableCodeProps> = ({ text }) => {
-  const [isCopied, setIsCopied] = useState(false);
-
-  const copyTextToClipboard = async () => {
-    await navigator.clipboard.writeText(text);
-  };
-
-  const handleCopyClick = () => {
-    copyTextToClipboard()
-      .then(() => {
-        setIsCopied(true);
-        setTimeout(() => {
-          setIsCopied(false);
-        }, 1500);
-      });
-  };
+  const [isCopied, handleCopyClick] = useCopy(text);
 
   return (
     <>

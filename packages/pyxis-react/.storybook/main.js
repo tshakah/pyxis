@@ -10,9 +10,14 @@ const stories =
 module.exports = {
   stories,
   addons: [
+    {
+        name: "@storybook/addon-essentials",
+        options: {
+            actions: false,
+        }
+    },
     "@storybook/addon-a11y",
     "@storybook/addon-links",
-    "@storybook/addon-essentials",
     "@storybook/preset-create-react-app",
   ],
 };

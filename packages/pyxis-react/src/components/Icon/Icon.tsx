@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 
-const getClasses = (size: string, className: string, isBoxed?: boolean, alt?:boolean): string => classNames(
+const getClasses = (size: string, className: string, isBoxed: boolean, alt:boolean): string => classNames(
   'icon',
   `icon--size-${size}`,
   className,

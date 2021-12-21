@@ -1,0 +1,51 @@
+@use 'src/stories/pyxis';
+
+.wrapper {
+  @include pyxis.verticalSpacing(xl);
+  @include pyxis.rowGap(xs);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minMax(pyxis.rem(250px), 1fr));
+  margin-top: pyxis.spacing(m);
+}
+
+.item {
+  @include pyxis.horizontalPadding(s);
+  @include pyxis.radius(xs);
+  @include pyxis.rowGap(xs);
+  @include pyxis.text(s, book);
+  @include pyxis.verticalPadding(m);
+  align-items: center;
+  background-color: transparent;
+  display: grid;
+  justify-items: center;
+  position: relative;
+  transition: background-color 0.1s ease;
+
+  &:after {
+    color: pyxis.color(neutral50);
+    content: "Copy";
+    opacity: 0;
+    position: absolute;
+    right: pyxis.rem(10px);
+    top: pyxis.rem(5px);
+    transition: opacity 0.1s ease;
+  }
+
+  &:hover {
+    background-color: pyxis.color(neutral95);
+    cursor: pointer;
+
+    &:after {
+      opacity: 1;
+    }
+  }
+
+  &.copied:after {
+    content: "Copied!";
+  }
+}
+
+.inputWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
