@@ -1,0 +1,21 @@
+{
+  "name": "pyxis-elm",
+  "version": "1.0.0",
+  "private": false,
+  "license": "ISC",
+  "description": "",
+  "author": "Alessio Santangelo <alessio.santangelo@prima.it>",
+  "homepage": "https://github.com/primait/pyxis-react#readme",
+  "main": "lib/pyxis-elm.js",
+  "scripts": {
+    "test": "./node_modules/.bin/elm-test",
+    "review": "./node_modules/.bin/elm-review src",
+    "review:fix": "./node_modules/.bin/elm-review src --fix"
+  },
+  "dependencies": {
+    "elm": "^0.19.1-5",
+    "elm-format": "^0.8.5",
+    "elm-review": "^2.7.0",
+    "elm-test": "^0.19.1-revision7"
+  }
+}

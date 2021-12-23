@@ -16,7 +16,7 @@ steps:
     PLUGIN_DEPTH: 5
 
 - name: cache-restore
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-restore
@@ -27,13 +27,11 @@ steps:
     path: /etc/profile.d/ecs-credentials-endpoint
   - name: docker
     path: /var/run/docker.sock
-  - name: docker-conf
-    path: /root/.docker
   depends_on:
   - git-clone
 
 - name: check-secrets
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - check-secrets-grants
@@ -44,27 +42,25 @@ steps:
   - git-clone
 
 - name: check-public-docker-images
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - check-public-docker-images
   depends_on:
   - git-clone
 
 - name: build-image
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - sed -i 's/USER node/USER root/g' ./Dockerfile
-  - docker build -t prima/pyxis-react-ci:${DRONE_COMMIT} ./
+  - docker build -t prima/pyxis-ci:${DRONE_COMMIT} ./
   volumes:
   - name: docker
     path: /var/run/docker.sock
-  - name: docker-conf
-    path: /root/.docker
   depends_on:
   - cache-restore
 
 - name: dependencies
-  image: prima/pyxis-react-ci:${DRONE_COMMIT}
+  image: prima/pyxis-ci:${DRONE_COMMIT}
   commands:
   - yarn
   environment:
@@ -73,7 +69,7 @@ steps:
   - build-image
 
 - name: lint
-  image: prima/pyxis-react-ci:${DRONE_COMMIT}
+  image: prima/pyxis-ci:${DRONE_COMMIT}
   commands:
   - yarn lint
   environment:
@@ -81,17 +77,36 @@ steps:
   depends_on:
   - dependencies
 
+- name: review
+  image: prima/pyxis-ci:${DRONE_COMMIT}
+  commands:
+  - yarn review:elm
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - dependencies
+
+- name: test
+  image: prima/pyxis-ci:${DRONE_COMMIT}
+  commands:
+  - yarn test
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - lint
+  - review
+
 - name: build
-  image: prima/pyxis-react-ci:${DRONE_COMMIT}
+  image: prima/pyxis-ci:${DRONE_COMMIT}
   commands:
   - yarn build
   environment:
     YARN_CACHE_FOLDER: /drone/src/.cache/yarn
   depends_on:
-  - lint
+  - test
 
 - name: storybook
-  image: prima/pyxis-react-ci:${DRONE_COMMIT}
+  image: prima/pyxis-ci:${DRONE_COMMIT}
   commands:
   - yarn storybook:build
   environment:
@@ -100,7 +115,7 @@ steps:
   - build
 
 - name: sassdocs
-  image: prima/pyxis-react-ci:${DRONE_COMMIT}
+  image: prima/pyxis-ci:${DRONE_COMMIT}
   commands:
   - yarn sassdocs:build
   environment:
@@ -109,7 +124,7 @@ steps:
   - build
 
 - name: cache-save
-  image: public.ecr.aws/prima/drone-tools:1.21.0
+  image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-save .cache node_modules
@@ -120,14 +135,14 @@ steps:
     path: /etc/profile.d/ecs-credentials-endpoint
   - name: docker
     path: /var/run/docker.sock
-  - name: docker-conf
-    path: /root/.docker
   when:
     branch:
     - master
   depends_on:
   - dependencies
   - lint
+  - review
+  - test
   - build
   - storybook
   - sassdocs
@@ -139,13 +154,151 @@ volumes:
 - name: ecs
   host:
     path: /etc/profile.d/ecs-credentials-endpoint
-- name: docker-conf
-  host:
-    path: /home/ec2-user/.docker
 
 trigger:
   event:
   - push
+
+---
+kind: pipeline
+name: build-staging
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: git-clone
+  image: public.ecr.aws/prima/drone-git:1.3-3
+  environment:
+    PLUGIN_DEPTH: 5
+
+- name: cache-restore
+  image: public.ecr.aws/prima/drone-tools:1.21.3
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - cache-restore
+  environment:
+    BUCKET_NAME: prima-ci-cache
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  - name: docker
+    path: /var/run/docker.sock
+  depends_on:
+  - git-clone
+
+- name: build-image
+  image: public.ecr.aws/prima/drone-tools:1.21.3
+  commands:
+  - sed -i 's/USER node/USER root/g' ./Dockerfile
+  - docker build -t prima/pyxis-ci:${DRONE_COMMIT} ./
+  volumes:
+  - name: docker
+    path: /var/run/docker.sock
+  depends_on:
+  - cache-restore
+
+- name: build-staging
+  image: prima/pyxis-ci:${DRONE_COMMIT}
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - ./deploy/build staging
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  depends_on:
+  - build-image
+
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
+- name: ecs
+  host:
+    path: /etc/profile.d/ecs-credentials-endpoint
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+  status:
+  - success
+
+depends_on:
+- default
+
+---
+kind: pipeline
+name: deploy-it-staging
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: git-clone
+  image: public.ecr.aws/prima/drone-git:1.3-3
+  environment:
+    PLUGIN_DEPTH: 5
+
+- name: pre-start
+  image: public.ecr.aws/prima/drone-tools:1.21.3
+  commands:
+  - pre-start-scripts
+  depends_on:
+  - git-clone
+
+- name: deploy
+  image: public.ecr.aws/prima/drone-tools:1.21.3
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - ./deploy/deploy-it staging
+  environment:
+    CLOUDFLARE_TOKEN:
+      from_secret: cloudflare_token
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  depends_on:
+  - pre-start
+
+- name: captainhook-notification
+  image: public.ecr.aws/prima/drone-webhook
+  settings:
+    signature-secret:
+      from_secret: captainhook_secret
+    urls: http://captainhook-internal.prima.it/drone/deploy?rollback=${ROLLBACK}
+  depends_on:
+  - deploy
+
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
+- name: ecs
+  host:
+    path: /etc/profile.d/ecs-credentials-endpoint
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+  status:
+  - success
+
+depends_on:
+- build-staging
 
 ---
 kind: pipeline
@@ -181,9 +334,11 @@ trigger:
 
 depends_on:
 - default
+- build-staging
+- deploy-it-staging
 
 ---
 kind: signature
-hmac: 711ffc2c4978b9d06b1162a2c7777f88a9d477a63d7e2682d3a012c53c73208f
+hmac: 9d05a8107d6ad8b75d94ab5f9b9975e842a3a0bc09d2e726d85adc11e3f83a69
 
 ...

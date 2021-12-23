@@ -16,8 +16,11 @@
     "install": "lerna bootstrap",
     "lint": "lerna run lint --stream",
     "lint:fix": "lerna run lint:fix --stream",
+    "review:elm": "lerna run review --scope=pyxis-elm",
+    "review:elm:fix": "lerna run review:fix --scope=pyxis-elm",
     "sassdocs:build": "lerna run sassdocs:build --stream",
     "storybook:build": "lerna run storybook:build --stream",
-    "storybook:serve": "lerna run storybook:serve --stream"
+    "storybook:serve": "lerna run storybook:serve --stream",
+    "test": "lerna run test --scope=pyxis-elm"
   }
 }

@@ -8,6 +8,7 @@ coverage
 
 # production
 build
+!deploy/build
 dist
 
 # misc
@@ -24,7 +25,7 @@ yarn-error.log*
 # IDE
 .idea
 
-## Storybook 
+## Storybook
 storybook-static
 
 ## Sassdoc
