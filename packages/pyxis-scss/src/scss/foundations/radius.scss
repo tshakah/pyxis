@@ -5,20 +5,7 @@
 
 @use "../lib";
 @use "breakpoints";
-
-/// Border radius map
-///
-/// @type Map
-/// @access private
-$_radius: (
-  2xl: 32px,
-  xl: 24px,
-  l: 20px,
-  m: 16px,
-  s: 12px,
-  xs: 8px,
-  2xs: 4px,
-);
+@use "../tokens/radius" as *;
 
 /// Border radius map.  
 /// <em style="font-size:small;">This variable is private.</em>
@@ -52,14 +39,14 @@ $_edges: (all, top, right, bottom, left);
 /// @type List
 $_edgesList: ();
 
-/// Returns the radius value from map $_radius
+/// Returns the radius value from map $radius
 ///
 /// @param {String} $size - Size of radius
 /// @return {String} Representation of radius size
 /// @throw {Error}
 /// @access private
 @function _radius($size) {
-  @return lib.rem(lib.get($_radius, $size));
+  @return lib.rem(lib.get($radius, $size));
 }
 
 /// Includes border-radius by size and edge.
@@ -98,12 +85,12 @@ $_edgesList: ();
   }
 }
 
-/// Create atom classes for all radius in $_radius map
+/// Create atom classes for all radius in $radius map
 ///
 /// @alias createAtoms
 /// @access public
 @mixin createAtoms() {
-  @each $size, $_ in $_radius {
+  @each $size, $_ in $radius {
     .radius-#{$size} {
       @include radius($size);
     }

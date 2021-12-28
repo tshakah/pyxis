@@ -7,7 +7,6 @@
 @use "../foundations";
 
 $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
-$_colorActionEndGradient: #07a5b5;
 $_borderWidth: lib.rem(2px);
 
 /// Sizes of Pyxis' buttons.
@@ -258,10 +257,13 @@ $_sizes: (
 ///
 /// @access private
 .button--primary {
-  @include _filled(linear-gradient(45deg, foundations.color(actionBase) 50%, $_colorActionEndGradient), action40); }
+  $_endGradient: lighten( adjust-hue(foundations.color(actionDark), -4deg ), 16 );
+  @include _filled(linear-gradient(45deg, foundations.color(actionBase) 50%, $_endGradient), action40);
+}
 
 .button--brand {
-  @include _filled(linear-gradient(45deg, foundations.color(brandDark) 50%, foundations.color(brandBase)), brand40); }
+  @include _filled(linear-gradient(45deg, foundations.color(brandDark) 50%, foundations.color(brandBase)), brand40);
+}
 
 .button--secondary {
   @include _outlined(foundations.color(actionBase));

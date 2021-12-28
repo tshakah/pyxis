@@ -1,37 +1,5 @@
 @use "src/stories/pyxis";
 
-:export {
-  colorMap: {
-    actionBase: pyxis.color(actionBase);
-    actionDark: pyxis.color(actionDark);
-    actionLight: pyxis.color(actionLight);
-    alertBase: pyxis.color(alertBase);
-    alertDark: pyxis.color(alertDark);
-    alertLight: pyxis.color(alertLight);
-    brandBase: pyxis.color(brandBase);
-    brandDark: pyxis.color(brandDark);
-    brandLight: pyxis.color(brandLight);
-    errorBase: pyxis.color(errorBase);
-    errorDark: pyxis.color(errorDark);
-    errorLight: pyxis.color(errorLight);
-    neutral25: pyxis.color(neutral25);
-    neutral50: pyxis.color(neutral50);
-    neutral75: pyxis.color(neutral75);
-    neutral85: pyxis.color(neutral85);
-    neutral95: pyxis.color(neutral95);
-    neutralLight: pyxis.color(neutralLight);
-    neutralBase: pyxis.color(neutralBase);
-    successBase: pyxis.color(successBase);
-    successDark: pyxis.color(successDark);
-    successLight: pyxis.color(successLight);
-  };
-  gradientMap: {
-    action: pyxis.gradient(action);
-    brand: pyxis.gradient(brand);
-    neutral: pyxis.gradient(neutral);
-  }
-}
-
 .item {
   @include pyxis.radius(xs);
   height: pyxis.rem(25px);

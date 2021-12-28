@@ -3,8 +3,8 @@ import OverviewTemplate from 'stories/utils/OverviewTemplate';
 import Table, {TableRow} from 'stories/utils/Table';
 import shortid from 'shortid';
 import CopyableCode from 'stories/utils/CopyableCode';
-import {spacing, SpacingRow} from './common';
-import Spacing from './Spacing';
+import {spacings, SpacingRow} from './common';
+import { Spacing } from './Spacing';
 
 const spacingDescription = (
   <>
@@ -32,8 +32,8 @@ const usageDescription = (
 const generateRow = ({ size, baseValue, maxValue }: SpacingRow): TableRow => [
   <Spacing size={size} key={size + baseValue} />,
   <CopyableCode text={size} key={size} />,
-  <code key={baseValue}>{baseValue}</code>,
-  <code key={maxValue}>{maxValue}</code>,
+  <code key={baseValue}>{`${baseValue}px`}</code>,
+  <code key={maxValue}>{`${maxValue}px`}</code>,
 ];
 
 const tableUsageBody: TableRow[] = [
@@ -79,7 +79,7 @@ const Overview: FC = () => (
     <OverviewTemplate title="Spacing" description={spacingDescription} category="Foundation" isMain>
       <Table
         head={['Sample', 'Size', 'Base Value', 'Max Value']}
-        body={spacing.map(generateRow)}
+        body={spacings.map(generateRow)}
         gridTemplateColumns="120px"
       />
     </OverviewTemplate>

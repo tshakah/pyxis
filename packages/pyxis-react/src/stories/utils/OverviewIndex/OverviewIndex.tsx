@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import {pascalToKebab} from "utils";
+import {pascalToKebab} from 'commons/utils/string';
 import styles from './OverviewIndex.module.scss';
 
 const OverviewIndex: FC<OverviewIndexProps> = ({titles}) =>

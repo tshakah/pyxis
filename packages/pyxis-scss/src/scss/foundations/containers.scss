@@ -4,21 +4,15 @@
 ////
 
 @use "../lib";
+@use "../tokens/containers" as *;
 @use "breakpoints";
-
-/// The variables of containers
-///
-/// @type Number
-/// @access private
-$_containerMedium: lib.rem(960px);
-$_containerLarge: lib.rem(1140px);
-$_containerXLarge: lib.rem(1370px);
+@use "sass:map";
 
 /// The gutter of container
 ///
 /// @type Number
 /// @access private
-$_gutter: lib.rem(20px);
+$_gutter: lib.rem(lib.get($containers, gutter));
 
 /// Fluid dimension for small sizes
 ///
@@ -26,19 +20,22 @@ $_gutter: lib.rem(20px);
 /// @access private
 $_fluidWidth: calc(100vw - (#{$_gutter} * 2));
 
-/// The breakpoints of Pyxis
+/// The fluid containers of Pyxis
 ///
 /// @type Map
 /// @access private
-$_containers: (
+$_fluidContainers: (
   base: $_fluidWidth,
   xxsmall: $_fluidWidth,
   xsmall: $_fluidWidth,
-  small: $_fluidWidth,
-  medium: $_containerMedium,
-  large: $_containerLarge,
-  xlarge: $_containerXLarge,
+  small: $_fluidWidth
 );
+
+/// The containers of Pyxis
+///
+/// @type Map
+/// @access private
+$_containers: map.merge($_fluidContainers, lib.get($containers, size));
 
 /// Returns the $breakpoint value from map $_containers
 ///

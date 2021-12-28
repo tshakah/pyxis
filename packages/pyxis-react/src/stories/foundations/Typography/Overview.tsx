@@ -43,8 +43,8 @@ const usageDescription = (
 
 const generateBody = ({ sizes, weights, type }: TypographyRow): TableRow[] => (
   sizes.flatMap(
-    (size) => weights.map(
-      (weight) => [
+    size => weights.map(
+      weight => [
         <Typography size={size} weight={weight} type={type} key={size + weight} />,
         <CopyableCode text={size} key={size} />,
         <CopyableCode text={weight} key={weight} />,

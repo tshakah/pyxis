@@ -1,0 +1,8 @@
+{
+  "size": {
+    "medium": 960,
+    "large": 1140,
+    "xlarge": 1370
+  },
+  "gutter": 20
+}

@@ -1,0 +1,9 @@
+{
+  "base": 1,
+  "xxsmall": 375,
+  "xsmall": 576,
+  "small": 768,
+  "medium": 992,
+  "large": 1200,
+  "xlarge": 1680
+}

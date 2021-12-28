@@ -20,7 +20,7 @@ module.exports = {
       storySort: sortStories(
         [
           ['Introduction', 'Foundations', 'Components'], // 1. level
-          ['...'], // 2. level
+          ['Color', 'Typography', 'Spacing', 'Radius', 'Elevation', '...'], // 2. level
           ['Overview', '...', 'All Stories'] // 3. level
         ]
       ),

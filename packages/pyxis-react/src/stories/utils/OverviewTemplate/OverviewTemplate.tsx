@@ -1,6 +1,6 @@
 import React, {FC, ReactNode} from 'react';
 import styles from './OverviewTemplate.module.scss';
-import {pascalToKebab} from "utils";
+import {pascalToKebab} from 'commons/utils/string';
 
 const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
   {

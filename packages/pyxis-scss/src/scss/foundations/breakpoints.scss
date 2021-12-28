@@ -5,28 +5,7 @@
 ////
 
 @use "../lib";
-
-$_breakpointBase: 1px;
-$_breakpointXxsmall: 375px;
-$_breakpointXsmall: 576px;
-$_breakpointSmall: 768px;
-$_breakpointMedium: 992px;
-$_breakpointLarge: 1200px;
-$_breakpointXlarge: 1680px;
-
-/// The breakpoints of Pyxis
-///
-/// @type Map
-/// @access private
-$_breakpoints: (
-  base: $_breakpointBase,
-  xxsmall: $_breakpointXxsmall,
-  xsmall: $_breakpointXsmall,
-  small: $_breakpointSmall,
-  medium: $_breakpointMedium,
-  large: $_breakpointLarge,
-  xlarge: $_breakpointXlarge,
-);
+@use "../tokens/breakpoints" as *;
 
 /// The breakpoints of Pyxis.  
 /// <em style="font-size:small;">This variable is private, please use functions below to
@@ -49,7 +28,7 @@ $_breakpointMap: ();
 /// @access private
 $_boundDiff: 1px;
 
-/// Returns the `$breakpoint` value from `$_breakpointMap`
+/// Returns the `$breakpoint` value from token map `$breakpoints`
 /// based on the key in input.
 ///
 /// @param {String} $breakpoint - Name of breakpoint
@@ -61,16 +40,7 @@ $_boundDiff: 1px;
 ///
 /// @access public
 @function breakpoint($breakpoint) {
-  @return lib.get($_breakpoints, $breakpoint);
-}
-
-/// Returns the entire `$_breakpointMap`.
-///
-/// @return {Map} The breakpoint map
-///
-/// @access public
-@function breakpoints() {
-  @return $_breakpoints;
+  @return lib.get($breakpoints, $breakpoint);
 }
 
 /// Check if the breakpoint is `base`.
@@ -79,7 +49,7 @@ $_boundDiff: 1px;
 /// @return {Boolean}
 ///
 /// @example scss - Check if a breakpoint is base
-///   @each $breakpointName, $_ in $_breakpointMap {
+///   @each $breakpointName, $_ in $breakpoints {
 ///     @debug($breakpointName, isBase($breakpointName))
 ///   }
 ///   //  base, true

@@ -11,7 +11,9 @@
     "build": "webpack build --config webpack.prod.js",
     "lint": "stylelint \"src/scss/**/*.scss\"",
     "lint:fix": "stylelint \"src/scss/**/*.scss\" --fix",
+    "lint:fix-token": "stylelint \"src/scss/tokens/*.scss\" --fix",
     "sassdocs:build": "sassdoc src --config sassdoc.config.json",
+    "prettify:token": "prettier --write \"src/scss/tokens/*.scss\"",
     "serve": "webpack serve --config webpack.common.js"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "postcss-loader": "^6.1.1",
     "postcss-preset-env": "^6.7.0",
     "postcss-sort-media-queries": "^4.1.0",
+    "prettier": "^2.5.1",
     "sass": "^1.42.1",
     "sass-loader": "^12.1.0",
     "sassdoc": "^2.7.3",

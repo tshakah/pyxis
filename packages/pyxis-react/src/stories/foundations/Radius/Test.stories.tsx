@@ -15,6 +15,6 @@ export const Test: FC = () => (
   <Table
     head={['Sample', 'Key']}
     body={radius.map(generateRow)}
-    gridTemplateColumns="80px"
+    gridTemplateColumns="100px"
   />
 );

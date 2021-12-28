@@ -2,10 +2,10 @@ import React, {FC} from 'react';
 import OverviewTemplate from 'stories/utils/OverviewTemplate';
 import Table, {TableRow} from 'stories/utils/Table';
 import shortid from 'shortid';
-import {pascalToKebab} from 'utils';
+import {pascalToKebab} from 'commons/utils/string';
 import CopyableCode from 'stories/utils/CopyableCode';
-import {ColorRow, colors} from './common';
-import Color from './Color';
+import {ColorRow, gradients, colors} from './common';
+import { Color } from './Color';
 
 const colorDescription = (
   <>
@@ -66,14 +66,14 @@ const Overview: FC = () => (
     <OverviewTemplate title="Colors" description={colorDescription} category="Foundation" isMain>
       <Table
         head={['Sample', 'Key', 'Value']}
-        body={colors.filter(({ type }) => type === 'solid').map(generateRow)}
+        body={colors.map(generateRow)}
         gridTemplateColumns="100px"
       />
     </OverviewTemplate>
     <OverviewTemplate title="Gradients" description={gradientDescription}>
       <Table
         head={['Sample', 'Key', 'Value']}
-        body={colors.filter(({ type }) => type === 'gradient').map(generateRow)}
+        body={gradients.map(generateRow)}
         gridTemplateColumns="100px"
       />
     </OverviewTemplate>

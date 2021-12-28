@@ -3,7 +3,7 @@ import './Button.scss'
 
 // TODO: replace with the component story
 const Buttons: FC = () => (
-  <div className="bg-neutral-base">
+  <div>
     <div className="wrapper">
       <button className="button button--light button--huge button--primary">Huge</button>
       <button className="button button--light button--large button--primary">Large</button>

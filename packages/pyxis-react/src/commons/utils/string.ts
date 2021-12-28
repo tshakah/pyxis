@@ -23,10 +23,3 @@ export const kebabToStartCase = (str: string): string => str
   .split('-')
   .map((s) => capitalize(s))
   .join(' ');
-
-export function repeat<T>(element: T, times: number): T[] {
-  const array = (new Array(times));
-  array.fill(element);
-
-  return array;
-}

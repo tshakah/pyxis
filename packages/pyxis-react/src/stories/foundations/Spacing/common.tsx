@@ -1,61 +1,19 @@
-import Spacing, { Size } from './Spacing';
+import { Spacing as SpacingShape } from './Spacing';
+import spacingTokens from '@pyxis/tokens/json/spacings.json';
 
-export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Spacing> = () => ({
+export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof SpacingShape> = () => ({
   title: 'Test/Spacing',
-  component: Spacing,
+  component: SpacingShape,
 });
 
-export interface SpacingRow {
-  size: Size;
-  baseValue: string;
-  maxValue: string;
-}
+export const spacings:SpacingRow[] = Object.entries(spacingTokens).flatMap(([size, values]) => ({
+  size: size as Spacing,
+  baseValue: values.base,
+  maxValue: Math.max(...Object.values(values))
+}));
 
-// TODO: to be replaced with design tokens
-export const spacing:SpacingRow[] = [
-  {
-    size: 'xxxl',
-    baseValue: '50px',
-    maxValue: '120px',
-  },
-  {
-    size: 'xxl',
-    baseValue: '40px',
-    maxValue: '80px',
-  },
-  {
-    size: 'xl',
-    baseValue: '35px',
-    maxValue: '60px',
-  },
-  {
-    size: 'l',
-    baseValue: '30px',
-    maxValue: '40px',
-  },
-  {
-    size: 'm',
-    baseValue: '25px',
-    maxValue: '30px',
-  },
-  {
-    size: 's',
-    baseValue: '20px',
-    maxValue: '20px',
-  },
-  {
-    size: 'xs',
-    baseValue: '15px',
-    maxValue: '15px',
-  },
-  {
-    size: 'xxs',
-    baseValue: '10px',
-    maxValue: '10px',
-  },
-  {
-    size: 'xxxs',
-    baseValue: '5px',
-    maxValue: '5px',
-  },
-];
+export interface SpacingRow {
+  size: Spacing;
+  baseValue: number;
+  maxValue: number;
+}

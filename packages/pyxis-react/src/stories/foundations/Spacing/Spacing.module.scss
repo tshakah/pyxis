@@ -1,59 +1,9 @@
 @use "src/stories/pyxis";
 
-// TODO: replace with design tokens
-$_spacings: (
-  xxxl: (
-    base: 50px,
-    medium: 60px,
-    large: 100px,
-    xlarge: 120px,
-  ),
-  xxl: (
-    base: 40px,
-    medium: 50px,
-    large: 80px,
-  ),
-  xl: (
-    base: 35px,
-    medium: 40px,
-    large: 60px,
-  ),
-  l: (
-    base: 30px,
-    medium: 35px,
-    large: 40px,
-  ),
-  m: (
-    base: 25px,
-    medium: 30px,
-  ),
-  s: (
-    base: 20px,
-  ),
-  xs: (
-    base: 15px,
-  ),
-  xxs: (
-    base: 10px,
-  ),
-  xxxs: (
-    base: 5px,
-  ),
-);
-
 .spacing {
   @include pyxis.radius(xs);
-  background: pyxis.gradient(neutral);
+  background-image: pyxis.gradient(neutral);
   height: pyxis.rem(25px);
+  padding-left: 0;
 }
 
-// TODO: refactor after the introduction of design tokens
-@each $size, $values in $_spacings {
-  .space-#{$size} {
-    @each $breakpoint, $space in pyxis.get($_spacings, $size) {
-      @include pyxis.mq($breakpoint) {
-        width: pyxis.rem($space);
-      }
-    }
-  }
-}

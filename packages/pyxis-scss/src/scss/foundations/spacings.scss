@@ -5,55 +5,8 @@
 
 @use "../lib";
 @use "breakpoints";
+@use "../tokens/spacings" as *;
 
-/// Responsive spacing map
-/// The first key is the name of size (3xl, 2xl, xl, l, m, s, xs, 2xs, 3xs, 4xs)
-/// The second key is breakpoint (base, medium, large, xlarge)
-///
-/// @type Map
-/// @access private
-$_spacings: (
-  3xl: (
-    base: 60px,
-    medium: 80px,
-    large: 100px,
-    xlarge: 120px,
-  ),
-  2xl: (
-    base: 40px,
-    medium: 60px,
-    large: 80px,
-  ),
-  xl: (
-    base: 32px,
-    medium: 40px,
-    large: 60px,
-  ),
-  l: (
-    base: 24px,
-    medium: 32px,
-    large: 40px,
-  ),
-  m: (
-    base: 20px,
-    medium: 24px,
-  ),
-  s: (
-    base: 16px,
-  ),
-  xs: (
-    base: 12px,
-  ),
-  2xs: (
-    base: 8px,
-  ),
-  3xs: (
-    base: 4px,
-  ),
-  4xs: (
-    base: 2px,
-  ),
-);
 
 /// Spacing list.  
 /// <em style="font-size:small;">This variable is private.</em>
@@ -78,7 +31,7 @@ $_spacingsList: ();
 /// @throw {Error}
 /// @access public
 @function spacing($size) {
-  @return lib.get($_spacings, $size, base);
+  @return lib.get($spacings, $size, base);
 }
 
 /// Includes the size contained in the spacings map on property in every breakpoints
@@ -91,7 +44,7 @@ $_spacingsList: ();
   @if $size == 0 {
     #{$property}: 0;
   } @else {
-    @each $breakpoint, $space in lib.get($_spacings, $size) {
+    @each $breakpoint, $space in lib.get($spacings, $size) {
       @include breakpoints.mq($breakpoint) {
         #{$property}: lib.rem($space);
       }
@@ -101,7 +54,7 @@ $_spacingsList: ();
 
 /// Includes equal padding by size in every breakpoints.
 ///
-/// @param {String} $size - A size from `$_spacingList`
+/// @param {String} $size - A size from `$spacings`
 /// 
 /// @output `padding` property.
 ///
@@ -117,7 +70,7 @@ $_spacingsList: ();
 
 /// Includes padding by size for vertical edges in every breakpoints.
 ///
-/// @param {String} $size - A size from `$_spacingList`
+/// @param {String} $size - A size from `$spacings`
 /// 
 /// @output `padding-bottom` and `padding-top` properties.
 ///
@@ -134,7 +87,7 @@ $_spacingsList: ();
 
 /// Includes padding by size for horizontal edges in every breakpoints.
 ///
-/// @param {String} $size - A size from `$_spacingList`
+/// @param {String} $size - A size from `$spacings`
 ///
 /// @output `padding-right` and `padding-left` properties.
 ///
@@ -151,7 +104,7 @@ $_spacingsList: ();
 
 /// Includes `margin-bottom` by size in every breakpoint.
 ///
-/// @param {String} $size - A size from `$_spacingList`
+/// @param {String} $size - A size from `$spacings`
 ///
 /// @output `margin-bottom` property. If the element is `last-child`
 /// the property is set to `0`, regardless of the specified size.
@@ -172,7 +125,7 @@ $_spacingsList: ();
 
 /// Includes `margin-right` by size in every breakpoints.
 ///
-/// @param {String} $size - A size from `$_spacingList`
+/// @param {String} $size - A size from `$spacings`
 ///
 /// @output `margin-right` property. If the element is `last-child`
 /// the property is set to `0`, regardless of the specified size.
@@ -195,7 +148,7 @@ $_spacingsList: ();
 /// Same as `verticalSpacing()`, but used to space out vertical elements 
 /// in case a grid is used (`display: grid;`).
 ///
-/// @param {String} $size - A size from `$_spacingList`
+/// @param {String} $size - A size from `$spacings`
 ///
 /// @output `grid-row-gap` property.
 ///
@@ -214,7 +167,7 @@ $_spacingsList: ();
 /// Like `horizontalSpacing()`, but used to space out horizontal elements 
 /// in case a grid is used (`display: grid;`).
 ///
-/// @param {String} $size - A size from `$_spacingList`
+/// @param {String} $size - A size from `$spacings`
 ///
 /// @output `grid-column-gap` property.
 ///
@@ -229,12 +182,12 @@ $_spacingsList: ();
   @include _responsiveSpacing("grid-column-gap", $size);
 }
 
-/// Create atom classes for all spacing in $_spacings map
+/// Create atom classes for all spacing in $spacings map
 ///
 /// @alias createAtoms
 /// @access public
 @mixin createAtoms() {
-  @each $size, $_ in $_spacings {
+  @each $size, $_ in $spacings {
     .padding-#{$size} {
       @include padding($size);
     }

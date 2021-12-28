@@ -4,68 +4,8 @@
 ////
 
 @use "../lib";
-
-$_colorActionBase: #067f96;
-$_colorActionDark: #045767;
-$_colorActionEndGradient: #07a5b5;
-$_colorActionLight: #e5f1f4;
-
-$_colorAlertBase: #ffdc50;
-$_colorAlertDark: #ffc010;
-$_colorAlertLight: #fff8dc;
-
-$_colorBrandBase: #8334c2;
-$_colorBrandDark: #5b2488;
-$_colorBrandLight: #f2eaf8;
-
-$_colorErrorBase: #df1654;
-$_colorErrorDark: #b21143;
-$_colorErrorLight: #fbe7ed;
-
-$_colorNeutral25: #595d6a;
-$_colorNeutral50: #90939d;
-$_colorNeutral75: #c7c9cd;
-$_colorNeutral85: #dddee1;
-$_colorNeutral95: #f3f4f4;
-$_colorNeutralLight: #ffffff;
-$_colorNeutralBase: #21283b;
-
-$_colorSuccessBase: #1d8147;
-$_colorSuccessDark: #145a31;
-$_colorSuccessLight: #e8f2ec;
-
-$_gradientAction: linear-gradient(45deg, $_colorActionBase, $_colorActionEndGradient);
-$_gradientBrand: linear-gradient(45deg, $_colorBrandDark, $_colorBrandBase);
-$_gradientNeutral: linear-gradient(45deg, $_colorNeutralBase, $_colorNeutral25);
-
-/// The color palette of Pyxis
-///
-/// @type Map
-/// @access private
-$_colors: (
-  actionBase: $_colorActionBase,
-  actionDark: $_colorActionDark,
-  actionLight: $_colorActionLight,
-  alertBase: $_colorAlertBase,
-  alertDark: $_colorAlertDark,
-  alertLight: $_colorAlertLight,
-  brandBase: $_colorBrandBase,
-  brandDark: $_colorBrandDark,
-  brandLight: $_colorBrandLight,
-  errorBase: $_colorErrorBase,
-  errorDark: $_colorErrorDark,
-  errorLight: $_colorErrorLight,
-  neutral25: $_colorNeutral25,
-  neutral50: $_colorNeutral50,
-  neutral75: $_colorNeutral75,
-  neutral85: $_colorNeutral85,
-  neutral95: $_colorNeutral95,
-  neutralBase: $_colorNeutralBase,
-  neutralLight: $_colorNeutralLight,
-  successBase: $_colorSuccessBase,
-  successDark: $_colorSuccessDark,
-  successLight: $_colorSuccessLight,
-);
+@use "../tokens/colors" as *;
+@use "../tokens/gradients" as *;
 
 /// The color palette of Pyxis.  
 /// <em style="font-size:small;">This variable is private, please use function `color()`
@@ -103,16 +43,6 @@ $_colorsMap: ();
 /// @access private
 $_textColors: (actionBase, alertBase, brandBase, errorBase, neutral25, neutralBase, neutralLight, successBase);
 
-/// The gradient palette of Pyxis
-///
-/// @type Map
-/// @access private
-$_gradients: (
-  action: $_gradientAction,
-  brand: $_gradientBrand,
-  neutral: $_gradientNeutral,
-);
-
 /// The gradient palette of Pyxis.  
 /// <em style="font-size:small;">This variable is private, please use function `gradient()`
 /// described below to retrieve a single value from the map.</em>
@@ -121,9 +51,9 @@ $_gradients: (
 /// @prop {Color} action [linear-gradient(45deg, #07a5b5, #067f96)]
 /// @prop {Color} brand [linear-gradient(45deg, #5b2488, #8334c2)]
 /// @prop {Color} neutral [linear-gradient(45deg, #21283b, #595d6a)]
-$_gradientsMap: ();
+$gradientsMap: ();
 
-/// Returns the `$color` hex from map `$_colorsMap`.
+/// Returns the `$color` hex from map `$colors`.
 ///
 /// @param {String} $color - Name of color
 /// @return {Color} Representation of named color
@@ -134,10 +64,10 @@ $_gradientsMap: ();
 ///
 /// @access public
 @function color($color) {
-  @return lib.get($_colors, $color);
+  @return lib.get($colors, $color);
 }
 
-/// Returns the `$gradient` from `$_gradientsMap`.
+/// Returns the `$gradient` from `$gradients`.
 ///
 /// @param {String} $gradient - Name of gradient
 /// @return {Gradient} Representation of named gradient
@@ -148,21 +78,21 @@ $_gradientsMap: ();
 ///
 /// @access public
 @function gradient($gradient) {
-  @return lib.get($_gradients, $gradient);
+  @return lib.get($gradients, $gradient);
 }
 
-/// Create atom classes for all colors and gradient in $_colors map and $_gradients map
+/// Create atom classes for all colors and gradient in $colors map and $gradients map
 ///
 /// @alias createAtoms
 /// @access public
 @mixin createAtoms() {
-  @each $colorName, $colorValue in $_colors {
+  @each $colorName, $colorValue in $colors {
     .bg-#{lib.camelToKebabCase($colorName)} {
       background-color: $colorValue;
     }
   }
 
-  @each $gradientName, $gradientValue in $_gradients {
+  @each $gradientName, $gradientValue in $gradients {
     .gradient-#{lib.camelToKebabCase($gradientName)} {
       background: $gradientValue;
     }

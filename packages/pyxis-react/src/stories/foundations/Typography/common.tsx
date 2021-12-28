@@ -1,26 +1,34 @@
-import Typography, { Size, Type, Weight } from './Typography';
+import Typography from './Typography';
+import textSizesTokens from '@pyxis/tokens/json/typography/text/sizes.json';
+import textWeightsTokens from '@pyxis/tokens/json/typography/text/weights.json';
+import titleSizesTokens from '@pyxis/tokens/json/typography/title/sizes.json';
+import titleWeightsTokens from '@pyxis/tokens/json/typography/title/weights.json';
 
 export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Typography> = () => ({
   title: 'Test/Typography',
   component: Typography,
 });
 
-export interface TypographyRow {
-  type: Type
-  sizes: Size[],
-  weights: Weight[];
-}
-
-// TODO: to be replaced with design tokens
 export const title: TypographyRow = {
   type: 'title',
-  sizes: ['xl', 'l', 'm', 's'],
-  weights: ['bold', 'book'],
+  sizes: Object.keys(titleSizesTokens) as TitleSize[],
+  weights: Object.keys(titleWeightsTokens) as TitleWeight[],
 };
 
-// TODO: to be replaced with design tokens
 export const text: TypographyRow = {
   type: 'text',
-  sizes: ['l', 'm', 's'],
-  weights: ['bold', 'book', 'light'],
+  sizes: Object.keys(textSizesTokens) as TextSize[],
+  weights: Object.keys(textWeightsTokens) as TextWeight[],
 };
+
+export interface TypographyRow {
+  type: TypographyType
+  sizes: TitleSize[] | TextSize[],
+  weights: TitleWeight[] | TextWeight[];
+}
+
+export type TypographyType = 'text' | 'title';
+
+export type TypographySize = TitleSize | TextSize;
+
+export type TypographyWeight = TitleWeight | TextWeight;

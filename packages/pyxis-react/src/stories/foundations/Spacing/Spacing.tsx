@@ -1,14 +1,13 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import styles from './Spacing.module.scss';
 
-const Spacing:FC<SpacingProps> = ({ size }) => (
-  <div className={`${styles.spacing} ${styles[`space-${size}`]}`} />
+export const Spacing:FC<SpacingProps> = ({ size }) => (
+  <div className={`${styles.spacing} ${styles[`padding-h-${size}`]}`} />
 );
 
-export default Spacing;
-
 export interface SpacingProps {
-  size: Size
+  size: Spacing
 }
 
-export type Size = 'xxxl' | 'xxl' | 'xl' | 'l' | 'm' | 's' | 'xs' | 'xxs' | 'xxxs';
+export default { Spacing };
+

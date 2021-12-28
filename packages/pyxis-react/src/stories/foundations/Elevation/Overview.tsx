@@ -39,9 +39,9 @@ const usageDescription = (
 const generateBody = ({ sizes, colors }: ElevationRow): TableRow[] => (
   colors.flatMap(
     (color) => sizes.map((size) => [
-      <Elevation size={size} color={color} />,
-      <CopyableCode text={color} />,
-      <CopyableCode text={size} />,
+      <Elevation size={size} color={color} key={shortid.generate()} />,
+      <CopyableCode text={color} key={shortid.generate()} />,
+      <CopyableCode text={size} key={shortid.generate()} />,
     ]),
   ));
 

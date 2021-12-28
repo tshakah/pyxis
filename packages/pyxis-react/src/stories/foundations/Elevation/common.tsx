@@ -1,19 +1,29 @@
-import Elevation, { Color, Size } from './Elevation';
+import Elevation from './Elevation';
+import elevationColorTokens from '@pyxis/tokens/json/elevation/colors.json';
+import elevationSizeTokens from '@pyxis/tokens/json/elevation/sizes.json';
 
 export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Elevation> = () => ({
   title: 'Test/Elevation',
   component: Elevation,
 });
 
+const sizes:ElevationSize[] = Object.keys(elevationSizeTokens) as ElevationSize[];
+
+const colors:ElevationColor[] = Object.keys(elevationColorTokens)
+  .sort((a, b) => {
+      if (Number(b.slice(-2)) > Number(a.slice(-2))) return 1;
+      if (Number(b.slice(-2)) < Number(a.slice(-2))) return -1;
+      if (a > b) return 1;
+      return -1;
+  }) as ElevationColor[];
+
+export const elevations: ElevationRow = {
+  sizes,
+  colors,
+};
+
 export interface ElevationRow {
-  sizes: Size[];
-  colors: Color[];
+  sizes: ElevationSize[];
+  colors: ElevationColor[];
 }
 
-// TODO: to be replaced with design tokens
-export const elevations: ElevationRow = {
-  sizes: ['s', 'm', 'l'],
-  colors: [
-    'action40', 'brand40', 'neutral40', 'action15', 'brand15', 'neutral15',
-  ],
-};

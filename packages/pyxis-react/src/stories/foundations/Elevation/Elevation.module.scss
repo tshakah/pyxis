@@ -1,11 +1,10 @@
 @use "src/stories/pyxis";
 
-// TODO: replace margin properties with spacing mixin once it's available in pyxis
 .item {
   @include pyxis.radius(m);
   height: pyxis.rem(70px);
-  margin-bottom: pyxis.rem(20px);
-  margin-top: pyxis.rem(20px);
+  margin-bottom: pyxis.spacing(m);
+  margin-top: pyxis.spacing(m);
   width: pyxis.rem(100px);
 }
 

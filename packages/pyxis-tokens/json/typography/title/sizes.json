@@ -1,0 +1,22 @@
+{
+  "xl": {
+    "base": 28,
+    "small": 32,
+    "large": 40
+  },
+  "l": {
+    "base": 24,
+    "small": 26,
+    "large": 32
+  },
+  "m": {
+    "base": 20,
+    "small": 22,
+    "large": 24
+  },
+  "s": {
+    "base": 16,
+    "small": 18,
+    "large": 20
+  }
+}

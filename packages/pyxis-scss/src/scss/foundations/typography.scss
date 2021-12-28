@@ -4,12 +4,15 @@
 /// @group TYPOGRAPHY
 ////
 
-@use "../../config.scss";
-@use "../../lib";
-@use "../breakpoints";
+@use "../config";
+@use "../lib";
+@use "../tokens/textSizes" as *;
+@use "../tokens/textWeights" as *;
+@use "../tokens/titleSizes" as *;
+@use "../tokens/titleWeights" as *;
+@use "breakpoints";
 @use "sass:math";
-@use "text";
-@use "title";
+@use "sass:map";
 
 /// The font path
 ///
@@ -132,7 +135,7 @@ $_letterSpacing: (
   }
 }
 
-/// Include the responsive title size by name available in `title.$fontSizes`.
+/// Include the responsive title size by name available in `$titleSizes`.
 ///
 /// @param {String} $size - The name of the size
 /// @param {String} $weight - The name of the weight
@@ -152,16 +155,16 @@ $_letterSpacing: (
 /// @throw Error if font-weight `$weight` in input is not allowed in titles
 /// @access public
 @mixin title($size, $weight) {
-  @include _size(title.$fontSizes, $size);
+  @include _size($titleSizes, $size);
 
-  @if index(title.$allowedFontWeights, $weight) {
+  @if map.has-key($titleWeights, $weight) {
     @include _fontWeight($weight);
   } @else {
     @error "Font-weight `#{$weight}` is not allowed in titles";
   }
 }
 
-/// Include the responsive text size by name available in `text.$fontSizes`.
+/// Include the responsive text size by name available in `$textSizes`.
 ///
 /// @param {String} $size - The name of the size:
 /// @param {String} $weight - The name of the weight
@@ -181,7 +184,7 @@ $_letterSpacing: (
 /// @access public
 @mixin text($size, $weight) {
   @include _fontWeight($weight);
-  @include _size(text.$fontSizes, $size);
+  @include _size($textSizes, $size);
 }
 
 /// Create `@font-face` for all fonts available in `$_fonts` map.
@@ -207,16 +210,16 @@ $_letterSpacing: (
 /// @alias createAtoms
 /// @access public
 @mixin createAtoms() {
-  @each $size, $_ in title.$fontSizes {
-    @each $weight in title.$allowedFontWeights {
+  @each $size, $_ in $titleSizes {
+    @each $weight, $_ in $titleWeights {
       .title-#{lib.camelToKebabCase($size)}-#{$weight} {
         @include title($size, $weight);
       }
     }
   }
 
-  @each $size, $_ in text.$fontSizes {
-    @each $weight in text.$allowedFontWeights {
+  @each $size, $_ in $textSizes {
+    @each $weight, $_ in $textWeights {
       .text-#{lib.camelToKebabCase($size)}-#{$weight} {
         @include text($size, $weight);
       }

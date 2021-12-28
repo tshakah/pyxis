@@ -5,6 +5,7 @@
 
 @use "../lib";
 @use "breakpoints";
+@use "../tokens/breakpoints" as tokens;
 
 /// Hide an element from `$fromBreakpoint` to `$untilBreakpoint` value.
 /// Outside the indicated breakpoints the element will have the assigned display value.
@@ -52,14 +53,13 @@
 /// @alias createAtoms
 /// @access public
 @mixin createAtoms() {
-  $breakpointMap: breakpoints.breakpoints();
-  @each $breakpointName, $breakpointValue in $breakpointMap {
+  @each $breakpointName, $breakpointValue in tokens.$breakpoints {
     $append: if(breakpoints.isBase($breakpointName), "", "-from-#{$breakpointName}");
     .hide#{$append} {
       @include hide($breakpointName);
     }
     @if(not breakpoints.isBase($breakpointName)) {
-      $nextBreakpoint: lib.getNextElementKey($breakpointMap, $breakpointName $breakpointValue);
+      $nextBreakpoint: lib.getNextElementKey(tokens.$breakpoints, $breakpointName $breakpointValue);
       .hide-on-#{$breakpointName} {
         @include hide($breakpointName, $nextBreakpoint);
       }

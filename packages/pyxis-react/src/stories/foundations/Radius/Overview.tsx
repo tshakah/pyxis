@@ -3,7 +3,7 @@ import OverviewTemplate from 'stories/utils/OverviewTemplate';
 import Table, {TableRow} from 'stories/utils/Table';
 import shortid from 'shortid';
 import CopyableCode from 'stories/utils/CopyableCode';
-import {EdgeRow, edges, radius, RadiusRow,} from './common';
+import {EdgeRow, edges, radius, RadiusRow} from './common';
 import Radius from './Radius';
 
 const radiusDescription = (
@@ -30,7 +30,7 @@ const usageDescription = (
 const generateRadiusRow = ({ size, value }: RadiusRow): TableRow => [
   <Radius size={size} />,
   <CopyableCode text={size} key={size} />,
-  <code key={value}>{value}</code>,
+  <code key={value}>{`${value}px`}</code>,
 ];
 
 const generateEdgeRow = ({ name, value }: EdgeRow): TableRow => [
@@ -57,7 +57,7 @@ const Overview: FC = () => (
       <Table
         head={['Sample', 'Size', 'Value']}
         body={radius.map(generateRadiusRow)}
-        gridTemplateColumns="80px"
+        gridTemplateColumns="100px"
       />
     </OverviewTemplate>
     <OverviewTemplate title="Edges" description={edgesDescription}>

@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import classNames from 'classnames';
 import styles from './Elevation.module.scss';
-import {pascalToKebab} from 'utils';
+import {pascalToKebab} from 'commons/utils/string';
 
 const getItemClasses = (size: string, color: string, opacity: string): string => classNames(
   styles.item,
@@ -18,13 +18,9 @@ const Elevation: FC<ElevationProps> = ({ size, color }) => {
   );
 };
 
-export default Elevation;
-
 interface ElevationProps {
-  size: Size,
-  color: Color,
+  size: ElevationSize,
+  color: ElevationColor,
 }
 
-export type Size = 's' | 'm' | 'l';
-export type Color =
-  'action15' | 'action40' | 'brand15' | 'brand40' | 'neutral15' | 'neutral40';
+export default Elevation;

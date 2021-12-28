@@ -6,16 +6,8 @@
 @use "../lib";
 @use "breakpoints";
 @use "colors";
-
-/// Elevations sizing map
-///
-/// @type Map
-/// @access private
-$_elevationSize: (
-  s: 0 lib.rem(5px) lib.rem(10px) lib.rem(-2px),
-  m: 0 lib.rem(15px) lib.rem(30px) lib.rem(-5px),
-  l: 0 lib.rem(30px) lib.rem(60px) lib.rem(-10px),
-);
+@use "../tokens/elevationSizes" as *;
+@use "../tokens/elevationColors" as *;
 
 /// Elevations sizing map.  
 /// <em style="font-size:small;">This variable is private.</em>
@@ -26,19 +18,6 @@ $_elevationSize: (
 /// 
 /// @type Map
 $_elevationSizeMap: ();
-
-/// Elevations color map
-///
-/// @type Map
-/// @access private
-$_elevationColor: (
-  action15: rgba(colors.color(actionBase), 0.15),
-  action40: rgba(colors.color(actionBase), 0.4),
-  brand15: rgba(colors.color(brandBase), 0.15),
-  brand40: rgba(colors.color(brandBase), 0.4),
-  neutral15: rgba(colors.color(neutral25), 0.15),
-  neutral40: rgba(colors.color(neutral25), 0.4),
-);
 
 /// Elevations color map.  
 /// <em style="font-size:small;">This variable is private.</em>
@@ -53,28 +32,28 @@ $_elevationColor: (
 /// @type Map
 $_elevationColorMap: ();
 
-/// Returns the elevation size from map $_elevationSize
+/// Returns the elevation size from map $elevationSizes
 ///
 /// @param {String} $size - Name of size
 /// @throw {Error}
 /// @access private
 @function _elevationSize($size) {
-  @return lib.get($_elevationSize, $size);
+  @return lib.get($elevationSizes, $size);
 }
 
-/// Returns the elevation color from map $_elevationColor
+/// Returns the elevation color from map $elevationColors
 ///
 /// @param {String} $color - Name of size
 /// @throw {Error}
 /// @access private
 @function _elevationColor($color) {
-  @return lib.get($_elevationColor, $color);
+  @return lib.get($elevationColors, $color);
 }
 
 /// Includes correct `box-shadow` based on size and color in input.
 ///
-/// @param {String} $size - Name of the size from `$_elevationSizeMap`
-/// @param {String} $color - Name of the color from `$_elevationColorMap`
+/// @param {String} $size - Name of the size from `$elevationSizes`
+/// @param {String} $color - Name of the color from `$elevationColors`
 /// 
 /// @output `box-shadow` property.
 /// 
@@ -93,8 +72,8 @@ $_elevationColorMap: ();
 /// @alias createAtoms
 /// @access public
 @mixin createAtoms() {
-  @each $size, $_ in $_elevationSize {
-    @each $color, $_ in $_elevationColor {
+  @each $size, $_ in $elevationSizes {
+    @each $color, $_ in $elevationColors {
       .elevation-#{$size}-#{lib.camelToKebabCase($color)} {
         @include elevation($size, $color);
       }

@@ -1,45 +1,16 @@
-import Radius, { Size } from './Radius';
+import Radius from './Radius';
+import radiusTokens from '@pyxis/tokens/json/radius.json';
 
 export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Radius> = () => ({
   title: 'Test/Radius',
   component: Radius,
 });
 
-export interface RadiusRow {
-  size: Size;
-  value: string;
-}
+export const radius: RadiusRow[] = Object.entries(radiusTokens).flatMap(([size, value]) => ({
+  size: size as RadiusSize,
+  value,
+}));
 
-export interface EdgeRow {
-  name: 'all' | 'right' | 'top' | 'left' | 'bottom' ;
-  value: string;
-}
-
-// TODO: to be replaced with design tokens
-export const radius: RadiusRow[] = [
-  {
-    size: 'xl',
-    value: '25px',
-  },
-  {
-    size: 'l',
-    value: '20px',
-  },
-  {
-    size: 'm',
-    value: '15px',
-  },
-  {
-    size: 's',
-    value: '10px',
-  },
-  {
-    size: 'xs',
-    value: '5px',
-  },
-];
-
-// TODO: to be replaced with design tokens
 export const edges: EdgeRow[] = [
   {
     name: 'all',
@@ -62,3 +33,13 @@ export const edges: EdgeRow[] = [
     value: '$size 0 0 $size',
   },
 ];
+
+export interface RadiusRow {
+  size: RadiusSize;
+  value: number;
+}
+
+export interface EdgeRow {
+  name: RadiusEdge;
+  value: string;
+}

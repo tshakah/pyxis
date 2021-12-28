@@ -21,7 +21,7 @@
 }
 
 .row {
-  @include pyxis.verticalPadding(s);
+  @include pyxis.verticalPadding(m);
   border-bottom-width: pyxis.rem(1px);
 
   &:last-child {

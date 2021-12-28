@@ -1,8 +1,9 @@
 import React, {FC} from 'react';
 import classNames from 'classnames';
-import {capitalize} from 'utils';
+import {capitalize} from 'commons/utils/string';
+import {TypographySize, TypographyType, TypographyWeight} from "./common";
 
-const getClasses = (size: Size, weight: Weight, type: Type): string => classNames(
+const getClasses = (size: TypographySize, weight: TypographyWeight, type: TypographyType): string => classNames(
   {
     [`text-${size}-${weight}`]: type === 'text',
     [`title-${size}-${weight}`]: type === 'title',
@@ -15,14 +16,10 @@ const Typography: FC<TypographyProps> = ({ size, weight, type }) => (
   </span>
 );
 
-export default Typography;
-
 interface TypographyProps {
-  size: Size;
-  weight: Weight;
-  type: Type
+  size: TypographySize;
+  weight: TypographyWeight;
+  type: TypographyType
 }
 
-export type Size = 's' | 'm' | 'l' | 'xl';
-export type Weight = 'light' | 'book' | 'bold';
-export type Type = 'text' | 'title';
+export default Typography;

@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
-import { kebabToPascalCase } from '../src/utils';
+import { kebabToPascalCase } from '../src/commons/utils/string';
 
 const iconsPath = resolve(__dirname, '../../../', 'node_modules/@pyxis/icons');
 const svgNameList = readdirSync(iconsPath).filter((name) => name.endsWith('.svg'));

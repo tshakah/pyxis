@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 import styles from './Color.module.scss';
+import {ColorRowBackgroundType} from "./common";
 
-const getClasses = (name: string, type: BackgroundColor): string => classNames(
+const getClasses = (name: string, type: ColorRowBackgroundType): string => classNames(
   styles.item,
   {
     [`bg-${name}`]: type === 'solid',
@@ -10,15 +11,13 @@ const getClasses = (name: string, type: BackgroundColor): string => classNames(
   },
 );
 
-const Color: FC<ColorProps> = ({ name, type = 'solid' }) => (
+export const Color: FC<ColorProps> = ({ name, type = 'solid' }) => (
   <div className={getClasses(name, type)} />
 );
 
-export default Color;
-
 interface ColorProps {
   name: string;
-  type?: BackgroundColor;
+  type: ColorRowBackgroundType;
 }
 
-export type BackgroundColor = 'solid' | 'gradient';
+export default { Color };
