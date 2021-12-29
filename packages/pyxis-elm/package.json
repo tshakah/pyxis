@@ -8,9 +8,10 @@
   "homepage": "https://github.com/primait/pyxis-react#readme",
   "main": "lib/pyxis-elm.js",
   "scripts": {
-    "test": "./node_modules/.bin/elm-test",
+    "generate:icons": "ts-node --project scripts/tsconfig.json ./scripts/generateIcons.ts && ./node_modules/.bin/elm-format src/Components/IconSet.elm --yes",
     "review": "./node_modules/.bin/elm-review src",
-    "review:fix": "./node_modules/.bin/elm-review src --fix"
+    "review:fix": "./node_modules/.bin/elm-review src --fix",
+    "test": "./node_modules/.bin/elm-test"
   },
   "dependencies": {
     "elm": "^0.19.1-5",

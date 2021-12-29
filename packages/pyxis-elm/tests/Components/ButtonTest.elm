@@ -2,6 +2,7 @@ module Components.ButtonTest exposing (suite)
 
 import Components.Button as Button
 import Components.Icon as Icon
+import Components.IconSet as IconSet
 import Test exposing (Test, describe, test)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
@@ -23,6 +24,15 @@ suite =
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--primary" ] ]
+            , test "is forced to primary when size is huge" <|
+                \_ ->
+                    Button.submit
+                        |> Button.create
+                        |> Button.withEmphasis Button.secondary
+                        |> Button.withSize Button.huge
+                        |> Button.render
+                        |> Query.fromHtml
+                        |> Query.has [ classes [ "button", "button--primary", "button--huge" ] ]
             , test "is secondary" <|
                 \_ ->
                     Button.submit
@@ -57,21 +67,14 @@ suite =
                         |> Query.has [ classes [ "button", "button--ghost" ] ]
             ]
         , describe "Button theme"
-            [ test "is light by default" <|
-                \_ ->
-                    Button.submit
-                        |> Button.create
-                        |> Button.render
-                        |> Query.fromHtml
-                        |> Query.has [ classes [ "button", "button--light" ] ]
-            , test "is dark" <|
+            [ test "is dark" <|
                 \_ ->
                     Button.submit
                         |> Button.create
                         |> Button.withTheme Button.dark
                         |> Button.render
                         |> Query.fromHtml
-                        |> Query.has [ classes [ "button", "button--dark" ] ]
+                        |> Query.has [ classes [ "button", "button--alt" ] ]
             ]
         , describe "Button size"
             [ test "is huge" <|
@@ -111,7 +114,7 @@ suite =
                 \_ ->
                     Button.submit
                         |> Button.create
-                        |> Button.withLeadingIcon Icon.accessKey
+                        |> Button.withLeadingIcon IconSet.Car
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--leading-icon" ] ]
@@ -119,7 +122,7 @@ suite =
                 \_ ->
                     Button.submit
                         |> Button.create
-                        |> Button.withTrailingIcon Icon.accessKey
+                        |> Button.withTrailingIcon IconSet.Motorcycle
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--trailing-icon" ] ]

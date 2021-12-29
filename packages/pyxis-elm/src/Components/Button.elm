@@ -79,7 +79,8 @@ module Components.Button exposing
 
 import Commons.Attributes as CA
 import Commons.Render as CR
-import Components.Icon as PyxisIcon
+import Components.Icon as Icon
+import Components.IconSet as IconSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events as Events
@@ -360,7 +361,16 @@ small =
 -}
 withSize : Size -> Model msg -> Model msg
 withSize a (Model configuration) =
-    Model { configuration | size = a }
+    Model
+        { configuration
+            | size = a
+            , emphasis =
+                if a == huge then
+                    primary
+
+                else
+                    configuration.emphasis
+        }
 
 
 {-| Internal.
@@ -386,8 +396,8 @@ sizeToAttribute size =
 {-| The available Icons positions.
 -}
 type Icon
-    = Leading PyxisIcon.Icon
-    | Trailing PyxisIcon.Icon
+    = Leading IconSet.Icon
+    | Trailing IconSet.Icon
     | NoIcon
 
 
@@ -417,14 +427,14 @@ isTrailingIcon a =
 
 {-| Adds an icon to the Button. The icon will be shown before button's content from ltr.
 -}
-withLeadingIcon : PyxisIcon.Icon -> Model msg -> Model msg
+withLeadingIcon : IconSet.Icon -> Model msg -> Model msg
 withLeadingIcon a (Model configuration) =
     Model { configuration | icon = Leading a }
 
 
 {-| Adds an icon to the Button. The icon will be shown after button's content from ltr.
 -}
-withTrailingIcon : PyxisIcon.Icon -> Model msg -> Model msg
+withTrailingIcon : IconSet.Icon -> Model msg -> Model msg
 withTrailingIcon a (Model configuration) =
     Model { configuration | icon = Trailing a }
 
@@ -457,8 +467,7 @@ render (Model configuration) =
     Html.button
         [ Attributes.classList
             [ ( "button", True )
-            , ( "button--light", configuration.theme == light )
-            , ( "button--dark", configuration.theme == dark )
+            , ( "button--alt", configuration.theme == dark )
             , ( "button--leading-icon", isLeadingIcon configuration.icon )
             , ( "button--trailing-icon", isTrailingIcon configuration.icon )
             , ( "button--primary", configuration.emphasis == primary )
@@ -495,10 +504,16 @@ renderIcon : Icon -> Html msg
 renderIcon a =
     case a of
         Leading pyxisIcon ->
-            PyxisIcon.render pyxisIcon
+            pyxisIcon
+                |> Icon.create
+                |> Icon.withSize Icon.small
+                |> Icon.render
 
         Trailing pyxisIcon ->
-            PyxisIcon.render pyxisIcon
+            pyxisIcon
+                |> Icon.create
+                |> Icon.withSize Icon.small
+                |> Icon.render
 
         NoIcon ->
             CR.empty
