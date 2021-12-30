@@ -41,4 +41,15 @@ if [ "$ENV" = "staging" ]; then
   tar czf "${VERSION}"-"${ENV}".tar.gz build
 fi
 
+if [ "$ENV" = "production" ]; then
+  yarn storybook:build
+  yarn sassdocs:build
+  mkdir build
+  mkdir build/react
+  mkdir build/scss
+  cp -R packages/pyxis-react/storybook-static/* build/react
+  cp -R packages/pyxis-scss/sassdoc/* build/scss
+  tar czf "${VERSION}"-"${ENV}".tar.gz build
+fi
+
 aws --region="eu-west-1" s3 cp "${VERSION}"-"${ENV}".tar.gz s3://prima-artifacts-encrypted/microservices/pyxis/"${VERSION}"-"${ENV}".tar.gz
