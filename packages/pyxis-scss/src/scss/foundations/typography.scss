@@ -94,7 +94,6 @@ $_letterSpacing: (
 /// Base setting for Pyxis typography.
 /// It has to be used only in the html tag.
 ///
-/// @alias typographyGlobalSettings
 /// @access public
 @mixin globalSettings() {
   @include _fontWeight(book);

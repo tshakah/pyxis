@@ -1,0 +1,45 @@
+////
+/// Generated classes for label styling.
+/// @group COMPONENTS
+////
+
+@use "../lib";
+@use "../foundations";
+
+/// Set general properties for label component
+///
+/// @example scss - Simple label
+///   <label class="label">
+///     This is a Label
+///   </label>
+///
+/// @example scss - Simple label with small size
+///   <label class="label label--size">
+///     This is a Label
+///   </label>
+///
+/// @example scss - Label with subtext
+///   <label class="label">
+///     Primary label
+///     <small class="label__secondary">Optional content</small>
+///   </label>
+///
+.label {
+  @include foundations.text(l, book);
+  color: foundations.color(neutralBase);
+  display: grid;
+}
+/// Add small label modifier
+///
+/// @access private
+.label--small {
+  @include foundations.text(m, book);
+}
+
+/// Define properties for the optional information
+///
+/// @access private
+.label__sub {
+  @include foundations.text(s, book);
+  color: foundations.color(neutral25);
+}
