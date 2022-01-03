@@ -1,15 +1,12 @@
-module Commons.Attributes exposing (empty)
-
-{-| Do not expose this module.
--}
+module Commons.Attributes exposing (compose)
 
 import Html
-import Html.Attributes as Attributes
 
 
-{-| Use this to write an empty attribute which will not be rendered.
-Useful in order to prevent the need of a `Maybe Html.Attribute` in your component configuration.
+{-| Useful to compose mandatory attributes with maybe ones.
 -}
-empty : Html.Attribute msg
-empty =
-    Attributes.attribute "" ""
+compose : List (Html.Attribute msg) -> List (Maybe (Html.Attribute msg)) -> List (Html.Attribute msg)
+compose attributes maybeAttributes =
+    maybeAttributes
+        |> List.filterMap identity
+        |> List.append attributes

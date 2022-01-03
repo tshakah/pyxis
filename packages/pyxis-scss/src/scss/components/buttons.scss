@@ -239,7 +239,7 @@ $_sizes: (
       padding-left: $iconSpacing;
     }
 
-    &.button--only-icon {
+    &.button--icon-only {
       min-width: initial;
       padding: 0;
       width: $dimension;
@@ -286,6 +286,12 @@ $_sizes: (
     border-radius: lib.rem(1px);
   }
 
+  &.button--trailing-icon,
+  &.button--leading-icon {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   &.button--alt {
     color: foundations.color(neutralLight);
 
@@ -303,7 +309,7 @@ $_sizes: (
 /// Reset the min-width of button
 ///
 /// @access private
-.button.button--content–width {
+.button.button--content-width {
   min-width: initial;
 }
 

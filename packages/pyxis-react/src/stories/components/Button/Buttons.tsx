@@ -171,30 +171,17 @@ const Buttons: FC = () => (
     </div>
 
     <div className="wrapper">
-      <button className="button button--light button--huge button--only-icon button--primary">
+      <button className="button button--light button--huge button--icon-only button--primary">
         <div className="icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
         </div>
       </button>
-      <button className="button button--light button--large button--only-icon button--primary">
+      <button className="button button--light button--large button--icon-only button--primary">
         <div className="icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
         </div>
       </button>
-      <button className="button button--light button--medium button--only-icon button--primary">
-        <div className="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
-        </div>
-      </button>
-    </div>
-
-    <div className="wrapper">
-      <button className="button button--light button--large button--only-icon button--tertiary">
-        <div className="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
-        </div>
-      </button>
-      <button className="button button--light button--medium button--only-icon button--tertiary">
+      <button className="button button--light button--medium button--icon-only button--primary">
         <div className="icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
         </div>
@@ -202,12 +189,25 @@ const Buttons: FC = () => (
     </div>
 
     <div className="wrapper">
-      <button className="button button--light button--large button--only-icon button--ghost">
+      <button className="button button--light button--large button--icon-only button--tertiary">
         <div className="icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
         </div>
       </button>
-      <button className="button button--light button--medium button--only-icon button--ghost">
+      <button className="button button--light button--medium button--icon-only button--tertiary">
+        <div className="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
+        </div>
+      </button>
+    </div>
+
+    <div className="wrapper">
+      <button className="button button--light button--large button--icon-only button--ghost">
+        <div className="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
+        </div>
+      </button>
+      <button className="button button--light button--medium button--icon-only button--ghost">
         <div className="icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.025 23.848A11.848 11.848 0 1 1 23.873 12a11.861 11.861 0 0 1-11.848 11.848zm0-22.695A10.848 10.848 0 1 0 22.873 12 10.86 10.86 0 0 0 12.025 1.152zm0 12.712a.5.5 0 0 1-.5-.5V7.416a.5.5 0 0 1 1 0v5.949a.5.5 0 0 1-.5.5zm0 3.22a.5.5 0 0 1-.5-.5v-.711a.5.5 0 0 1 1 0v.711a.5.5 0 0 1-.5.5z"/></svg>
         </div>

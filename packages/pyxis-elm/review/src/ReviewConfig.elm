@@ -23,7 +23,7 @@ import NoUnused.Dependencies
 import NoUnused.Exports
 import NoUnused.Modules
 import NoUnused.Variables
-import Review.Rule exposing (Rule, ignoreErrorsForDirectories)
+import Review.Rule exposing (Rule)
 
 
 config : List Rule
@@ -35,11 +35,14 @@ config =
         , "Html.Events"
         ]
     , NoMissingTypeAnnotation.rule
+        |> Review.Rule.ignoreErrorsForDirectories [ "src/Stories" ]
     , NoUnused.CustomTypeConstructors.rule []
+        |> Review.Rule.ignoreErrorsForFiles [ "src/Commons/ApiConstraint.elm" ]
     , NoUnused.Dependencies.rule
     , NoUnused.Exports.rule
-        |> ignoreErrorsForDirectories [ "src" ]
+        |> Review.Rule.ignoreErrorsForDirectories [ "src" ]
     , NoUnused.Modules.rule
+        |> Review.Rule.ignoreErrorsForDirectories [ "src/Stories" ]
     , NoUnused.Variables.rule
     , Custom.SignatureInScopedLet.rule
     , Custom.NoBoolPatternMatching.rule

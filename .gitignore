@@ -45,3 +45,7 @@ repl-temp-*
 
 # Cache dirs
 .cache
+
+### Pyxis elm
+packages/pyxis-elm/pyxis.css
+packages/pyxis-elm/index.html

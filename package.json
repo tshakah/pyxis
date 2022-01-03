@@ -13,6 +13,7 @@
   },
   "scripts": {
     "build": "lerna run build --stream",
+    "elmbook:serve": "lerna run elmbook:serve --scope=pyxis-elm",
     "generate:icons": "lerna run generate:icons --scope=pyxis-elm",
     "install": "lerna bootstrap",
     "lint": "lerna run lint --stream",

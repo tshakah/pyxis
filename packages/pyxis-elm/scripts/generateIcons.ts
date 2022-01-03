@@ -4,7 +4,7 @@ import glob from 'glob'
 
 const pathToConstructor = (filename:string):string => kebabToPascalCase(path.basename(filename, '.svg'));
 const pathToMethod = (filename:string):string => kebabToCamelCase(path.basename(filename, '.svg'));
-const readSvg = (filename:string):string => fs.readFileSync(filename,'utf8').replace(/"/g, "'")
+const readSvg = (filename:string):string => fs.readFileSync(filename,'utf8').replace(/"/g, '\\"')
 const writeSvg = (content:string): void => fs.writeFileSync(path.resolve(__dirname, '../src/Components/IconSet.elm'), content)
 
 const capitalize = (str:string):string => {
