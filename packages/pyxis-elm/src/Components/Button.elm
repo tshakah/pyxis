@@ -648,8 +648,8 @@ render (Model configuration) =
             [ typeToAttribute configuration.type_
             , typeToEventAttribute configuration.type_
             , Maybe.map Attributes.id configuration.id
-            , Maybe.map (Attributes.attribute "data-test-id") configuration.id
-            , Maybe.map (Attributes.attribute "aria-label") configuration.ariaLabel
+            , Maybe.map CA.testId configuration.id
+            , Maybe.map CA.ariaLabel configuration.ariaLabel
             ]
         )
         [ configuration.icon
@@ -671,7 +671,7 @@ renderIcon size icon =
         |> pickIcon
         |> Maybe.map
             (Icon.create
-                >> Icon.withSize (getIconSize size)
+                >> applyIconSize size
                 >> Icon.render
             )
         |> CR.renderMaybe
@@ -679,14 +679,14 @@ renderIcon size icon =
 
 {-| Internal.
 -}
-getIconSize : Size -> Icon.Size
-getIconSize size =
+applyIconSize : Size -> (Icon.Model a -> Icon.Model a)
+applyIconSize size =
     case size of
         Huge ->
-            Icon.large
+            Icon.withLargeSize
 
         Large ->
-            Icon.medium
+            Icon.withMediumSize
 
         _ ->
-            Icon.small
+            Icon.withSmallSize

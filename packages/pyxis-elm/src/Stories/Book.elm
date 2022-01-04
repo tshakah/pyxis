@@ -4,7 +4,9 @@ import ElmBook
 import ElmBook.ThemeOptions
 import Html
 import Html.Attributes
-import Stories.Chapters.Button as ButtonChapter
+import Stories.Chapters.Buttons as ButtonChapter
+import Stories.Chapters.Icon as IconChapter
+import Stories.Chapters.IconSet as IconSetChapter
 
 
 main : ElmBook.Book ()
@@ -22,4 +24,6 @@ main =
             ]
         |> ElmBook.withChapters
             [ ButtonChapter.docs
+            , IconChapter.docs
+            , IconSetChapter.docs
             ]

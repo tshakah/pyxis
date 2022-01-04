@@ -2,14 +2,17 @@ module Components.Icon exposing
     ( Model
     , create
     , Theme
-    , light, dark
-    , withTheme
+    , withLightTheme
+    , withDarkTheme
     , Size
-    , large, medium, small
-    , withSize
+    , withLargeSize
+    , withMediumSize
+    , withSmallSize
     , Style
-    , default, boxed
-    , withStyle
+    , withDefaultStyle
+    , withBoxedStyle
+    , withDescription
+    , withClassList
     , render
     )
 
@@ -25,22 +28,29 @@ module Components.Icon exposing
 ## Theme
 
 @docs Theme
-@docs light, dark
-@docs withTheme
+@docs withLightTheme
+@docs withDarkTheme
 
 
 ## Size
 
 @docs Size
-@docs large, medium, small
-@docs withSize
+@docs withLargeSize
+@docs withMediumSize
+@docs withSmallSize
 
 
 ## Style
 
 @docs Style
-@docs default, boxed
-@docs withStyle
+@docs withDefaultStyle
+@docs withBoxedStyle
+
+
+## Generics
+
+@docs withDescription
+@docs withClassList
 
 
 ## Rendering
@@ -49,6 +59,8 @@ module Components.Icon exposing
 
 -}
 
+import Commons.ApiConstraint as Api
+import Commons.Attributes as CA
 import Commons.Render as CR
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -58,26 +70,38 @@ import SvgParser
 
 {-| The Icon model.
 -}
-type Model
+type Model a
     = Model Configuration
 
 
 {-| Internal. The internal Icon configuration.
 -}
 type alias Configuration =
-    { icon : IconSet.Icon
+    { classList : List ( String, Bool )
+    , description : Maybe String
+    , icon : IconSet.Icon
     , size : Size
     , style : Style
     , theme : Theme
     }
 
 
+{-| Internal. The default configuration which enforces api constraints.
+Those keys represent which methods are use-restricted.
+You can use the Commons/ApiConstraint.elm module to allow/disallow methods call.
+-}
+type alias DefaultConfiguration a =
+    { a | dark : () }
+
+
 {-| Inits the Icon.
 -}
-create : IconSet.Icon -> Model
+create : IconSet.Icon -> Model (DefaultConfiguration a)
 create icon =
     Model
-        { icon = icon
+        { classList = []
+        , description = Nothing
+        , icon = icon
         , size = Medium
         , style = Default
         , theme = Light
@@ -91,34 +115,18 @@ type Theme
     | Dark
 
 
-{-| A light Icon Theme.
+{-| Sets a light theme to the Icon.
 -}
-light : Theme
-light =
-    Light
+withLightTheme : Model a -> Model { a | dark : Api.NotSupported }
+withLightTheme (Model configuration) =
+    Model { configuration | theme = Light }
 
 
-{-| A dark Icon Theme.
+{-| Sets a dark theme to the Icon.
 -}
-dark : Theme
-dark =
-    Dark
-
-
-{-| Sets a size to the Icon.
--}
-withTheme : Theme -> Model -> Model
-withTheme a (Model configuration) =
-    Model
-        { configuration
-            | theme = a
-            , style =
-                if a == dark then
-                    boxed
-
-                else
-                    configuration.style
-        }
+withDarkTheme : Model { a | dark : Api.Supported } -> Model a
+withDarkTheme (Model configuration) =
+    Model { configuration | theme = Dark }
 
 
 {-| The available Icon sizes.
@@ -129,76 +137,84 @@ type Size
     | Small
 
 
-{-| A large Icon Size.
+{-| Sets a large size to the Icon.
 -}
-large : Size
-large =
-    Large
+withLargeSize : Model a -> Model a
+withLargeSize (Model configuration) =
+    Model { configuration | size = Large }
 
 
-{-| A medium Icon Size.
+{-| Sets a medium size to the Icon.
 -}
-medium : Size
-medium =
-    Medium
+withMediumSize : Model a -> Model a
+withMediumSize (Model configuration) =
+    Model { configuration | size = Medium }
 
 
-{-| A small Icon Size.
+{-| Sets a small size to the Icon.
 -}
-small : Size
-small =
-    Small
+withSmallSize : Model a -> Model a
+withSmallSize (Model configuration) =
+    Model { configuration | size = Small }
 
 
-{-| Sets a size to the Icon.
--}
-withSize : Size -> Model -> Model
-withSize a (Model configuration) =
-    Model { configuration | size = a }
-
-
-{-| The available Icon sizes.
+{-| The available Icon styles.
 -}
 type Style
     = Default
     | Boxed
 
 
-{-| A default Icon Style.
+{-| Sets a default style to the Icon.
 -}
-default : Style
-default =
-    Default
+withDefaultStyle : Model a -> Model { a | dark : Api.Supported }
+withDefaultStyle (Model configuration) =
+    Model { configuration | style = Default }
 
 
-{-| A boxed Icon Style.
+{-| Sets a boxed style to the Icon.
 -}
-boxed : Style
-boxed =
-    Boxed
+withBoxedStyle : Model a -> Model { a | dark : Api.Supported }
+withBoxedStyle (Model configuration) =
+    Model { configuration | style = Boxed }
 
 
-{-| Sets a size to the Icon.
+{-| Adds an accessible text to the Icon.
 -}
-withStyle : Style -> Model -> Model
-withStyle a (Model configuration) =
-    Model { configuration | style = a }
+withDescription : String -> Model a -> Model a
+withDescription a (Model configuration) =
+    Model { configuration | description = Just a }
+
+
+{-| Adds a classList to the Icon.
+-}
+withClassList : List ( String, Bool ) -> Model a -> Model a
+withClassList a (Model configuration) =
+    Model { configuration | classList = a }
 
 
 {-| Renders the Icon.
 -}
-render : Model -> Html msg
+render : Model a -> Html msg
 render (Model configuration) =
     Html.div
-        [ Attributes.classList
-            [ ( "icon", True )
-            , ( "icon--size-l", configuration.size == large )
-            , ( "icon--size-m", configuration.size == medium )
-            , ( "icon--size-s", configuration.size == small )
-            , ( "icon--boxed", configuration.style == boxed )
-            , ( "icon--alt", configuration.theme == dark && configuration.style == boxed )
+        (CA.compose
+            [ Attributes.classList
+                ([ ( "icon", True )
+                 , ( "icon--size-l", configuration.size == Large )
+                 , ( "icon--size-m", configuration.size == Medium )
+                 , ( "icon--size-s", configuration.size == Small )
+                 , ( "icon--boxed", configuration.style == Boxed )
+                 , ( "icon--alt", configuration.theme == Dark )
+                 ]
+                    ++ configuration.classList
+                )
+            , CA.ariaHidden (configuration.description == Nothing)
             ]
-        ]
+            [ Maybe.map CA.ariaLabel configuration.description
+            , Maybe.map (always (CA.role "img")) configuration.description
+            ]
+        )
         [ configuration.icon
             |> IconSet.toString
             |> SvgParser.parse

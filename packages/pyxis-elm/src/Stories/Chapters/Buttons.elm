@@ -1,4 +1,4 @@
-module Stories.Chapters.Button exposing (docs)
+module Stories.Chapters.Buttons exposing (docs)
 
 import Components.Button as Button
 import Components.IconSet as IconSet
