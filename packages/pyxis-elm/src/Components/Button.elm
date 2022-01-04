@@ -1,16 +1,15 @@
 module Components.Button exposing
     ( Model
-    , create
+    , primary
+    , secondary
+    , tertiary
+    , brand
+    , ghost
     , Type
     , withSubmitType
     , withResetType
     , withButtonType
-    , Variant
-    , withPrimaryVariant
-    , withSecondaryVariant
-    , withTertiaryVariant
-    , withBrandVariant
-    , withGhostVariant
+    , withLinkType
     , Theme
     , withLightTheme
     , withDarkTheme
@@ -23,6 +22,9 @@ module Components.Button exposing
     , withLeadingIcon
     , withTrailingIcon
     , withIconOnly
+    , withAriaLabel
+    , withId
+    , withClassList
     , withDisabled
     , withLoading
     , withContentWidth
@@ -37,7 +39,11 @@ module Components.Button exposing
 # Button component
 
 @docs Model
-@docs create
+@docs primary
+@docs secondary
+@docs tertiary
+@docs brand
+@docs ghost
 
 
 ## Type
@@ -46,16 +52,7 @@ module Components.Button exposing
 @docs withSubmitType
 @docs withResetType
 @docs withButtonType
-
-
-## Variant
-
-@docs Variant
-@docs withPrimaryVariant
-@docs withSecondaryVariant
-@docs withTertiaryVariant
-@docs withBrandVariant
-@docs withGhostVariant
+@docs withLinkType
 
 
 ## Theme
@@ -84,6 +81,9 @@ module Components.Button exposing
 
 ## Generics
 
+@docs withAriaLabel
+@docs withId
+@docs withClassList
 @docs withDisabled
 @docs withLoading
 @docs withContentWidth
@@ -113,6 +113,40 @@ type Model a msg
     = Model (Configuration msg)
 
 
+{-| Internal. The internal Button configuration.
+-}
+type alias Configuration msg =
+    { ariaLabel : Maybe String
+    , classList : List ( String, Bool )
+    , contentWidth : Bool
+    , disabled : Bool
+    , icon : Icon
+    , id : Maybe String
+    , loading : Bool
+    , shadow : Bool
+    , size : Size
+    , text : String
+    , theme : Theme
+    , type_ : Type msg
+    , variant : Variant
+    }
+
+
+{-| Internal. The default configuration which enforces api constraints.
+Those keys represent which methods are use-restricted.
+You can use the Commons/ApiConstraint.elm module to allow/disallow methods call.
+-}
+type alias DefaultConfiguration a =
+    { a
+        | contentWidth : ()
+        , hugeSize : ()
+        , iconOnly : ()
+        , loading : ()
+        , shadow : ()
+        , smallSize : ()
+    }
+
+
 {-| Inits the Button.
 
     import Components.Button as Button
@@ -121,54 +155,175 @@ type Model a msg
     type Msg
         = OnClick
 
-    myClickableButton : Button.Model Msg
+    myClickableButton : Html Msg
     myClickableButton =
-        Button.create
+        Button.brand
             |> Button.withButtonType OnClick
-            |> Button.withVariantBrand
-            |> Button.withSizeLarge
+            |> Button.withLargeSize
             |> Button.withText "Click me!"
+            |> Button.render
 
-    mySubmitButton : Button.Model Msg
+    mySubmitButton : Html Msg
     mySubmitButton =
-        Button.create
+        Button.primary
             |> Button.withSubmitType
-            |> Button.create
-            |> Button.withVariantPrimary
             |> Button.withText "Submit form"
             |> Button.withDisabled (not MyForm.canBeSubmitted)
+            |> Button.render
 
 -}
-create : Model { a | hugeSize : (), smallSize : (), iconOnly : () } msg
-create =
+init : Model (DefaultConfiguration a) msg
+init =
     Model
-        { disabled = False
-        , variant = Primary
-        , icon = NoIcon
-        , loading = False
+        { ariaLabel = Nothing
+        , classList = []
         , contentWidth = False
+        , disabled = False
+        , icon = NoIcon
+        , id = Nothing
+        , loading = False
         , shadow = False
         , size = Large
         , text = ""
         , theme = Light
         , type_ = Submit
+        , variant = Primary
         }
 
 
-{-| Internal. The internal Button configuration.
+{-| Internal.
 -}
-type alias Configuration msg =
-    { disabled : Bool
-    , variant : Variant
-    , icon : Icon
-    , loading : Bool
-    , contentWidth : Bool
-    , shadow : Bool
-    , size : Size
-    , text : String
-    , theme : Theme
-    , type_ : Type msg
+type alias PrimaryConfiguration a =
+    { a
+        | hugeSize : Api.Supported
+        , smallSize : Api.Supported
+        , iconOnly : Api.Supported
+        , shadow : Api.Supported
+        , contentWidth : Api.Supported
+        , loading : Api.Supported
     }
+
+
+{-| Creates a Button with a Primary variant.
+-}
+primary : Model (PrimaryConfiguration a) msg
+primary =
+    withPrimaryVariant init
+
+
+{-| Internal.
+-}
+withPrimaryVariant : Model (DefaultConfiguration a) msg -> Model (PrimaryConfiguration a) msg
+withPrimaryVariant (Model configuration) =
+    Model { configuration | variant = Primary }
+
+
+{-| Internal.
+-}
+type alias SecondaryConfiguration a =
+    { a
+        | hugeSize : Api.NotSupported
+        , smallSize : Api.Supported
+        , iconOnly : Api.Supported
+        , shadow : Api.NotSupported
+        , contentWidth : Api.Supported
+        , loading : Api.Supported
+    }
+
+
+{-| Creates a Button with a Secondary variant.
+-}
+secondary : Model (SecondaryConfiguration a) msg
+secondary =
+    withSecondaryVariant init
+
+
+{-| Internal.
+-}
+withSecondaryVariant : Model (DefaultConfiguration a) msg -> Model (SecondaryConfiguration a) msg
+withSecondaryVariant (Model configuration) =
+    Model { configuration | variant = Secondary }
+
+
+{-| Internal.
+-}
+type alias TertiaryConfiguration a =
+    { a
+        | hugeSize : Api.NotSupported
+        , smallSize : Api.Supported
+        , iconOnly : Api.Supported
+        , shadow : Api.NotSupported
+        , contentWidth : Api.Supported
+        , loading : Api.Supported
+    }
+
+
+{-| Creates a Button with a Tertiary variant.
+-}
+tertiary : Model (SecondaryConfiguration a) msg
+tertiary =
+    withTertiaryVariant init
+
+
+{-| Internal. Sets a Variant to the Button.
+-}
+withTertiaryVariant : Model (DefaultConfiguration a) msg -> Model (TertiaryConfiguration a) msg
+withTertiaryVariant (Model configuration) =
+    Model { configuration | variant = Tertiary }
+
+
+{-| Internal.
+-}
+type alias BrandConfiguration a =
+    { a
+        | hugeSize : Api.NotSupported
+        , smallSize : Api.Supported
+        , iconOnly : Api.Supported
+        , shadow : Api.Supported
+        , contentWidth : Api.Supported
+        , loading : Api.Supported
+    }
+
+
+{-| Creates a Button with a Brand variant.
+-}
+brand : Model (BrandConfiguration a) msg
+brand =
+    withBrandVariant init
+
+
+{-| Internal. Sets a Variant to the Button.
+-}
+withBrandVariant : Model (DefaultConfiguration a) msg -> Model (BrandConfiguration a) msg
+withBrandVariant (Model configuration) =
+    Model { configuration | variant = Brand }
+
+
+{-| Internal.
+-}
+type alias GhostConfiguration a =
+    { a
+        | hugeSize : Api.NotSupported
+        , smallSize : Api.Supported
+        , iconOnly : Api.Supported
+        , shadow : Api.NotSupported
+        , contentWidth : Api.NotSupported
+        , loading : Api.NotSupported
+    }
+
+
+{-| Creates a Button with a Ghost variant.
+-}
+ghost : Model (GhostConfiguration a) msg
+ghost =
+    withGhostVariant init
+
+
+{-| Internal.
+-}
+withGhostVariant : Model (DefaultConfiguration a) msg -> Model (GhostConfiguration a) msg
+withGhostVariant (Model configuration) =
+    Model { configuration | variant = Ghost }
 
 
 {-| The available Button types.
@@ -177,6 +332,19 @@ type Type msg
     = Button msg
     | Submit
     | Reset
+    | Link String
+
+
+{-| Internal.
+-}
+isLinkType : Type msg -> Bool
+isLinkType a =
+    case a of
+        Link _ ->
+            True
+
+        _ ->
+            False
 
 
 {-| Sets a type="submit" to the Button.
@@ -200,21 +368,29 @@ withResetType (Model configuration) =
     Model { configuration | type_ = Reset }
 
 
+{-| Using this method you will get an <a> tag instead of a <button> one.
+-}
+withLinkType : String -> Model a msg -> Model a msg
+withLinkType a (Model configuration) =
+    Model { configuration | type_ = Link a }
+
+
 {-| Internal.
 -}
-typeToAttribute : Type msg -> Html.Attribute msg
+typeToAttribute : Type msg -> Maybe (Html.Attribute msg)
 typeToAttribute a =
-    Attributes.type_
-        (case a of
-            Submit ->
-                "submit"
+    case a of
+        Submit ->
+            Just (Attributes.type_ "submit")
 
-            Reset ->
-                "reset"
+        Reset ->
+            Just (Attributes.type_ "reset")
 
-            Button _ ->
-                "button"
-        )
+        Button _ ->
+            Just (Attributes.type_ "button")
+
+        Link href ->
+            Just (Attributes.href href)
 
 
 {-| Internal.
@@ -229,6 +405,9 @@ typeToEventAttribute a =
             Nothing
 
         Reset ->
+            Nothing
+
+        Link _ ->
             Nothing
 
 
@@ -261,41 +440,6 @@ type Variant
     | Tertiary
     | Brand
     | Ghost
-
-
-{-| Sets a Variant to then Button.
--}
-withPrimaryVariant : Model { a | hugeSize : (), smallSize : (), iconOnly : () } msg -> Model { a | hugeSize : Api.Supported, smallSize : Api.Supported, iconOnly : Api.Supported } msg
-withPrimaryVariant (Model configuration) =
-    Model { configuration | variant = Primary }
-
-
-{-| Sets a Variant to then Button.
--}
-withSecondaryVariant : Model { a | hugeSize : (), smallSize : (), iconOnly : () } msg -> Model { a | hugeSize : Api.NotSupported, smallSize : Api.Supported, iconOnly : Api.Supported } msg
-withSecondaryVariant (Model configuration) =
-    Model { configuration | variant = Secondary }
-
-
-{-| Sets a Variant to then Button.
--}
-withTertiaryVariant : Model { a | hugeSize : (), smallSize : (), iconOnly : () } msg -> Model { a | hugeSize : Api.NotSupported, smallSize : Api.Supported, iconOnly : Api.Supported } msg
-withTertiaryVariant (Model configuration) =
-    Model { configuration | variant = Tertiary }
-
-
-{-| Sets a Variant to then Button.
--}
-withBrandVariant : Model { a | hugeSize : (), smallSize : (), iconOnly : () } msg -> Model { a | hugeSize : Api.NotSupported, smallSize : Api.Supported, iconOnly : Api.Supported } msg
-withBrandVariant (Model configuration) =
-    Model { configuration | variant = Brand }
-
-
-{-| Sets a Variant to then Button.
--}
-withGhostVariant : Model { a | hugeSize : (), smallSize : (), iconOnly : () } msg -> Model { a | hugeSize : Api.NotSupported, smallSize : Api.Supported, iconOnly : Api.Supported } msg
-withGhostVariant (Model configuration) =
-    Model { configuration | variant = Ghost }
 
 
 {-| The available Button sizes.
@@ -406,7 +550,7 @@ withTrailingIcon a (Model configuration) =
 
 {-| Adds an icon to the Button. This will be the only content of the Button..
 -}
-withIconOnly : IconSet.Icon -> Model { a | iconOnly : Api.Supported } msg -> Model a msg
+withIconOnly : IconSet.Icon -> Model { a | iconOnly : Api.Supported } msg -> Model { a | contentWidth : Api.NotSupported } msg
 withIconOnly a (Model configuration) =
     Model { configuration | icon = Only a }
 
@@ -418,25 +562,39 @@ withDisabled a (Model configuration) =
     Model { configuration | disabled = a }
 
 
+{-| Sets an aria-label to the Button.
+-}
+withAriaLabel : String -> Model a msg -> Model a msg
+withAriaLabel a (Model configuration) =
+    Model { configuration | ariaLabel = Just a }
+
+
+{-| Sets an id to the Button.
+-}
+withId : String -> Model a msg -> Model a msg
+withId a (Model configuration) =
+    Model { configuration | id = Just a }
+
+
 {-| Sets whether the Button should show a loading spinner or not.
 -}
-withLoading : Bool -> Model a msg -> Model a msg
+withLoading : Bool -> Model { a | loading : Api.Supported } msg -> Model a msg
 withLoading a (Model configuration) =
     Model { configuration | loading = a }
 
 
-{-| Sets whether the Button should be have a content width or not.
+{-| Sets whether the Button should have a content width or not.
 -}
-withContentWidth : Model a msg -> Model a msg
+withContentWidth : Model { a | contentWidth : Api.Supported } msg -> Model { a | iconOnly : Api.NotSupported } msg
 withContentWidth (Model configuration) =
     Model { configuration | contentWidth = True }
 
 
-{-| Sets whether the Button should be have a content width or not.
+{-| Sets whether the Button should have a shadow or not.
 -}
-withShadow : Model a msg -> Model a msg
+withShadow : Model { a | shadow : Api.Supported } msg -> Model a msg
 withShadow (Model configuration) =
-    Model { configuration | contentWidth = True }
+    Model { configuration | shadow = True }
 
 
 {-| Adds a textual content to the Button.
@@ -446,35 +604,53 @@ withText a (Model configuration) =
     Model { configuration | text = a }
 
 
+{-| Adds a classList to the Button.
+-}
+withClassList : List ( String, Bool ) -> Model a msg -> Model a msg
+withClassList a (Model configuration) =
+    Model { configuration | classList = a }
+
+
 {-| Renders the Button.
 -}
 render : Model a msg -> Html msg
 render (Model configuration) =
-    Html.button
+    (if isLinkType configuration.type_ then
+        Html.a
+
+     else
+        Html.button
+    )
         (CA.compose
             [ Attributes.classList
-                [ ( "button", True )
-                , ( "button--leading-icon", isLeadingIcon configuration.icon )
-                , ( "button--trailing-icon", isTrailingIcon configuration.icon )
-                , ( "button--icon-only", isIconOnly configuration.icon )
-                , ( "button--alt", configuration.theme == Dark )
-                , ( "button--primary", configuration.variant == Primary )
-                , ( "button--secondary", configuration.variant == Secondary )
-                , ( "button--tertiary", configuration.variant == Tertiary )
-                , ( "button--brand", configuration.variant == Brand )
-                , ( "button--ghost", configuration.variant == Ghost )
-                , ( "button--huge", configuration.size == Huge )
-                , ( "button--large", configuration.size == Large )
-                , ( "button--medium", configuration.size == Medium )
-                , ( "button--small", configuration.size == Small )
-                , ( "button--loading", configuration.loading )
-                , ( "button--content-width", configuration.contentWidth )
-                , ( "button--shadow", configuration.contentWidth )
-                ]
+                ([ ( "button", True )
+                 , ( "button--leading-icon", isLeadingIcon configuration.icon )
+                 , ( "button--trailing-icon", isTrailingIcon configuration.icon )
+                 , ( "button--icon-only", isIconOnly configuration.icon )
+                 , ( "button--alt", configuration.theme == Dark )
+                 , ( "button--primary", configuration.variant == Primary )
+                 , ( "button--secondary", configuration.variant == Secondary )
+                 , ( "button--tertiary", configuration.variant == Tertiary )
+                 , ( "button--brand", configuration.variant == Brand )
+                 , ( "button--ghost", configuration.variant == Ghost )
+                 , ( "button--huge", configuration.size == Huge )
+                 , ( "button--large", configuration.size == Large )
+                 , ( "button--medium", configuration.size == Medium )
+                 , ( "button--small", configuration.size == Small )
+                 , ( "button--loading", configuration.loading )
+                 , ( "button--content-width", configuration.contentWidth )
+                 , ( "button--shadow", configuration.shadow )
+                 ]
+                    ++ configuration.classList
+                )
             , Attributes.disabled configuration.disabled
-            , typeToAttribute configuration.type_
             ]
-            [ typeToEventAttribute configuration.type_ ]
+            [ typeToAttribute configuration.type_
+            , typeToEventAttribute configuration.type_
+            , Maybe.map Attributes.id configuration.id
+            , Maybe.map (Attributes.attribute "data-test-id") configuration.id
+            , Maybe.map (Attributes.attribute "aria-label") configuration.ariaLabel
+            ]
         )
         [ configuration.icon
             |> renderIcon configuration.size
