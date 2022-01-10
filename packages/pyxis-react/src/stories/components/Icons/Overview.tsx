@@ -1,5 +1,5 @@
-import React, {FC, ReactNode} from 'react';
-import {ArgsTable, Canvas, Story} from "@storybook/addon-docs";
+import React, { FC } from 'react';
+import { ArgsTable, Canvas, Story } from "@storybook/addon-docs";
 import shortid from 'shortid';
 
 import OverviewIndex from "stories/utils/OverviewIndex/OverviewIndex";
@@ -9,7 +9,6 @@ import CopyableCode from 'stories/utils/CopyableCode';
 import {Size, SizeRow, sizes} from './common';
 import * as icons from 'components/Icon/Icons';
 import Icon from "components/Icon";
-
 
 const { IconPrimaLogo } = icons;
 
@@ -82,12 +81,14 @@ const generateVariantBody = (): TableRow[] => [
     '-',
   ],
   [
-    <IconPrimaLogo isBoxed key={shortid.generate()} />,
+    <IconPrimaLogo boxed key={shortid.generate()} />,
     'boxed',
     '-',
   ],
   [
-    <div className="bg-neutral-base padding-3xs"><IconPrimaLogo isBoxed alt key={shortid.generate()} /></div>,
+    <div className="bg-neutral-base padding-3xs">
+      <IconPrimaLogo boxed alt key={shortid.generate()} />
+    </div>,
     'boxed and alt',
     'Use on dark background.',
   ],
@@ -126,7 +127,7 @@ const tableClassBody: TableRow[] = [
   ],
 ];
 
-const Overview: FC<OverviewProps> = () => (
+const Overview: FC<{}> = () => (
   <>
     <OverviewTemplate title="Icons" description={iconsDescription} category="Component" isMain>
       <Canvas>
@@ -163,10 +164,5 @@ const Overview: FC<OverviewProps> = () => (
     </OverviewTemplate>
   </>
 );
-
-interface OverviewProps {
-  argsTable: ReactNode,
-  story: ReactNode
-}
 
 export default Overview;

@@ -2,7 +2,7 @@ import React, {FC} from "react";
 import useCopy from "stories/hooks/useCopy";
 import classNames from "classnames";
 import styles from "./IconSet.module.scss";
-import {IconProps} from "components/Icon/Icon";
+import {IconProps} from "components/Icon";
 
 const Item: FC<ItemProp> = ({name, icon: Icon}) => {
   const [isCopied, handleCopyClick] = useCopy(name);

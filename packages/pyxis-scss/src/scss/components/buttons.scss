@@ -183,7 +183,7 @@ $_sizes: (
 /// @access private
 .button {
   cursor: pointer;
-  display: grid;
+  display: inline-grid;
   grid-auto-flow: column;
   justify-content: center;
   place-items: center;

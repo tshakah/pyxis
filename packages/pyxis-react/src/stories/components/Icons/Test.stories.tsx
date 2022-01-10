@@ -8,9 +8,9 @@ export default generateTestComponentMeta();
 const generateBody = ({ size }:SizeRow): TableRow => [
   size,
   <IconPrimaLogo size={size} key={size} />,
-  <IconPrimaLogo size={size} key={`${size}_boxed`} isBoxed />,
+  <IconPrimaLogo size={size} key={`${size}_boxed`} boxed />,
   <div className="bg-neutral-base padding-3xs">
-    <IconPrimaLogo size={size} key={`${size}_boxed_alt`} isBoxed alt />
+    <IconPrimaLogo size={size} key={`${size}_boxed_alt`} boxed alt />
   </div>,
 ];
 

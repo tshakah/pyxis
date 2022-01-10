@@ -1,7 +1,7 @@
 import React, {ChangeEventHandler, FC, useState} from 'react';
 import OverviewTemplate from "stories/utils/OverviewTemplate";
 import * as icons from 'components/Icon/Icons';
-import {IconProps} from "components/Icon/Icon";
+import {IconProps} from "components/Icon";
 import Item from "./Item";
 import styles from './IconSet.module.scss';
 
