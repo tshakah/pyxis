@@ -26,7 +26,7 @@ suite =
             , test "is <a>" <|
                 \_ ->
                     Button.primary
-                        |> Button.withLinkType "https://www.prima.it"
+                        |> Button.withTypeLink "https://www.prima.it"
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has
@@ -70,14 +70,14 @@ suite =
             [ test "is light" <|
                 \_ ->
                     Button.primary
-                        |> Button.withLightTheme
+                        |> Button.withThemeLight
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.hasNot [ classes [ "button--alt" ] ]
             , test "is dark" <|
                 \_ ->
                     Button.primary
-                        |> Button.withDarkTheme
+                        |> Button.withThemeDark
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--alt" ] ]
@@ -86,28 +86,28 @@ suite =
             [ test "is huge" <|
                 \_ ->
                     Button.primary
-                        |> Button.withHugeSize
+                        |> Button.withSizeHuge
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--huge" ] ]
             , test "is large" <|
                 \_ ->
                     Button.primary
-                        |> Button.withLargeSize
+                        |> Button.withSizeLarge
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--large" ] ]
             , test "is medium" <|
                 \_ ->
                     Button.primary
-                        |> Button.withMediumSize
+                        |> Button.withSizeMedium
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--medium" ] ]
             , test "is small" <|
                 \_ ->
                     Button.secondary
-                        |> Button.withSmallSize
+                        |> Button.withSizeSmall
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--small" ] ]
@@ -122,21 +122,21 @@ suite =
             , test "is button" <|
                 \_ ->
                     Button.primary
-                        |> Button.withButtonType OnClick
+                        |> Button.withTypeButton OnClick
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (Html.Attributes.type_ "button") ]
             , test "is reset" <|
                 \_ ->
                     Button.primary
-                        |> Button.withResetType
+                        |> Button.withTypeReset
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (Html.Attributes.type_ "reset") ]
             , test "has no type when tag is <a>" <|
                 \_ ->
                     Button.primary
-                        |> Button.withResetType
+                        |> Button.withTypeReset
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.hasNot
@@ -147,7 +147,7 @@ suite =
             , test "is <a>" <|
                 \_ ->
                     Button.primary
-                        |> Button.withLinkType "https://www.prima.it"
+                        |> Button.withTypeLink "https://www.prima.it"
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has
@@ -159,21 +159,21 @@ suite =
             [ test "is leading" <|
                 \_ ->
                     Button.primary
-                        |> Button.withLeadingIcon IconSet.Car
+                        |> Button.withIconLeading IconSet.Car
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--leading-icon" ] ]
             , test "is trailing" <|
                 \_ ->
                     Button.primary
-                        |> Button.withTrailingIcon IconSet.Motorcycle
+                        |> Button.withIconTrailing IconSet.Motorcycle
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--trailing-icon" ] ]
             , test "is icon only" <|
                 \_ ->
                     Button.primary
-                        |> Button.withLargeSize
+                        |> Button.withSizeLarge
                         |> Button.withIconOnly IconSet.Van
                         |> Button.render
                         |> Query.fromHtml
@@ -183,7 +183,7 @@ suite =
             [ test "has onClick" <|
                 \_ ->
                     Button.primary
-                        |> Button.withButtonType OnClick
+                        |> Button.withTypeButton OnClick
                         |> Button.render
                         |> Query.fromHtml
                         |> Event.simulate Event.click

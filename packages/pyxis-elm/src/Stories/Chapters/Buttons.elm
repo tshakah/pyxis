@@ -29,7 +29,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -45,7 +45,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.secondary
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -61,7 +61,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.tertiary
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -77,7 +77,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.brand
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -93,7 +93,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.ghost
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -110,7 +110,7 @@ import Components.Button as Button
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withSubmitType
+        |> Button.withTypeSubmit
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -126,7 +126,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -139,7 +139,7 @@ import Components.Button as Button
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withResetType
+        |> Button.withTypeReset
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -152,7 +152,7 @@ import Components.Button as Button
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withLinkType "https://www.prima.it"
+        |> Button.withTypeLink "https://www.prima.it"
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -174,8 +174,8 @@ Check the documentation in order to be aware of what you can do and what's forbi
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withHugeSize
-        |> Button.withButtonType OnClick
+        |> Button.withSizeHuge
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -192,7 +192,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withLargeSize
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -209,7 +209,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withMediumSize
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -226,7 +226,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withSmallSize
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -248,7 +248,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withLeadingIcon IconSet.Car
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -266,7 +266,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withTrailingIcon IconSet.Van
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -284,7 +284,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withIconOnly IconSet.Motorcycle
-        |> Button.withButtonType OnClick
+        |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -377,7 +377,7 @@ btn =
 withCommonOptions : Button.Model a (ElmBook.Msg state) -> Button.Model a (ElmBook.Msg state)
 withCommonOptions =
     Button.withText "Click me!"
-        >> Button.withButtonType (ElmBook.Actions.logAction "Button clicked")
+        >> Button.withTypeButton (ElmBook.Actions.logAction "Button clicked")
 
 
 componentsList : List ( String, Html (ElmBook.Msg state) )
@@ -385,91 +385,91 @@ componentsList =
     [ ( "Primary"
       , Button.primary
             |> withCommonOptions
-            |> Button.withLargeSize
+            |> Button.withSizeLarge
             |> Button.render
       )
     , ( "Secondary"
       , Button.secondary
             |> withCommonOptions
-            |> Button.withLargeSize
+            |> Button.withSizeLarge
             |> Button.render
       )
     , ( "Tertiary"
       , Button.tertiary
             |> withCommonOptions
-            |> Button.withLargeSize
+            |> Button.withSizeLarge
             |> Button.render
       )
     , ( "Brand"
       , Button.brand
             |> withCommonOptions
-            |> Button.withLargeSize
+            |> Button.withSizeLarge
             |> Button.render
       )
     , ( "Ghost"
       , Button.ghost
             |> withCommonOptions
-            |> Button.withLargeSize
+            |> Button.withSizeLarge
             |> Button.render
       )
     , ( "Type Button"
       , Button.primary
             |> withCommonOptions
-            |> Button.withButtonType (ElmBook.Actions.logAction "Clicked")
+            |> Button.withTypeButton (ElmBook.Actions.logAction "Clicked")
             |> Button.render
       )
     , ( "Type Submit"
       , Button.primary
             |> withCommonOptions
-            |> Button.withSubmitType
+            |> Button.withTypeSubmit
             |> Button.render
       )
     , ( "Type Reset"
       , Button.primary
             |> withCommonOptions
-            |> Button.withResetType
+            |> Button.withTypeReset
             |> Button.render
       )
     , ( "Type Link"
       , Button.primary
             |> withCommonOptions
-            |> Button.withLinkType "https://www.prima.it"
+            |> Button.withTypeLink "https://www.prima.it"
             |> Button.render
       )
     , ( "Huge"
       , Button.primary
             |> withCommonOptions
-            |> Button.withHugeSize
+            |> Button.withSizeHuge
             |> Button.render
       )
     , ( "Large"
       , Button.primary
             |> withCommonOptions
-            |> Button.withLargeSize
+            |> Button.withSizeLarge
             |> Button.render
       )
     , ( "Medium"
       , Button.primary
             |> withCommonOptions
-            |> Button.withMediumSize
+            |> Button.withSizeMedium
             |> Button.render
       )
     , ( "Small"
       , Button.primary
             |> withCommonOptions
-            |> Button.withSmallSize
+            |> Button.withSizeSmall
             |> Button.render
       )
     , ( "Leading Icon"
       , Button.primary
             |> withCommonOptions
-            |> Button.withLeadingIcon IconSet.Car
+            |> Button.withIconLeading IconSet.Car
             |> Button.render
       )
     , ( "Trailing Icon"
       , Button.primary
             |> withCommonOptions
-            |> Button.withTrailingIcon IconSet.Van
+            |> Button.withIconTrailing IconSet.Van
             |> Button.render
       )
     , ( "Icon Only"

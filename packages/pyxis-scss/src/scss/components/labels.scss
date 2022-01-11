@@ -14,14 +14,14 @@
 ///   </label>
 ///
 /// @example scss - Simple label with small size
-///   <label class="label label--size">
+///   <label class="label label--small">
 ///     This is a Label
 ///   </label>
 ///
 /// @example scss - Label with subtext
 ///   <label class="label">
 ///     Primary label
-///     <small class="label__secondary">Optional content</small>
+///     <small class="label__sub">Optional content</small>
 ///   </label>
 ///
 .label {

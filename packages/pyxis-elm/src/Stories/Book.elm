@@ -7,6 +7,7 @@ import Html.Attributes
 import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
+import Stories.Chapters.Label as LabelChapter
 
 
 main : ElmBook.Book ()
@@ -26,4 +27,5 @@ main =
             [ ButtonChapter.docs
             , IconChapter.docs
             , IconSetChapter.docs
+            , LabelChapter.docs
             ]

@@ -24,6 +24,6 @@ toComponent icon =
     ( IconSet.toLabel icon
     , icon
         |> Icon.create
-        |> Icon.withLargeSize
+        |> Icon.withSizeLarge
         |> Icon.render
     )

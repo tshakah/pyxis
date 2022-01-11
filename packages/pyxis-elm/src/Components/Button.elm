@@ -6,21 +6,21 @@ module Components.Button exposing
     , brand
     , ghost
     , Type
-    , withSubmitType
-    , withResetType
-    , withButtonType
-    , withLinkType
+    , withTypeSubmit
+    , withTypeReset
+    , withTypeButton
+    , withTypeLink
     , Theme
-    , withLightTheme
-    , withDarkTheme
+    , withThemeLight
+    , withThemeDark
     , Size
-    , withHugeSize
-    , withLargeSize
-    , withMediumSize
-    , withSmallSize
+    , withSizeHuge
+    , withSizeLarge
+    , withSizeMedium
+    , withSizeSmall
     , Icon
-    , withLeadingIcon
-    , withTrailingIcon
+    , withIconLeading
+    , withIconTrailing
     , withIconOnly
     , withAriaLabel
     , withId
@@ -49,33 +49,33 @@ module Components.Button exposing
 ## Type
 
 @docs Type
-@docs withSubmitType
-@docs withResetType
-@docs withButtonType
-@docs withLinkType
+@docs withTypeSubmit
+@docs withTypeReset
+@docs withTypeButton
+@docs withTypeLink
 
 
 ## Theme
 
 @docs Theme
-@docs withLightTheme
-@docs withDarkTheme
+@docs withThemeLight
+@docs withThemeDark
 
 
 ## Size
 
 @docs Size
-@docs withHugeSize
-@docs withLargeSize
-@docs withMediumSize
-@docs withSmallSize
+@docs withSizeHuge
+@docs withSizeLarge
+@docs withSizeMedium
+@docs withSizeSmall
 
 
 ## Icon
 
 @docs Icon
-@docs withLeadingIcon
-@docs withTrailingIcon
+@docs withIconLeading
+@docs withIconTrailing
 @docs withIconOnly
 
 
@@ -158,7 +158,7 @@ type alias DefaultConfiguration a =
     myClickableButton : Html Msg
     myClickableButton =
         Button.brand
-            |> Button.withButtonType OnClick
+            |> Button.withTypeButton OnClick
             |> Button.withLargeSize
             |> Button.withText "Click me!"
             |> Button.render
@@ -166,7 +166,7 @@ type alias DefaultConfiguration a =
     mySubmitButton : Html Msg
     mySubmitButton =
         Button.primary
-            |> Button.withSubmitType
+            |> Button.withTypeSubmit
             |> Button.withText "Submit form"
             |> Button.withDisabled (not MyForm.canBeSubmitted)
             |> Button.render
@@ -349,29 +349,29 @@ isLinkType a =
 
 {-| Sets a type="submit" to the Button.
 -}
-withSubmitType : Model a msg -> Model a msg
-withSubmitType (Model configuration) =
+withTypeSubmit : Model a msg -> Model a msg
+withTypeSubmit (Model configuration) =
     Model { configuration | type_ = Submit }
 
 
 {-| Sets a type="button" to the Button.
 -}
-withButtonType : msg -> Model a msg -> Model a msg
-withButtonType msg (Model configuration) =
+withTypeButton : msg -> Model a msg -> Model a msg
+withTypeButton msg (Model configuration) =
     Model { configuration | type_ = Button msg }
 
 
 {-| Sets a type="reset" to the Button.
 -}
-withResetType : Model a msg -> Model a msg
-withResetType (Model configuration) =
+withTypeReset : Model a msg -> Model a msg
+withTypeReset (Model configuration) =
     Model { configuration | type_ = Reset }
 
 
 {-| Using this method you will get an <a> tag instead of a <button> one.
 -}
-withLinkType : String -> Model a msg -> Model a msg
-withLinkType a (Model configuration) =
+withTypeLink : String -> Model a msg -> Model a msg
+withTypeLink a (Model configuration) =
     Model { configuration | type_ = Link a }
 
 
@@ -420,15 +420,15 @@ type Theme
 
 {-| Sets a theme to the Button.
 -}
-withLightTheme : Model a msg -> Model a msg
-withLightTheme (Model configuration) =
+withThemeLight : Model a msg -> Model a msg
+withThemeLight (Model configuration) =
     Model { configuration | theme = Light }
 
 
 {-| Sets a theme to the Button.
 -}
-withDarkTheme : Model a msg -> Model a msg
-withDarkTheme (Model configuration) =
+withThemeDark : Model a msg -> Model a msg
+withThemeDark (Model configuration) =
     Model { configuration | theme = Dark }
 
 
@@ -451,23 +451,23 @@ type Size
     | Small
 
 
-withHugeSize : Model { a | hugeSize : Api.Supported } msg -> Model { a | iconOnly : Api.Supported } msg
-withHugeSize (Model configuration) =
+withSizeHuge : Model { a | hugeSize : Api.Supported } msg -> Model { a | iconOnly : Api.Supported } msg
+withSizeHuge (Model configuration) =
     Model { configuration | size = Huge }
 
 
-withLargeSize : Model a msg -> Model { a | iconOnly : Api.Supported } msg
-withLargeSize (Model configuration) =
+withSizeLarge : Model a msg -> Model { a | iconOnly : Api.Supported } msg
+withSizeLarge (Model configuration) =
     Model { configuration | size = Large }
 
 
-withMediumSize : Model a msg -> Model { a | iconOnly : Api.Supported } msg
-withMediumSize (Model configuration) =
+withSizeMedium : Model a msg -> Model { a | iconOnly : Api.Supported } msg
+withSizeMedium (Model configuration) =
     Model { configuration | size = Medium }
 
 
-withSmallSize : Model { a | smallSize : Api.Supported } msg -> Model { a | iconOnly : Api.NotSupported } msg
-withSmallSize (Model configuration) =
+withSizeSmall : Model { a | smallSize : Api.Supported } msg -> Model { a | iconOnly : Api.NotSupported } msg
+withSizeSmall (Model configuration) =
     Model { configuration | size = Small }
 
 
@@ -536,15 +536,15 @@ pickIcon icon =
 
 {-| Adds an icon to the Button. The icon will be shown before button's content from ltr.
 -}
-withLeadingIcon : IconSet.Icon -> Model a msg -> Model a msg
-withLeadingIcon a (Model configuration) =
+withIconLeading : IconSet.Icon -> Model a msg -> Model a msg
+withIconLeading a (Model configuration) =
     Model { configuration | icon = Leading a }
 
 
 {-| Adds an icon to the Button. The icon will be shown after button's content from ltr.
 -}
-withTrailingIcon : IconSet.Icon -> Model a msg -> Model a msg
-withTrailingIcon a (Model configuration) =
+withIconTrailing : IconSet.Icon -> Model a msg -> Model a msg
+withIconTrailing a (Model configuration) =
     Model { configuration | icon = Trailing a }
 
 
@@ -683,10 +683,10 @@ applyIconSize : Size -> (Icon.Model a -> Icon.Model a)
 applyIconSize size =
     case size of
         Huge ->
-            Icon.withLargeSize
+            Icon.withSizeLarge
 
         Large ->
-            Icon.withMediumSize
+            Icon.withSizeMedium
 
         _ ->
-            Icon.withSmallSize
+            Icon.withSizeSmall

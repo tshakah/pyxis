@@ -154,44 +154,44 @@ componentsList =
     [ ( "Large"
       , IconSet.User
             |> Icon.create
-            |> Icon.withLargeSize
+            |> Icon.withSizeLarge
             |> Icon.render
       )
     , ( "Medium"
       , IconSet.User
             |> Icon.create
-            |> Icon.withMediumSize
+            |> Icon.withSizeMedium
             |> Icon.render
       )
     , ( "Small"
       , IconSet.User
             |> Icon.create
-            |> Icon.withSmallSize
+            |> Icon.withSizeSmall
             |> Icon.render
       )
     , ( "Default Style"
       , IconSet.User
             |> Icon.create
-            |> Icon.withDefaultStyle
+            |> Icon.withStyleDefault
             |> Icon.render
       )
     , ( "Boxed Style"
       , IconSet.User
             |> Icon.create
-            |> Icon.withBoxedStyle
+            |> Icon.withStyleBoxed
             |> Icon.render
       )
     , ( "Light Theme"
       , IconSet.User
             |> Icon.create
-            |> Icon.withLightTheme
+            |> Icon.withThemeLight
             |> Icon.render
       )
     , ( "Dark Theme"
       , IconSet.User
             |> Icon.create
-            |> Icon.withBoxedStyle
-            |> Icon.withDarkTheme
+            |> Icon.withStyleBoxed
+            |> Icon.withThemeDark
             |> Icon.render
       )
     , ( "Accessible Description"

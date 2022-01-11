@@ -2,15 +2,15 @@ module Components.Icon exposing
     ( Model
     , create
     , Theme
-    , withLightTheme
-    , withDarkTheme
+    , withThemeLight
+    , withThemeDark
     , Size
-    , withLargeSize
-    , withMediumSize
-    , withSmallSize
+    , withSizeLarge
+    , withSizeMedium
+    , withSizeSmall
     , Style
-    , withDefaultStyle
-    , withBoxedStyle
+    , withStyleDefault
+    , withStyleBoxed
     , withDescription
     , withClassList
     , render
@@ -28,23 +28,23 @@ module Components.Icon exposing
 ## Theme
 
 @docs Theme
-@docs withLightTheme
-@docs withDarkTheme
+@docs withThemeLight
+@docs withThemeDark
 
 
 ## Size
 
 @docs Size
-@docs withLargeSize
-@docs withMediumSize
-@docs withSmallSize
+@docs withSizeLarge
+@docs withSizeMedium
+@docs withSizeSmall
 
 
 ## Style
 
 @docs Style
-@docs withDefaultStyle
-@docs withBoxedStyle
+@docs withStyleDefault
+@docs withStyleBoxed
 
 
 ## Generics
@@ -117,15 +117,15 @@ type Theme
 
 {-| Sets a light theme to the Icon.
 -}
-withLightTheme : Model a -> Model { a | dark : Api.NotSupported }
-withLightTheme (Model configuration) =
+withThemeLight : Model a -> Model { a | dark : Api.NotSupported }
+withThemeLight (Model configuration) =
     Model { configuration | theme = Light }
 
 
 {-| Sets a dark theme to the Icon.
 -}
-withDarkTheme : Model { a | dark : Api.Supported } -> Model a
-withDarkTheme (Model configuration) =
+withThemeDark : Model { a | dark : Api.Supported } -> Model a
+withThemeDark (Model configuration) =
     Model { configuration | theme = Dark }
 
 
@@ -139,22 +139,22 @@ type Size
 
 {-| Sets a large size to the Icon.
 -}
-withLargeSize : Model a -> Model a
-withLargeSize (Model configuration) =
+withSizeLarge : Model a -> Model a
+withSizeLarge (Model configuration) =
     Model { configuration | size = Large }
 
 
 {-| Sets a medium size to the Icon.
 -}
-withMediumSize : Model a -> Model a
-withMediumSize (Model configuration) =
+withSizeMedium : Model a -> Model a
+withSizeMedium (Model configuration) =
     Model { configuration | size = Medium }
 
 
 {-| Sets a small size to the Icon.
 -}
-withSmallSize : Model a -> Model a
-withSmallSize (Model configuration) =
+withSizeSmall : Model a -> Model a
+withSizeSmall (Model configuration) =
     Model { configuration | size = Small }
 
 
@@ -167,15 +167,15 @@ type Style
 
 {-| Sets a default style to the Icon.
 -}
-withDefaultStyle : Model a -> Model { a | dark : Api.Supported }
-withDefaultStyle (Model configuration) =
+withStyleDefault : Model a -> Model { a | dark : Api.Supported }
+withStyleDefault (Model configuration) =
     Model { configuration | style = Default }
 
 
 {-| Sets a boxed style to the Icon.
 -}
-withBoxedStyle : Model a -> Model { a | dark : Api.Supported }
-withBoxedStyle (Model configuration) =
+withStyleBoxed : Model a -> Model { a | dark : Api.Supported }
+withStyleBoxed (Model configuration) =
     Model { configuration | style = Boxed }
 
 
