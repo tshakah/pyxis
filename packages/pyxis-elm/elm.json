@@ -5,6 +5,7 @@
     "license": "BSD-3-Clause",
     "version": "1.0.1",
     "exposed-modules": [
+        "Commons.Properties.FieldStatus",
         "Components.Button",
         "Components.Icon",
         "Components.IconSet",

@@ -70,14 +70,14 @@ suite =
             [ test "is light" <|
                 \_ ->
                     Button.primary
-                        |> Button.withThemeLight
+                        |> Button.withThemeDefault
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.hasNot [ classes [ "button--alt" ] ]
             , test "is dark" <|
                 \_ ->
                     Button.primary
-                        |> Button.withThemeDark
+                        |> Button.withThemeAlternative
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--alt" ] ]

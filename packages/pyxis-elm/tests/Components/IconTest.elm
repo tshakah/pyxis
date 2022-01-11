@@ -17,7 +17,7 @@ suite =
                 \_ ->
                     IconSet.User
                         |> Icon.create
-                        |> Icon.withThemeLight
+                        |> Icon.withThemeDefault
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon" ] ]
@@ -26,7 +26,7 @@ suite =
                     IconSet.Alarm
                         |> Icon.create
                         |> Icon.withStyleBoxed
-                        |> Icon.withThemeDark
+                        |> Icon.withThemeAlternative
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--alt" ] ]

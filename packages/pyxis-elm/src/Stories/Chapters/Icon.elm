@@ -76,7 +76,7 @@ icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withDefaultStyle
+      |> Icon.withStyleDefault
       |> Icon.render
 ```
 
@@ -91,15 +91,15 @@ icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withBoxedStyle
+      |> Icon.withStyleBoxed
       |> Icon.render
 ```
 
 ## Theme
-You can set your Icon with a _theme_ light or dark.
+You can set your Icon with a default _theme_ or alternative.
 
-### Theme: Light
-<component with-label="Light Theme" />
+### Theme: Default
+<component with-label="Default Theme" />
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -109,24 +109,24 @@ icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withLightTheme
+      |> Icon.withThemeDefault
       |> Icon.render
 ```
 
-### Theme: Dark
-<component with-label="Dark Theme" />
+### Theme: Alternative
+<component with-label="Alternative Theme" />
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 
-{-| Note that you can only enable the Dark theme on a Boxed icon.
+{-| Note that you can only enable the Alternative theme on a Boxed icon.
 -}
 icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withBoxedStyle
-      |> Icon.withDarkTheme
+      |> Icon.withStyleBoxed
+      |> Icon.withThemeAlternative
       |> Icon.render
 ```
 
@@ -181,17 +181,17 @@ componentsList =
             |> Icon.withStyleBoxed
             |> Icon.render
       )
-    , ( "Light Theme"
+    , ( "Default Theme"
       , IconSet.User
             |> Icon.create
-            |> Icon.withThemeLight
+            |> Icon.withThemeDefault
             |> Icon.render
       )
-    , ( "Dark Theme"
+    , ( "Alternative Theme"
       , IconSet.User
             |> Icon.create
             |> Icon.withStyleBoxed
-            |> Icon.withThemeDark
+            |> Icon.withThemeAlternative
             |> Icon.render
       )
     , ( "Accessible Description"

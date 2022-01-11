@@ -1,10 +1,8 @@
 module Components.Icon exposing
     ( Model
     , create
-    , Theme
-    , withThemeLight
-    , withThemeDark
-    , Size
+    , withThemeDefault
+    , withThemeAlternative
     , withSizeLarge
     , withSizeMedium
     , withSizeSmall
@@ -27,14 +25,12 @@ module Components.Icon exposing
 
 ## Theme
 
-@docs Theme
-@docs withThemeLight
-@docs withThemeDark
+@docs withThemeDefault
+@docs withThemeAlternative
 
 
 ## Size
 
-@docs Size
 @docs withSizeLarge
 @docs withSizeMedium
 @docs withSizeSmall
@@ -61,6 +57,8 @@ module Components.Icon exposing
 
 import Commons.ApiConstraint as Api
 import Commons.Attributes as CA
+import Commons.Properties.Size as Size exposing (Size)
+import Commons.Properties.Theme as Theme exposing (Theme)
 import Commons.Render as CR
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -91,7 +89,7 @@ Those keys represent which methods are use-restricted.
 You can use the Commons/ApiConstraint.elm module to allow/disallow methods call.
 -}
 type alias DefaultConfiguration a =
-    { a | dark : () }
+    { a | alternative : () }
 
 
 {-| Inits the Icon.
@@ -102,60 +100,45 @@ create icon =
         { classList = []
         , description = Nothing
         , icon = icon
-        , size = Medium
+        , size = Size.medium
         , style = Default
-        , theme = Light
+        , theme = Theme.default
         }
 
 
-{-| The available Icon themes.
+{-| Sets a default theme to the Icon.
 -}
-type Theme
-    = Light
-    | Dark
+withThemeDefault : Model a -> Model { a | alternative : Api.NotSupported }
+withThemeDefault (Model configuration) =
+    Model { configuration | theme = Theme.default }
 
 
-{-| Sets a light theme to the Icon.
+{-| Sets an alternative theme to the Icon.
 -}
-withThemeLight : Model a -> Model { a | dark : Api.NotSupported }
-withThemeLight (Model configuration) =
-    Model { configuration | theme = Light }
-
-
-{-| Sets a dark theme to the Icon.
--}
-withThemeDark : Model { a | dark : Api.Supported } -> Model a
-withThemeDark (Model configuration) =
-    Model { configuration | theme = Dark }
-
-
-{-| The available Icon sizes.
--}
-type Size
-    = Large
-    | Medium
-    | Small
+withThemeAlternative : Model { a | alternative : Api.Supported } -> Model a
+withThemeAlternative (Model configuration) =
+    Model { configuration | theme = Theme.alternative }
 
 
 {-| Sets a large size to the Icon.
 -}
 withSizeLarge : Model a -> Model a
 withSizeLarge (Model configuration) =
-    Model { configuration | size = Large }
+    Model { configuration | size = Size.large }
 
 
 {-| Sets a medium size to the Icon.
 -}
 withSizeMedium : Model a -> Model a
 withSizeMedium (Model configuration) =
-    Model { configuration | size = Medium }
+    Model { configuration | size = Size.medium }
 
 
 {-| Sets a small size to the Icon.
 -}
 withSizeSmall : Model a -> Model a
 withSizeSmall (Model configuration) =
-    Model { configuration | size = Small }
+    Model { configuration | size = Size.small }
 
 
 {-| The available Icon styles.
@@ -167,14 +150,14 @@ type Style
 
 {-| Sets a default style to the Icon.
 -}
-withStyleDefault : Model a -> Model { a | dark : Api.Supported }
+withStyleDefault : Model a -> Model { a | alternative : Api.Supported }
 withStyleDefault (Model configuration) =
     Model { configuration | style = Default }
 
 
 {-| Sets a boxed style to the Icon.
 -}
-withStyleBoxed : Model a -> Model { a | dark : Api.Supported }
+withStyleBoxed : Model a -> Model { a | alternative : Api.Supported }
 withStyleBoxed (Model configuration) =
     Model { configuration | style = Boxed }
 
@@ -201,11 +184,11 @@ render (Model configuration) =
         (CA.compose
             [ Attributes.classList
                 ([ ( "icon", True )
-                 , ( "icon--size-l", configuration.size == Large )
-                 , ( "icon--size-m", configuration.size == Medium )
-                 , ( "icon--size-s", configuration.size == Small )
+                 , ( "icon--size-l", Size.isLarge configuration.size )
+                 , ( "icon--size-m", Size.isMedium configuration.size )
+                 , ( "icon--size-s", Size.isSmall configuration.size )
                  , ( "icon--boxed", configuration.style == Boxed )
-                 , ( "icon--alt", configuration.theme == Dark )
+                 , ( "icon--alt", Theme.isAlternative configuration.theme )
                  ]
                     ++ configuration.classList
                 )
