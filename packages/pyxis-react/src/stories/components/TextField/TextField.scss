@@ -1,0 +1,18 @@
+@use "src/stories/pyxis.scss";
+
+.wrapper {
+  @include pyxis.columnGap(m);
+  @include pyxis.rowGap(m);
+  @include pyxis.verticalSpacing(xl);
+  align-items: start;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.form-item {
+  @include pyxis.rowGap(2xs);
+  display: grid;
+  grid-template-rows: auto;
+  width: 100%;
+}

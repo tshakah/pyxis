@@ -31,7 +31,7 @@ $_spacingsList: ();
 /// @throw {Error}
 /// @access public
 @function spacing($size) {
-  @return lib.get($spacings, $size, base);
+  @return lib.rem(lib.get($spacings, $size, base));
 }
 
 /// Includes the size contained in the spacings map on property in every breakpoints

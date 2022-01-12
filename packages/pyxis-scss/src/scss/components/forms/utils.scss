@@ -1,0 +1,36 @@
+@use "../../lib";
+@use "../../foundations";
+
+$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
+
+/// Add CSS rules for common field states.
+///
+/// @access private
+@mixin fieldState {
+  outline: transparent solid lib.rem(3px);
+  transition: border-color $_transitionTiming, outline-color $_transitionTiming;
+
+  &:focus-within:not(&--error),
+  &:hover:not(&--disabled, &--error) {
+    border-color: foundations.color(actionBase);
+  }
+
+  &:focus-within {
+    outline-color: rgba(foundations.color(actionBase), 0.2);
+  }
+
+  &--disabled {
+    background-color: foundations.color(neutral95);
+    border-color: foundations.color(neutral85);
+    color: foundations.color(neutral75);
+    cursor: not-allowed;
+  }
+
+  &--error {
+    border-color: foundations.color(errorBase);
+
+    &:focus-within {
+      outline-color: rgba(foundations.color(errorBase), 0.2);
+    }
+  }
+}

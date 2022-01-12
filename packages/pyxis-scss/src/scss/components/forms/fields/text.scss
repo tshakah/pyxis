@@ -1,0 +1,26 @@
+@use "../../../foundations";
+
+.form-field__text {
+  @include foundations.horizontalPadding(s);
+  flex: 1;
+  height: 100%;
+  width: 100%;
+
+  &::placeholder {
+    color: foundations.color(neutral50);
+    opacity: 1;
+  }
+
+  .form-field--small & {
+    @include foundations.horizontalPadding(xs);
+  }
+
+  .form-field--with-leading-icon & {
+    padding-left: 0;
+  }
+
+  .form-field--with-trailing-icon & {
+    padding-right: 0;
+  }
+}
+

@@ -1,0 +1,159 @@
+////
+/// Generated classes for text field styling.
+/// @group COMPONENTS
+////
+
+@use "../../../lib";
+@use "../../../foundations";
+@use "../utils";
+
+$_borderWidth: lib.rem(2px);
+$_height: lib.rem(50px);
+$_heightSmall: lib.rem(35px);
+$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
+
+/// Add the same color and border-color to element.
+/// @param {Color} $color - Color name
+///
+/// @output Appropriate `border-color` and `color`.
+///
+/// @access private
+@mixin _addonColors($color) {
+  border-color: foundations.color($color);
+  color: foundations.color($color);
+}
+
+/// Set general properties for text field.
+///
+/// @example scss - Base input field
+///    <div class="form-field">
+///      <input type="text" class="form-field__text" placeholder="Text field"/>
+///    </div>
+///
+/// @example scss - Base input field with error
+///    <div class="form-field form-field--error">
+///      <input type="text" class="form-field__text" placeholder="Text field" value="Invalid value"/>
+///      <div class="form-field__error-message">Error message</div>
+///    </div>
+///
+/// @example scss - Base input field disabled
+///    <div class="form-field form-field--disabled">
+///      <input type="text" class="form-field__text" placeholder="Text field" disabled/>
+///    </div>
+///
+/// @example scss - Small input
+///    <div class="form-field form-field--small">
+///      <input type="text" class="form-field__text" placeholder="Text field"/>
+///    </div>
+///
+/// @example scss - Input field with leading icon
+///    <div class="form-field form-field--with-leading-icon">
+///      <label class="form-field__wrapper">
+///        <div class="form-field__addon">
+///          // Use a 20x20 svg for small input field
+///          <svg width="24" height="24"></svg>
+///        </div>
+///        <input type="text" class="form-field__text" placeholder="Text field"/>
+///      </label>
+///    </div>
+///
+/// @example scss - Input field with trailing icon
+///    <div class="form-field form-field--with-trailing-icon">
+///      <label class="form-field__wrapper">
+///        <input type="text" class="form-field__text" placeholder="Text field"/>
+///        <div class="form-field__addon">
+///          // Use a 20x20 svg for small input field
+///          <svg width="24" height="24"></svg>
+///        </div>
+///      </label>
+///    </div>
+///
+/// @example scss - Input field with leading text
+///    <div class="form-field form-field--with-leading-text">
+///      <label class="form-field__wrapper">
+///        <span  class="form-field__addon">text</span>
+///        <input type="text" class="form-field__text" placeholder="Text field"/>
+///      </label>
+///    </div>
+///
+/// @example scss - Input field with trailing text
+///    <div class="form-field form-field--with-trailing-text">
+///      <label class="form-field__wrapper">
+///        <input type="text" class="form-field__text" placeholder="Text field"/>
+///        <span  class="form-field__addon">text</span>
+///      </label>
+///    </div>
+///
+/// @access public
+.form-field {
+  @include foundations.radius(xs);
+  @include foundations.text(m, book);
+  @include utils.fieldState;
+  background-color: foundations.color(neutralLight);
+  border: $_borderWidth solid foundations.color(neutral85);
+  color: foundations.color(neutralBase);
+  height: $_height;
+  position: relative;
+  width: 100%;
+}
+
+.form-field--small {
+  height: $_heightSmall;
+}
+
+.form-field__wrapper {
+  display: flex;
+  height: 100%;
+}
+
+.form-field__addon {
+  color: foundations.color(neutral25);
+  display: grid;
+  height: 100%;
+  min-width: $_height - $_borderWidth * 2;
+  place-items: center;
+  pointer-events: none;
+  user-select: none;
+
+  .form-field--with-leading-text &,
+  .form-field--with-trailing-text & {
+    @include foundations.horizontalPadding(2xs);
+    transition: border-color $_transitionTiming, color $_transitionTiming;
+    white-space: nowrap;
+  }
+
+  .form-field--with-leading-text & {
+    border-right: lib.rem(1px) solid foundations.color(neutral85);
+  }
+
+  .form-field--with-trailing-text & {
+    border-left: lib.rem(1px) solid foundations.color(neutral85);
+  }
+
+  .form-field--small & {
+    min-width: $_heightSmall - $_borderWidth * 2;
+  }
+
+  .form-field:focus-within &,
+  .form-field:hover & {
+    @include _addonColors(actionBase);
+  }
+
+  .form-field.form-field--disabled & {
+    @include _addonColors(neutral75);
+  }
+
+  .form-field.form-field--error & {
+    @include _addonColors(errorBase);
+  }
+}
+
+.form-field__error-message {
+  @include foundations.text(s, book);
+  color: foundations.color(errorBase);
+  left: -$_borderWidth;
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + #{$_borderWidth * 2});
+  user-select: none;
+}
