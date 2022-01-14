@@ -103,3 +103,27 @@ IconOnly.args = {
   iconPlacement: "only",
   icon: IconPen
 };
+
+export const WithShadow = Template.bind({});
+WithShadow.args = {
+  shadow: true
+};
+
+export const Loading = Template.bind({});
+Loading.args = {
+  loading: true
+};
+
+export const ContentWidth = Template.bind({});
+ContentWidth.args = {
+  contentWidth: true
+};
+
+export const AltBackground = Template.bind({});
+AltBackground.args = {
+  alt: true
+};
+
+AltBackground.parameters = {
+  backgrounds: { default: 'dark' },
+};

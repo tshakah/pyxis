@@ -16,7 +16,11 @@ docs =
         |> ElmBook.Chapter.render """
 
 ## Variant
-You can set your Button with a _variant_ of primary, secondary, tertiary, brand.
+Variants set the visual style of the button, each button should have a visual hierarchy in the page.
+
+Variants help the user to understand this hierarchy.
+
+You can set your Button with a _variant_ of primary, secondary, tertiary, brand, ghost.
 
 ### Variant: Primary
 <component with-label="Primary" />
@@ -158,6 +162,10 @@ btn =
 ```
 ---
 ## Size
+Sizes set the occupied space of the button.
+
+They can be useful when the actions need to be more prominent or when the space for the actions is little.
+
 You can set your Button with a _size_ of huge, large, medium, small.
 
 ### Size: Huge.
@@ -232,8 +240,8 @@ btn =
 ```
 ---
 ## Icon
-You can add an _icon_ to a Button. Icons can placed before or after the button _text_.
-Or maybe you can choose to have only an Icon as the content of your button.
+Buttons can also accommodate an icon. The icon can be inserted in the append or prepend of the label.
+The button can also contain only the icon, in this case it is advisable to add an _aria-label_ to the button to improve accessibility.
 
 ### Icon: Leading
 <component with-label="Leading Icon" />
