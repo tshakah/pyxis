@@ -1,18 +1,16 @@
 @use "../../../foundations";
+@use "../../../lib";
+@use "../variables";
 
 .form-field__text {
   @include foundations.horizontalPadding(s);
   flex: 1;
-  height: 100%;
+  height: variables.$height;
   width: 100%;
 
   &::placeholder {
     color: foundations.color(neutral50);
     opacity: 1;
-  }
-
-  .form-field--small & {
-    @include foundations.horizontalPadding(xs);
   }
 
   .form-field--with-leading-icon & {
@@ -22,5 +20,10 @@
   .form-field--with-trailing-icon & {
     padding-right: 0;
   }
+}
+
+.form-field__text--small {
+  @include foundations.horizontalPadding(xs);
+  height: variables.$heightSmall;
 }
 

@@ -14,6 +14,11 @@ fieldset {
   &:focus {
     outline: none;
   }
+
+  &:disabled,
+  &[disabled] {
+    pointer-events: none;
+  }
 }
 
 input[type="search"]::-webkit-search-decoration,
