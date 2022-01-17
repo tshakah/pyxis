@@ -1,0 +1,20 @@
+@use "../../../foundations";
+@use "../variables";
+
+.form-field__date {
+  color: foundations.color(neutral50);
+  flex: 1;
+  height: variables.$height;
+  padding-right: foundations.spacing(s);
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.form-field__date--filled {
+  color: foundations.color(neutralBase);
+}
+
+.form-field__date--small {
+  height: variables.$heightSmall;
+  padding-right: foundations.spacing(xs);
+}

@@ -8,11 +8,6 @@
   height: variables.$height;
   width: 100%;
 
-  &::placeholder {
-    color: foundations.color(neutral50);
-    opacity: 1;
-  }
-
   .form-field--with-leading-icon & {
     padding-left: 0;
   }

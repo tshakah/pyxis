@@ -1,3 +1,5 @@
+@use "../colors";
+
 button,
 input,
 optgroup,
@@ -14,9 +16,15 @@ fieldset {
   &:focus {
     outline: none;
   }
+}
 
+input,
+select,
+textarea,
+input[type="submit"] {
   &:disabled,
   &[disabled] {
+    color: colors.color(neutral75);
     pointer-events: none;
   }
 }
@@ -28,4 +36,14 @@ input[type="search"]::-webkit-search-results-decoration,
 input[type="password"]::-ms-reveal,
 ::-ms-clear {
   display: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+::placeholder {
+  color: colors.color(neutral50);
+  opacity: 1;
+  user-select: none;
 }

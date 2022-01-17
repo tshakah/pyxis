@@ -84,13 +84,36 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///    </div>
 ///
 /// @example scss - Textarea
-///    <div className="form-field">
-///      <textarea className="form-field__textarea" placeholder="Text area" />
+///    <div class="form-field">
+///      <textarea class="form-field__textarea" placeholder="Text area" />
 ///    </div>
 ///
 /// @example scss - Textarea small
-///    <div className="form-field form-field--small">
-///      <textarea className="form-field__textarea form-field__textarea--small" placeholder="Text area" />
+///    <div class="form-field form-field--small">
+///      <textarea class="form-field__textarea form-field__textarea--small" placeholder="Text area" />
+///    </div>
+///
+/// @example scss - Date field
+///    <div class="form-field">
+///      <label class="form-field__wrapper">
+///         <button class="form-field__addon">
+///           <svg width="24" height="24></svg>
+///         </button>
+///         <input type="date" class="form-field__date"/>
+///       </label>
+///    </div>
+///
+/// @example scss - Date field filled
+///    <div class="form-field">
+///      // Remember to add `form-field__date--filled` class when input is populated.
+///       <label class="form-field__wrapper">
+///        <button class="form-field__addon">
+///          <svg width="24" height="24></svg>
+///        </button>
+///        <input
+///         class="form-field__date form-field__date--filled"
+///         value="2022-12-25" />
+///       </label>
 ///    </div>
 ///
 /// @access public
@@ -109,6 +132,10 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 .form-field__wrapper {
   display: flex;
   height: 100%;
+
+  .form-field--disabled & {
+    pointer-events: none;
+  }
 }
 
 .form-field__addon {
