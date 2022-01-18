@@ -1,36 +1,113 @@
 @use "../../lib";
 @use "../../foundations";
+@use "variables";
 
 $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 
-/// Add CSS rules for common field states.
+/// Add CSS rules for default, hover and focus field states.
 ///
 /// @access private
-@mixin fieldState {
+@mixin fieldStateDefault {
   outline: transparent solid lib.rem(3px);
   transition: border-color $_transitionTiming, outline-color $_transitionTiming;
 
-  &:focus-within:not(&--error),
-  &:hover:not(&--disabled, &--error) {
+  &:focus,
+  &:focus-within,
+  &:hover:not(&--disabled, :disabled, [disabled], :checked) {
     border-color: foundations.color(actionBase);
   }
 
+  &:focus,
   &:focus-within {
     outline-color: rgba(foundations.color(actionBase), 0.2);
   }
+}
 
-  &--disabled {
-    background-color: foundations.color(neutral95);
-    border-color: foundations.color(neutral85);
-    color: foundations.color(neutral75);
-    cursor: not-allowed;
+/// Add CSS rules for disabled field state.
+///
+/// @access private
+@mixin fieldStateDisable {
+  background-color: foundations.color(neutral95);
+  border-color: foundations.color(neutral85);
+  color: foundations.color(neutral75);
+  cursor: not-allowed;
+}
+
+/// Add CSS rules for error field state.
+///
+/// @access private
+@mixin fieldStateError {
+  &,
+  &:active,
+  &:checked,
+  &:focus,
+  &:focus-within,
+  &:hover:not(&--disabled, :disabled, [disabled]) {
+    border-color: foundations.color(errorBase);
   }
 
-  &--error {
-    border-color: foundations.color(errorBase);
+  &:active,
+  &:focus,
+  &:focus-within {
+    outline-color: rgba(foundations.color(errorBase), 0.2);
+  }
+}
 
-    &:focus-within {
-      outline-color: rgba(foundations.color(errorBase), 0.2);
+/// Add CSS rules for error message.
+///
+/// @access private
+@mixin fieldErrorMessage {
+  @include foundations.text(s, book);
+  color: foundations.color(errorBase);
+  pointer-events: none;
+  position: absolute;
+  user-select: none;
+}
+
+/// Add CSS rules for default control field.
+///
+/// @access private
+@mixin controlDefault {
+  border: variables.$borderWidth solid foundations.color(neutral85);
+  cursor: pointer;
+  height: variables.$controlSize;
+  outline-offset: 0;
+  transition: background-color $_transitionTiming,
+    border-color $_transitionTiming,
+    outline-color $_transitionTiming;
+  width: variables.$controlSize;
+  will-change: background-color, border-color, outline-color;
+
+  &:checked {
+    background-color: foundations.color(actionBase);
+    border-color: foundations.color(actionBase);
+  }
+
+  &:active:not(:disabled, [disabled]) {
+    background-color: foundations.color(actionDark);
+    border-color: foundations.color(actionDark);
+    outline-color: rgba(foundations.color(actionDark), 0.2);
+  }
+
+  &:disabled,
+  &[disabled] {
+    @include fieldStateDisable;
+    box-shadow: none;
+    outline: none;
+
+    &:checked {
+      background-color: foundations.color(neutral75);
+      border-color: foundations.color(neutral85);
+    }
+  }
+
+  .form-control--error & {
+    @include fieldStateError;
+
+    &:checked,
+    &:active,
+    &:focus {
+      background-color: foundations.color(errorBase);
     }
   }
 }

@@ -1,0 +1,88 @@
+@use "../../../foundations";
+@use "../../../lib";
+@use "../mixins";
+@use "../variables";
+
+$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
+
+/// Set general properties for control fields as radio and checkbox.
+///
+/// @example scss - Grouped radio field - Horizontal layout (default)
+///    <div class="form-control-group">
+///      <label class="form-control">
+///        <input type="radio" name="ex1" class="form-control__radio" />
+///        Radio
+///      </label>
+///      <label class="form-control">
+///        <input type="radio" name="ex1" class="form-control__radio" checked />
+///        Radio
+///      </label>
+///    </div>
+///
+/// @example scss - Radio field with error
+///    <div class="form-control-group">
+///      <label class="form-control form-control--error">
+///        <input type="radio" name="ex2" class="form-control__radio" />
+///        Radio
+///      </label>
+///      <div class="form-control-group__error-message">Error message</div>
+///    </div>
+///
+/// @example scss - Disabled radio field
+///    <div class="form-control-group">
+///      // Please note that adding `form-control--disabled` is mandatory for a correct interaction.
+///      <label class="form-control form-control--disabled">
+///        <input type="radio" name="ex3" class="form-control__radio" disabled />
+///        Radio
+///      </label>
+///    </div>
+///
+/// @example scss - Grouped radio - Vertical layout
+///    <div class="form-control-group form-control-group--column">
+///      <label class="form-control">
+///        <input type="radio" name="ex4" class="form-control__radio" />
+///        Radio
+///      </label>
+///      <label class="form-control">
+///        <input type="radio" name="ex4" class="form-control__radio" checked />
+///        Radio
+///      </label>
+///    </div>
+///
+/// @access public
+.form-control {
+  @include foundations.columnGap(xs);
+  @include foundations.text(m, book);
+  align-items: center;
+  color: foundations.color(neutral25);
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: variables.$controlSize auto;
+  position: relative;
+  user-select: none;
+}
+
+.form-control--disabled {
+  cursor: not-allowed;
+}
+
+.form-control-group {
+  @include foundations.columnGap(l);
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  position: relative;
+}
+
+.form-control-group--column {
+  @include foundations.rowGap(xs);
+  grid-auto-flow: row;
+}
+
+.form-control-group__error-message {
+  $gap: lib.rem(2px);
+
+  @include mixins.fieldErrorMessage;
+  left: 0;
+  top: calc(100% + #{$gap});
+}

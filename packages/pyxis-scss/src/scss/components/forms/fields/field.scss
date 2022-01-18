@@ -8,7 +8,6 @@
 @use "../mixins";
 @use "../variables";
 
-$_borderWidth: lib.rem(2px);
 $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 
 /// Add the same color and border-color to element.
@@ -120,13 +119,21 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 .form-field {
   @include foundations.radius(xs);
   @include foundations.text(m, book);
-  @include mixins.fieldState;
+  @include mixins.fieldStateDefault;
   background-color: foundations.color(neutralLight);
-  border: $_borderWidth solid foundations.color(neutral85);
+  border: variables.$borderWidth solid foundations.color(neutral85);
   color: foundations.color(neutralBase);
   cursor: text;
   position: relative;
   width: 100%;
+}
+
+.form-field--disabled {
+  @include mixins.fieldStateDisable;
+}
+
+.form-field--error {
+  @include mixins.fieldStateError;
 }
 
 .form-field__wrapper {
@@ -141,7 +148,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 .form-field__addon {
   color: foundations.color(neutral25);
   display: grid;
-  min-width: variables.$height - $_borderWidth * 2;
+  min-width: variables.$fieldHeight - variables.$borderWidth * 2;
   place-items: center;
   pointer-events: none;
   user-select: none;
@@ -162,7 +169,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   }
 
   .form-field--small & {
-    min-width: variables.$heightSmall - $_borderWidth * 2;
+    min-width: variables.$fieldHeightSmall - variables.$borderWidth * 2;
   }
 
   .form-field:focus-within &,
@@ -180,11 +187,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 }
 
 .form-field__error-message {
-  @include foundations.text(s, book);
-  color: foundations.color(errorBase);
-  left: -$_borderWidth;
-  pointer-events: none;
-  position: absolute;
-  top: calc(100% + #{$_borderWidth * 2});
-  user-select: none;
+  @include mixins.fieldErrorMessage;
+  left: - variables.$borderWidth;
+  top: calc(100% + #{variables.$borderWidth * 2});
 }

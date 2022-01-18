@@ -1,4 +1,6 @@
 @use "../../lib";
 
-$height: lib.rem(50px);
-$heightSmall: lib.rem(35px);
+$borderWidth: lib.rem(2px);
+$controlSize: lib.rem(20px);
+$fieldHeight: lib.rem(46px);
+$fieldHeightSmall: lib.rem(31px);
