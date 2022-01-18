@@ -4,7 +4,7 @@
 .form-field__date {
   color: foundations.color(neutral50);
   flex: 1;
-  height: variables.$height;
+  height: variables.$fieldHeight;
   padding-right: foundations.spacing(s);
   text-transform: uppercase;
   width: 100%;
@@ -15,6 +15,6 @@
 }
 
 .form-field__date--small {
-  height: variables.$heightSmall;
+  height: variables.$fieldHeightSmall;
   padding-right: foundations.spacing(xs);
 }
