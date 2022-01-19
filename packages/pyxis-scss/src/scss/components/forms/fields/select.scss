@@ -1,0 +1,69 @@
+////
+/// Generated classes for text field styling.
+/// @group COMPONENTS
+////
+
+@use "../../../foundations";
+@use "../variables";
+
+/// Set general properties for select field.
+///
+/// @example scss - Native select field
+///    <div class="form-field">
+///      <label class="form-field__wrapper">
+///        <select class="form-field__select">
+///          <option hidden disabled selected>Placeholder</option>
+///          <option value="1">Option 1</option>
+///          ...
+///        </select>
+///        <div class="form-field__addon">
+///          // Use a 20x20 svg for small input field
+///          <svg width="24" height="24"></svg>
+///        </div>
+///      </label>
+///    </div>
+///
+/// @example scss - Select field with custom dropdown
+///    <div class="form-field form-field--with-dropdown">
+///      <label class="form-field__wrapper">
+///        <select class="form-field__select">
+///          <option hidden disabled selected>Placeholder</option>
+///          <option value="1">Option 1</option>
+///          ...
+///        </select>
+///        <div class="form-field__addon">
+///          // Use a 20x20 svg for small input field
+///          <svg width="24" height="24"></svg>
+///        </div>
+///      </label>
+///      <div class="form-field__dropdown-wrapper">
+///        <div class="form-field__dropdown">
+///          <div class="form-field__dropdown__item">Option 1</div>
+///          ...
+///        </div>
+///      </div>
+///    </div>
+///
+/// @access public
+.form-field__select {
+  color: foundations.color(neutral50);
+  cursor: pointer;
+  flex: 1;
+  height: variables.$fieldHeight;
+  padding-left: foundations.spacing(s);
+  user-select: none;
+  width: 100%;
+
+  .form-field--with-dropdown & {
+    pointer-events: none;
+  }
+}
+
+.form-field__select--filled {
+  color: foundations.color(neutralBase);
+}
+
+.form-field__select--small {
+  height: variables.$fieldHeightSmall;
+  padding-left: foundations.spacing(xs);
+}

@@ -8,7 +8,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///
 /// @access private
 @mixin fieldStateDefault {
-  outline: transparent solid lib.rem(3px);
+  outline: transparent solid variables.$outlineWidth;
   transition: border-color $_transitionTiming, outline-color $_transitionTiming;
 
   &:focus,
@@ -50,6 +50,19 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   &:focus,
   &:focus-within {
     outline-color: rgba(foundations.color(errorBase), 0.2);
+  }
+}
+
+/// Add CSS rules for opened dropdown.
+///
+/// @access private
+@mixin fieldWithOpenedDropdown {
+  @include foundations.radius(xs, top);
+
+  &:focus,
+  &:focus-within,
+  &:active {
+    outline-color: transparent;
   }
 }
 

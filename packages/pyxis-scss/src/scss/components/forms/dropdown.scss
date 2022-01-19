@@ -1,0 +1,99 @@
+@use "../../foundations";
+@use "../../lib";
+@use "variables";
+
+$_wrapperAnimationOffset: lib.rem(10px);
+$_transitionProperty: cubic-bezier(0.3, 0.07, 0.34, 1);
+
+.form-field__dropdown-wrapper {
+  $transition: 0.1s $_transitionProperty;
+
+  @include foundations.elevation(s, action15);
+  @include foundations.radius(xs);
+  border: variables.$borderWidth solid foundations.color(actionBase);
+  left: -#{variables.$borderWidth};
+  opacity: 0;
+  outline: transparent solid variables.$outlineWidth;
+  padding-top: variables.$fieldHeight - $_wrapperAnimationOffset;
+  position: absolute;
+  right: -#{variables.$borderWidth};
+  top: -#{variables.$borderWidth};
+  transition: opacity $transition,
+    outline-color $transition,
+    padding-top $transition;
+  visibility: hidden;
+  will-change: opacity, outline-color, padding-top;
+  z-index: 1;
+
+  .form-field--with-opened-dropdown & {
+    opacity: 1;
+    outline-color: rgba(foundations.color(actionBase), 0.2);
+    padding-top: variables.$fieldHeight;
+    visibility: visible;
+  }
+
+  .form-field--error.form-field--with-opened-dropdown & {
+    border-color: foundations.color(errorBase);
+    outline-color: rgba(foundations.color(errorBase), 0.2);
+  }
+}
+
+.form-field__dropdown-wrapper--small {
+  padding-top: variables.$fieldHeightSmall - $_wrapperAnimationOffset;
+
+  .form-field--with-opened-dropdown & {
+    padding-top: variables.$fieldHeightSmall;
+  }
+}
+
+.form-field__dropdown {
+  $maxHeight: lib.rem(155px);
+  $maxHeightSmall: lib.rem(120px);
+  $radius: 0 0 lib.rem(6px) lib.rem(6px);
+
+  @include foundations.horizontalPadding(2xs);
+  @include foundations.rowGap(4xs);
+  @include foundations.verticalPadding(3xs);
+  background-color: foundations.color(neutralLight);
+  border-radius: $radius;
+  border-top: lib.rem(1px) solid foundations.color(neutral85);
+  cursor: default;
+  display: grid;
+  max-height: $maxHeight;
+  overflow: scroll;
+
+  .form-field__dropdown-wrapper--small & {
+    @include foundations.horizontalPadding(3xs);
+    max-height: $maxHeightSmall;
+  }
+}
+
+.form-field__dropdown__item {
+  $height: lib.rem(40px);
+  $heightSmall: lib.rem(30px);
+  $transition: 0.05s $_transitionProperty;
+
+  @include foundations.horizontalPadding(2xs);
+  @include foundations.radius(2xs);
+  align-items: center;
+  color: foundations.color(neutral25);
+  cursor: pointer;
+  display: grid;
+  height: $height;
+  transition: background-color $transition, color $transition;
+  user-select: none;
+  will-change: background-color, color;
+
+  &:hover {
+    background-color: foundations.color(neutral95);
+  }
+
+  .form-field__dropdown-wrapper--small & {
+    height: $heightSmall;
+  }
+}
+
+.form-field__dropdown__item--active {
+  background-color: foundations.color(actionLight);
+  color: foundations.color(actionBase);
+}
