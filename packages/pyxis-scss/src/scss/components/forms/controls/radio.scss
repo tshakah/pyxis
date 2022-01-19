@@ -24,6 +24,7 @@
 
   &:disabled:checked,
   &[disabled]:checked {
+    background-color: foundations.color(neutral75);
     @include _boxShadow(neutral95);
   }
 }

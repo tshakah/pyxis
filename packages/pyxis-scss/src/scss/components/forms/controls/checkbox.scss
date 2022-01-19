@@ -1,0 +1,81 @@
+@use "../../../foundations";
+@use "../../../lib";
+@use "../mixins";
+@use "../variables";
+
+$_checkmarkIcon: "%3Csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.4413 3.02222L3.78257 8.97764L1.55872 5.94636' fill='none' stroke='%%COLOR%%' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
+$_indeterminateIcon: "%3Csvg width='10' height='2' viewBox='0 0 10 2' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='-1' y='-5' width='12' height='12' fill='%%COLOR%%'/%3E%3C/svg%3E";
+
+/// Add a background image with a proper color.
+/// @param {String} $image - An svg with '%%COLOR%%' placeholder
+/// @param {Color} $color - Color name
+///
+/// @output Appropriate `box-image`.
+///
+/// @access private
+@mixin _backgroundImage($image, $color: neutralLight) {
+  $escapedColor: lib.stringReplace("#{foundations.color($color)}", "#", "%23");
+  $svg: lib.stringReplace($image, "%%COLOR%%", $escapedColor);
+
+  background-image: url("data:image/svg+xml,#{$svg}");
+}
+
+/// Set background and border color.
+/// @param {Color} $color - Color name
+/// @param {Color} $color2 [$color] - Color name for border
+///
+/// @output Appropriate `background-color` and `border-color`.
+///
+/// @access private
+@mixin _color($color, $color2: $color) {
+  background-color: foundations.color($color);
+  border-color: foundations.color($color2);
+}
+
+.form-control__checkbox {
+  @include foundations.radius(2xs);
+  @include mixins.fieldStateDefault;
+  @include mixins.controlDefault;
+  position: relative;
+
+  &:checked:after,
+  &:indeterminate:after {
+    background-position: center;
+    background-repeat: no-repeat;
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  &:checked:after {
+    @include _backgroundImage($_checkmarkIcon);
+  }
+
+  &:indeterminate {
+    @include _color(actionBase);
+
+    &:after {
+      @include _backgroundImage($_indeterminateIcon);
+    }
+
+    .form-control--error & {
+      @include _color(errorBase);
+    }
+  }
+
+  &:disabled,
+  &[disabled] {
+    @include _color(neutral95, neutral85);
+
+    &:checked:after {
+      @include _backgroundImage($_checkmarkIcon, neutral75);
+    }
+
+    &:indeterminate:after {
+      @include _backgroundImage($_indeterminateIcon, neutral75);
+    }
+  }
+}

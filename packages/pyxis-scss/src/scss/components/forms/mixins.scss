@@ -96,7 +96,6 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
     outline: none;
 
     &:checked {
-      background-color: foundations.color(neutral75);
       border-color: foundations.color(neutral85);
     }
   }
@@ -105,8 +104,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
     @include fieldStateError;
 
     &:checked,
-    &:active,
-    &:focus {
+    &:active {
       background-color: foundations.color(errorBase);
     }
   }
