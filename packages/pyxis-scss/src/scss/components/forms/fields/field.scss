@@ -21,27 +21,22 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   color: foundations.color($color);
 }
 
-/// Set general properties for text field.
+/// Set general properties for the container of the field.
 ///
-/// @example scss - Base input field
+/// @example scss - Base field
 ///    <div class="form-field">
-///      <input type="text" class="form-field__text" placeholder="Text field"/>
+///      <input />
 ///    </div>
 ///
-/// @example scss - Base input field with error
+/// @example scss - Base field with error message
 ///    <div class="form-field form-field--error">
-///      <input type="text" class="form-field__text" placeholder="Text field" value="Invalid value"/>
+///      <input />
 ///      <div class="form-field__error-message">Error message</div>
 ///    </div>
 ///
-/// @example scss - Base input field disabled
+/// @example scss - Base field disabled
 ///    <div class="form-field form-field--disabled">
-///      <input type="text" class="form-field__text" placeholder="Text field" disabled/>
-///    </div>
-///
-/// @example scss - Small input
-///    <div class="form-field">
-///      <input type="text" class="form-field__text form-field__text--small" placeholder="Text field"/>
+///      <input disabled/>
 ///    </div>
 ///
 /// @example scss - Input field with leading icon
@@ -51,14 +46,14 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///          // Use a 20x20 svg for small input field
 ///          <svg width="24" height="24"></svg>
 ///        </div>
-///        <input type="text" class="form-field__text" placeholder="Text field"/>
+///        <input />
 ///      </label>
 ///    </div>
 ///
 /// @example scss - Input field with trailing icon
 ///    <div class="form-field form-field--with-trailing-icon">
 ///      <label class="form-field__wrapper">
-///        <input type="text" class="form-field__text" placeholder="Text field"/>
+///        <input />
 ///        <div class="form-field__addon">
 ///          // Use a 20x20 svg for small input field
 ///          <svg width="24" height="24"></svg>
@@ -67,6 +62,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///    </div>
 ///
 /// @example scss - Input field with leading text
+///    // Please note: this is available only with input of type text
 ///    <div class="form-field form-field--with-leading-text">
 ///      <label class="form-field__wrapper">
 ///        <span  class="form-field__addon">text</span>
@@ -75,44 +71,12 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///    </div>
 ///
 /// @example scss - Input field with trailing text
+///    // Please note: this is available only with input of type text
 ///    <div class="form-field form-field--with-trailing-text">
 ///      <label class="form-field__wrapper">
 ///        <input type="text" class="form-field__text" placeholder="Text field"/>
 ///        <span  class="form-field__addon">text</span>
 ///      </label>
-///    </div>
-///
-/// @example scss - Textarea
-///    <div class="form-field">
-///      <textarea class="form-field__textarea" placeholder="Text area" />
-///    </div>
-///
-/// @example scss - Textarea small
-///    <div class="form-field">
-///      <textarea class="form-field__textarea form-field__textarea--small" placeholder="Text area" />
-///    </div>
-///
-/// @example scss - Date field
-///    <div class="form-field">
-///      <label class="form-field__wrapper">
-///         <button class="form-field__addon">
-///           <svg width="24" height="24></svg>
-///         </button>
-///         <input type="date" class="form-field__date"/>
-///       </label>
-///    </div>
-///
-/// @example scss - Date field filled
-///    <div class="form-field">
-///      // Remember to add `form-field__date--filled` class when input is populated.
-///       <label class="form-field__wrapper">
-///        <button class="form-field__addon">
-///          <svg width="24" height="24></svg>
-///        </button>
-///        <input
-///         class="form-field__date form-field__date--filled"
-///         value="2022-12-25" />
-///       </label>
 ///    </div>
 ///
 /// @access public

@@ -1,3 +1,8 @@
+////
+/// Generated classes for text field styling.
+/// @group COMPONENTS
+////
+
 @use "../../../foundations";
 @use "../../../lib";
 @use "../mixins";
@@ -32,6 +37,25 @@ $_indeterminateIcon: "%3Csvg width='10' height='2' viewBox='0 0 10 2' fill='none
   border-color: foundations.color($color2);
 }
 
+/// Set properties for styling checkbox.
+///
+/// @example scss - Checkbox
+///    <div class="form-control-group">
+///      <label class="form-control">
+///        <input type="checkbox" name="example" class="form-control__checkbox" />
+///        Checkbox
+///      </label>
+///      <label class="form-control">
+///        <input type="checkbox" name="example" class="form-control__checkbox" checked />
+///        Checkbox
+///      </label>
+///      <label class="form-control">
+///        <input type="checkbox" name="example" class="form-control__checkbox" indeterminate />
+///        Checkbox
+///      </label>
+///    </div>
+///
+/// @access public
 .form-control__checkbox {
   @include foundations.radius(2xs);
   @include mixins.fieldStateDefault;

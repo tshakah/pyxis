@@ -12,95 +12,45 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 
 /// Set general properties for control fields as radio and checkbox.
 ///
-/// @example scss - Grouped radio field - Horizontal layout (default)
+/// @example scss - Grouped control field - Horizontal layout (default)
 ///    <div class="form-control-group">
 ///      <label class="form-control">
-///        <input type="radio" name="ex1" class="form-control__radio" />
-///        Radio
+///        <input />
+///        Option
 ///      </label>
 ///      <label class="form-control">
-///        <input type="radio" name="ex1" class="form-control__radio" checked />
-///        Radio
+///        <input />
+///        Option
 ///      </label>
 ///    </div>
 ///
-/// @example scss - Radio field with error
-///    <div class="form-control-group">
-///      <label class="form-control form-control--error">
-///        <input type="radio" name="ex2" class="form-control__radio" />
-///        Radio
-///      </label>
-///      <div class="form-control-group__error-message">Error message</div>
-///    </div>
-///
-/// @example scss - Disabled radio field
-///    <div class="form-control-group">
-///      // Please note that adding `form-control--disabled` is mandatory for a correct interaction.
-///      <label class="form-control form-control--disabled">
-///        <input type="radio" name="ex3" class="form-control__radio" disabled />
-///        Radio
-///      </label>
-///    </div>
-///
-/// @example scss - Checkbox
-///    <div class="form-control-group">
-///      <label class="form-control">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" />
-///        Checkbox
-///      </label>
-///      <label class="form-control">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" checked />
-///        Checkbox
-///      </label>
-///      <label class="form-control">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" indeterminate />
-///        Checkbox
-///      </label>
-///    </div>
-///
-/// @example scss - Checkbox with error
-///    <div class="form-control-group form-control--error">
-///      <label class="form-control">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" />
-///        Checkbox
-///      </label>
-///      <label class="form-control">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" checked />
-///        Checkbox
-///      </label>
-///      <label class="form-control">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" indeterminate />
-///        Checkbox
-///      </label>
-///      <div class="form-control-group__error-message">Error message</div>
-///    </div>
-///
-/// @example scss - Disabled checkbox
-///    <div class="form-control-group">
-///      // Please note that adding `form-control--disabled` is mandatory for a correct interaction.
-///      <label class="form-control form-control--disabled">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" disabled/>
-///        Checkbox
-///      </label>
-///      <label class="form-control form-control--disabled">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" checked disabled />
-///        Checkbox
-///      </label>
-///      <label class="form-control form-control--disabled">
-///        <input type="checkbox" name="ex4" class="form-control__checkbox" indeterminate disabled />
-///        Checkbox
-///      </label>
-///    </div>
-///
-/// @example scss - Vertical layout
+/// @example scss - Grouped control field - Vertical layout
 ///    <div class="form-control-group form-control-group--column">
 ///      <label class="form-control">
-///        <input type="radio" name="ex4" class="form-control__radio" />
-///        Radio
+///        <input />
+///        Option
 ///      </label>
 ///      <label class="form-control">
-///        <input type="radio" name="ex4" class="form-control__radio" checked />
-///        Radio
+///        <input />
+///        Option
+///      </label>
+///    </div>
+///
+/// @example scss - Control field with error
+///    <div class="form-control-group">
+///      <label class="form-control form-control--error">
+///        <input />
+///        Option
+///      </label>
+///      <div class="form-control-group__error-message">Error message</div>
+///    </div>
+///
+/// @example scss - Disabled control field
+///    <div class="form-control-group">
+///      // Please note that adding `form-control--disabled` is mandatory for a correct interaction.
+///      <label class="form-control form-control--disabled">
+///        <input disabled />
+///        Control
 ///      </label>
 ///    </div>
 ///
