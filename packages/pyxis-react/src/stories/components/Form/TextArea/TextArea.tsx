@@ -28,7 +28,7 @@ const TextArea: FC = () => (
       <div className="form-item">
         <div className="form-item">
           <label className="label label--small">Textarea small</label>
-          <div className="form-field form-field--small">
+          <div className="form-field">
             <textarea className="form-field__textarea form-field__textarea--small" placeholder="Textarea small" />
           </div>
         </div>

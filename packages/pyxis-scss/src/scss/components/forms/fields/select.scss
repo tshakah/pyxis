@@ -48,11 +48,10 @@
 .form-field__select {
   color: foundations.color(neutral50);
   cursor: pointer;
-  flex: 1;
   height: variables.$fieldHeight;
   padding-left: foundations.spacing(s);
   user-select: none;
-  width: 100%;
+  width: variables.$fieldWidth;
 
   .form-field--with-dropdown & {
     pointer-events: none;
@@ -66,4 +65,5 @@
 .form-field__select--small {
   height: variables.$fieldHeightSmall;
   padding-left: foundations.spacing(xs);
+  width: variables.$fieldWidthSmall;
 }

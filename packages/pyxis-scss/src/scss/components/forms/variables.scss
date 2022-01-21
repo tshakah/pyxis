@@ -4,4 +4,6 @@ $borderWidth: lib.rem(2px);
 $controlSize: lib.rem(20px);
 $fieldHeight: lib.rem(46px);
 $fieldHeightSmall: lib.rem(31px);
+$fieldWidth: calc(100% - #{$fieldHeight});
+$fieldWidthSmall: calc(100% - #{$fieldHeightSmall});
 $outlineWidth: lib.rem(3px);

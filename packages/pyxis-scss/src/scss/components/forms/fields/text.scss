@@ -4,9 +4,8 @@
 
 .form-field__text {
   @include foundations.horizontalPadding(s);
-  flex: 1;
   height: variables.$fieldHeight;
-  width: 100%;
+  width: variables.$fieldWidth;
 
   .form-field--with-leading-icon & {
     padding-left: 0;
@@ -20,4 +19,5 @@
 .form-field__text--small {
   @include foundations.horizontalPadding(xs);
   height: variables.$fieldHeightSmall;
+  width: variables.$fieldWidthSmall;
 }

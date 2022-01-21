@@ -40,7 +40,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///    </div>
 ///
 /// @example scss - Small input
-///    <div class="form-field form-field--small">
+///    <div class="form-field">
 ///      <input type="text" class="form-field__text form-field__text--small" placeholder="Text field"/>
 ///    </div>
 ///
@@ -88,7 +88,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///    </div>
 ///
 /// @example scss - Textarea small
-///    <div class="form-field form-field--small">
+///    <div class="form-field">
 ///      <textarea class="form-field__textarea form-field__textarea--small" placeholder="Text area" />
 ///    </div>
 ///
@@ -153,7 +153,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 .form-field__addon {
   color: foundations.color(neutral25);
   display: grid;
-  min-width: variables.$fieldHeight;
+  flex: 1;
   place-items: center;
   pointer-events: none;
   transition: transform $_transitionTiming;
@@ -176,10 +176,6 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 
   .form-field--with-opened-dropdown & {
     transform: rotate(180deg);
-  }
-
-  .form-field--small & {
-    min-width: variables.$fieldHeightSmall;
   }
 
   .form-field:focus-within &,
