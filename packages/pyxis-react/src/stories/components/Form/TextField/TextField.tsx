@@ -11,7 +11,7 @@ const TextField: FC = () => (
         </div>
       </div>
       <div className="form-item">
-        <label className="label">Label</label>
+        <label className="form-label">Label</label>
         <div className="form-field form-field--with-leading-text">
           <label className="form-field__wrapper">
             <div className="form-field__addon">
@@ -22,7 +22,7 @@ const TextField: FC = () => (
         </div>
       </div>
       <div className="form-item">
-        <label className="label">Label</label>
+        <label className="form-label">Label</label>
         <div className="form-field form-field--with-leading-icon">
           <label className="form-field__wrapper">
             <div className="form-field__addon">

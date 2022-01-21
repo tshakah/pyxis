@@ -111,35 +111,35 @@ const SelectGrid: FC = () => {
   return (
     <div className="form-grid wrapper">
       <div className="form-item">
-        <label className="label" htmlFor="select-1">Default</label>
+        <label className="form-label" htmlFor="select-1">Default</label>
         <Select id="select-1" />
       </div>
       <div className="form-item">
-        <label className="label" htmlFor="select-2">Small</label>
+        <label className="form-label" htmlFor="select-2">Small</label>
         <Select id="select-2" small/>
       </div>
       <div className="form-item">
-        <label className="label" htmlFor="select-3">Disabled</label>
+        <label className="form-label" htmlFor="select-3">Disabled</label>
         <Select id="select-3" disabled/>
       </div>
       <div className="form-item">
-        <label className="label" htmlFor="select-4">Disabled Small</label>
+        <label className="form-label" htmlFor="select-4">Disabled Small</label>
         <Select id="select-4" small disabled/>
       </div>
       <div className="form-item">
-        <label className="label" htmlFor="select-5">Error</label>
+        <label className="form-label" htmlFor="select-5">Error</label>
         <Select id="select-5" error/>
       </div>
       <div className="form-item">
-        <label className="label" htmlFor="select-6">Error Small</label>
+        <label className="form-label" htmlFor="select-6">Error Small</label>
         <Select id="select-6" small error/>
       </div>
       <div className="form-item">
-        <label className="label" htmlFor="select-7">Native</label>
+        <label className="form-label" htmlFor="select-7">Native</label>
         <Select id="select-7" native/>
       </div>
       <div className="form-item">
-        <label className="label" htmlFor="select-8">Native Small</label>
+        <label className="form-label" htmlFor="select-8">Native Small</label>
         <Select id="select-8" small native/>
       </div>
     </div>

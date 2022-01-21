@@ -5,7 +5,7 @@ const DateField: FC = () => (
   <div>
       <div className="form-grid wrapper">
         <div className="form-item">
-          <label className="label">Input date</label>
+          <label className="form-label">Input date</label>
           <div className="form-field form-field--with-leading-icon">
             <label className="form-field__wrapper">
               <button className="form-field__addon">
@@ -20,7 +20,7 @@ const DateField: FC = () => (
         </div>
 
         <div className="form-item">
-          <label className="label">Input date filled</label>
+          <label className="form-label">Input date filled</label>
           <div className="form-field form-field--with-leading-icon">
             <label className="form-field__wrapper">
               <button className="form-field__addon">
@@ -35,7 +35,7 @@ const DateField: FC = () => (
         </div>
 
         <div className="form-item">
-          <label className="label">Input date</label>
+          <label className="form-label">Input date</label>
           <div className="form-field form-field--with-leading-icon form-field--error">
             <label className="form-field__wrapper">
               <button className="form-field__addon">
@@ -51,7 +51,7 @@ const DateField: FC = () => (
         </div>
 
         <div className="form-item">
-          <label className="label">Input date</label>
+          <label className="form-label">Input date</label>
           <div className="form-field form-field--with-leading-icon form-field--disabled">
             <label className="form-field__wrapper">
               <button className="form-field__addon" disabled>
@@ -66,7 +66,7 @@ const DateField: FC = () => (
         </div>
 
         <div className="form-item">
-          <label className="label label--small">Input date small</label>
+          <label className="form-label form-label--small">Input date small</label>
           <div className="form-field form-field--with-leading-icon">
             <label className="form-field__wrapper">
               <button className="form-field__addon">

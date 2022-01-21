@@ -9,22 +9,22 @@
 /// Set general properties for label component
 ///
 /// @example scss - Simple label
-///   <label class="label">
+///   <label class="form-label">
 ///     This is a Label
 ///   </label>
 ///
 /// @example scss - Simple label with small size
-///   <label class="label label--small">
+///   <label class="form-label form-label--small">
 ///     This is a Label
 ///   </label>
 ///
 /// @example scss - Label with subtext
-///   <label class="label">
+///   <label class="form-label">
 ///     Primary label
-///     <small class="label__sub">Optional content</small>
+///     <small class="form-label__sub">Optional content</small>
 ///   </label>
 ///
-.label {
+.form-label {
   @include foundations.text(l, book);
   color: foundations.color(neutralBase);
   display: grid;
@@ -32,14 +32,14 @@
 /// Add small label modifier
 ///
 /// @access private
-.label--small {
+.form-label--small {
   @include foundations.text(m, book);
 }
 
 /// Define properties for the optional information
 ///
 /// @access private
-.label__sub {
+.form-label__sub {
   @include foundations.text(s, book);
   color: foundations.color(neutral25);
 }
