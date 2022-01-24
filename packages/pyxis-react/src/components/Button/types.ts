@@ -17,8 +17,8 @@ type ButtonVariant
   | 'ghost'
 
 type ButtonIconPlacement
-  = 'leading'
-  | 'trailing'
+  = 'prepend'
+  | 'append'
   | 'only'
 
 type SizeCheck<S, V> =

@@ -11,6 +11,10 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   outline: transparent solid variables.$outlineWidth;
   transition: border-color $_transitionTiming, outline-color $_transitionTiming;
 
+  @include lib.onSafari {
+    @include shadow(transparent);
+  }
+
   &:focus,
   &:focus-within,
   &:hover:not(&--disabled, :disabled, [disabled], :checked) {
@@ -20,6 +24,10 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   &:focus,
   &:focus-within {
     outline-color: rgba(foundations.color(actionBase), 0.2);
+
+    @include lib.onSafari {
+      @include shadow(rgba(foundations.color(actionBase), 0.2));
+    }
   }
 }
 
@@ -50,6 +58,10 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   &:focus,
   &:focus-within {
     outline-color: rgba(foundations.color(errorBase), 0.2);
+
+    @include lib.onSafari {
+      @include shadow(rgba(foundations.color(errorDark), 0.2));
+    }
   }
 }
 
@@ -63,6 +75,10 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   &:focus-within,
   &:active {
     outline-color: transparent;
+
+    @include lib.onSafari {
+      @include shadow(transparent);
+    }
   }
 }
 
@@ -87,9 +103,10 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   outline-offset: 0;
   transition: background-color $_transitionTiming,
     border-color $_transitionTiming,
+    box-shadow $_transitionTiming,
     outline-color $_transitionTiming;
   width: variables.$controlSize;
-  will-change: background-color, border-color, outline-color;
+  will-change: background-color, border-color, box-shadow, outline-color;
 
   &:checked {
     background-color: foundations.color(actionBase);
@@ -97,9 +114,16 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   }
 
   &:active:not(:disabled, [disabled]) {
-    background-color: foundations.color(actionDark);
     border-color: foundations.color(actionDark);
     outline-color: rgba(foundations.color(actionDark), 0.2);
+
+    @include lib.onSafari {
+      @include shadow(rgba(foundations.color(actionDark), 0.2));
+    }
+
+    &:checked {
+      background-color: foundations.color(actionDark);
+    }
   }
 
   &:disabled,
@@ -117,8 +141,16 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
     @include fieldStateError;
 
     &:checked,
-    &:active {
+    &:checked:active {
       background-color: foundations.color(errorBase);
     }
   }
+}
+
+/// Add CSS rules for focus shadow
+///
+/// @access private
+@mixin shadow($boxShadowColor) {
+  box-shadow: 0 0 0 variables.$outlineWidth $boxShadowColor;
+  outline: none;
 }

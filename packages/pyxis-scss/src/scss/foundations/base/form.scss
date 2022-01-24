@@ -1,3 +1,4 @@
+@use "../../lib";
 @use "../colors";
 
 button,
@@ -13,7 +14,16 @@ fieldset {
   margin: 0;
   padding: 0;
 
-  &:not([type="radio"], [type="checkbox"]):focus {
+  @include lib.onSafari {
+    outline: none;
+  }
+}
+
+input,
+select,
+textarea {
+  &:focus:not([type="radio"], [type="checkbox"]),
+  &:focus-visible:not([type="radio"], [type="checkbox"]) {
     outline: none;
   }
 }
@@ -35,10 +45,6 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration,
 input[type="password"]::-ms-reveal,
 ::-ms-clear {
-  display: none;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
   display: none;
 }
 

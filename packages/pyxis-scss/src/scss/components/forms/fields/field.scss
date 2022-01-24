@@ -39,8 +39,8 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///      <input disabled/>
 ///    </div>
 ///
-/// @example scss - Input field with leading icon
-///    <div class="form-field form-field--with-leading-icon">
+/// @example scss - Input field with prepend icon
+///    <div class="form-field form-field--with-prepend-icon">
 ///      <label class="form-field__wrapper">
 ///        <div class="form-field__addon">
 ///          // Use a 20x20 svg for small input field
@@ -50,8 +50,8 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///      </label>
 ///    </div>
 ///
-/// @example scss - Input field with trailing icon
-///    <div class="form-field form-field--with-trailing-icon">
+/// @example scss - Input field with append icon
+///    <div class="form-field form-field--with-append-icon">
 ///      <label class="form-field__wrapper">
 ///        <input />
 ///        <div class="form-field__addon">
@@ -61,18 +61,18 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 ///      </label>
 ///    </div>
 ///
-/// @example scss - Input field with leading text
+/// @example scss - Input field with prepend text
 ///    // Please note: this is available only with input of type text
-///    <div class="form-field form-field--with-leading-text">
+///    <div class="form-field form-field--with-prepend-text">
 ///      <label class="form-field__wrapper">
 ///        <span  class="form-field__addon">text</span>
 ///        <input type="text" class="form-field__text" placeholder="Text field"/>
 ///      </label>
 ///    </div>
 ///
-/// @example scss - Input field with trailing text
+/// @example scss - Input field with append text
 ///    // Please note: this is available only with input of type text
-///    <div class="form-field form-field--with-trailing-text">
+///    <div class="form-field form-field--with-append-text">
 ///      <label class="form-field__wrapper">
 ///        <input type="text" class="form-field__text" placeholder="Text field"/>
 ///        <span  class="form-field__addon">text</span>
@@ -123,18 +123,23 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   transition: transform $_transitionTiming;
   user-select: none;
 
-  .form-field--with-leading-text &,
-  .form-field--with-trailing-text & {
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
+  .form-field--with-prepend-text &,
+  .form-field--with-append-text & {
     @include foundations.horizontalPadding(2xs);
     transition: border-color $_transitionTiming, color $_transitionTiming;
     white-space: nowrap;
   }
 
-  .form-field--with-leading-text & {
+  .form-field--with-prepend-text & {
     border-right: lib.rem(1px) solid foundations.color(neutral85);
   }
 
-  .form-field--with-trailing-text & {
+  .form-field--with-append-text & {
     border-left: lib.rem(1px) solid foundations.color(neutral85);
   }
 

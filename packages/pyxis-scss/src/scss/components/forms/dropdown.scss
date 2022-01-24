@@ -1,6 +1,7 @@
 @use "../../foundations";
 @use "../../lib";
 @use "variables";
+@use "mixins";
 
 $_wrapperAnimationOffset: lib.rem(10px);
 $_transitionProperty: cubic-bezier(0.3, 0.07, 0.34, 1);
@@ -25,16 +26,28 @@ $_transitionProperty: cubic-bezier(0.3, 0.07, 0.34, 1);
   will-change: opacity, outline-color, padding-top;
   z-index: 1;
 
+  @include lib.onSafari {
+    outline: none;
+  }
+
   .form-field--with-opened-dropdown & {
     opacity: 1;
     outline-color: rgba(foundations.color(actionBase), 0.2);
     padding-top: variables.$fieldHeight;
     visibility: visible;
+
+    @include lib.onSafari {
+      @include mixins.shadow(rgba(foundations.color(actionBase), 0.2));
+    }
   }
 
   .form-field--error.form-field--with-opened-dropdown & {
     border-color: foundations.color(errorBase);
     outline-color: rgba(foundations.color(errorBase), 0.2);
+
+    @include lib.onSafari {
+      @include mixins.shadow(rgba(foundations.color(errorBase), 0.2));
+    }
   }
 }
 

@@ -2,7 +2,7 @@ import {ButtonIconPlacement, ButtonSize, ButtonVariant} from "components/Button/
 
 export const buttonVariant:ButtonVariant[] = ['primary', 'secondary', 'tertiary', 'brand', 'ghost'];
 export const buttonSizes:ButtonSize[] = ['huge', 'large', 'medium', 'small'];
-export const buttonIconPlacements:ButtonIconPlacement[] = ['leading', 'trailing', 'only'];
+export const buttonIconPlacements:ButtonIconPlacement[] = ['prepend', 'append', 'only'];
 
 export const variantUsage = (variant: ButtonVariant):string => {
   switch (variant) {
@@ -28,7 +28,7 @@ export const iconPlacementUsage = (placement: ButtonIconPlacement):string => {
   switch (placement) {
     case 'only':
       return 'Is not allowed with `small` size.';
-    case 'leading':
+    case 'prepend':
       return 'Default value.';
     default:
       return '-';

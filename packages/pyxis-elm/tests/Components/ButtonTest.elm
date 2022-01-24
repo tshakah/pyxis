@@ -158,20 +158,20 @@ suite =
                             ]
             ]
         , describe "Button icon"
-            [ test "is leading" <|
+            [ test "is prepend" <|
                 \_ ->
                     Button.primary
-                        |> Button.withIconLeading IconSet.Car
+                        |> Button.withIconPrepend IconSet.Car
                         |> Button.render
                         |> Query.fromHtml
-                        |> Query.has [ classes [ "button", "button--leading-icon" ] ]
-            , test "is trailing" <|
+                        |> Query.has [ classes [ "button", "button--prepend-icon" ] ]
+            , test "is append" <|
                 \_ ->
                     Button.primary
-                        |> Button.withIconTrailing IconSet.Motorcycle
+                        |> Button.withIconAppend IconSet.Motorcycle
                         |> Button.render
                         |> Query.fromHtml
-                        |> Query.has [ classes [ "button", "button--trailing-icon" ] ]
+                        |> Query.has [ classes [ "button", "button--append-icon" ] ]
             , test "is icon only" <|
                 \_ ->
                     Button.primary

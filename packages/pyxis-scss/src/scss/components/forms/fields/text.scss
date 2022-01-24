@@ -25,11 +25,11 @@
   height: variables.$fieldHeight;
   width: variables.$fieldWidth;
 
-  .form-field--with-leading-icon & {
+  .form-field--with-prepend-icon & {
     padding-left: 0;
   }
 
-  .form-field--with-trailing-icon & {
+  .form-field--with-append-icon & {
     padding-right: 0;
   }
 }

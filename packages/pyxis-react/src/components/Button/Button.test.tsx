@@ -68,28 +68,28 @@ describe('Button component', () => {
       render(<Button variant="primary" icon={IconPen} id="icon-button">Button</Button>);
       const button = screen.getByTestId('icon-button');
       const icon = button.querySelector('svg');
-      expect(button).toHaveClass('button--leading-icon');
+      expect(button).toHaveClass('button--prepend-icon');
       expect(icon).toBeInTheDocument();
     });
 
-    test('should be a leading icon', () => {
+    test('should be a prepend icon', () => {
       render(
-        <Button variant="primary" icon={IconPen} iconPlacement="leading" id="icon-leading-button">Button</Button>,
+        <Button variant="primary" icon={IconPen} iconPlacement="prepend" id="icon-prepend-button">Button</Button>,
       );
-      const leading = screen.getByTestId('icon-leading-button');
-      const leadingIcon = leading.querySelector('svg');
-      expect(leading).toHaveClass('button--leading-icon');
-      expect(leadingIcon).toBeInTheDocument();
+      const prepend = screen.getByTestId('icon-prepend-button');
+      const prependIcon = prepend.querySelector('svg');
+      expect(prepend).toHaveClass('button--prepend-icon');
+      expect(prependIcon).toBeInTheDocument();
     });
 
-    test('should be a trailing icon', () => {
+    test('should be a append icon', () => {
       render(
-        <Button variant="primary" icon={IconPen} iconPlacement="trailing" id="icon-trailing-button">Button</Button>,
+        <Button variant="primary" icon={IconPen} iconPlacement="append" id="icon-append-button">Button</Button>,
       );
-      const trailing = screen.getByTestId('icon-trailing-button');
-      const trailingIcon = trailing.querySelector('svg');
-      expect(trailing).toHaveClass('button--trailing-icon');
-      expect(trailingIcon).toBeInTheDocument();
+      const append = screen.getByTestId('icon-append-button');
+      const appendIcon = append.querySelector('svg');
+      expect(append).toHaveClass('button--append-icon');
+      expect(appendIcon).toBeInTheDocument();
     });
 
     test('should be only icon', () => {

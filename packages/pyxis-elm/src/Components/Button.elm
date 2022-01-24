@@ -13,8 +13,8 @@ module Components.Button exposing
     , withType
     , withTheme
     , withSize
-    , withIconLeading
-    , withIconTrailing
+    , withIconPrepend
+    , withIconAppend
     , withIconOnly
     , withAriaLabel
     , withId
@@ -62,8 +62,8 @@ module Components.Button exposing
 
 ## Icon
 
-@docs withIconLeading
-@docs withIconTrailing
+@docs withIconPrepend
+@docs withIconAppend
 @docs withIconOnly
 
 
@@ -209,21 +209,21 @@ type ButtonIcon
     | None
 
 
-isLeading : ButtonIcon -> Bool
-isLeading buttonIcon =
+isPrepend : ButtonIcon -> Bool
+isPrepend buttonIcon =
     case buttonIcon of
         PlacedIcon placement _ ->
-            Placement.isLeading placement
+            Placement.isPrepend placement
 
         _ ->
             False
 
 
-isTrailing : ButtonIcon -> Bool
-isTrailing buttonIcon =
+isAppend : ButtonIcon -> Bool
+isAppend buttonIcon =
     case buttonIcon of
         PlacedIcon placement _ ->
-            Placement.isTrailing placement
+            Placement.isAppend placement
 
         _ ->
             False
@@ -368,16 +368,16 @@ withSize a (Model configuration) =
 
 {-| Adds an icon to the Button. The icon will be shown before button's content from ltr.
 -}
-withIconLeading : IconSet.Icon -> Model msg -> Model msg
-withIconLeading icon (Model configuration) =
-    Model { configuration | icon = PlacedIcon Placement.leading icon }
+withIconPrepend : IconSet.Icon -> Model msg -> Model msg
+withIconPrepend icon (Model configuration) =
+    Model { configuration | icon = PlacedIcon Placement.prepend icon }
 
 
 {-| Adds an icon to the Button. The icon will be shown after button's content from ltr.
 -}
-withIconTrailing : IconSet.Icon -> Model msg -> Model msg
-withIconTrailing icon (Model configuration) =
-    Model { configuration | icon = PlacedIcon Placement.trailing icon }
+withIconAppend : IconSet.Icon -> Model msg -> Model msg
+withIconAppend icon (Model configuration) =
+    Model { configuration | icon = PlacedIcon Placement.append icon }
 
 
 {-| Adds an icon to the Button. This will be the only content of the Button..
@@ -456,8 +456,8 @@ render (Model configuration) =
         (CA.compose
             [ Attributes.classList
                 ([ ( "button", True )
-                 , ( "button--leading-icon", isLeading configuration.icon )
-                 , ( "button--trailing-icon", isTrailing configuration.icon )
+                 , ( "button--prepend-icon", isPrepend configuration.icon )
+                 , ( "button--append-icon", isAppend configuration.icon )
                  , ( "button--icon-only", isStandalone configuration.icon )
                  , ( "button--alt", Theme.isAlternative configuration.theme )
                  , ( "button--primary", configuration.variant == Primary )
@@ -486,12 +486,12 @@ render (Model configuration) =
         )
         [ configuration.icon
             |> renderIcon configuration.size
-            |> CR.renderIf (isLeading configuration.icon || isStandalone configuration.icon)
+            |> CR.renderIf (isPrepend configuration.icon || isStandalone configuration.icon)
         , Html.text configuration.text
             |> CR.renderUnless (isStandalone configuration.icon)
         , configuration.icon
             |> renderIcon configuration.size
-            |> CR.renderIf (isTrailing configuration.icon)
+            |> CR.renderIf (isAppend configuration.icon)
         ]
 
 

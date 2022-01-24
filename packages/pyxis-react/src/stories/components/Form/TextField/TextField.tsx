@@ -12,7 +12,7 @@ const TextField: FC = () => (
       </div>
       <div className="form-item">
         <label className="form-label">Label</label>
-        <div className="form-field form-field--with-leading-text">
+        <div className="form-field form-field--with-prepend-text">
           <label className="form-field__wrapper">
             <div className="form-field__addon">
               €
@@ -23,7 +23,7 @@ const TextField: FC = () => (
       </div>
       <div className="form-item">
         <label className="form-label">Label</label>
-        <div className="form-field form-field--with-leading-icon">
+        <div className="form-field form-field--with-prepend-icon">
           <label className="form-field__wrapper">
             <div className="form-field__addon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
@@ -71,9 +71,9 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Leading icon */}
+    {/* Prepend icon */}
     <div className="wrapper">
-      <div className="form-field form-field--with-leading-icon">
+      <div className="form-field form-field--with-prepend-icon">
         <label className="form-field__wrapper">
           <div className="form-field__addon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
@@ -84,7 +84,7 @@ const TextField: FC = () => (
           <input type="text" className="form-field__text" placeholder="Text field"/>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-leading-icon">
+      <div className="form-field form-field--error form-field--with-prepend-icon">
         <label className="form-field__wrapper">
           <div className="form-field__addon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
@@ -96,7 +96,7 @@ const TextField: FC = () => (
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-leading-icon">
+      <div className="form-field form-field--disabled form-field--with-prepend-icon">
         <label className="form-field__wrapper">
           <div className="form-field__addon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
@@ -109,9 +109,9 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Trailing icon */}
+    {/* Append icon */}
     <div className="wrapper">
-      <div className="form-field form-field--with-trailing-icon">
+      <div className="form-field form-field--with-append-icon">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text" placeholder="Text field"/>
           <div className="form-field__addon">
@@ -122,7 +122,7 @@ const TextField: FC = () => (
           </div>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-trailing-icon">
+      <div className="form-field form-field--error form-field--with-append-icon">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text" placeholder="Text field"/>
           <div className="form-field__addon">
@@ -134,7 +134,7 @@ const TextField: FC = () => (
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-trailing-icon">
+      <div className="form-field form-field--disabled form-field--with-append-icon">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text" placeholder="Text field"/>
           <div className="form-field__addon">
@@ -147,9 +147,9 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Leading icon small */}
+    {/* Prepend icon small */}
     <div className="wrapper">
-      <div className="form-field form-field--with-leading-icon">
+      <div className="form-field form-field--with-prepend-icon">
         <label className="form-field__wrapper">
           <div className="form-field__addon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={20} height={20}>
@@ -160,7 +160,7 @@ const TextField: FC = () => (
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-leading-icon">
+      <div className="form-field form-field--error form-field--with-prepend-icon">
         <label className="form-field__wrapper">
           <div className="form-field__addon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={20} height={20}>
@@ -172,7 +172,7 @@ const TextField: FC = () => (
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-leading-icon">
+      <div className="form-field form-field--disabled form-field--with-prepend-icon">
         <label className="form-field__wrapper">
           <div className="form-field__addon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={20} height={20}>
@@ -185,9 +185,9 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Trailing icon small */}
+    {/* Append icon small */}
     <div className="wrapper">
-      <div className="form-field form-field--with-trailing-icon">
+      <div className="form-field form-field--with-append-icon">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
           <div className="form-field__addon">
@@ -198,7 +198,7 @@ const TextField: FC = () => (
           </div>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-trailing-icon">
+      <div className="form-field form-field--error form-field--with-append-icon">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
           <div className="form-field__addon">
@@ -210,7 +210,7 @@ const TextField: FC = () => (
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-trailing-icon">
+      <div className="form-field form-field--disabled form-field--with-append-icon">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
           <div className="form-field__addon">
@@ -223,22 +223,22 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Leading text */}
+    {/* Prepend text */}
     <div className="wrapper">
-      <div className="form-field form-field--with-leading-text">
+      <div className="form-field form-field--with-prepend-text">
         <label className="form-field__wrapper">
           <span className="form-field__addon">text addon</span>
           <input type="text" className="form-field__text" placeholder="Text field"/>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-leading-text">
+      <div className="form-field form-field--error form-field--with-prepend-text">
         <label className="form-field__wrapper">
           <span className="form-field__addon">text addon</span>
           <input type="text" className="form-field__text" placeholder="Text field"/>
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-leading-text">
+      <div className="form-field form-field--disabled form-field--with-prepend-text">
         <label className="form-field__wrapper">
           <span className="form-field__addon">text addon</span>
           <input type="text" className="form-field__text" placeholder="Text field" disabled/>
@@ -246,22 +246,22 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Trailing text */}
+    {/* Append text */}
     <div className="wrapper">
-      <div className="form-field form-field--with-trailing-text">
+      <div className="form-field form-field--with-append-text">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text" placeholder="Text field"/>
           <span className="form-field__addon">text addon</span>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-trailing-text">
+      <div className="form-field form-field--error form-field--with-append-text">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text" placeholder="Text field"/>
           <span className="form-field__addon">text addon</span>
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-trailing-text">
+      <div className="form-field form-field--disabled form-field--with-append-text">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text" placeholder="Text field" disabled/>
           <span className="form-field__addon">text addon</span>
@@ -269,22 +269,22 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Leading text small */}
+    {/* Prepend text small */}
     <div className="wrapper">
-      <div className="form-field form-field--with-leading-text">
+      <div className="form-field form-field--with-prepend-text">
         <label className="form-field__wrapper">
           <span className="form-field__addon">text addon</span>
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-leading-text">
+      <div className="form-field form-field--error form-field--with-prepend-text">
         <label className="form-field__wrapper">
           <span className="form-field__addon">text addon</span>
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-leading-text">
+      <div className="form-field form-field--disabled form-field--with-prepend-text">
         <label className="form-field__wrapper">
           <span className="form-field__addon">text addon</span>
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field" disabled/>
@@ -292,22 +292,22 @@ const TextField: FC = () => (
       </div>
     </div>
 
-    {/* Trailing text small */}
+    {/* Append text small */}
     <div className="wrapper">
-      <div className="form-field form-field--with-trailing-text">
+      <div className="form-field form-field--with-append-text">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
           <span className="form-field__addon">text addon</span>
         </label>
       </div>
-      <div className="form-field form-field--error form-field--with-trailing-text">
+      <div className="form-field form-field--error form-field--with-append-text">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field"/>
           <span className="form-field__addon">text addon</span>
         </label>
         <div className="form-field__error-message">Error message</div>
       </div>
-      <div className="form-field form-field--disabled form-field--with-trailing-text">
+      <div className="form-field form-field--disabled form-field--with-append-text">
         <label className="form-field__wrapper">
           <input type="text" className="form-field__text form-field__text--small" placeholder="Text field" disabled/>
           <span className="form-field__addon">text addon</span>

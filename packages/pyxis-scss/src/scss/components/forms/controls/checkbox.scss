@@ -32,9 +32,9 @@ $_indeterminateIcon: "%3Csvg width='10' height='2' viewBox='0 0 10 2' fill='none
 /// @output Appropriate `background-color` and `border-color`.
 ///
 /// @access private
-@mixin _color($color, $color2: $color) {
-  background-color: foundations.color($color);
-  border-color: foundations.color($color2);
+@mixin _color($backgroundColor, $borderColor: $backgroundColor) {
+  background-color: foundations.color($backgroundColor);
+  border-color: foundations.color($borderColor);
 }
 
 /// Set properties for styling checkbox.

@@ -1,6 +1,4 @@
-import React, {
-  AnchorHTMLAttributes, ButtonHTMLAttributes, FC, ReactElement,
-} from 'react';
+import React, { AnchorHTMLAttributes, ButtonHTMLAttributes, FC } from 'react';
 import classNames from 'classnames';
 import { IconSize } from 'components/Icon';
 import {
@@ -26,10 +24,10 @@ const ButtonContent:FC<ButtonContentProps> = ({
 }) => (
   Icon ? (
     <>
-      { iconPlacement === 'leading' && <Icon size={getIconSize(size as ButtonSize)} /> }
+      { iconPlacement === 'prepend' && <Icon size={getIconSize(size as ButtonSize)} /> }
       { iconPlacement === 'only' && <Icon size={getIconSize(size as ButtonSize)} description={children} /> }
       { iconPlacement !== 'only' && children}
-      { iconPlacement === 'trailing' && <Icon size={getIconSize(size as ButtonSize)} /> }
+      { iconPlacement === 'append' && <Icon size={getIconSize(size as ButtonSize)} /> }
     </>
   )
     : <>{children}</>
@@ -42,7 +40,7 @@ const Button:ButtonFC = (props) => {
     className = '',
     contentWidth,
     icon,
-    iconPlacement = 'leading',
+    iconPlacement = 'prepend',
     id = '',
     loading,
     shadow,
@@ -62,8 +60,8 @@ const Button:ButtonFC = (props) => {
       'button--content-width': contentWidth,
       'button--loading': loading,
       'button--alt': alt,
-      'button--leading-icon': icon && iconPlacement === 'leading',
-      'button--trailing-icon': icon && iconPlacement === 'trailing',
+      'button--prepend-icon': icon && iconPlacement === 'prepend',
+      'button--append-icon': icon && iconPlacement === 'append',
       'button--icon-only': icon && iconPlacement === 'only',
     },
   );

@@ -4,6 +4,7 @@
 ////
 
 @use "../../../foundations";
+@use "../../../lib";
 @use "../variables";
 
 /// Set general properties for styling select.
@@ -52,6 +53,10 @@
   padding-left: foundations.spacing(s);
   user-select: none;
   width: variables.$fieldWidth;
+
+  @include lib.onFirefox {
+    text-indent: lib.rem(-2px);
+  }
 
   .form-field--with-dropdown & {
     pointer-events: none;

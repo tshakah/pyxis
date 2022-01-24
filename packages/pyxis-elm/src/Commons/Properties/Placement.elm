@@ -1,9 +1,9 @@
 module Commons.Properties.Placement exposing
     ( Placement
-    , isLeading
-    , isTrailing
-    , leading
-    , trailing
+    , append
+    , isAppend
+    , isPrepend
+    , prepend
     )
 
 {-| The available positions.
@@ -11,34 +11,34 @@ module Commons.Properties.Placement exposing
 
 
 type Placement
-    = Leading
-    | Trailing
+    = Prepend
+    | Append
 
 
-leading : Placement
-leading =
-    Leading
+prepend : Placement
+prepend =
+    Prepend
 
 
-trailing : Placement
-trailing =
-    Trailing
+append : Placement
+append =
+    Append
 
 
-isLeading : Placement -> Bool
-isLeading placement =
+isPrepend : Placement -> Bool
+isPrepend placement =
     case placement of
-        Leading ->
+        Prepend ->
             True
 
         _ ->
             False
 
 
-isTrailing : Placement -> Bool
-isTrailing placement =
+isAppend : Placement -> Bool
+isAppend placement =
     case placement of
-        Trailing ->
+        Append ->
             True
 
         _ ->

@@ -244,8 +244,8 @@ btn =
 Buttons can also accommodate an icon. The icon can be inserted in the append or prepend of the label.
 The button can also contain only the icon, in this case it is advisable to add an _aria-label_ to the button to improve accessibility.
 
-### Icon: Leading
-<component with-label="Leading Icon" />
+### Icon: Prepend
+<component with-label="Prepend Icon" />
 ```
 import Components.Button as Button
 import Components.IconSet as IconSet
@@ -256,14 +256,14 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withLeadingIcon IconSet.Car
+        |> Button.withPrependIcon IconSet.Car
         |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
 ```
 
-### Icon: Trailing
-<component with-label="Trailing Icon" />
+### Icon: Append
+<component with-label="Append Icon" />
 ```
 import Components.Button as Button
 import Components.IconSet as IconSet
@@ -274,7 +274,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withTrailingIcon IconSet.Van
+        |> Button.withAppendIcon IconSet.Van
         |> Button.withTypeButton OnClick
         |> Button.withText "Click me!"
         |> Button.render
@@ -468,16 +468,16 @@ componentsList =
             |> Button.withSize Size.small
             |> Button.render
       )
-    , ( "Leading Icon"
+    , ( "Prepend Icon"
       , Button.primary
             |> withCommonOptions
-            |> Button.withIconLeading IconSet.Car
+            |> Button.withIconPrepend IconSet.Car
             |> Button.render
       )
-    , ( "Trailing Icon"
+    , ( "Append Icon"
       , Button.primary
             |> withCommonOptions
-            |> Button.withIconTrailing IconSet.Van
+            |> Button.withIconAppend IconSet.Van
             |> Button.render
       )
     , ( "Icon Only"

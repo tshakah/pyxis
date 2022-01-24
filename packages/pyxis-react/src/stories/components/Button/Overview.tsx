@@ -74,7 +74,7 @@ const iconsDescription = (
 
 const generateIconsBody = (): TableRow[] => buttonIconPlacements.map(placement => [
   <Button iconPlacement={placement} icon={IconPenEdit}>Button</Button>,
-  <CopyableCode text="leading" key={shortid.generate()} />,
+  <CopyableCode text={placement} key={shortid.generate()} />,
   iconPlacementUsage(placement)
 ]);
 
@@ -196,12 +196,12 @@ const tableClassBody: TableRow[] = [
     '-',
   ],
   [
-    <CopyableCode text="button--leading-icon" key={shortid.generate()} />,
+    <CopyableCode text="button--prepend-icon" key={shortid.generate()} />,
     'Icon Placement Modifier',
     '-',
   ],
   [
-    <CopyableCode text="button--trailing-icon" key={shortid.generate()} />,
+    <CopyableCode text="button--append-icon" key={shortid.generate()} />,
     'Icon Placement Modifier',
     '-',
   ],

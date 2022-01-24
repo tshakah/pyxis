@@ -11,9 +11,9 @@
 /// @example scss - Date field
 ///    <div class="form-field">
 ///      <label class="form-field__wrapper">
-///         <button class="form-field__addon">
+///         <div class="form-field__addon">
 ///           <svg width="24" height="24"></svg>
-///         </button>
+///         </div>
 ///         <input type="date" class="form-field__date"/>
 ///       </label>
 ///    </div>
@@ -22,9 +22,9 @@
 ///    <div class="form-field">
 ///      // Remember to add `form-field__date--filled` class when input is populated.
 ///       <label class="form-field__wrapper">
-///        <button class="form-field__addon">
+///        <div class="form-field__addon">
 ///          <svg width="24" height="24"></svg>
-///        </button>
+///        </div>
 ///        <input
 ///         class="form-field__date form-field__date--filled"
 ///         value="2022-12-25" />
@@ -34,10 +34,10 @@
 /// @example scss - Date field small
 ///    <div class="form-field">
 ///       <label class="form-field__wrapper">
-///        <button class="form-field__addon">
+///        <div class="form-field__addon">
 ///          // Remember use a 20x20 svg when field is small.
 ///          <svg width="20" height="20"></svg>
-///        </button>
+///        </div>
 ///        <input class="form-field__date form-field__date--small" />
 ///       </label>
 ///    </div>
@@ -49,6 +49,16 @@
   padding-right: foundations.spacing(s);
   text-transform: uppercase;
   width: variables.$fieldWidth;
+
+  &::-webkit-calendar-picker-indicator {
+    background: transparent;
+    height: 100%;
+    left: 0;
+    margin-inline: 0;
+    padding: 0;
+    position: absolute;
+    width: variables.$fieldHeight;
+  }
 }
 
 .form-field__date--filled {
@@ -59,4 +69,8 @@
   height: variables.$fieldHeightSmall;
   padding-right: foundations.spacing(xs);
   width: variables.$fieldWidthSmall;
+
+  &::-webkit-calendar-picker-indicator {
+    width: variables.$fieldWidthSmall;
+  }
 }
