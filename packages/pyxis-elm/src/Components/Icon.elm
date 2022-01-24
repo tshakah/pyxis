@@ -1,14 +1,12 @@
 module Components.Icon exposing
     ( Model
     , create
-    , withThemeDefault
-    , withThemeAlternative
-    , withSizeLarge
-    , withSizeMedium
-    , withSizeSmall
+    , withTheme
+    , withSize
     , Style
-    , withStyleDefault
-    , withStyleBoxed
+    , default
+    , boxed
+    , withStyle
     , withDescription
     , withClassList
     , render
@@ -25,22 +23,20 @@ module Components.Icon exposing
 
 ## Theme
 
-@docs withThemeDefault
-@docs withThemeAlternative
+@docs withTheme
 
 
 ## Size
 
-@docs withSizeLarge
-@docs withSizeMedium
-@docs withSizeSmall
+@docs withSize
 
 
 ## Style
 
 @docs Style
-@docs withStyleDefault
-@docs withStyleBoxed
+@docs default
+@docs boxed
+@docs withStyle
 
 
 ## Generics
@@ -55,7 +51,6 @@ module Components.Icon exposing
 
 -}
 
-import Commons.ApiConstraint as Api
 import Commons.Attributes as CA
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Properties.Theme as Theme exposing (Theme)
@@ -68,7 +63,7 @@ import SvgParser
 
 {-| The Icon model.
 -}
-type Model a
+type Model
     = Model Configuration
 
 
@@ -84,17 +79,9 @@ type alias Configuration =
     }
 
 
-{-| Internal. The default configuration which enforces api constraints.
-Those keys represent which methods are use-restricted.
-You can use the Commons/ApiConstraint.elm module to allow/disallow methods call.
--}
-type alias DefaultConfiguration a =
-    { a | alternative : () }
-
-
 {-| Inits the Icon.
 -}
-create : IconSet.Icon -> Model (DefaultConfiguration a)
+create : IconSet.Icon -> Model
 create icon =
     Model
         { classList = []
@@ -106,39 +93,18 @@ create icon =
         }
 
 
-{-| Sets a default theme to the Icon.
+{-| Sets a theme to the Icon.
 -}
-withThemeDefault : Model a -> Model { a | alternative : Api.NotSupported }
-withThemeDefault (Model configuration) =
-    Model { configuration | theme = Theme.default }
-
-
-{-| Sets an alternative theme to the Icon.
--}
-withThemeAlternative : Model { a | alternative : Api.Supported } -> Model a
-withThemeAlternative (Model configuration) =
-    Model { configuration | theme = Theme.alternative }
+withTheme : Theme -> Model -> Model
+withTheme a (Model configuration) =
+    Model { configuration | theme = a }
 
 
 {-| Sets a large size to the Icon.
 -}
-withSizeLarge : Model a -> Model a
-withSizeLarge (Model configuration) =
-    Model { configuration | size = Size.large }
-
-
-{-| Sets a medium size to the Icon.
--}
-withSizeMedium : Model a -> Model a
-withSizeMedium (Model configuration) =
-    Model { configuration | size = Size.medium }
-
-
-{-| Sets a small size to the Icon.
--}
-withSizeSmall : Model a -> Model a
-withSizeSmall (Model configuration) =
-    Model { configuration | size = Size.small }
+withSize : Size -> Model -> Model
+withSize a (Model configuration) =
+    Model { configuration | size = a }
 
 
 {-| The available Icon styles.
@@ -148,37 +114,44 @@ type Style
     | Boxed
 
 
+{-| Represent a default style for the Icon.
+-}
+default : Style
+default =
+    Default
+
+
+{-| Represent a boxed style for the Icon.
+-}
+boxed : Style
+boxed =
+    Boxed
+
+
 {-| Sets a default style to the Icon.
 -}
-withStyleDefault : Model a -> Model { a | alternative : Api.Supported }
-withStyleDefault (Model configuration) =
-    Model { configuration | style = Default }
-
-
-{-| Sets a boxed style to the Icon.
--}
-withStyleBoxed : Model a -> Model { a | alternative : Api.Supported }
-withStyleBoxed (Model configuration) =
-    Model { configuration | style = Boxed }
+withStyle : Style -> Model -> Model
+withStyle a (Model configuration) =
+    Model { configuration | style = a }
 
 
 {-| Adds an accessible text to the Icon.
 -}
-withDescription : String -> Model a -> Model a
+withDescription : String -> Model -> Model
 withDescription a (Model configuration) =
     Model { configuration | description = Just a }
 
 
 {-| Adds a classList to the Icon.
 -}
-withClassList : List ( String, Bool ) -> Model a -> Model a
+withClassList : List ( String, Bool ) -> Model -> Model
 withClassList a (Model configuration) =
     Model { configuration | classList = a }
 
 
 {-| Renders the Icon.
 -}
-render : Model a -> Html msg
+render : Model -> Html msg
 render (Model configuration) =
     Html.div
         (CA.compose

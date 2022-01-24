@@ -1,6 +1,8 @@
 module Components.IconTest exposing (suite)
 
 import Commons.Attributes as CA
+import Commons.Properties.Size as Size
+import Commons.Properties.Theme as Theme
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html.Attributes
@@ -17,7 +19,7 @@ suite =
                 \_ ->
                     IconSet.User
                         |> Icon.create
-                        |> Icon.withThemeDefault
+                        |> Icon.withTheme Theme.default
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon" ] ]
@@ -25,8 +27,8 @@ suite =
                 \_ ->
                     IconSet.Alarm
                         |> Icon.create
-                        |> Icon.withStyleBoxed
-                        |> Icon.withThemeAlternative
+                        |> Icon.withStyle Icon.boxed
+                        |> Icon.withTheme Theme.alternative
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--alt" ] ]
@@ -36,7 +38,7 @@ suite =
                 \_ ->
                     IconSet.Facebook
                         |> Icon.create
-                        |> Icon.withSizeLarge
+                        |> Icon.withSize Size.large
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-l" ] ]
@@ -44,7 +46,7 @@ suite =
                 \_ ->
                     IconSet.Book
                         |> Icon.create
-                        |> Icon.withSizeMedium
+                        |> Icon.withSize Size.medium
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-m" ] ]
@@ -52,7 +54,7 @@ suite =
                 \_ ->
                     IconSet.Van
                         |> Icon.create
-                        |> Icon.withSizeSmall
+                        |> Icon.withSize Size.small
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-s" ] ]
@@ -62,7 +64,7 @@ suite =
                 \_ ->
                     IconSet.Wallet
                         |> Icon.create
-                        |> Icon.withStyleDefault
+                        |> Icon.withStyle Icon.default
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.hasNot [ classes [ "icon--boxed" ] ]
@@ -70,7 +72,7 @@ suite =
                 \_ ->
                     IconSet.Motorcycle
                         |> Icon.create
-                        |> Icon.withStyleBoxed
+                        |> Icon.withStyle Icon.boxed
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--boxed" ] ]

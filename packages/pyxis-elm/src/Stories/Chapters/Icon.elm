@@ -1,5 +1,7 @@
 module Stories.Chapters.Icon exposing (docs)
 
+import Commons.Properties.Size as Size
+import Commons.Properties.Theme as Theme
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import ElmBook
@@ -154,44 +156,44 @@ componentsList =
     [ ( "Large"
       , IconSet.User
             |> Icon.create
-            |> Icon.withSizeLarge
+            |> Icon.withSize Size.large
             |> Icon.render
       )
     , ( "Medium"
       , IconSet.User
             |> Icon.create
-            |> Icon.withSizeMedium
+            |> Icon.withSize Size.medium
             |> Icon.render
       )
     , ( "Small"
       , IconSet.User
             |> Icon.create
-            |> Icon.withSizeSmall
+            |> Icon.withSize Size.small
             |> Icon.render
       )
     , ( "Default Style"
       , IconSet.User
             |> Icon.create
-            |> Icon.withStyleDefault
+            |> Icon.withStyle Icon.default
             |> Icon.render
       )
     , ( "Boxed Style"
       , IconSet.User
             |> Icon.create
-            |> Icon.withStyleBoxed
+            |> Icon.withStyle Icon.boxed
             |> Icon.render
       )
     , ( "Default Theme"
       , IconSet.User
             |> Icon.create
-            |> Icon.withThemeDefault
+            |> Icon.withTheme Theme.default
             |> Icon.render
       )
     , ( "Alternative Theme"
       , IconSet.User
             |> Icon.create
-            |> Icon.withStyleBoxed
-            |> Icon.withThemeAlternative
+            |> Icon.withStyle Icon.boxed
+            |> Icon.withTheme Theme.alternative
             |> Icon.render
       )
     , ( "Accessible Description"

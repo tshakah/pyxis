@@ -1,5 +1,6 @@
 module Stories.Chapters.Buttons exposing (docs)
 
+import Commons.Properties.Size as Size
 import Components.Button as Button
 import Components.IconSet as IconSet
 import ElmBook
@@ -382,10 +383,10 @@ btn =
 """
 
 
-withCommonOptions : Button.Model a (ElmBook.Msg state) -> Button.Model a (ElmBook.Msg state)
+withCommonOptions : Button.Model (ElmBook.Msg state) -> Button.Model (ElmBook.Msg state)
 withCommonOptions =
     Button.withText "Click me!"
-        >> Button.withTypeButton (ElmBook.Actions.logAction "Button clicked")
+        >> Button.withType (Button.button (ElmBook.Actions.logAction "Button clicked"))
 
 
 componentsList : List ( String, Html (ElmBook.Msg state) )
@@ -393,79 +394,78 @@ componentsList =
     [ ( "Primary"
       , Button.primary
             |> withCommonOptions
-            |> Button.withSizeLarge
+            |> Button.withSize Size.large
             |> Button.render
       )
     , ( "Secondary"
       , Button.secondary
             |> withCommonOptions
-            |> Button.withSizeLarge
+            |> Button.withSize Size.large
             |> Button.render
       )
     , ( "Tertiary"
       , Button.tertiary
             |> withCommonOptions
-            |> Button.withSizeLarge
+            |> Button.withSize Size.large
             |> Button.render
       )
     , ( "Brand"
       , Button.brand
             |> withCommonOptions
-            |> Button.withSizeLarge
+            |> Button.withSize Size.large
             |> Button.render
       )
     , ( "Ghost"
       , Button.ghost
             |> withCommonOptions
-            |> Button.withSizeLarge
+            |> Button.withSize Size.large
             |> Button.render
       )
     , ( "Type Button"
       , Button.primary
             |> withCommonOptions
-            |> Button.withTypeButton (ElmBook.Actions.logAction "Clicked")
             |> Button.render
       )
     , ( "Type Submit"
       , Button.primary
             |> withCommonOptions
-            |> Button.withTypeSubmit
+            |> Button.withType Button.submit
             |> Button.render
       )
     , ( "Type Reset"
       , Button.primary
             |> withCommonOptions
-            |> Button.withTypeReset
+            |> Button.withType Button.reset
             |> Button.render
       )
     , ( "Type Link"
       , Button.primary
             |> withCommonOptions
-            |> Button.withTypeLink "https://www.prima.it"
+            |> Button.withType (Button.link "https://www.prima.it")
             |> Button.render
       )
     , ( "Huge"
       , Button.primary
             |> withCommonOptions
-            |> Button.withSizeHuge
+            |> Button.withSize Size.huge
             |> Button.render
       )
     , ( "Large"
       , Button.primary
             |> withCommonOptions
-            |> Button.withSizeLarge
+            |> Button.withSize Size.large
             |> Button.render
       )
     , ( "Medium"
       , Button.primary
             |> withCommonOptions
-            |> Button.withSizeMedium
+            |> Button.withSize Size.medium
             |> Button.render
       )
     , ( "Small"
       , Button.primary
             |> withCommonOptions
-            |> Button.withSizeSmall
+            |> Button.withSize Size.small
             |> Button.render
       )
     , ( "Leading Icon"

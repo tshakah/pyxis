@@ -1,5 +1,6 @@
 module Stories.Chapters.IconSet exposing (docs)
 
+import Commons.Properties.Size as Size
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import ElmBook
@@ -24,6 +25,6 @@ toComponent icon =
     ( IconSet.toLabel icon
     , icon
         |> Icon.create
-        |> Icon.withSizeLarge
+        |> Icon.withSize Size.large
         |> Icon.render
     )
