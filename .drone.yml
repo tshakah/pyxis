@@ -123,6 +123,15 @@ steps:
   depends_on:
   - build
 
+- name: elmbook
+  image: prima/pyxis-ci:${DRONE_COMMIT}
+  commands:
+  - yarn elmbook:build
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - build
+
 - name: cache-save
   image: public.ecr.aws/prima/drone-tools:1.21.3
   commands:
@@ -146,6 +155,7 @@ steps:
   - build
   - storybook
   - sassdocs
+  - elmbook
 
 volumes:
 - name: docker
@@ -339,6 +349,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 9d05a8107d6ad8b75d94ab5f9b9975e842a3a0bc09d2e726d85adc11e3f83a69
+hmac: 420e0e6777c7095401936ac41bfc6e734a46152e07928745a0ba425fcf7433ae
 
 ...

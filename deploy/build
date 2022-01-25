@@ -31,24 +31,34 @@ if aws s3 ls s3://prima-artifacts-encrypted/microservices/pyxis/"${VERSION}-${EN
 fi
 
 if [ "$ENV" = "staging" ]; then
+  yarn install
+  yarn build
   yarn storybook:build
   yarn sassdocs:build
+  yarn elmbook:build
   mkdir build
   mkdir build/react-staging
   mkdir build/scss-staging
+  mkdir build/elm-staging
   cp -R packages/pyxis-react/storybook-static/* build/react-staging
   cp -R packages/pyxis-scss/sassdoc/* build/scss-staging
+  cp -R packages/pyxis-elm/dist/* build/elm-staging
   tar czf "${VERSION}"-"${ENV}".tar.gz build
 fi
 
 if [ "$ENV" = "production" ]; then
+  yarn install
+  yarn build
   yarn storybook:build
   yarn sassdocs:build
+  yarn elmbook:build
   mkdir build
   mkdir build/react
   mkdir build/scss
+  mkdir build/elm
   cp -R packages/pyxis-react/storybook-static/* build/react
   cp -R packages/pyxis-scss/sassdoc/* build/scss
+  cp -R packages/pyxis-elm/dist/* build/elm
   tar czf "${VERSION}"-"${ENV}".tar.gz build
 fi
 
