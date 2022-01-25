@@ -10,6 +10,11 @@
   grid-template-rows: repeat(2, 1fr);
 }
 
+.wrapper--card {
+  grid-template-columns: 100%;
+  max-width: 900px;
+}
+
 .form-item {
   @include pyxis.rowGap(2xs);
   display: grid;

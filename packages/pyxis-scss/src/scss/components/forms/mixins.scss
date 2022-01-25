@@ -93,6 +93,18 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   user-select: none;
 }
 
+/// Add CSS rules for error control state.
+///
+/// @access private
+@mixin fieldControlError {
+  @include fieldStateError;
+
+  &:checked,
+  &:checked:active {
+    background-color: foundations.color(errorBase);
+  }
+}
+
 /// Add CSS rules for default control field.
 ///
 /// @access private
@@ -138,12 +150,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   }
 
   .form-control--error & {
-    @include fieldStateError;
-
-    &:checked,
-    &:checked:active {
-      background-color: foundations.color(errorBase);
-    }
+    @include fieldControlError;
   }
 }
 

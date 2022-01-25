@@ -150,7 +150,7 @@ $_spacingsList: ();
 ///
 /// @param {String} $size - A size from `$spacings`
 ///
-/// @output `grid-row-gap` property.
+/// @output `row-gap` property.
 ///
 /// @example scss - Set vertical gap in a grid environment 
 ///  .element {
@@ -160,7 +160,7 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin rowGap($size) {
-  @include _responsiveSpacing("grid-row-gap", $size);
+  @include _responsiveSpacing("row-gap", $size);
 }
 
 /// Includes `grid-column-gap` by size in every breakpoints
@@ -169,7 +169,7 @@ $_spacingsList: ();
 ///
 /// @param {String} $size - A size from `$spacings`
 ///
-/// @output `grid-column-gap` property.
+/// @output `column-gap` property.
 ///
 /// @example scss - Set horizontal gap in a grid environment 
 ///  .element {
@@ -179,7 +179,7 @@ $_spacingsList: ();
 /// 
 /// @access public
 @mixin columnGap($size) {
-  @include _responsiveSpacing("grid-column-gap", $size);
+  @include _responsiveSpacing("column-gap", $size);
 }
 
 /// Create atom classes for all spacing in $spacings map
