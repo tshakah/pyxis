@@ -34,7 +34,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -50,7 +50,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.secondary
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -66,7 +66,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.tertiary
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -82,7 +82,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.brand
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -98,7 +98,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.ghost
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -115,7 +115,7 @@ import Components.Button as Button
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withTypeSubmit
+        |> Button.withType Button.submit
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -131,7 +131,7 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -144,7 +144,7 @@ import Components.Button as Button
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withTypeReset
+        |> Button.withType Button.reset
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -157,7 +157,7 @@ import Components.Button as Button
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withTypeLink "https://www.prima.it"
+        |> Button.withType (Button.link "https://www.prima.it")
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -173,6 +173,7 @@ You can set your Button with a _size_ of huge, large, medium, small.
 <component with-label="Huge" />
 ```
 import Components.Button as Button
+import Commons.Properties.Size as Size
 
 type Msg =
     OnClick
@@ -183,8 +184,8 @@ Check the documentation in order to be aware of what you can do and what's forbi
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withSizeHuge
-        |> Button.withTypeButton OnClick
+        |> Button.withSize Size.huge
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -193,6 +194,7 @@ btn =
 <component with-label="Large" />
 ```
 import Components.Button as Button
+import Commons.Properties.Size as Size
 
 type Msg =
     OnClick
@@ -200,8 +202,8 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withLargeSize
-        |> Button.withTypeButton OnClick
+        |> Button.withSize Size.large
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -210,6 +212,7 @@ btn =
 <component with-label="Medium" />
 ```
 import Components.Button as Button
+import Commons.Properties.Size as Size
 
 type Msg =
     OnClick
@@ -217,8 +220,8 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withMediumSize
-        |> Button.withTypeButton OnClick
+        |> Button.withSize Size.medium
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -227,6 +230,7 @@ btn =
 <component with-label="Small" />
 ```
 import Components.Button as Button
+import Commons.Properties.Size as Size
 
 type Msg =
     OnClick
@@ -234,8 +238,8 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withSmallSize
-        |> Button.withTypeButton OnClick
+        |> Button.withSize Size.small
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -257,7 +261,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withPrependIcon IconSet.Car
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -275,7 +279,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withAppendIcon IconSet.Van
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```
@@ -293,7 +297,7 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withIconOnly IconSet.Motorcycle
-        |> Button.withTypeButton OnClick
+        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
         |> Button.render
 ```

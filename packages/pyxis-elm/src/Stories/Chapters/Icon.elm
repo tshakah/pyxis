@@ -24,13 +24,14 @@ You can set your Icon with a _size_ of large, medium or small.
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
+import Commons.Properties.Size as Size
 
 
 icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withLargeSize
+      |> Icon.withSize Size.large
       |> Icon.render
 ```
 
@@ -39,13 +40,14 @@ icon =
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
+import Commons.Properties.Size as Size
 
 
 icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withMediumSize
+      |> Icon.withSize Size.medium
       |> Icon.render
 ```
 
@@ -54,13 +56,14 @@ icon =
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
+import Commons.Properties.Size as Size
 
 
 icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withSmallSize
+      |> Icon.withSize Size.small
       |> Icon.render
 ```
 
@@ -78,7 +81,7 @@ icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withStyleDefault
+      |> Icon.withStyle Icon.default
       |> Icon.render
 ```
 
@@ -93,7 +96,7 @@ icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withStyleBoxed
+      |> Icon.withStyle Icon.boxed
       |> Icon.render
 ```
 
@@ -105,13 +108,13 @@ You can set your Icon with a default _theme_ or alternative.
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
-
+import Commons.Properties.Theme as Theme
 
 icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withThemeDefault
+      |> Icon.withTheme Theme.default
       |> Icon.render
 ```
 
@@ -120,6 +123,7 @@ icon =
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
+import Commons.Properties.Theme as Theme
 
 {-| Note that you can only enable the Alternative theme on a Boxed icon.
 -}
@@ -127,8 +131,8 @@ icon: Html msg
 icon =
   IconSet.User
       |> Icon.create
-      |> Icon.withStyleBoxed
-      |> Icon.withThemeAlternative
+      |> Icon.withStyle Icon.boxed
+      |> Icon.withTheme Theme.alternative
       |> Icon.render
 ```
 
@@ -138,7 +142,6 @@ icon =
 ```
 import Components.Icon as Icon
 import Components.IconSet as IconSet
-
 
 icon: Html msg
 icon =

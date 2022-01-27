@@ -3,7 +3,7 @@ module Components.Label exposing
     , create
     , withFor
     , withId
-    , withSizeSmall
+    , withSize
     , withSubText
     , withClassList
     , render
@@ -25,7 +25,7 @@ module Components.Label exposing
 
 @docs withFor
 @docs withId
-@docs withSizeSmall
+@docs withSize
 @docs withSubText
 @docs withClassList
 
@@ -37,6 +37,7 @@ module Components.Label exposing
 -}
 
 import Commons.Attributes as CA
+import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render as CR
 import Html exposing (Html)
 import Html.Attributes
@@ -46,13 +47,6 @@ import Html.Attributes
 -}
 type Model
     = Model Configuration
-
-
-{-| The available Label sizes.
--}
-type Size
-    = Medium
-    | Small
 
 
 {-| Internal. The internal Label configuration.
@@ -83,7 +77,7 @@ create text =
         { classList = []
         , for = Nothing
         , id = Nothing
-        , size = Medium
+        , size = Size.medium
         , subText = Nothing
         , text = text
         }
@@ -144,13 +138,13 @@ withClassList classList (Model configuration) =
     myLabel: Html msg
     myLabel =
         Label.create "My custom label"
-            |> Label.withSizeSmall
+            |> Label.withSize Size.small
             |> Label.render
 
 -}
-withSizeSmall : Model -> Model
-withSizeSmall (Model configuration) =
-    Model { configuration | size = Small }
+withSize : Size -> Model -> Model
+withSize a (Model configuration) =
+    Model { configuration | size = a }
 
 
 {-| Set a sub-level text for label.
@@ -169,13 +163,6 @@ withSubText text (Model configuration) =
     Model { configuration | subText = Just text }
 
 
-{-| Internal.
--}
-renderSubText : String -> Html msg
-renderSubText subText =
-    Html.small [ Html.Attributes.class "form-label__sub" ] [ Html.text subText ]
-
-
 {-| Renders the Label.
 -}
 render : Model -> Html msg
@@ -184,7 +171,7 @@ render (Model { for, classList, id, size, text, subText }) =
         (CA.compose
             [ Html.Attributes.classList
                 ([ ( "form-label", True )
-                 , ( "form-label--small", size == Small )
+                 , ( "form-label--small", size == Size.small )
                  ]
                     ++ classList
                 )
@@ -199,3 +186,10 @@ render (Model { for, classList, id, size, text, subText }) =
             |> Maybe.map renderSubText
             |> CR.renderMaybe
         ]
+
+
+{-| Internal.
+-}
+renderSubText : String -> Html msg
+renderSubText subText =
+    Html.small [ Html.Attributes.class "form-label__sub" ] [ Html.text subText ]

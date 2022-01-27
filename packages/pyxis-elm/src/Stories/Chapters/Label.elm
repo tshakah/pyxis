@@ -1,5 +1,6 @@
 module Stories.Chapters.Label exposing (docs)
 
+import Commons.Properties.Size as Size
 import Components.Label as Label
 import ElmBook
 import ElmBook.Chapter
@@ -69,11 +70,12 @@ myLabel =
 <component with-label="Small" />
 ```
 import Components.Label as Label
+import Commons.Properties.Size as Size
 
 myLabel: Html msg
 myLabel =
     Label.create "Smaller label"
-        |> Label.withSizeSmall
+        |> Label.withSize Size.small
         |> Label.render
 ```
 ---
@@ -106,7 +108,7 @@ componentsList =
       )
     , ( "Small"
       , Label.create "Smaller label"
-            |> Label.withSizeSmall
+            |> Label.withSize Size.small
             |> Label.render
       )
     ]
