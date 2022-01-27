@@ -1,5 +1,7 @@
 module Commons.Properties.FieldStatus exposing
     ( FieldStatus
+    , StatusList
+    , addStatus
     , default
     , dirty
     , disabled
@@ -18,6 +20,7 @@ module Commons.Properties.FieldStatus exposing
     , hasUntouched
     , hasValid
     , hover
+    , initStatusList
     , pristine
     , touched
     , untouched
@@ -31,12 +34,26 @@ type FieldStatus
     | Focus
     | Filled
     | Valid
-    | Error
+    | Error String
     | Disabled
     | Untouched
     | Touched
     | Pristine
     | Dirty
+
+
+type StatusList
+    = StatusList (List FieldStatus)
+
+
+initStatusList : List FieldStatus -> StatusList
+initStatusList =
+    StatusList
+
+
+getList : StatusList -> List FieldStatus
+getList (StatusList list) =
+    list
 
 
 default : FieldStatus
@@ -64,7 +81,7 @@ valid =
     Valid
 
 
-error : FieldStatus
+error : String -> FieldStatus
 error =
     Error
 
@@ -94,56 +111,126 @@ dirty =
     Dirty
 
 
-hasDefault : List FieldStatus -> Bool
+hasDefault : StatusList -> Bool
 hasDefault =
-    List.any ((==) Default)
+    getList
+        >> List.any ((==) Default)
 
 
-hasHover : List FieldStatus -> Bool
+hasHover : StatusList -> Bool
 hasHover =
-    List.any ((==) Hover)
+    getList
+        >> List.any ((==) Hover)
 
 
-hasFocus : List FieldStatus -> Bool
+hasFocus : StatusList -> Bool
 hasFocus =
-    List.any ((==) Focus)
+    getList
+        >> List.any ((==) Focus)
 
 
-hasFilled : List FieldStatus -> Bool
+hasFilled : StatusList -> Bool
 hasFilled =
-    List.any ((==) Filled)
+    getList
+        >> List.any ((==) Filled)
 
 
-hasValid : List FieldStatus -> Bool
+hasValid : StatusList -> Bool
 hasValid =
-    List.any ((==) Valid)
+    getList
+        >> List.any ((==) Valid)
 
 
-hasError : List FieldStatus -> Bool
+isError : FieldStatus -> Bool
+isError status =
+    case status of
+        Error _ ->
+            True
+
+        _ ->
+            False
+
+
+hasError : StatusList -> Bool
 hasError =
-    List.any ((==) Error)
+    getList
+        >> List.any isError
 
 
-hasDisabled : List FieldStatus -> Bool
+hasDisabled : StatusList -> Bool
 hasDisabled =
-    List.any ((==) Disabled)
+    getList
+        >> List.any ((==) Disabled)
 
 
-hasUntouched : List FieldStatus -> Bool
+hasUntouched : StatusList -> Bool
 hasUntouched =
-    List.any ((==) Untouched)
+    getList
+        >> List.any ((==) Untouched)
 
 
-hasTouched : List FieldStatus -> Bool
+hasTouched : StatusList -> Bool
 hasTouched =
-    List.any ((==) Touched)
+    getList
+        >> List.any ((==) Touched)
 
 
-hasPristine : List FieldStatus -> Bool
+hasPristine : StatusList -> Bool
 hasPristine =
-    List.any ((==) Pristine)
+    getList
+        >> List.any ((==) Pristine)
 
 
-hasDirty : List FieldStatus -> Bool
+hasDirty : StatusList -> Bool
 hasDirty =
-    List.any ((==) Dirty)
+    getList
+        >> List.any ((==) Dirty)
+
+
+addStatus : FieldStatus -> StatusList -> StatusList
+addStatus status ((StatusList list) as statusList) =
+    if List.member status list then
+        statusList
+
+    else
+        list
+            |> removeInconsistentStatus status
+            |> (::) status
+            |> StatusList
+
+
+removeInconsistentStatus : FieldStatus -> List FieldStatus -> List FieldStatus
+removeInconsistentStatus status =
+    case status of
+        Default ->
+            List.filter (\s -> (s == Valid || isError s || s == Filled) |> not)
+
+        Hover ->
+            identity
+
+        Focus ->
+            identity
+
+        Filled ->
+            List.filter (\s -> (s == Valid || isError s || s == Default) |> not)
+
+        Valid ->
+            List.filter (isError >> not)
+
+        Error _ ->
+            List.filter ((==) Valid >> not)
+
+        Disabled ->
+            List.filter (\s -> (s == Valid || isError s) |> not)
+
+        Untouched ->
+            List.filter (\s -> (s == Touched || s == Dirty) |> not)
+
+        Touched ->
+            List.filter ((==) Untouched >> not)
+
+        Pristine ->
+            List.filter ((==) Dirty >> not)
+
+        Dirty ->
+            List.filter (\s -> (s == Untouched || s == Pristine) |> not)

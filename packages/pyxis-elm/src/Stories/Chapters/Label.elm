@@ -6,7 +6,7 @@ import ElmBook.Chapter
 import Html exposing (Html)
 
 
-docs : ElmBook.Chapter.Chapter ()
+docs : ElmBook.Chapter.Chapter sharedState
 docs =
     "Label"
         |> ElmBook.Chapter.chapter

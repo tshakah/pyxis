@@ -1,6 +1,7 @@
 module Stories.Book exposing (main)
 
 import ElmBook
+import ElmBook.StatefulOptions
 import ElmBook.ThemeOptions
 import Html
 import Html.Attributes
@@ -8,11 +9,26 @@ import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Label as LabelChapter
+import Stories.Chapters.TextField as TextFieldChapter
 
 
-main : ElmBook.Book ()
+type alias SharedState =
+    { textFieldModel : TextFieldChapter.Model
+    }
+
+
+initialState : SharedState
+initialState =
+    { textFieldModel = TextFieldChapter.init
+    }
+
+
+main : ElmBook.Book SharedState
 main =
     ElmBook.book "Book"
+        |> ElmBook.withStatefulOptions
+            [ ElmBook.StatefulOptions.initialState initialState
+            ]
         |> ElmBook.withThemeOptions
             [ ElmBook.ThemeOptions.globals
                 [ Html.node "link" [ Html.Attributes.href "pyxis.css", Html.Attributes.rel "stylesheet" ] []
@@ -28,4 +44,5 @@ main =
             , IconChapter.docs
             , IconSetChapter.docs
             , LabelChapter.docs
+            , TextFieldChapter.docs
             ]

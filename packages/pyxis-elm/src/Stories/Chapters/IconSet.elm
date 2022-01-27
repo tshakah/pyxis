@@ -8,7 +8,7 @@ import ElmBook.Chapter
 import Html exposing (Html)
 
 
-docs : ElmBook.Chapter.Chapter ()
+docs : ElmBook.Chapter.Chapter sharedState
 docs =
     "IconSet"
         |> ElmBook.Chapter.chapter
