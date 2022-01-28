@@ -1,4 +1,4 @@
-@use "src/stories/pyxis";
+@use "../../pyxis";
 
 .header {
   @include pyxis.verticalSpacing(s);
