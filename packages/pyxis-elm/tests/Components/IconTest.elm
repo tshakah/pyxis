@@ -5,26 +5,25 @@ import Commons.Properties.Size as Size
 import Commons.Properties.Theme as Theme
 import Components.Icon as Icon
 import Components.IconSet as IconSet
-import Html.Attributes
-import Test exposing (Test, describe, test)
+import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, classes)
 
 
 suite : Test
 suite =
-    describe "The Icon component"
-        [ describe "Icon theme"
-            [ test "is light" <|
-                \_ ->
+    Test.describe "The Icon component"
+        [ Test.describe "Icon theme"
+            [ Test.test "is light" <|
+                \() ->
                     IconSet.User
                         |> Icon.create
                         |> Icon.withTheme Theme.default
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon" ] ]
-            , test "is dark" <|
-                \_ ->
+            , Test.test "is dark" <|
+                \() ->
                     IconSet.Alarm
                         |> Icon.create
                         |> Icon.withStyle Icon.boxed
@@ -33,25 +32,25 @@ suite =
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--alt" ] ]
             ]
-        , describe "Icon size"
-            [ test "is large" <|
-                \_ ->
+        , Test.describe "Icon size"
+            [ Test.test "is large" <|
+                \() ->
                     IconSet.Facebook
                         |> Icon.create
                         |> Icon.withSize Size.large
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-l" ] ]
-            , test "is medium" <|
-                \_ ->
+            , Test.test "is medium" <|
+                \() ->
                     IconSet.Book
                         |> Icon.create
                         |> Icon.withSize Size.medium
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-m" ] ]
-            , test "is small" <|
-                \_ ->
+            , Test.test "is small" <|
+                \() ->
                     IconSet.Van
                         |> Icon.create
                         |> Icon.withSize Size.small
@@ -59,17 +58,17 @@ suite =
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-s" ] ]
             ]
-        , describe "Icon style"
-            [ test "is default" <|
-                \_ ->
+        , Test.describe "Icon style"
+            [ Test.test "is default" <|
+                \() ->
                     IconSet.Wallet
                         |> Icon.create
                         |> Icon.withStyle Icon.default
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.hasNot [ classes [ "icon--boxed" ] ]
-            , test "is boxed" <|
-                \_ ->
+            , Test.test "is boxed" <|
+                \() ->
                     IconSet.Motorcycle
                         |> Icon.create
                         |> Icon.withStyle Icon.boxed
@@ -77,32 +76,32 @@ suite =
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--boxed" ] ]
             ]
-        , describe "Icon generics"
-            [ test "has accessible description" <|
-                \_ ->
+        , Test.describe "Icon generics"
+            [ Test.test "has accessible description" <|
+                \() ->
                     IconSet.VehicleNaturalEvents
                         |> Icon.create
                         |> Icon.withDescription "Natural events"
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (CA.ariaLabel "Natural events") ]
-            , test "has accessible role" <|
-                \_ ->
+            , Test.test "has accessible role" <|
+                \() ->
                     IconSet.VehicleVandalism
                         |> Icon.create
                         |> Icon.withDescription "Vehicle vandalism"
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (CA.role "img") ]
-            , test "is hidden for screen readers when no description is provided" <|
-                \_ ->
+            , Test.test "is hidden for screen readers when no description is provided" <|
+                \() ->
                     IconSet.Camera
                         |> Icon.create
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (CA.ariaHidden True) ]
-            , test "has a classList" <|
-                \_ ->
+            , Test.test "has a classList" <|
+                \() ->
                     IconSet.Calendar
                         |> Icon.create
                         |> Icon.withClassList

@@ -4,6 +4,7 @@ module Commons.Properties.Placement exposing
     , isAppend
     , isPrepend
     , prepend
+    , toString
     )
 
 {-| The available positions.
@@ -43,3 +44,15 @@ isAppend placement =
 
         _ ->
             False
+
+
+{-| Return the placement string suffix.
+-}
+toString : Placement -> String
+toString placement =
+    case placement of
+        Prepend ->
+            "prepend"
+
+        Append ->
+            "append"

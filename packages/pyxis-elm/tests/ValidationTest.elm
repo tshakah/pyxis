@@ -2,14 +2,14 @@ module ValidationTest exposing (suite)
 
 import Commons.Validation as Validation
 import Expect
-import Test exposing (Test, describe, test)
+import Test exposing (Test)
 
 
 suite : Test
 suite =
-    describe "The Validation module"
-        [ test "pass when a check is satisfied" <|
-            \_ ->
+    Test.describe "The Validation module"
+        [ Test.test "pass when a check is satisfied" <|
+            \() ->
                 [ \value ->
                     if String.isEmpty value then
                         Validation.invalid "String cannot be empty"
@@ -20,8 +20,8 @@ suite =
                     |> Validation.create
                     |> Validation.passed "Hello World"
                     |> Expect.true "Expected the validation to passed"
-        , test "fail when at least a condition is not satisfied" <|
-            \_ ->
+        , Test.test "fail when at least a condition is not satisfied" <|
+            \() ->
                 [ \value ->
                     if value > 30 then
                         Validation.invalid "Cannot get a float value from a previous conversion."

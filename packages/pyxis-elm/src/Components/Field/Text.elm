@@ -1,14 +1,17 @@
 module Components.Field.Text exposing
     ( Model
     , create
-    , withAddOn
+    , iconAddon
+    , textAddon
+    , withAddon
     , withSize
     , withAfterOnBlur
     , withAfterOnFocus
     , withAfterOnInput
     , withValidation
-    , withDefaultValue
     , withClassList
+    , withDefaultValue
+    , withDisabled
     , withName
     , withPlaceholder
     , Msg
@@ -26,9 +29,11 @@ module Components.Field.Text exposing
 @docs create
 
 
-## AddOn
+## Addon
 
-@docs withAddOn
+@docs iconAddon
+@docs textAddon
+@docs withAddon
 
 
 ## Size
@@ -50,8 +55,9 @@ module Components.Field.Text exposing
 
 ## Generics
 
-@docs withDefaultValue
 @docs withClassList
+@docs withDefaultValue
+@docs withDisabled
 @docs withName
 @docs withPlaceholder
 
@@ -74,9 +80,11 @@ module Components.Field.Text exposing
 -}
 
 import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
+import Commons.Properties.Placement exposing (Placement)
 import Commons.Properties.Size exposing (Size)
 import Commons.Validation as Validation exposing (Validation)
 import Components.Field.Input as Input
+import Components.IconSet as IconSet
 import Html exposing (Html)
 import PrimaFunction
 import PrimaUpdate
@@ -102,6 +110,7 @@ type alias Configuration msg =
     { afterOnBlur : Cmd msg
     , afterOnFocus : Cmd msg
     , afterOnInput : Cmd msg
+    , status : FieldStatus.StatusList
     , inputModel : Input.Model msg
     , isSubmitted : Bool
     , msgTagger : Msg -> msg
@@ -118,6 +127,7 @@ create msgTagger id =
         { afterOnBlur = Cmd.none
         , afterOnFocus = Cmd.none
         , afterOnInput = Cmd.none
+        , status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
         , inputModel = initInputModel id msgTagger
         , isSubmitted = False
         , msgTagger = msgTagger
@@ -126,6 +136,8 @@ create msgTagger id =
         }
 
 
+{-| Internal.
+-}
 initInputModel : String -> (Msg -> msg) -> Input.Model msg
 initInputModel id tagger =
     Input.text
@@ -143,13 +155,27 @@ mapInputModel builder (Model configuration) =
     Model { configuration | inputModel = builder configuration.inputModel }
 
 
-{-| Sets an AddOn to the Input Text
+{-| Sets an Addon to the Input Text
 -}
-withAddOn : Input.AddOn -> Model msg -> Model msg
-withAddOn addOn =
-    addOn
-        |> Input.withAddOn
+withAddon : Placement -> Input.AddonType -> Model msg -> Model msg
+withAddon placement addon =
+    addon
+        |> Input.withAddon placement
         |> mapInputModel
+
+
+{-| Creates an Addon with an Icon from our IconSet.
+-}
+iconAddon : IconSet.Icon -> Input.AddonType
+iconAddon =
+    Input.iconAddon
+
+
+{-| Creates an Addon with a String content.
+-}
+textAddon : String -> Input.AddonType
+textAddon =
+    Input.textAddon
 
 
 {-| Sets a Cmd to be executed after OnBlur message has been triggered.
@@ -216,6 +242,13 @@ withValidation checks (Model configuration) =
     Model { configuration | validation = Validation.create checks }
 
 
+{-| Sets the input as disabled
+-}
+withDisabled : Bool -> Model msg -> Model msg
+withDisabled =
+    Input.withDisabled >> mapInputModel
+
+
 {-| Render the Input Text.
 -}
 render : Model msg -> Html msg
@@ -271,8 +304,8 @@ validateAndUpdateStatus ((Model { validation, value }) as model) =
 {-| Internal.
 -}
 addFieldStatus : FieldStatus -> Model msg -> Model msg
-addFieldStatus fieldStatus =
-    mapInputModel (Input.addFieldStatus fieldStatus)
+addFieldStatus fieldStatus (Model configuration) =
+    Model { configuration | status = FieldStatus.addStatus fieldStatus configuration.status }
 
 
 {-| Returns the current value of the Input Text.

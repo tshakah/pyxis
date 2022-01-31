@@ -1,7 +1,9 @@
 module Stories.Chapters.TextField exposing (Model, docs, init)
 
+import Commons.Properties.Placement as Placement
 import Commons.Properties.Size as Size
 import Components.Field.Text as TextField
+import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
@@ -17,9 +19,16 @@ docs =
 <component with-label="TextField" />
 
 ```
-textField =
-    TextField.create Tagger "id"
+textField : (TextField.Msg -> msg) -> String -> Html msg
+textField tagger id =
+    TextField.create tagger id
+            |> TextField.withAddon Placement.append (TextField.iconAddon IconSet.Search)
+            |> TextField.withClassList [ ( "class-name", True ) ]
+            |> TextField.withDefaultValue ""
+            |> TextField.withName "name"
+            |> TextField.withPlaceholder "Text Field"
             |> TextField.withSize Size.medium
+            |> TextField.withValidation []
             |> TextField.render
     
 ```
@@ -41,7 +50,13 @@ type Msg
 init : Model
 init =
     TextField.create Tagger "id"
+        |> TextField.withAddon Placement.append (TextField.iconAddon IconSet.Search)
+        |> TextField.withClassList [ ( "class-name", True ) ]
+        |> TextField.withDefaultValue ""
+        |> TextField.withName "name"
+        |> TextField.withPlaceholder "Text Field"
         |> TextField.withSize Size.medium
+        |> TextField.withValidation []
 
 
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )

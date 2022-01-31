@@ -1,9 +1,10 @@
 module Commons.Attributes exposing
-    ( ariaLabel
-    , ariaHidden
+    ( ariaHidden
+    , ariaLabel
     , role
     , testId
     , compose
+    , ariaDescribedBy
     )
 
 {-|
@@ -11,8 +12,9 @@ module Commons.Attributes exposing
 
 ## A11Y Attributes
 
-@docs ariaLabel
+@docs ariaDescribedBy
 @docs ariaHidden
+@docs ariaLabel
 @docs role
 
 
@@ -72,3 +74,10 @@ role =
 testId : String -> Html.Attribute msg
 testId =
     Html.Attributes.attribute "data-test-id"
+
+
+{-| Creates an aria-describedby attribute.
+-}
+ariaDescribedBy : String -> Html.Attribute msg
+ariaDescribedBy =
+    Html.Attributes.attribute "aria-describedby"

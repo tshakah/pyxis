@@ -5,16 +5,20 @@ module Components.Field.Input exposing
     , number
     , text
     , password
-    , AddOn
-    , iconAddOn
-    , textAddOn
-    , withAddOn
+    , Events
+    , Addon
+    , AddonType
+    , iconAddon
+    , textAddon
+    , withAddon
     , withSize
     , withClassList
+    , withDisabled
+    , withErrorMessage
     , withName
     , withPlaceholder
+    , withValue
     , render
-    , addFieldStatus
     )
 
 {-|
@@ -30,12 +34,18 @@ module Components.Field.Input exposing
 @docs password
 
 
-## AddOn
+## Events
 
-@docs AddOn
-@docs iconAddOn
-@docs textAddOn
-@docs withAddOn
+@docs Events
+
+
+## Addon
+
+@docs Addon
+@docs AddonType
+@docs iconAddon
+@docs textAddon
+@docs withAddon
 
 
 ## Size
@@ -46,8 +56,11 @@ module Components.Field.Input exposing
 ## Generics
 
 @docs withClassList
+@docs withDisabled
+@docs withErrorMessage
 @docs withName
 @docs withPlaceholder
+@docs withValue
 
 
 ## Rendering
@@ -57,9 +70,10 @@ module Components.Field.Input exposing
 -}
 
 import Commons.Attributes as CommonsAttributes
-import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
+import Commons.Render as CommonsRender
+import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
@@ -75,19 +89,21 @@ type Model msg
 {-| Internal. The internal Input configuration.
 -}
 type alias Configuration msg =
-    { addOn : Maybe AddOn
+    { addon : Maybe Addon
     , classList : List ( String, Bool )
     , id : String
     , events : Events msg
     , name : Maybe String
     , placeholder : Maybe String
     , size : Size
-    , status : FieldStatus.StatusList
     , type_ : Type
+    , value : String
+    , disabled : Bool
+    , errorMessage : Maybe String
     }
 
 
-{-| Internal. The internal Input Event configuration.
+{-| Events dispatched after messages.
 -}
 type alias Events msg =
     { onBlur : msg
@@ -117,9 +133,11 @@ create inputType events id =
         , name = Nothing
         , placeholder = Nothing
         , size = Size.medium
-        , status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
         , type_ = inputType
-        , addOn = Nothing
+        , addon = Nothing
+        , value = ""
+        , disabled = False
+        , errorMessage = Nothing
         }
 
 
@@ -179,50 +197,74 @@ typeToAttribute a =
             Attributes.type_ "text"
 
 
-type AddOn
-    = IconAddOn Placement IconSet.Icon
-    | TextAddOn Placement String
+type AddonType
+    = IconAddon IconSet.Icon
+    | TextAddon String
 
 
-{-| Creates an AddOn with an Icon from our IconSet.
+type alias Addon =
+    { placement : Placement
+    , type_ : AddonType
+    }
+
+
+{-| Internal
 -}
-iconAddOn : Placement -> IconSet.Icon -> AddOn
-iconAddOn =
-    IconAddOn
+addonTypeToString : AddonType -> String
+addonTypeToString addonType =
+    case addonType of
+        IconAddon _ ->
+            "icon"
+
+        TextAddon _ ->
+            "text"
 
 
-{-| Creates an AddOn with a String content.
+{-| Creates an Addon with an Icon from our IconSet.
 -}
-textAddOn : Placement -> String -> AddOn
-textAddOn =
-    TextAddOn
+iconAddon : IconSet.Icon -> AddonType
+iconAddon =
+    IconAddon
 
 
-{-| Sets an AddOn to the Input.
+{-| Creates an Addon with a String content.
 -}
-withAddOn : AddOn -> Model msg -> Model msg
-withAddOn addOn (Model configuration) =
-    Model { configuration | addOn = Just addOn }
+textAddon : String -> AddonType
+textAddon =
+    TextAddon
+
+
+{-| Sets an Addon to the Input.
+-}
+withAddon : Placement -> AddonType -> Model msg -> Model msg
+withAddon placement type_ (Model configuration) =
+    Model { configuration | addon = Just { placement = placement, type_ = type_ } }
+
+
+{-| Sets the input value attribute
+-}
+withValue : String -> Model msg -> Model msg
+withValue value (Model configuration) =
+    Model { configuration | value = value }
+
+
+{-| Sets the input as disabled
+-}
+withDisabled : Bool -> Model msg -> Model msg
+withDisabled isDisabled (Model configuration) =
+    Model { configuration | disabled = isDisabled }
 
 
 {-| Internal.
 -}
-addOnToAttribute : AddOn -> Html.Attribute msg
-addOnToAttribute a =
-    case a of
-        IconAddOn placement _ ->
-            if Placement.isAppend placement then
-                Attributes.class "form-field--with-prepend-icon"
-
-            else
-                Attributes.class "form-field--with-append-icon"
-
-        TextAddOn placement _ ->
-            if Placement.isPrepend placement then
-                Attributes.class "form-field--with-prepend-text"
-
-            else
-                Attributes.class "form-field--with-append-text"
+addonToAttribute : Addon -> Html.Attribute msg
+addonToAttribute { type_, placement } =
+    [ "form-field--with"
+    , Placement.toString placement
+    , addonTypeToString type_
+    ]
+        |> String.join "-"
+        |> Attributes.class
 
 
 {-| Sets a Size to the Input.
@@ -253,9 +295,11 @@ withPlaceholder placeholder (Model configuration) =
     Model { configuration | placeholder = Just placeholder }
 
 
-addFieldStatus : FieldStatus -> Model msg -> Model msg
-addFieldStatus fieldStatus (Model configuration) =
-    Model { configuration | status = FieldStatus.addStatus fieldStatus configuration.status }
+{-| Define the error message
+-}
+withErrorMessage : Maybe String -> Model msg -> Model msg
+withErrorMessage mError (Model configuration) =
+    Model { configuration | errorMessage = mError }
 
 
 {-| Renders the Input.
@@ -267,24 +311,80 @@ render (Model configuration) =
             [ Attributes.classList
                 [ ( "form-field", True )
                 , ( "form-field--small", Size.isSmall configuration.size )
-                , ( "form-field--error", FieldStatus.hasError configuration.status )
+                , ( "form-field--error", configuration.errorMessage /= Nothing )
+                , ( "form-field--disabled", configuration.disabled )
                 ]
             ]
-            [ Maybe.map addOnToAttribute configuration.addOn ]
+            [ Maybe.map addonToAttribute configuration.addon
+            , Maybe.map
+                (always (configuration.id |> errorMessageId |> CommonsAttributes.ariaDescribedBy))
+                configuration.errorMessage
+            ]
         )
-        [ Html.input
-            (CommonsAttributes.compose
-                [ Attributes.id configuration.id
-                , Attributes.class "form-field__text"
-                , Attributes.classList [ ( "form-field--text-small", Size.isSmall configuration.size ) ]
-                , Attributes.classList configuration.classList
-                , CommonsAttributes.testId configuration.id
-                , Html.Events.onInput configuration.events.onInput
-                , typeToAttribute configuration.type_
-                ]
-                [ Maybe.map Attributes.name configuration.name
-                , Maybe.map Attributes.placeholder configuration.placeholder
-                ]
-            )
-            []
+        [ configuration.addon
+            |> Maybe.map (viewInputAndAddon configuration)
+            |> Maybe.withDefault (viewInput configuration)
+        , Html.div
+            [ Attributes.class "form-field__error-message"
+            , Attributes.id (errorMessageId configuration.id)
+            ]
+            [ Maybe.map Html.text configuration.errorMessage |> CommonsRender.renderMaybe
+            ]
         ]
+
+
+{-| Internal.
+-}
+viewInputAndAddon : Configuration msg -> Addon -> Html msg
+viewInputAndAddon configuration addon =
+    Html.label [ Attributes.class "form-field__wrapper" ]
+        [ CommonsRender.renderIf (Placement.isPrepend addon.placement) (viewAddon addon.type_)
+        , viewInput configuration
+        , CommonsRender.renderIf (Placement.isAppend addon.placement) (viewAddon addon.type_)
+        ]
+
+
+{-| Internal.
+-}
+viewAddon : AddonType -> Html msg
+viewAddon type_ =
+    case type_ of
+        IconAddon icon ->
+            Html.div [ Attributes.class "form-field__addon" ]
+                [ Icon.create icon |> Icon.render ]
+
+        TextAddon str ->
+            Html.span [ Attributes.class "form-field__addon" ]
+                [ Html.text str ]
+
+
+{-| Internal.
+-}
+viewInput : Configuration msg -> Html msg
+viewInput configuration =
+    Html.input
+        (CommonsAttributes.compose
+            [ Attributes.id configuration.id
+            , Attributes.class "form-field__text"
+            , Attributes.classList [ ( "form-field--text-small", Size.isSmall configuration.size ) ]
+            , Attributes.classList configuration.classList
+            , CommonsAttributes.testId configuration.id
+            , Html.Events.onInput configuration.events.onInput
+            , Html.Events.onFocus configuration.events.onFocus
+            , Html.Events.onBlur configuration.events.onBlur
+            , typeToAttribute configuration.type_
+            , Attributes.disabled configuration.disabled
+            , Attributes.value configuration.value
+            ]
+            [ Maybe.map Attributes.name configuration.name
+            , Maybe.map Attributes.placeholder configuration.placeholder
+            ]
+        )
+        []
+
+
+{-| Internal. For screen-reader.
+-}
+errorMessageId : String -> String
+errorMessageId id =
+    id ++ "-error"

@@ -3,17 +3,17 @@ module Components.LabelTest exposing (suite)
 import Commons.Properties.Size as Size
 import Components.Label as Label
 import Html.Attributes
-import Test exposing (Test, describe, test)
+import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, classes, tag, text)
 
 
 suite : Test
 suite =
-    describe "The Label component"
-        [ describe "Default"
-            [ test "has a textual content" <|
-                \_ ->
+    Test.describe "The Label component"
+        [ Test.describe "Default"
+            [ Test.test "has a textual content" <|
+                \() ->
                     Label.create "My label"
                         |> Label.render
                         |> Query.fromHtml
@@ -22,18 +22,18 @@ suite =
                             , text "My label"
                             , classes [ "form-label" ]
                             ]
-            , describe "Size"
-                [ test "is small" <|
-                    \_ ->
+            , Test.describe "Size"
+                [ Test.test "is small" <|
+                    \() ->
                         Label.create "My label"
                             |> Label.withSize Size.small
                             |> Label.render
                             |> Query.fromHtml
                             |> Query.has [ classes [ "form-label", "form-label--small" ] ]
                 ]
-            , describe "With a sub-text"
-                [ test "creates a 'small' tag" <|
-                    \_ ->
+            , Test.describe "With a sub-text"
+                [ Test.test "creates a 'small' tag" <|
+                    \() ->
                         Label.create "My label"
                             |> Label.withSubText "Sub-level text"
                             |> Label.render
@@ -44,16 +44,16 @@ suite =
                                 , text "Sub-level text"
                                 ]
                 ]
-            , describe "Generics"
-                [ test "has a for attribute" <|
-                    \_ ->
+            , Test.describe "Generics"
+                [ Test.test "has a for attribute" <|
+                    \() ->
                         Label.create "My label"
                             |> Label.withFor "input-id"
                             |> Label.render
                             |> Query.fromHtml
                             |> Query.has [ attribute (Html.Attributes.for "input-id") ]
-                , test "has a class list" <|
-                    \_ ->
+                , Test.test "has a class list" <|
+                    \() ->
                         Label.create "My label"
                             |> Label.withClassList
                                 [ ( "my-class", True )
@@ -62,8 +62,8 @@ suite =
                             |> Label.render
                             |> Query.fromHtml
                             |> Query.has [ classes [ "my-class", "my-other-class" ] ]
-                , test "has an id" <|
-                    \_ ->
+                , Test.test "has an id" <|
+                    \() ->
                         Label.create "My label"
                             |> Label.withId "label-id"
                             |> Label.render
