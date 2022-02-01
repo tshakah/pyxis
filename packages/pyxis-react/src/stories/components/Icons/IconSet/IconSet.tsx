@@ -13,7 +13,7 @@ const description = (
   </p>
 );
 
-// TODO: remember to style input with proper classes once they're available
+// TODO: remember to replace input with component once they're available
 const IconSet: FC = () => {
   const [iconList, setIconList] = useState(initialList);
 
@@ -29,8 +29,8 @@ const IconSet: FC = () => {
 
   return (
     <OverviewTemplate title="Icon Set" description={description} category={"Component"} isMain>
-      <div className={styles.inputWrapper}>
-        <input type="text" onChange={handleChange} placeholder="Search icon..." />
+      <div className="form-field">
+        <input type="text" className="form-field__text" onChange={handleChange} placeholder="Search icon..."/>
       </div>
       <div className={styles.wrapper}>
         {iconList.map(

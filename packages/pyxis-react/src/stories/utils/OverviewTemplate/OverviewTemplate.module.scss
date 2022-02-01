@@ -4,6 +4,10 @@
   @include pyxis.verticalSpacing(s);
   border-bottom: pyxis.rem(1px) solid pyxis.color(neutral85);
   padding-bottom: pyxis.rem(10px);
+
+  &:not(:first-child) {
+    margin-top: pyxis.spacing(3xl);
+  }
 }
 
 .category {

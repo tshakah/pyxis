@@ -70,6 +70,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 /// @access private
 @mixin fieldWithOpenedDropdown {
   @include foundations.radius(xs, top);
+  z-index: 2;
 
   &:focus,
   &:focus-within,

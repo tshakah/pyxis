@@ -73,7 +73,8 @@ $_transitionProperty: cubic-bezier(0.3, 0.07, 0.34, 1);
   cursor: default;
   display: grid;
   max-height: $maxHeight;
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
 
   .form-field__dropdown-wrapper--small & {
     @include foundations.horizontalPadding(3xs);
