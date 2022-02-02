@@ -1,7 +1,7 @@
-module Components.TextFieldTest exposing (suite)
+module Components.EmailFieldTest exposing (suite)
 
 import Commons.Properties.Placement as Placement
-import Components.Field.Text as TextField
+import Components.Field.Email as EmailField
 import Components.IconSet as IconSet
 import Expect
 import Fuzz
@@ -14,16 +14,16 @@ import Test.Html.Selector as Selector exposing (attribute, classes, tag)
 
 
 type Msg
-    = Tagger TextField.Msg
+    = Tagger EmailField.Msg
 
 
 suite : Test
 suite =
-    Test.describe "The TextField component"
+    Test.describe "The Email Input component"
         [ Test.describe "Default"
             [ Test.test "the input has an id and a data-test-id" <|
                 \() ->
-                    textFieldModel
+                    emailFieldModel
                         |> renderModel
                         |> findInput
                         |> Query.has
@@ -35,22 +35,22 @@ suite =
         , Test.describe "Disabled attribute"
             [ Test.test "should be False by default" <|
                 \() ->
-                    textFieldModel
+                    emailFieldModel
                         |> renderModel
                         |> findInput
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    textFieldModel
-                        |> TextField.withDisabled b
+                    emailFieldModel
+                        |> EmailField.withDisabled b
                         |> renderModel
                         |> findInput
                         |> Query.has [ Selector.disabled b ]
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                textFieldModel
-                    |> TextField.withName name
+                emailFieldModel
+                    |> EmailField.withName name
                     |> renderModel
                     |> findInput
                     |> Query.has
@@ -58,8 +58,8 @@ suite =
                         ]
         , Test.fuzz Fuzz.string "placeholder attribute should be rendered correctly" <|
             \p ->
-                textFieldModel
-                    |> TextField.withPlaceholder p
+                emailFieldModel
+                    |> EmailField.withPlaceholder p
                     |> renderModel
                     |> findInput
                     |> Query.has
@@ -68,8 +68,8 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    textFieldModel
-                        |> TextField.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
+                    emailFieldModel
+                        |> EmailField.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
                         |> renderModel
                         |> findInput
                         |> Expect.all
@@ -82,9 +82,9 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    textFieldModel
-                        |> TextField.withClassList [ ( s1, True ), ( s2, True ) ]
-                        |> TextField.withClassList [ ( s3, True ) ]
+                    emailFieldModel
+                        |> EmailField.withClassList [ ( s1, True ), ( s2, True ) ]
+                        |> EmailField.withClassList [ ( s3, True ) ]
                         |> renderModel
                         |> findInput
                         |> Expect.all
@@ -104,8 +104,8 @@ suite =
                     [ Test.describe "Icon addon"
                         [ Test.test "append positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
-                                    |> TextField.withAddon Placement.append (TextField.iconAddon IconSet.ArrowDown)
+                                emailFieldModel
+                                    |> EmailField.withAddon Placement.append (EmailField.iconAddon IconSet.ArrowDown)
                                     |> renderModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-append-icon"
@@ -113,8 +113,8 @@ suite =
                                         ]
                         , Test.test "prepend positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
-                                    |> TextField.withAddon Placement.prepend (TextField.iconAddon IconSet.ArrowDown)
+                                emailFieldModel
+                                    |> EmailField.withAddon Placement.prepend (EmailField.iconAddon IconSet.ArrowDown)
                                     |> renderModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-prepend-icon"
@@ -124,8 +124,8 @@ suite =
                     , Test.describe "Text addon"
                         [ Test.test "append positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
-                                    |> TextField.withAddon Placement.append (TextField.textAddon textAddon)
+                                emailFieldModel
+                                    |> EmailField.withAddon Placement.append (EmailField.textAddon textAddon)
                                     |> renderModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-append-text"
@@ -134,8 +134,8 @@ suite =
                                         ]
                         , Test.test "prepend positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
-                                    |> TextField.withAddon Placement.prepend (TextField.textAddon textAddon)
+                                emailFieldModel
+                                    |> EmailField.withAddon Placement.prepend (EmailField.textAddon textAddon)
                                     |> renderModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-prepend-text"
@@ -149,8 +149,8 @@ suite =
         , Test.describe "Validation"
             [ Test.test "has error" <|
                 \() ->
-                    TextField.create Tagger "input-id"
-                        |> TextField.render
+                    emailFieldModel
+                        |> EmailField.render
                         |> Query.fromHtml
                         |> Query.find [ tag "input" ]
                         |> Query.has
@@ -162,14 +162,14 @@ suite =
         , Test.describe "Events"
             [ Test.fuzz Fuzz.string "input should update the model value" <|
                 \str ->
-                    textFieldModel
+                    emailFieldModel
                         |> renderModel
                         |> findInput
                         |> Test.triggerMsg (Event.input str)
                             (\(Tagger msg) ->
-                                TextField.update msg textFieldModel
+                                EmailField.update msg emailFieldModel
                                     |> Tuple.first
-                                    |> TextField.getValue
+                                    |> EmailField.getValue
                                     |> Expect.equal (Just str)
                             )
             ]
@@ -181,13 +181,13 @@ findInput =
     Query.find [ Selector.tag "input" ]
 
 
-textFieldModel : TextField.Model Msg
-textFieldModel =
-    TextField.create Tagger "input-id"
+emailFieldModel : EmailField.Model Msg
+emailFieldModel =
+    EmailField.create Tagger "input-id"
 
 
-renderModel : TextField.Model msg -> Query.Single msg
+renderModel : EmailField.Model msg -> Query.Single msg
 renderModel model =
     model
-        |> TextField.render
+        |> EmailField.render
         |> Query.fromHtml
