@@ -1,0 +1,36 @@
+@use "../foundations";
+@use "../lib";
+
+$_variants: (brand, action, alert, success, error, neutralGradient, brandGradient);
+
+.badge {
+  @include foundations.horizontalPadding(2xs);
+  @include foundations.verticalPadding(4xs);
+  @include foundations.radius(xs);
+  @include foundations.text(s, bold);
+  background-color: foundations.color(neutral95);
+  color: foundations.color(neutralBase);
+  display: inline-block;
+  user-select: none;
+}
+
+@each $variant in $_variants {
+  .badge--#{lib.camelToKebabCase($variant)} {
+    @if str-index($variant, "Gradient") {
+      background: foundations.gradient(lib.stringReplace($variant, "Gradient", ""));
+      color: foundations.color(neutralLight);
+    } @else {
+      background-color: foundations.color(#{$variant}Light);
+      color: if($variant == "alert", foundations.color(neutral25), foundations.color(#{$variant}Base));
+    }
+  }
+}
+
+.badge--alt {
+  background-color: foundations.color(neutralLight);
+}
+
+.badge--ghost {
+  background-color: rgba(foundations.color(neutralLight), 0.15);
+  color: foundations.color(neutralLight);
+}
