@@ -1,6 +1,6 @@
 @use "src/stories/pyxis";
 
-.wrapper {
+.badge-wrapper {
   @include pyxis.padding(s);
   @include pyxis.columnGap(s);
   display: grid;

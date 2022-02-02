@@ -7,7 +7,7 @@ import "./Message.scss";
 // Non-exhaustive implementation, made for testing purposes only.
 
 const Messages = () => (
-  <div className="wrapper">
+  <div className="message-wrapper">
     <Message />
     <Message state="brand"/>
     <Message state="success"/>

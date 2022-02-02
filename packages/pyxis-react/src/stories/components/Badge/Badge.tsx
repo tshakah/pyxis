@@ -5,7 +5,7 @@ import "./Badge.scss";
 
 const Badges = () => (
   <>
-    <div className="wrapper">
+    <div className="badge-wrapper">
       <Badge />
       <Badge variant="brand" />
       <Badge variant="action" />
@@ -15,7 +15,7 @@ const Badges = () => (
       <Badge variant="neutralGradient" />
       <Badge variant="brandGradient" />
     </div>
-    <div className="wrapper bg-neutral-base">
+    <div className="badge-wrapper bg-neutral-base">
       <Badge alt />
       <Badge variant="brand" alt />
       <Badge variant="action" alt />
