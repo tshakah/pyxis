@@ -1,0 +1,51 @@
+@use "../foundations";
+
+$_states: (brand, alert, success, error);
+
+.message {
+  @include foundations.columnGap(xs);
+  @include foundations.horizontalPadding(s);
+  @include foundations.radius(s);
+  @include foundations.verticalPadding(xs);
+  align-items: center;
+  background-color: foundations.color(neutral95);
+  display: grid;
+  grid-template-columns: min-content auto min-content;
+  user-select: none;
+
+  @include foundations.mq(xsmall) {
+    @include foundations.columnGap(s);
+    @include foundations.verticalPadding(s);
+  }
+}
+
+@each $state in $_states {
+  .message--#{$state} {
+    &.message--with-background-color {
+      background-color: foundations.color(#{$state}Light);
+    }
+
+    .message__icon {
+      color: if($state == "alert", foundations.color(neutral25), foundations.color(#{$state}Base));
+    }
+  }
+}
+
+.message--ghost {
+  background-color: transparent;
+  padding: 0;
+}
+
+.message__title {
+  @include foundations.text(s, bold);
+}
+
+.message__text {
+  @include foundations.text(s, light);
+}
+
+.message__close {
+  @include foundations.verticalPadding(4xs);
+  align-self: start;
+  cursor: pointer;
+}
