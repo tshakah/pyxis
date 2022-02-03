@@ -376,7 +376,7 @@ viewForm model =
             |> Input.render model.password PasswordInput
         , Input.password
             |> Input.withPlaceholder "Confirm password"
-            |> Input.render model.password ConfirmPasswordInput
+            |> Input.render model.confirmPassword ConfirmPasswordInput
         , Btn.primary
             |> Btn.withText "Submit"
             |> Btn.withType Btn.submit
