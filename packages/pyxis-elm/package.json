@@ -8,6 +8,7 @@
   "homepage": "https://github.com/primait/pyxis-react#readme",
   "main": "lib/pyxis-elm.js",
   "scripts": {
+    "dev:validation-example": "parcel examples/validation.html",
     "elmbook:build": "elm make src/Stories/Book.elm --output=dist/index.html",
     "elmbook:serve": "elm-book src/Stories/Book.elm --dir=./dist -- --output=dist/index.html",
     "generate:icons": "ts-node --project scripts/tsconfig.json ./scripts/generateIcons.ts && ./node_modules/.bin/elm-format src/Components/IconSet.elm --yes",
@@ -23,5 +24,9 @@
     "elm-format": "^0.8.5",
     "elm-review": "^2.7.0",
     "elm-test": "^0.19.1-revision7"
+  },
+  "devDependencies": {
+    "@parcel/transformer-elm": "^2.2.1",
+    "parcel": "^2.2.1"
   }
 }
