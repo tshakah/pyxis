@@ -8,8 +8,6 @@
 @use "../mixins";
 @use "../variables";
 
-$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
-
 /// Add the same color and border-color to element.
 /// @param {Color} $color - Color name
 ///
@@ -120,7 +118,7 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   flex: 1;
   place-items: center;
   pointer-events: none;
-  transition: transform $_transitionTiming;
+  transition: transform foundations.duration(fast) foundations.timing(base);
   user-select: none;
 
   &:focus,
@@ -131,7 +129,9 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   .form-field--with-prepend-text &,
   .form-field--with-append-text & {
     @include foundations.horizontalPadding(2xs);
-    transition: border-color $_transitionTiming, color $_transitionTiming;
+    transition-duration: foundations.duration(fast);
+    transition-property: border-color, color;
+    transition-timing-function: foundations.timing(base);
     white-space: nowrap;
   }
 

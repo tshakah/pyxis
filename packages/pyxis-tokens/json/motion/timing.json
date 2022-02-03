@@ -1,0 +1,5 @@
+{
+  "base": "cubic-bezier(0.2, 0.07, 0.38, 1)",
+  "entrance": "cubic-bezier(0, 0, 0.38, 1)",
+  "exit": "cubic-bezier(0.2, 0.07, 1, 1)"
+}

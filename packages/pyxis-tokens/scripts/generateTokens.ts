@@ -6,6 +6,8 @@ import containers from "../json/containers.json";
 import elevationColors from "../json/elevation/colors.json";
 import elevationSizes from "../json/elevation/sizes.json";
 import gradients from "../json/gradients.json";
+import motionDuration from "../json/motion/duration.json";
+import motionTiming from "../json/motion/timing.json";
 import radius from "../json/radius.json";
 import spacings from "../json/spacings.json";
 import textSizes from "../json/typography/text/sizes.json";
@@ -39,6 +41,14 @@ const tokens: {name: string, source: Token}[] = [
   {
     "name": "gradients",
     "source": gradients
+  },
+  {
+    "name": "motionDuration",
+    "source": motionDuration
+  },
+  {
+    "name": "motionTiming",
+    "source": motionTiming
   },
   {
     "name": "radius",

@@ -6,7 +6,6 @@
 @use "../lib";
 @use "../foundations";
 
-$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
 $_borderWidth: lib.rem(2px);
 $_outlineWidth: lib.rem(3px);
 
@@ -190,7 +189,9 @@ $_sizes: (
   justify-content: center;
   place-items: center;
   position: relative;
-  transition: all $_transitionTiming;
+  transition-duration: foundations.duration(fast);
+  transition-property: background, color, outline, transform;
+  transition-timing-function: foundations.timing(base);
   user-select: none;
   will-change: transform;
 
@@ -352,7 +353,8 @@ $_sizes: (
   position: relative;
 
   &:after {
-    animation: loading 1s infinite linear, loadingEntry $_transitionTiming;
+    animation: loading foundations.duration(slowest) infinite linear,
+      loadingEntry foundations.duration(fast) foundations.timing(base);
     border-radius: 50%;
     content: "";
     left: 50%;

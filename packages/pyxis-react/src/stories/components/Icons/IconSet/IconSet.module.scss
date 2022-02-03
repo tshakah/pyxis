@@ -19,7 +19,7 @@
   display: grid;
   justify-items: center;
   position: relative;
-  transition: background-color 0.1s ease;
+  transition: background-color pyxis.duration(fast) pyxis.timing(base);
 
   &:after {
     color: pyxis.color(neutral50);
@@ -28,7 +28,7 @@
     position: absolute;
     right: pyxis.rem(10px);
     top: pyxis.rem(5px);
-    transition: opacity 0.1s ease;
+    transition: opacity pyxis.duration(fast) pyxis.timing(base);
   }
 
   &:hover {

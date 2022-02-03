@@ -8,8 +8,6 @@
 @use "../mixins";
 @use "../variables";
 
-$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
-
 /// Set general properties for control fields as radio and checkbox.
 ///
 /// @example scss - Grouped control field - Horizontal layout (default)

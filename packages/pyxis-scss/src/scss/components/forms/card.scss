@@ -8,8 +8,6 @@
 @use "mixins";
 @use "variables";
 
-$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
-
 /// Set general properties for card control fields as radio-card and checkbox-card.
 ///
 /// @example scss - Grouped cards - Horizontal layout (default)
@@ -132,10 +130,9 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   cursor: pointer;
   display: flex;
   padding: foundations.spacing(s) foundations.spacing(m);
-  transition:
-    border-color $_transitionTiming,
-    box-shadow $_transitionTiming,
-    outline-color $_transitionTiming;
+  transition-duration: foundations.duration(fast);
+  transition-property: border-color, box-shadow, outline-color;
+  transition-timing-function: foundations.timing(base);
   width: 100%;
   will-change: border-color, box-shadow, outline-color;
 

@@ -2,14 +2,14 @@
 @use "../../foundations";
 @use "variables";
 
-$_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
-
 /// Add CSS rules for default, hover and focus field states.
 ///
 /// @access private
 @mixin fieldStateDefault {
   outline: transparent solid variables.$outlineWidth;
-  transition: border-color $_transitionTiming, outline-color $_transitionTiming;
+  transition-duration: foundations.duration(fast);
+  transition-property: border-color, outline-color;
+  transition-timing-function: foundations.timing(base);
 
   @include lib.onSafari {
     @include shadow(transparent);
@@ -114,10 +114,9 @@ $_transitionTiming: 0.2s cubic-bezier(0.3, 0.07, 0.34, 1);
   cursor: pointer;
   height: variables.$controlSize;
   outline-offset: 0;
-  transition: background-color $_transitionTiming,
-    border-color $_transitionTiming,
-    box-shadow $_transitionTiming,
-    outline-color $_transitionTiming;
+  transition-duration: foundations.duration(fast);
+  transition-property: background-color, border-color, box-shadow, outline-color;
+  transition-timing-function: foundations.timing(base);
   width: variables.$controlSize;
   will-change: background-color, border-color, box-shadow, outline-color;
 

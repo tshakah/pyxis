@@ -1,0 +1,36 @@
+////
+/// Motion can bring the screen to life, guide users through complex experiences, and help move them.
+/// @group MOTION
+////
+
+@use "../lib";
+@use "../tokens/motionDuration" as *;
+@use "../tokens/motionTiming" as *;
+
+/// Returns the `$duration` value from map `$motionDuration`.
+///
+/// @param {String} $duration - Name of duration
+/// @return {String} Representation of named duration
+///
+/// @example scss - Get the timing
+///   duration(fastest)
+///   // 75ms
+///
+/// @access public
+@function duration($duration) {
+  @return lib.get($motionDuration, $duration);
+}
+
+/// Returns the `$timing` hex from tokens `$motionTiming`.
+///
+/// @param {String} $timing - Name of timing-function
+/// @return {String} Representation of named timing-function
+///
+/// @example scss - Get the timing-function
+///   timing(base)
+///   // cubic-bezier(0.2, 0.07, 0.38, 1)
+///
+/// @access public
+@function timing($timing) {
+  @return lib.get($motionTiming, $timing);
+}
