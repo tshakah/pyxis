@@ -277,6 +277,32 @@ baseUpdate msg model =
                 |> submitData
 
 
+{-| This allows to perform more general validation using parsed data
+
+        sameYearMultiValidation : Model -> Result String ()
+        sameYearMultiValidation model =
+            Input.multiValidation3
+                (\birthDate licenceDate driverCategory ->
+                    case (licenceDate, driverCategory) of
+                        (Nothing, Just _) ->
+                            Err "Without a licence date, the driver category is invalid"
+
+                        (Just dateValue, Just GuideType.Expert) ->
+                            if Date.year model.today - Date.year d1 < 25 then
+                                Err "You cannot select 'Expert' guide category"
+
+                            else
+                                Ok ()
+                       _ ->
+                            Ok ()
+                )
+                model.birthDate         -- : Input.Model Date, a required field
+                model.licenceDate       -- : Input.Model (Maybe Date), an optional date
+                model.driverCategory    -- : Input.Model GuideType
+
+This api is probably going to be simplified
+
+-}
 confirmPasswordMultiValidation : Model -> Result String ()
 confirmPasswordMultiValidation model =
     Input.multiValidation2
