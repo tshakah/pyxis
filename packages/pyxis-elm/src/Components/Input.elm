@@ -8,16 +8,15 @@ module Components.Input exposing
     , email
     , empty
     , enhanceUpdateWithMask
+    , forceValidation
     , getData
     , getValue
     , iconAddon
     , init
     , medium
-    , multiValidation2
     , number
     , numberMax
     , numberMin
-    , overrideValidation
     , password
     , render
     , small
@@ -93,6 +92,32 @@ overrideValidation result (Model model) =
         }
 
 
+forceValidation :
+    (field -> Validation form (Result String ()))
+    -> form
+    -> (form -> Model field)
+    -> Model field
+forceValidation validation form getInputModel =
+    let
+        model =
+            getInputModel form
+
+        selfResult =
+            validateBeforeOverride model
+    in
+    case selfResult of
+        Err _ ->
+            model
+
+        Ok self ->
+            case validation self form of
+                Ok override ->
+                    overrideValidation override model
+
+                Err _ ->
+                    model
+
+
 detectChanges : Model data -> Model (Maybe data)
 detectChanges (Model model) =
     let
@@ -138,16 +163,6 @@ validate (Model { validation, value, validationOverride }) =
 validateBeforeOverride : Model data -> Result String data
 validateBeforeOverride (Model { validation, value }) =
     validation value
-
-
-multiValidation2 : (a -> b -> Result String ()) -> Model a -> Model b -> Result String ()
-multiValidation2 f m1 m2 =
-    case ( validateBeforeOverride m1, validateBeforeOverride m2 ) of
-        ( Ok v1, Ok v2 ) ->
-            f v1 v2
-
-        _ ->
-            Ok ()
 
 
 type alias ValidationMessageStrategy data =

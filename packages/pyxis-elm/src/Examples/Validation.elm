@@ -279,10 +279,11 @@ baseUpdate msg model =
 
 {-| This allows to perform more general validation using parsed data
 
-        sameYearMultiValidation : Model -> Result String ()
-        sameYearMultiValidation model =
-            Input.multiValidation3
-                (\birthDate licenceDate driverCategory ->
+        -- This validation is applied to the `guideType` field
+        guideTypeMultiValidation : GuideType -> Model -> Result String ()
+        guideTypeMultiValidation self model =
+            PipeValidation.succeed
+                (\birthDate licenceDate ->
                     case (licenceDate, driverCategory) of
                         (Nothing, Just _) ->
                             Err "Without a licence date, the driver category is invalid"
@@ -296,25 +297,31 @@ baseUpdate msg model =
                        _ ->
                             Ok ()
                 )
-                model.birthDate         -- : Input.Model Date, a required field
-                model.licenceDate       -- : Input.Model (Maybe Date), an optional date
-                model.driverCategory    -- : Input.Model GuideType
+           |> PipeValidation.input .birthDate    -- model.birthDate : Input.Model Date, a required field
+           |> PipeValidation.input .licenceDate  -- model.licenceDate : Input.Model (Maybe Date), an optional date
 
-This api is probably going to be simplified
+       -- ...
+
+       baseUpdate
+            |> afterUpdate
+                (\model ->
+                    { model | guideType = Input.forceValidation guideTypeMultiValidation model .guideType }
+                )
+
+Still a design pattern, not a feature
 
 -}
-confirmPasswordMultiValidation : Model -> Result String ()
-confirmPasswordMultiValidation model =
-    Input.multiValidation2
-        (\password confirmPassword ->
-            if password == confirmPassword then
+confirmPasswordMultiValidation : String -> Validation Model (Result String ())
+confirmPasswordMultiValidation self =
+    PipeValidation.succeed
+        (\password ->
+            if password == self then
                 Ok ()
 
             else
                 Err "Passwords do not match"
         )
-        model.password
-        model.confirmPassword
+        |> PipeValidation.input .password
 
 
 afterUpdate : (Model -> Model) -> (Msg -> Model -> Model) -> Msg -> Model -> Model
@@ -327,12 +334,7 @@ update =
     baseUpdate
         |> afterUpdate
             (\model ->
-                { model
-                    | confirmPassword =
-                        Input.overrideValidation
-                            (confirmPasswordMultiValidation model)
-                            model.confirmPassword
-                }
+                { model | confirmPassword = Input.forceValidation confirmPasswordMultiValidation model .confirmPassword }
             )
 
 
