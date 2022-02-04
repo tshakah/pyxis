@@ -1,5 +1,6 @@
 module Components.Input exposing
-    ( Model
+    ( Input
+    , Model
     , Msg
     , date
     , dateMax
