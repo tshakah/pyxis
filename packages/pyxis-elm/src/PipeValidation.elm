@@ -7,7 +7,6 @@ module PipeValidation exposing
     )
 
 import Components.Input as Input
-import Validation exposing (Validation)
 
 
 type alias Step model field data =

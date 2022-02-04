@@ -6,8 +6,7 @@
     "version": "1.0.1",
     "exposed-modules": [
         "Components.Button",
-        "Components.Field.Email",
-        "Components.Field.Text",
+        "Components.Input",
         "Components.Icon",
         "Components.IconSet",
         "Components.Label",
