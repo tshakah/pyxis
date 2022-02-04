@@ -170,33 +170,33 @@ type alias FormData =
 Input.getValue : Input.Model x -> String
 
 -- This is what we're interested in
-Input.validate : Input.Model value -> Result String value
+Input.getData : Input.Model data -> Maybe data
 
-Using `Result.mapN` instead of just asking for the string, we have the type-safe guarantee
+Using `Maybe.mapN` instead of just asking for the string, we have the type-safe guarantee
 that we're not submitting invalid data
 
     parseForm : Validation Model FormData
     parseForm model =
-        Result.map6 FormData
-            (Input.validate model.name)
-            (Input.validate model.age)
-            (Input.validate model.date)
-            (Input.validate model.job)
-            (Input.validate model.id)
-            (Input.validate model.confirmPassword)
+        Maybe.map6 FormData
+            (Input.getData model.name)
+            (Input.getData model.age)
+            (Input.getData model.date)
+            (Input.getData model.job)
+            (Input.getData model.id)
+            (Input.getData model.confirmPassword)
 
-Or we could use the general version of `Result.mapN`
-(it is implemented in the Result.Extra module, but is a one liner so we don't really need the external dep)
+Or we could use the general version of `Maybe.mapN`
+(it is implemented in the Maybe.Extra module, but is a one liner so we don't really need the external dep)
 
     parseForm : Validation Model FormData
     parseForm model =
         Ok FormData
-            |> Result.andMap (Input.validate model.name)
-            |> Result.andMap (Input.validate model.age)
-            |> Result.andMap (Input.validate model.date)
-            |> Result.andMap (Input.validate model.job)
-            |> Result.andMap (Input.validate model.id)
-            |> Result.andMap (Input.validate model.confirmPassword)
+            |> Maybe.andMap (Input.getData model.name)
+            |> Maybe.andMap (Input.getData model.age)
+            |> Maybe.andMap (Input.getData model.date)
+            |> Maybe.andMap (Input.getData model.job)
+            |> Maybe.andMap (Input.getData model.id)
+            |> Maybe.andMap (Input.getData model.confirmPassword)
 
 The following is a shortcut to the above.
 It's just a design pattern, not a feature, and the user can just use the approaches above
@@ -204,7 +204,7 @@ It's just a design pattern, not a feature, and the user can just use the approac
 The pipe can be mixed with other types of values, not only `PipeValidation..input`
 
 -}
-parseForm : Validation Model FormData
+parseForm : Model -> Maybe FormData
 parseForm =
     PipeValidation.succeed FormData
         |> PipeValidation.input .name
@@ -280,7 +280,7 @@ baseUpdate msg model =
 {-| This allows to perform more general validation using parsed data
 
         -- This validation is applied to the `guideType` field
-        guideTypeMultiValidation : GuideType -> Model -> Result String ()
+        guideTypeMultiValidation : GuideType -> Model -> Maybe (Result String ())
         guideTypeMultiValidation self model =
             PipeValidation.succeed
                 (\birthDate licenceDate ->
@@ -297,7 +297,7 @@ baseUpdate msg model =
                        _ ->
                             Ok ()
                 )
-           |> PipeValidation.input .birthDate    -- model.birthDate : Input.Model Date, a required field
+           |> PipeValidation.required .birthDate -- model.birthDate : Maybe Date, fetched from the server
            |> PipeValidation.input .licenceDate  -- model.licenceDate : Input.Model (Maybe Date), an optional date
 
        -- ...
@@ -311,7 +311,7 @@ baseUpdate msg model =
 Still a design pattern, not a feature
 
 -}
-confirmPasswordMultiValidation : String -> Validation Model (Result String ())
+confirmPasswordMultiValidation : String -> Model -> Maybe (Result String ())
 confirmPasswordMultiValidation self =
     PipeValidation.succeed
         (\password ->
@@ -392,7 +392,7 @@ viewForm model =
 
 submitData : Model -> Model
 submitData model =
-    { model | submittedData = parseForm model :: model.submittedData }
+    { model | submittedData = Result.fromMaybe "Err" (parseForm model) :: model.submittedData }
 
 
 view : Model -> Html Msg

@@ -24,7 +24,6 @@ module Components.Input exposing
     , text
     , textAddon
     , update
-    , validate
     , withAddon
     , withDisabled
     , withId
@@ -42,6 +41,7 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
 import Maybe.Extra
+import Result.Extra
 import Utils
 import Validation exposing (Validation)
 
@@ -68,7 +68,7 @@ type Model data
         , initialValue : String
         , validation : Validation String data
         , showValidation : Bool
-        , validationOverride : Result String ()
+        , validationOverride : Maybe (Result String ())
         }
 
 
@@ -80,20 +80,20 @@ init initialValue validation =
         , initialValue = initialValue
         , validation = validation
         , showValidation = False
-        , validationOverride = Ok ()
+        , validationOverride = Just (Ok ())
         }
 
 
-overrideValidation : Result String x -> Model data -> Model data
+overrideValidation : Maybe (Result String x) -> Model data -> Model data
 overrideValidation result (Model model) =
     Model
         { model
-            | validationOverride = Result.map (always ()) result
+            | validationOverride = Maybe.map Result.Extra.void result
         }
 
 
 forceValidation :
-    (field -> Validation form (Result String ()))
+    (field -> form -> Maybe (Result String ()))
     -> form
     -> (form -> Model field)
     -> Model field
@@ -110,12 +110,7 @@ forceValidation validation form getInputModel =
             model
 
         Ok self ->
-            case validation self form of
-                Ok override ->
-                    overrideValidation override model
-
-                Err _ ->
-                    model
+            overrideValidation (validation self form) model
 
 
 detectChanges : Model data -> Model (Maybe data)
@@ -149,13 +144,21 @@ getValue (Model { value }) =
 
 
 getData : Model data -> Maybe data
-getData =
-    validate >> Result.toMaybe
+getData (Model { validation, value, validationOverride }) =
+    case validation value of
+        Ok x ->
+            case validationOverride of
+                Nothing ->
+                    Just x
 
+                Just (Ok ()) ->
+                    Just x
 
-validate : Model data -> Result String data
-validate (Model { validation, value, validationOverride }) =
-    Result.andThen (\() -> validation value) validationOverride
+                Just (Err _) ->
+                    Nothing
+
+        Err err ->
+            Nothing
 
 
 {-| Internal implementation detail
@@ -452,15 +455,29 @@ getFormFieldSizeClass (Size size) =
     Maybe.map (\s -> "form-field--" ++ s) size
 
 
+typeToString : Type -> String
+typeToString type_ =
+    case type_ of
+        Date ->
+            "date"
+
+        Text ->
+            "text"
+
+        _ ->
+            -- not implemented by pyxis yet
+            "text"
+
+
 {-| Internal, no need to expose
 -}
 getErrorMessage : Model data -> Maybe String
 getErrorMessage (Model model) =
     case ( model.validationOverride, model.showValidation ) of
-        ( Err msg, _ ) ->
+        ( Just (Err msg), _ ) ->
             Just msg
 
-        ( Ok (), True ) ->
+        ( Just (Ok ()), True ) ->
             case model.validation model.value of
                 Err msg ->
                     Just msg
@@ -472,13 +489,33 @@ getErrorMessage (Model model) =
             Nothing
 
 
+normalizeConfig : Input c -> Input c
+normalizeConfig (Config config_) =
+    case config_.type_ of
+        Date ->
+            Config
+                { config_
+                    | addon =
+                        Just
+                            { placement = Placement.prepend
+                            , type_ = IconAddon IconSet.Calendar
+                            }
+                }
+
+        _ ->
+            Config config_
+
+
 {-| Renders the Input.
 -}
 render : Model value -> (Msg -> msg) -> Input x -> Html msg
-render ((Model model_) as model) tagger ((Config configuration) as configuration_) =
+render ((Model model_) as model) tagger rawConfig =
     let
         errorMessage =
             getErrorMessage model
+
+        ((Config configuration) as configuration_) =
+            normalizeConfig rawConfig
     in
     Utils.concatArgs Html.div
         [ [ Attributes.classList
@@ -567,7 +604,7 @@ viewInput : String -> Input x -> Html Msg
 viewInput value (Config configuration) =
     Utils.concatArgs Html.input
         [ List.reverse configuration.attributes
-        , [ Attributes.class "form-field__text"
+        , [ Attributes.class ("form-field__" ++ typeToString configuration.type_)
           , Attributes.classList configuration.classList
           , Attributes.disabled configuration.disabled
           , typeToAttribute configuration.type_

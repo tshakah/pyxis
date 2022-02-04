@@ -1,5 +1,6 @@
 module PipeValidation exposing
-    ( hardcoded
+    ( Step
+    , hardcoded
     , input
     , required
     , succeed
@@ -9,21 +10,25 @@ import Components.Input as Input
 import Validation exposing (Validation)
 
 
-succeed : value -> Validation model value
+type alias Step model field data =
+    (model -> Maybe (field -> data)) -> (model -> Maybe data)
+
+
+succeed : value -> model -> Maybe value
 succeed value _ =
-    Ok value
+    Just value
 
 
-required : Validation model field -> Validation model (field -> data) -> Validation model data
+required : (model -> Maybe field) -> Step model field data
 required getFieldData f model =
-    Result.map2 (<|) (f model) (getFieldData model)
+    Maybe.map2 (<|) (f model) (getFieldData model)
 
 
-hardcoded : field -> Validation model (field -> data) -> Validation model data
+hardcoded : field -> Step model field data
 hardcoded field =
-    required (\_ -> Ok field)
+    required (\_ -> Just field)
 
 
-input : (model -> Input.Model field) -> Validation model (field -> data) -> Validation model data
+input : (model -> Input.Model field) -> Step model field data
 input getter =
-    required (Input.validate << getter)
+    required (Input.getData << getter)
