@@ -9,6 +9,7 @@
   "main": "lib/pyxis-elm.js",
   "scripts": {
     "dev:validation-example": "parcel examples/validation.html",
+    "dev:quotation-example": "parcel examples/quotation.html",
     "elmbook:build": "elm make src/Stories/Book.elm --output=dist/index.html",
     "elmbook:serve": "elm-book src/Stories/Book.elm --dir=./dist -- --output=dist/index.html",
     "generate:icons": "ts-node --project scripts/tsconfig.json ./scripts/generateIcons.ts && ./node_modules/.bin/elm-format src/Components/IconSet.elm --yes",

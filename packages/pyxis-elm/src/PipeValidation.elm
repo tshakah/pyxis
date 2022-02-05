@@ -1,8 +1,9 @@
 module PipeValidation exposing
     ( Step
+    , field
     , hardcoded
     , input
-    , required
+    , maybe
     , succeed
     )
 
@@ -18,16 +19,21 @@ succeed value _ =
     Just value
 
 
-required : (model -> Maybe field) -> Step model field data
-required getFieldData f model =
-    Maybe.map2 (<|) (f model) (getFieldData model)
+field : (model -> field) -> Step model field data
+field getField f model =
+    hardcoded (getField model) f model
 
 
-hardcoded : field -> Step model field data
-hardcoded field =
-    required (\_ -> Just field)
+hardcoded : value -> Step model value data
+hardcoded field_ f model =
+    Maybe.map (\f1 -> f1 field_) (f model)
+
+
+maybe : (model -> Maybe field) -> Step model field data
+maybe getMaybeField f model =
+    Maybe.map2 (<|) (f model) (getMaybeField model)
 
 
 input : (model -> Input.Model field) -> Step model field data
 input getter =
-    required (Input.getData << getter)
+    maybe (Input.getData << getter)

@@ -1,4 +1,4 @@
-module Examples.Validation exposing (main)
+module Examples.Validation.Main exposing (main)
 
 import Browser
 import Commons.Properties.Placement as Placement
@@ -352,8 +352,8 @@ viewForm model =
             |> Input.render model.name NameInput
         , Input.number
             |> Input.withPlaceholder "Age"
-            |> Input.numberMin 18
-            |> Input.numberMax 100
+            |> Input.withNumberMin 18
+            |> Input.withNumberMax 100
             -- This does not compile
             -- |> Input.dateMax (Date.fromRataDie 1000)
             |> Input.withAddon Placement.append (Input.textAddon "Addon")

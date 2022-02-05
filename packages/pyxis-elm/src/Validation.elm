@@ -19,9 +19,9 @@ fromPredicate pred reason x =
         Err reason
 
 
-fromMaybe : String -> Validation (Maybe a) a
-fromMaybe reason mX =
-    case mX of
+fromMaybe : String -> (a -> Maybe b) -> Validation a b
+fromMaybe reason toMaybe src =
+    case toMaybe src of
         Nothing ->
             Err reason
 

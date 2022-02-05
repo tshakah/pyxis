@@ -16,8 +16,6 @@ module Components.Input exposing
     , init
     , medium
     , number
-    , numberMax
-    , numberMin
     , password
     , render
     , small
@@ -28,6 +26,11 @@ module Components.Input exposing
     , withAddon
     , withDisabled
     , withId
+    , withIsSubmitted
+    , withMaxLength
+    , withMinLength
+    , withNumberMax
+    , withNumberMin
     , withPlaceholder
     )
 
@@ -355,13 +358,13 @@ number =
     config Number
 
 
-numberMin : Float -> Input { r | number : () } -> Input { r | number : () }
-numberMin =
+withNumberMin : Float -> Input { r | number : () } -> Input { r | number : () }
+withNumberMin =
     withAttribute << Attributes.min << String.fromFloat
 
 
-numberMax : Float -> Input { r | number : () } -> Input { r | number : () }
-numberMax =
+withNumberMax : Float -> Input { r | number : () } -> Input { r | number : () }
+withNumberMax =
     withAttribute << Attributes.max << String.fromFloat
 
 
@@ -405,11 +408,26 @@ withPlaceholder =
     withAttribute << Attributes.placeholder
 
 
+withMaxLength : Int -> Input c -> Input c
+withMaxLength =
+    withAttribute << Attributes.maxlength
+
+
+withMinLength : Int -> Input c -> Input c
+withMinLength =
+    withAttribute << Attributes.minlength
+
+
 {-| Sets an Addon to the Input.
 -}
 withAddon : Placement -> AddonType -> Input { c | canHaveAddon : () } -> Input { c | canHaveAddon : () }
 withAddon placement type_ (Config configuration) =
     Config { configuration | addon = Just { placement = placement, type_ = type_ } }
+
+
+withIsSubmitted : Bool -> Input c -> Input c
+withIsSubmitted b (Config input) =
+    Config { input | isSubmitted = b }
 
 
 withDisabled : Bool -> Input c -> Input c
@@ -433,6 +451,7 @@ type Input constraints
         , disabled : Bool
         , type_ : Type
         , id : Maybe String
+        , isSubmitted : Bool
         }
 
 
@@ -448,6 +467,7 @@ config type_ =
         , disabled = False
         , type_ = type_
         , id = Nothing
+        , isSubmitted = False
         }
 
 
@@ -470,21 +490,30 @@ typeToString type_ =
             "text"
 
 
+getResultError : Result a value -> Maybe a
+getResultError result =
+    case result of
+        Err err ->
+            Just err
+
+        Ok _ ->
+            Nothing
+
+
 {-| Internal, no need to expose
 -}
-getErrorMessage : Model data -> Maybe String
-getErrorMessage (Model model) =
-    case ( model.validationOverride, model.showValidation ) of
-        ( Just (Err msg), _ ) ->
+getErrorMessage : { r | isSubmitted : Bool } -> Model data -> Maybe String
+getErrorMessage { isSubmitted } (Model model) =
+    case model.validationOverride of
+        Just (Err msg) ->
             Just msg
 
-        ( Just (Ok ()), True ) ->
-            case model.validation model.value of
-                Err msg ->
-                    Just msg
+        Just (Ok ()) ->
+            if model.showValidation || isSubmitted then
+                getResultError (model.validation model.value)
 
-                Ok _ ->
-                    Nothing
+            else
+                Nothing
 
         _ ->
             Nothing
@@ -512,11 +541,11 @@ normalizeConfig (Config config_) =
 render : Model value -> (Msg -> msg) -> Input x -> Html msg
 render ((Model model_) as model) tagger rawConfig =
     let
-        errorMessage =
-            getErrorMessage model
-
         ((Config configuration) as configuration_) =
             normalizeConfig rawConfig
+
+        errorMessage =
+            getErrorMessage configuration model
     in
     Utils.concatArgs Html.div
         [ [ Attributes.classList
