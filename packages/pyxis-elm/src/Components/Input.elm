@@ -29,9 +29,11 @@ module Components.Input exposing
     , withIsSubmitted
     , withMaxLength
     , withMinLength
+    , withName
     , withNumberMax
     , withNumberMin
     , withPlaceholder
+    , withSize
     )
 
 import Commons.Attributes as CommonsAttributes
@@ -103,9 +105,11 @@ forceValidation :
     -> Model field
 forceValidation validation form getInputModel =
     let
+        model : Model field
         model =
             getInputModel form
 
+        selfResult : Result String field
         selfResult =
             validateBeforeOverride model
     in
@@ -120,6 +124,7 @@ forceValidation validation form getInputModel =
 detectChanges : Model data -> Model (Maybe data)
 detectChanges (Model model) =
     let
+        validation : Validation String (Maybe data)
         validation str =
             if str == model.initialValue then
                 Ok Nothing
@@ -161,7 +166,7 @@ getData (Model { validation, value, validationOverride }) =
                 Just (Err _) ->
                     Nothing
 
-        Err err ->
+        Err _ ->
             Nothing
 
 
@@ -296,6 +301,11 @@ medium =
     Size Nothing
 
 
+withSize : Size -> Input x -> Input x
+withSize size (Config input) =
+    Config { input | size = size }
+
+
 {-| Represent the Type(s) an Input could be.
 -}
 type Type
@@ -406,6 +416,11 @@ withAttribute attr (Config model) =
 withPlaceholder : String -> Input c -> Input c
 withPlaceholder =
     withAttribute << Attributes.placeholder
+
+
+withName : String -> Input c -> Input c
+withName =
+    withAttribute << Attributes.name
 
 
 withMaxLength : Int -> Input c -> Input c

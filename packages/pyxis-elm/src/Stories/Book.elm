@@ -9,18 +9,15 @@ import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Label as LabelChapter
-import Stories.Chapters.TextField as TextFieldChapter
 
 
 type alias SharedState =
-    { textFieldModel : TextFieldChapter.Model
-    }
+    {}
 
 
 initialState : SharedState
 initialState =
-    { textFieldModel = TextFieldChapter.init
-    }
+    {}
 
 
 main : ElmBook.Book SharedState
@@ -44,5 +41,4 @@ main =
             , IconChapter.docs
             , IconSetChapter.docs
             , LabelChapter.docs
-            , TextFieldChapter.docs
             ]

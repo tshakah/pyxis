@@ -7,17 +7,14 @@ module Examples.Quotation.Step1 exposing
     , view
     )
 
-import Browser
-import Commons.Properties.Placement as Placement
 import Components.Button as Btn
 import Components.Input as Input
-import Components.Label as Label
 import Date exposing (Date)
-import Email exposing (Email)
+import Examples.Quotation.Month.Extra as Month
 import Examples.Quotation.Plate as Plate exposing (Plate)
-import Examples.Quotation.Validations exposing (requiredFieldValidation)
+import Examples.Quotation.Validations as Validations
 import Html exposing (Html)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (class)
 import Html.Events
 import PipeValidation
 import Process
@@ -34,57 +31,14 @@ import Validation.String
 
 plateFieldValidation : Validation String Plate
 plateFieldValidation =
-    requiredFieldValidation
+    Validations.requiredFieldValidation
         >> Result.andThen (Validation.fromMaybe "La targa inserita non sembra essere valida." Plate.fromString)
 
 
 dayValidation : Validation String Int
 dayValidation =
-    requiredFieldValidation
+    Validations.requiredFieldValidation
         >> Result.andThen (Validation.String.toInt "Il giorno inserito non è valido")
-
-
-intToMonth : Int -> Maybe Time.Month
-intToMonth int =
-    case int of
-        1 ->
-            Just Time.Jan
-
-        2 ->
-            Just Time.Feb
-
-        3 ->
-            Just Time.Mar
-
-        4 ->
-            Just Time.Apr
-
-        5 ->
-            Just Time.May
-
-        6 ->
-            Just Time.Jun
-
-        7 ->
-            Just Time.Jul
-
-        8 ->
-            Just Time.Aug
-
-        9 ->
-            Just Time.Sep
-
-        10 ->
-            Just Time.Oct
-
-        11 ->
-            Just Time.Nov
-
-        12 ->
-            Just Time.Dec
-
-        _ ->
-            Nothing
 
 
 monthValidation : String -> Result String Time.Month
@@ -93,9 +47,9 @@ monthValidation =
         errorMessage =
             "Il mese inserito non è valido"
     in
-    requiredFieldValidation
+    Validations.requiredFieldValidation
         >> Result.andThen (Validation.String.toInt errorMessage)
-        >> Result.andThen (Validation.fromMaybe errorMessage intToMonth)
+        >> Result.andThen (Validation.fromMaybe errorMessage Month.fromInt)
 
 
 yearValidation : String -> Result String Int
@@ -104,7 +58,7 @@ yearValidation =
         label =
             "L'anno inserito non è valido"
     in
-    requiredFieldValidation
+    Validations.requiredFieldValidation
         >> Result.andThen (Validation.String.toInt label)
         -- TODO max
         >> Result.andThen (Validation.Int.min 1920 label)

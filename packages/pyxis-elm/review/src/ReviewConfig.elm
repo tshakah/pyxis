@@ -28,12 +28,12 @@ import Review.Rule exposing (Rule)
 
 config : List Rule
 config =
-    [ NoExposingEverything.rule
-    , NoImportingEverything.rule
-        [ "Html"
-        , "Html.Attributes"
-        , "Html.Events"
-        ]
+    [  NoExposingEverything.rule
+    --  , NoImportingEverything.rule
+    --     [ "Html"
+    --     , "Html.Attributes"
+    --     , "Html.Events"
+    --     ]
     , NoMissingTypeAnnotation.rule
         |> Review.Rule.ignoreErrorsForDirectories [ "src/Stories" ]
     , NoUnused.CustomTypeConstructors.rule []

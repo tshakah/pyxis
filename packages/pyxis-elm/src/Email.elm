@@ -1,4 +1,8 @@
-module Email exposing (Email, fromString)
+module Email exposing
+    ( Email
+    , fromString
+    , toString
+    )
 
 import Regex exposing (Regex)
 import Validation exposing (Validation)
