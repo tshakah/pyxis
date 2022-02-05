@@ -11,6 +11,7 @@ module Examples.Quotation.Step1 exposing
 import Components.Button as Btn
 import Components.Input as Input exposing (Input)
 import Date exposing (Date)
+import Examples.Quotation.MockData as Mock
 import Examples.Quotation.Month.Extra as Month
 import Examples.Quotation.Plate as Plate exposing (Plate)
 import Examples.Quotation.Validations as Validations
@@ -169,7 +170,7 @@ viewFormItem str input =
 
 
 type alias AniaResponse =
-    { id : Int
+    { occupations : List Mock.Occupation
     }
 
 
@@ -177,7 +178,8 @@ sendToServer : (Result Http.Error AniaResponse -> msg) -> ParsedData -> Cmd msg
 sendToServer toMsg _ =
     let
         exampleResponse =
-            { id = 0
-            }
+            Result.map AniaResponse
+                Mock.data
     in
-    Task.perform (\_ -> toMsg (Ok exampleResponse)) (Process.sleep 400)
+    Task.perform (\_ -> toMsg exampleResponse)
+        (Process.sleep 400)

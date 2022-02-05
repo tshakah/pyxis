@@ -58,6 +58,15 @@ update msg model =
                     , Cmd.none
                     )
 
+        ( Step2 subModel, Step2Msg subMsg ) ->
+            let
+                ( newModel, cmd ) =
+                    Step2.update subMsg subModel
+            in
+            ( { model | step = Step2 newModel }
+            , Cmd.map Step2Msg cmd
+            )
+
         _ ->
             ( model, Cmd.none )
 
