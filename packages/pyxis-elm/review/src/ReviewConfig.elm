@@ -44,8 +44,8 @@ config =
     , NoUnused.Modules.rule
         |> Review.Rule.ignoreErrorsForDirectories [ "src/Stories" ]
     , NoUnused.Variables.rule
-    , Custom.SignatureInScopedLet.rule
+    -- , Custom.SignatureInScopedLet.rule
     , Custom.NoBoolPatternMatching.rule
     , Custom.NoPipeRecordGetterRule.rule
-    , Custom.QualifiedImports.rule
+    -- , Custom.QualifiedImports.rule
     ]

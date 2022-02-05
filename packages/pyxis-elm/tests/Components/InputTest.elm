@@ -3,12 +3,10 @@ module Components.InputTest exposing (suite)
 import Commons.Properties.Placement as Placement
 import Components.IconSet as IconSet
 import Components.Input as Input exposing (Input)
-import Expect
 import Fuzz
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
-import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector as Selector
 

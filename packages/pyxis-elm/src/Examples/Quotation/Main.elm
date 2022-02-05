@@ -3,6 +3,7 @@ module Examples.Quotation.Main exposing (main)
 import Browser
 import Date exposing (Date)
 import Examples.Quotation.Step1 as Step1
+import Examples.Quotation.Step2 as Step2
 import Html exposing (Html)
 import Task
 import Time
@@ -11,6 +12,7 @@ import Time
 type Step
     = Initial
     | Step1 Step1.Model
+    | Step2 Step2.Model
 
 
 type alias Model =
@@ -21,6 +23,7 @@ type alias Model =
 type Msg
     = GotToday Date
     | Step1Msg Step1.Msg
+    | Step2Msg Step2.Msg
 
 
 init : () -> ( Model, Cmd Msg )
@@ -31,7 +34,7 @@ init () =
     )
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( model.step, msg ) of
         ( Initial, GotToday today ) ->
@@ -41,12 +44,19 @@ update msg model =
 
         ( Step1 subModel, Step1Msg subMsg ) ->
             let
-                ( newModel, _ ) =
+                ( newModel, cmd, maybeData ) =
                     Step1.update subMsg subModel
             in
-            ( { model | step = Step1 newModel }
-            , Cmd.none
-            )
+            case maybeData of
+                Nothing ->
+                    ( { model | step = Step1 newModel }
+                    , Cmd.map Step1Msg cmd
+                    )
+
+                Just ( parsedData, aniaResponse ) ->
+                    ( { model | step = Step2 (Step2.init aniaResponse parsedData) }
+                    , Cmd.none
+                    )
 
         _ ->
             ( model, Cmd.none )
@@ -65,6 +75,9 @@ view model =
 
         Step1 subModel ->
             Html.map Step1Msg (Step1.view subModel)
+
+        Step2 subModel ->
+            Html.map Step2Msg (Step2.view subModel)
 
 
 main : Program () Model Msg

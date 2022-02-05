@@ -1,5 +1,6 @@
 module Examples.Quotation.Step1 exposing
-    ( Model
+    ( AniaResponse
+    , Model
     , Msg
     , ParsedData
     , init
@@ -8,7 +9,7 @@ module Examples.Quotation.Step1 exposing
     )
 
 import Components.Button as Btn
-import Components.Input as Input
+import Components.Input as Input exposing (Input)
 import Date exposing (Date)
 import Examples.Quotation.Month.Extra as Month
 import Examples.Quotation.Plate as Plate exposing (Plate)
@@ -16,6 +17,7 @@ import Examples.Quotation.Validations as Validations
 import Html exposing (Html)
 import Html.Attributes exposing (class)
 import Html.Events
+import Http
 import PipeValidation
 import Process
 import Task
@@ -35,43 +37,13 @@ plateFieldValidation =
         >> Result.andThen (Validation.fromMaybe "La targa inserita non sembra essere valida." Plate.fromString)
 
 
-dayValidation : Validation String Int
-dayValidation =
-    Validations.requiredFieldValidation
-        >> Result.andThen (Validation.String.toInt "Il giorno inserito non è valido")
-
-
-monthValidation : String -> Result String Time.Month
-monthValidation =
-    let
-        errorMessage =
-            "Il mese inserito non è valido"
-    in
-    Validations.requiredFieldValidation
-        >> Result.andThen (Validation.String.toInt errorMessage)
-        >> Result.andThen (Validation.fromMaybe errorMessage Month.fromInt)
-
-
-yearValidation : String -> Result String Int
-yearValidation =
-    let
-        label =
-            "L'anno inserito non è valido"
-    in
-    Validations.requiredFieldValidation
-        >> Result.andThen (Validation.String.toInt label)
-        -- TODO max
-        >> Result.andThen (Validation.Int.min 1920 label)
-
-
 type alias Model =
     { plate : Input.Model Plate
-    , birthDay : Input.Model Int
-    , birthMonth : Input.Model Time.Month
-    , birthYear : Input.Model Int
+    , birthDate : Input.Model Date
 
     -- Other data
     , isSubmitted : Bool
+    , waitingResponse : Bool
     , today : Date
     }
 
@@ -82,110 +54,85 @@ type alias ParsedData =
     }
 
 
-validateBirthDate : Model -> Maybe Date
-validateBirthDate =
-    PipeValidation.succeed Date.fromCalendarDate
-        |> PipeValidation.input .birthYear
-        |> PipeValidation.input .birthMonth
-        |> PipeValidation.input .birthDay
+dateValidation : String -> Result String Date
+dateValidation =
+    Date.fromIsoString >> Result.mapError (\_ -> "La data inserita non è valida")
 
 
-validateForm : Model -> Maybe ParsedData
-validateForm =
-    PipeValidation.succeed ParsedData
-        |> PipeValidation.input .plate
-        |> PipeValidation.maybe validateBirthDate
+dateFieldValidation : Date -> Validation String Date
+dateFieldValidation today =
+    let
+        check25YearsOld date =
+            (Date.year today - Date.year date) >= 25
+
+        checkDateIsNotFuture date =
+            Date.year today >= Date.year date
+
+        checkMinYear date =
+            Date.year date >= 1920
+    in
+    Validations.requiredFieldValidation
+        >> Result.andThen dateValidation
+        >> Result.andThen (Validation.fromPredicate checkDateIsNotFuture "Hai inserito una data futura")
+        >> Result.andThen (Validation.fromPredicate check25YearsOld "Devi avere almeno 25 anni")
+        >> Result.andThen (Validation.fromPredicate checkMinYear "L'anno inserito non è valido")
 
 
 init : Date -> Model
 init today =
     { plate = Input.empty plateFieldValidation
-    , birthDay = Input.empty dayValidation
-    , birthMonth = Input.empty monthValidation
-    , birthYear = Input.empty yearValidation
+    , birthDate = Input.empty (dateFieldValidation today)
     , isSubmitted = False
+    , waitingResponse = False
     , today = today
     }
 
 
 type Msg
     = PlateInput Input.Msg
-    | BirthDayInput Input.Msg
-    | BirthMonthInput Input.Msg
-    | BirthYearInput Input.Msg
+    | BirthDateInput Input.Msg
     | Submit
+    | GotResponse ParsedData (Result Http.Error AniaResponse)
 
 
-{-| The final data structure we want to parse when submitting the form
--}
-type alias FormData =
-    { plate : Plate
-    }
+plateInputMask : String -> Maybe String
+plateInputMask =
+    String.toUpper >> Just
 
 
-parseForm : Model -> Maybe FormData
-parseForm =
-    PipeValidation.succeed FormData
+validateForm : Model -> Maybe ParsedData
+validateForm =
+    PipeValidation.succeed ParsedData
         |> PipeValidation.input .plate
+        |> PipeValidation.input .birthDate
 
 
-updatePlate : Input.Msg -> Input.Model data -> Input.Model data
-updatePlate =
-    Input.update |> Input.enhanceUpdateWithMask (String.toUpper >> Just)
-
-
-baseUpdate : Msg -> Model -> ( Model, Cmd Msg )
-baseUpdate msg model =
+update : Msg -> Model -> ( Model, Cmd Msg, Maybe ( ParsedData, AniaResponse ) )
+update msg model =
     case msg of
         PlateInput subMsg ->
-            ( { model | plate = updatePlate subMsg model.plate }, Cmd.none )
+            ( { model | plate = Input.enhanceUpdateWithMask plateInputMask Input.update subMsg model.plate }, Cmd.none, Nothing )
 
-        BirthDayInput subMsg ->
-            ( { model | birthDay = Input.update subMsg model.birthDay }, Cmd.none )
+        BirthDateInput subMsg ->
+            ( { model | birthDate = Input.update subMsg model.birthDate }, Cmd.none, Nothing )
 
-        BirthMonthInput subMsg ->
-            ( { model | birthMonth = Input.update subMsg model.birthMonth }, Cmd.none )
+        GotResponse _ (Err _) ->
+            -- TODO show error in ui
+            ( model, Cmd.none, Nothing )
 
-        BirthYearInput subMsg ->
-            ( { model | birthYear = Input.update subMsg model.birthYear }, Cmd.none )
+        GotResponse formData (Ok aniaResponse) ->
+            ( model, Cmd.none, Just ( formData, aniaResponse ) )
 
         Submit ->
-            ( { model | isSubmitted = True }
-            , case parseForm model of
+            case validateForm model of
                 Nothing ->
-                    Cmd.none
+                    ( { model | isSubmitted = True }, Cmd.none, Nothing )
 
-                Just data ->
-                    Cmd.none
-            )
-
-
-validDateMultiValidation : String -> Model -> Maybe (Result String ())
-validDateMultiValidation self =
-    PipeValidation.succeed
-        (\today ->
-            if True then
-                Ok ()
-
-            else
-                Err "Passwords do not match"
-        )
-        |> PipeValidation.field .today
-
-
-afterUpdate : (Model -> Model) -> (Msg -> Model -> ( Model, eff )) -> Msg -> Model -> ( Model, eff )
-afterUpdate mapper update_ msg model =
-    let
-        ( newModel, cmd ) =
-            update_ msg model
-    in
-    ( mapper newModel, cmd )
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update =
-    baseUpdate
-        |> afterUpdate (\m -> m)
+                Just formData ->
+                    ( { model | waitingResponse = True }
+                    , sendToServer (GotResponse formData) formData
+                    , Nothing
+                    )
 
 
 
@@ -201,33 +148,14 @@ view model =
             |> Input.withMaxLength 7
             |> Input.render model.plate PlateInput
             |> viewFormItem "Targa"
-        , Html.hr [] []
-        , Input.number
+        , Input.date
             |> Input.withIsSubmitted model.isSubmitted
-            |> Input.withPlaceholder "GG"
-            |> Input.withMaxLength 2
-            |> Input.withNumberMin 1
-            |> Input.withNumberMax 31
-            |> Input.render model.birthDay BirthDayInput
-            |> viewFormItem "Giorno di nascita"
-        , Input.number
-            |> Input.withIsSubmitted model.isSubmitted
-            |> Input.withPlaceholder "MM"
-            |> Input.withMaxLength 2
-            |> Input.withNumberMin 1
-            |> Input.withNumberMax 31
-            |> Input.render model.birthMonth BirthMonthInput
-            |> viewFormItem "Mese di nascita"
-        , Input.number
-            |> Input.withIsSubmitted model.isSubmitted
-            |> Input.withPlaceholder "YYYY"
-            |> Input.withMaxLength 4
-            |> Input.withNumberMin 1922
-            |> Input.render model.birthYear BirthYearInput
-            |> viewFormItem "Anno di nascita"
+            |> Input.render model.birthDate BirthDateInput
+            |> viewFormItem "Data di nascita"
         , Btn.primary
             |> Btn.withText "Calcola"
             |> Btn.withType Btn.submit
+            |> Btn.withDisabled model.waitingResponse
             |> Btn.render
         ]
 
@@ -240,6 +168,16 @@ viewFormItem str input =
         ]
 
 
-mockApiRequest : (() -> msg) -> Cmd msg
-mockApiRequest msg =
-    Task.perform msg (Process.sleep 1000)
+type alias AniaResponse =
+    { id : Int
+    }
+
+
+sendToServer : (Result Http.Error AniaResponse -> msg) -> ParsedData -> Cmd msg
+sendToServer toMsg _ =
+    let
+        exampleResponse =
+            { id = 0
+            }
+    in
+    Task.perform (\_ -> toMsg (Ok exampleResponse)) (Process.sleep 400)
