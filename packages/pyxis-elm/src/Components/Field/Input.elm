@@ -18,6 +18,7 @@ module Components.Field.Input exposing
     , withName
     , withPlaceholder
     , withValue
+    , getValue
     , render
     )
 
@@ -61,6 +62,11 @@ module Components.Field.Input exposing
 @docs withName
 @docs withPlaceholder
 @docs withValue
+
+
+## Readers
+
+@docs getValue
 
 
 ## Rendering
@@ -388,3 +394,10 @@ viewInput configuration =
 errorMessageId : String -> String
 errorMessageId id =
     id ++ "-error"
+
+
+{-| Return the input value
+-}
+getValue : Model msg -> String
+getValue (Model { value }) =
+    value

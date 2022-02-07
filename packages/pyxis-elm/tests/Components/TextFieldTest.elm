@@ -149,7 +149,7 @@ suite =
         , Test.describe "Validation"
             [ Test.test "has error" <|
                 \() ->
-                    TextField.create Tagger "input-id"
+                    textFieldModel
                         |> TextField.render
                         |> Query.fromHtml
                         |> Query.find [ tag "input" ]
@@ -158,6 +158,29 @@ suite =
                             , attribute (Html.Attributes.attribute "data-test-id" "input-id")
                             , classes [ "form-field__text" ]
                             ]
+            , Test.test "should pass initially if no validation is applied" <|
+                \() ->
+                    textFieldModel
+                        |> TextField.getValidatedValue ()
+                        |> Expect.equal (Ok "")
+            , Test.fuzz Fuzz.string "should pass for every input if no validation is applied" <|
+                \str ->
+                    textFieldModel
+                        |> renderModel
+                        |> findInput
+                        |> Test.triggerMsg (Event.input str)
+                            (\(Tagger msg) ->
+                                textFieldModel
+                                    |> TextField.update () msg
+                                    |> TextField.getValidatedValue ()
+                                    |> Expect.equal (Ok str)
+                            )
+            , Test.test "should not pass initially with `notEmptyValidation` applied" <|
+                \() ->
+                    textFieldModel
+                        |> TextField.withValidation (\_ -> notEmptyValidation)
+                        |> TextField.getValidatedValue ()
+                        |> Expect.equal (Err "Required field")
             ]
         , Test.describe "Events"
             [ Test.fuzz Fuzz.string "input should update the model value" <|
@@ -167,13 +190,22 @@ suite =
                         |> findInput
                         |> Test.triggerMsg (Event.input str)
                             (\(Tagger msg) ->
-                                TextField.update msg textFieldModel
-                                    |> Tuple.first
+                                textFieldModel
+                                    |> TextField.update () msg
                                     |> TextField.getValue
-                                    |> Expect.equal (Just str)
+                                    |> Expect.equal str
                             )
             ]
         ]
+
+
+notEmptyValidation : String -> Result String String
+notEmptyValidation src =
+    if String.isEmpty src then
+        Err "Required field"
+
+    else
+        Ok src
 
 
 findInput : Query.Single msg -> Query.Single msg
@@ -181,12 +213,12 @@ findInput =
     Query.find [ Selector.tag "input" ]
 
 
-textFieldModel : TextField.Model Msg
+textFieldModel : TextField.Model ctx Msg
 textFieldModel =
-    TextField.create Tagger "input-id"
+    TextField.text Tagger "input-id"
 
 
-renderModel : TextField.Model msg -> Query.Single msg
+renderModel : TextField.Model ctx msg -> Query.Single msg
 renderModel model =
     model
         |> TextField.render

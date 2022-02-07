@@ -8,6 +8,7 @@ module Commons.Properties.FieldStatus exposing
     , error
     , filled
     , focus
+    , fromResult
     , hasDefault
     , hasDirty
     , hasDisabled
@@ -234,3 +235,13 @@ removeInconsistentStatus status =
 
         Dirty ->
             List.filter (\s -> (s == Untouched || s == Pristine) |> not)
+
+
+fromResult : Result String value -> FieldStatus
+fromResult result =
+    case result of
+        Ok _ ->
+            Valid
+
+        Err errorMessage ->
+            Error errorMessage
