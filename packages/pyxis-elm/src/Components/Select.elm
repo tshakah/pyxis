@@ -29,22 +29,28 @@ type alias Args msg =
 
 view : Args msg -> Html msg
 view args =
-    Utils.concatArgs
-        (Html.select
-            [ class "form-field__select"
-            , onInput args.onSelect
-            , Html.Attributes.value (Maybe.withDefault "" args.currentValue)
-            ]
-        )
-        [ [ Html.option [ Html.Attributes.disabled True, Html.Attributes.value "" ]
-                [ Html.text args.placeholder ]
-          ]
-        , List.map
-            (\(Option value text) ->
-                Html.option
-                    [ Html.Attributes.value value
-                    ]
-                    [ Html.text text ]
+    Html.div [ class "form-field" ]
+        [ Utils.concatArgs
+            (Html.select
+                [ class "form-field__select"
+                , onInput args.onSelect
+                , Html.Attributes.value (Maybe.withDefault "" args.currentValue)
+                ]
             )
-            args.options
+            [ [ Html.option
+                    [ Html.Attributes.disabled True
+                    , Html.Attributes.value ""
+                    , Html.Attributes.selected True
+                    ]
+                    [ Html.text args.placeholder ]
+              ]
+            , List.map
+                (\(Option value text) ->
+                    Html.option
+                        [ Html.Attributes.value value
+                        ]
+                        [ Html.text text ]
+                )
+                args.options
+            ]
         ]

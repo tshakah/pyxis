@@ -11,6 +11,7 @@ module Examples.Quotation.Step1 exposing
 import Components.Button as Btn
 import Components.Input as Input exposing (Input)
 import Date exposing (Date)
+import Examples.Quotation.Common exposing (viewFormItem)
 import Examples.Quotation.MockData as Mock
 import Examples.Quotation.Month.Extra as Month
 import Examples.Quotation.Plate as Plate exposing (Plate)
@@ -52,10 +53,11 @@ type alias Model =
 type alias ParsedData =
     { plate : Plate
     , birthDate : Date
+    , today : Date
     }
 
 
-dateValidation : String -> Result String Date
+dateValidation : Validation String Date
 dateValidation =
     Date.fromIsoString >> Result.mapError (\_ -> "La data inserita non è valida")
 
@@ -106,6 +108,7 @@ validateForm =
     PipeValidation.succeed ParsedData
         |> PipeValidation.input .plate
         |> PipeValidation.input .birthDate
+        |> PipeValidation.field .today
 
 
 update : Msg -> Model -> ( Model, Cmd Msg, Maybe ( ParsedData, AniaResponse ) )
@@ -161,16 +164,9 @@ view model =
         ]
 
 
-viewFormItem : String -> Html msg -> Html msg
-viewFormItem str input =
-    Html.div [ class "form-item" ]
-        [ Html.label [ class "form-label" ] [ Html.text str ]
-        , input
-        ]
-
-
 type alias AniaResponse =
     { occupations : List Mock.Occupation
+    , civilsStatus : List Mock.CivilStatus
     }
 
 
@@ -178,8 +174,9 @@ sendToServer : (Result Http.Error AniaResponse -> msg) -> ParsedData -> Cmd msg
 sendToServer toMsg _ =
     let
         exampleResponse =
-            Result.map AniaResponse
-                Mock.data
+            Result.map2 AniaResponse
+                Mock.occupationData
+                Mock.civilStatusData
     in
     Task.perform (\_ -> toMsg exampleResponse)
         (Process.sleep 400)

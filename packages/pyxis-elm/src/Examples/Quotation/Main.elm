@@ -54,7 +54,15 @@ update msg model =
                     )
 
                 Just ( parsedData, aniaResponse ) ->
-                    ( { model | step = Step2 (Step2.init aniaResponse parsedData) }
+                    ( { model
+                        | step =
+                            Step2
+                                (Step2.init
+                                    { aniaResponse = aniaResponse
+                                    , parsedData = parsedData
+                                    }
+                                )
+                      }
                     , Cmd.none
                     )
 
