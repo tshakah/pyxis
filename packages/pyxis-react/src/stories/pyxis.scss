@@ -9,3 +9,10 @@
   max-width: 720px;
   width: 100%;
 }
+
+.alt-wrapper {
+  @include pyxis.padding(2xs);
+  @include pyxis.radius(2xs);
+  background-color: pyxis.color(neutralBase);
+  display: flex;
+}

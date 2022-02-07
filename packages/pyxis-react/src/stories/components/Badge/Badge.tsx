@@ -1,29 +1,25 @@
-import {FC} from "react";
+import React, {FC} from "react";
 import classNames from "classnames";
 import {pascalToKebab} from "commons/utils/string";
-import "./Badge.scss";
 
-const Badges = () => (
+// TODO: remove this implementation when Badge will be implemented in pyxis-react
+// Non-exhaustive implementation, made for testing purposes only.
+
+export const badges = (alt?:boolean) => (
   <>
-    <div className="badge-wrapper">
-      <Badge />
-      <Badge variant="brand" />
-      <Badge variant="action" />
-      <Badge variant="success" />
-      <Badge variant="error" />
-      <Badge variant="alert" />
-      <Badge variant="neutralGradient" />
-      <Badge variant="brandGradient" />
-    </div>
-    <div className="badge-wrapper bg-neutral-base">
-      <Badge alt />
-      <Badge variant="brand" alt />
-      <Badge variant="action" alt />
-      <Badge variant="success" alt />
-      <Badge variant="error" alt />
-      <Badge variant="alert" alt />
-      <Badge alt ghost />
-    </div>
+    <Badge />
+    <Badge variant="brand" text="Brand" alt={alt} />
+    <Badge variant="action" text="Action" alt={alt} />
+    <Badge variant="success" text="Success" alt={alt} />
+    <Badge variant="error" text="Error" alt={alt} />
+    <Badge variant="alert" text="Alert" alt={alt} />
+    { alt ?
+      <Badge alt ghost text="Ghost"/> :
+      <>
+        <Badge variant="neutralGradient" text="Neutral Gradient"/>
+        <Badge variant="brandGradient" text="Brand Gradient" />
+      </>
+    }
   </>
 );
 
@@ -36,14 +32,15 @@ const setClasses = (alt:boolean , ghost:boolean, variant?:string):string => clas
   }
 );
 
-const Badge:FC<BadgeProps> = ({alt= false, variant , ghost = false}) => (
-  <span className={setClasses(alt, ghost, variant)}>Badge</span>
+const Badge:FC<BadgeProps> = ({alt= false, variant , ghost = false, text= "Badge"}) => (
+  <span className={setClasses(alt, ghost, variant)}>{text}</span>
 );
 
 interface BadgeProps {
   alt?: boolean;
   variant?: "brand" | "action" | "error" | "success" | "alert" | "neutralGradient" | "brandGradient";
   ghost?: boolean;
+  text?: string;
 }
 
-export default Badges;
+export default Badge;

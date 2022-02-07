@@ -101,7 +101,7 @@ const generateOptionsBody = (): TableRow[] => [
     'Remove the min-width to the button. Is not allowed with `ghost` variant and iconPlacement `only`'
   ],
   [
-    <div className="bg-neutral-base padding-xs radius-2xs">
+    <div className="alt-wrapper">
       <Button alt>Button</Button>
     </div>,
     <CopyableCode text="alt" key={shortid.generate()} />,
