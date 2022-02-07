@@ -98,7 +98,8 @@ passwordValidation =
 type alias Model =
     { name : Input.Model String
     , age : Input.Model Int
-    , date : Input.Model Date
+    , startDate : Input.Model Date
+    , endDate : Input.Model Date
     , job : Input.Model (Maybe String)
     , id : Input.Model (Maybe String)
     , email : Input.Model Email
@@ -115,7 +116,8 @@ init =
     , age = Input.empty ageFieldValidation
 
     {- In an actual app it would be useful to `Result.mapError` for a better message -}
-    , date = Input.empty Date.fromIsoString
+    , startDate = Input.empty Date.fromIsoString
+    , endDate = Input.empty Date.fromIsoString
 
     {- Validation.String.option is a higher order Validation that, given a validator:
        * if the given string is empty, resolves to `Ok Nothing`
@@ -146,7 +148,8 @@ init =
 type Msg
     = AgeInput Input.Msg
     | NameInput Input.Msg
-    | DateInput Input.Msg
+    | StartDateInput Input.Msg
+    | EndDateInput Input.Msg
     | JobInput Input.Msg
     | IdInput Input.Msg
     | EmailInput Input.Msg
@@ -160,7 +163,8 @@ type Msg
 type alias FormData =
     { name : String
     , age : Int
-    , date : Date
+    , startDate : Date
+    , endDate : Date
     , job : Maybe String
     , id : Maybe String
     , email : Email
@@ -213,7 +217,8 @@ parseForm =
     PipeValidation.succeed FormData
         |> PipeValidation.input .name
         |> PipeValidation.input .age
-        |> PipeValidation.input .date
+        |> PipeValidation.input .startDate
+        |> PipeValidation.input .endDate
         |> PipeValidation.input .job
         |> PipeValidation.input .id
         |> PipeValidation.input .email
@@ -250,8 +255,11 @@ baseUpdate msg model =
         AgeInput subMsg ->
             { model | age = Input.update subMsg model.age }
 
-        DateInput subMsg ->
-            { model | date = Input.update subMsg model.date }
+        StartDateInput subMsg ->
+            { model | startDate = Input.update subMsg model.startDate }
+
+        EndDateInput subMsg ->
+            { model | endDate = Input.update subMsg model.endDate }
 
         JobInput subMsg ->
             { model | job = Input.update subMsg model.job }
@@ -324,6 +332,20 @@ confirmPasswordMultiValidation self =
         |> PipeValidation.input .password
 
 
+endDateMultiValidation : Date -> Model -> Maybe (Result String ())
+endDateMultiValidation endDate =
+    PipeValidation.succeed
+        (\startDate ->
+            case Date.compare startDate endDate of
+                Basics.LT ->
+                    Ok ()
+
+                _ ->
+                    Err ("End date must be after " ++ Date.toIsoString startDate)
+        )
+        |> PipeValidation.input .startDate
+
+
 afterUpdate : (Model -> Model) -> (Msg -> Model -> Model) -> Msg -> Model -> Model
 afterUpdate mapper update_ msg model =
     mapper (update_ msg model)
@@ -335,6 +357,10 @@ update =
         |> afterUpdate
             (\model ->
                 { model | confirmPassword = Input.forceValidation confirmPasswordMultiValidation model .confirmPassword }
+            )
+        |> afterUpdate
+            (\model ->
+                { model | endDate = Input.forceValidation endDateMultiValidation model .endDate }
             )
 
 
@@ -366,11 +392,13 @@ viewForm model =
             |> Input.render model.job JobInput
         , Input.date
             |> Input.withIsSubmitted model.submitted
-            |> Input.withPlaceholder "Birth date"
             -- This does not compile:
             -- |> Input.withAddon Placement.append (Input.textAddon "Addon")
-            |> Input.dateMax (Date.fromRataDie 100000)
-            |> Input.render model.date DateInput
+            |> Input.dateMax (Date.fromRataDie 1000000)
+            |> Input.render model.startDate StartDateInput
+        , Input.date
+            |> Input.withIsSubmitted model.submitted
+            |> Input.render model.endDate EndDateInput
         , Input.text
             |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Id"
