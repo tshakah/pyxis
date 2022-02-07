@@ -105,6 +105,7 @@ type alias Model =
     , password : Input.Model String
     , confirmPassword : Input.Model String
     , submittedData : List (Result String FormData)
+    , submitted : Bool
     }
 
 
@@ -135,7 +136,10 @@ init =
     , email = Input.empty emailFieldValidation
     , password = Input.empty passwordValidation
     , confirmPassword = Input.empty passwordValidation
+
+    -- Other
     , submittedData = []
+    , submitted = False
     }
 
 
@@ -265,16 +269,12 @@ baseUpdate msg model =
             { model | confirmPassword = Input.update subMsg model.confirmPassword }
 
         Submit ->
-            model
-                |> baseUpdate (AgeInput Input.submit)
-                |> baseUpdate (NameInput Input.submit)
-                |> baseUpdate (DateInput Input.submit)
-                |> baseUpdate (JobInput Input.submit)
-                |> baseUpdate (IdInput Input.submit)
-                |> baseUpdate (EmailInput Input.submit)
-                |> baseUpdate (PasswordInput Input.submit)
-                |> baseUpdate (ConfirmPasswordInput Input.submit)
-                |> submitData
+            case parseForm model of
+                Nothing ->
+                    { model | submitted = True, submittedData = Err "Error" :: model.submittedData }
+
+                Just parsedData ->
+                    { model | submittedData = Ok parsedData :: model.submittedData }
 
 
 {-| This allows to perform more general validation using parsed data
@@ -346,11 +346,13 @@ viewForm : Model -> Html Msg
 viewForm model =
     Html.form [ class "space-y", Html.Events.onSubmit Submit ]
         [ Input.text
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "John Doe"
             -- This does not compile:
             -- |> Input.numberMin 18
             |> Input.render model.name NameInput
         , Input.number
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Age"
             |> Input.withNumberMin 18
             |> Input.withNumberMax 100
@@ -359,24 +361,30 @@ viewForm model =
             |> Input.withAddon Placement.append (Input.textAddon "Addon")
             |> Input.render model.age AgeInput
         , Input.text
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Job"
             |> Input.render model.job JobInput
         , Input.date
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Birth date"
             -- This does not compile:
             -- |> Input.withAddon Placement.append (Input.textAddon "Addon")
             |> Input.dateMax (Date.fromRataDie 100000)
             |> Input.render model.date DateInput
         , Input.text
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Id"
             |> Input.render model.id IdInput
         , Input.text
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Email"
             |> Input.render model.email EmailInput
         , Input.password
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Password"
             |> Input.render model.password PasswordInput
         , Input.password
+            |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Confirm password"
             |> Input.render model.confirmPassword ConfirmPasswordInput
         , Btn.primary
