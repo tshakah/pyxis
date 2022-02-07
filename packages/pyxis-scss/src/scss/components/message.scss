@@ -11,7 +11,7 @@ $_states: (brand, alert, success, error);
   background-color: foundations.color(neutral95);
   display: grid;
   grid-template-columns: min-content auto min-content;
-  user-select: none;
+  width: 100%;
 
   @include foundations.mq(xsmall) {
     @include foundations.columnGap(s);

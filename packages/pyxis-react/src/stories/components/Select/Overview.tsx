@@ -213,7 +213,7 @@ const tableClassBody: TableRow[] = [
 
 const Overview: FC = () => (
   <>
-    <OverviewTemplate title="Select" description={overviewDescription} category="Component" isMain>
+    <OverviewTemplate title="Select 🚧" description={overviewDescription} category="Component" isMain>
       <Canvas>
         <Story id="components-select-🚧-all-stories--default" />
       </Canvas>

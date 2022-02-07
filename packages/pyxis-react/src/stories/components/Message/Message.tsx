@@ -1,35 +1,19 @@
-import {FC} from "react";
-import {IconClose, IconThumbUp} from "components/Icon/Icons";
+import React, {FC, ReactElement} from "react";
+import {IconAlert, IconCheckCircle, IconClose, IconExclamationCircle, IconThumbUp} from "components/Icon/Icons";
 import classNames from "classnames";
-import "./Message.scss";
+import "./Message.module.scss";
 
 // TODO: remove this implementation when message will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.
 
-const Messages = () => (
-  <div className="message-wrapper">
-    <Message />
-    <Message state="brand"/>
-    <Message state="success"/>
-    <Message state="error"/>
-
-    <Message state="brand" withBackground />
-    <Message state="alert" withBackground />
-    <Message state="success" withBackground />
-    <Message state="error" withBackground />
-
-    <Message withTitle={false}/>
-    <Message state="brand" withTitle={false}/>
-    <Message state="success" withTitle={false}/>
-    <Message state="error" withTitle={false}/>
-
-    <Message state="brand" withTitle={false} withBackground/>
-    <Message state="alert" withTitle={false} withBackground/>
-    <Message state="success" withTitle={false} withBackground/>
-    <Message state="error" withTitle={false} withBackground/>
-
-    <Message ghost/>
-  </div>
+export const messages = (withBackground?:boolean) => (
+  <>
+    {!withBackground && <Message/>}
+    <Message state="brand" withBackground={withBackground} />
+    {withBackground && <Message state="alert" withBackground={withBackground}/>}
+    <Message state="success" withBackground={withBackground} />
+    <Message state="error" withBackground={withBackground} />
+  </>
 )
 
 const classes = (ghost:boolean, withBackground:boolean, state?: string):string => classNames(
@@ -41,22 +25,36 @@ const classes = (ghost:boolean, withBackground:boolean, state?: string):string =
   }
 )
 
+const setIcon = (state?: string):ReactElement => {
+  switch (state) {
+    case "brand":
+      return <IconThumbUp />;
+    case "success":
+      return <IconCheckCircle description={"Success."}/>;
+    case "alert":
+      return <IconAlert description={"Attention!"}/>;
+    default:
+      return <IconExclamationCircle description={state === "error" ? "Error." : undefined}/>
+  }
+}
+
 const Message:FC<MessageProps> =
   ({
      state,
      ghost= false,
+     withClose= false,
      withBackground= false,
      withTitle= true
   }) => (
   <div className={classes(ghost, withBackground, state)} role={state === "error" ? "alert" : "status"}>
     <div className="message__icon">
-      <IconThumbUp size={"m"}/>
+      {setIcon(state)}
     </div>
     <div className="message__content-wrapper">
       {withTitle && !ghost && <div className="message__title">Title message</div>}
-      <div className="message__text">Text message {state ? state : "neutral"}</div>
+      <div className="message__text">Text message - {state ? state : "neutral"}</div>
     </div>
-    {!ghost &&
+    {!ghost && withClose &&
       <button className="message__close" onClick={() => alert("close")} aria-label="close" >
         <IconClose size={"s"}/>
       </button>
@@ -68,7 +66,8 @@ interface MessageProps {
   state?: "brand" | "alert" | "success" | "error",
   ghost?: boolean,
   withBackground?: boolean,
+  withClose?: boolean,
   withTitle?: boolean
 }
 
-export default Messages;
+export default Message;

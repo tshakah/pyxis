@@ -158,7 +158,7 @@ const tableClassBody: TableRow[] = [
 
 const Overview: FC = () => (
   <>
-    <OverviewTemplate title="Date Field" description={overviewDescription} category="Component" isMain>
+    <OverviewTemplate title="Date Field 🚧" description={overviewDescription} category="Component" isMain>
       <Canvas>
         <Story id="components-date-field-🚧-all-stories--default" />
       </Canvas>

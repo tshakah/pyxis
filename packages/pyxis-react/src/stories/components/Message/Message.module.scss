@@ -1,6 +1,6 @@
 @use "src/stories/pyxis.scss";
 
-.message-wrapper {
+.wrapper {
   @include pyxis.columnGap(m);
   @include pyxis.rowGap(m);
   margin-bottom: 2rem;
