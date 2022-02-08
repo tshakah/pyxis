@@ -81,9 +81,11 @@ import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render as CommonsRender
 import Components.Icon as Icon
 import Components.IconSet as IconSet
+import Date
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
+import Result.Extra
 
 
 {-| The Input model.
@@ -370,8 +372,18 @@ viewInput configuration =
     Html.input
         (CommonsAttributes.compose
             [ Attributes.id configuration.id
-            , Attributes.class "form-field__text"
-            , Attributes.classList [ ( "form-field__text--small", Size.isSmall configuration.size ) ]
+            , Attributes.classList
+                [ -- Types
+                  ( "form-field__date", configuration.type_ == Date )
+                , ( "form-field__date--filled", configuration.type_ == Date && Result.Extra.isOk (Date.fromIsoString configuration.value) )
+                , ( "form-field__text", configuration.type_ == Text )
+                , ( "form-field__text", configuration.type_ == Number )
+                , ( "form-field__text", configuration.type_ == Password )
+                , ( "form-field__text", configuration.type_ == Email )
+
+                -- Size
+                , ( "form-field__text--small", Size.isSmall configuration.size )
+                ]
             , Attributes.classList configuration.classList
             , CommonsAttributes.testId configuration.id
             , Html.Events.onInput configuration.events.onInput
