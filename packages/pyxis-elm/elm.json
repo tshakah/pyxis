@@ -6,6 +6,7 @@
     "version": "1.0.1",
     "exposed-modules": [
         "Components.Button",
+        "Components.Field.Number",
         "Components.Field.Text",
         "Components.Icon",
         "Components.IconSet",
@@ -23,7 +24,7 @@
         "elm/html": "1.0.0 <= v < 2.0.0"
     },
     "test-dependencies": {
-        "elm-explorations/test": "1.2.2 <= v < 2.0.0",
-        "elm/json": "1.1.3 <= v < 2.0.0"
+        "elm/json": "1.1.3 <= v < 2.0.0",
+        "elm-explorations/test": "1.2.2 <= v < 2.0.0"
     }
 }
