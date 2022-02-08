@@ -1,46 +1,79 @@
-# Getting Started with Create React App
+# @pyxis/react
+This repository is part of the Pyxis Design System and contains all the React components.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Getting started
+You can install and use `@pyxis/react` by following these steps:
+```sh
+# Go to your project root
+cd myproject
 
-## Available Scripts
+# Add Pyxis React
+yarn add @pyxis/react
+```
 
-In the project directory, you can run:
+## Usage
+```jsx
+import { Button } from '@pyxis/react';
 
-### `yarn start`
+const MyComponent = () => (
+  <Button>This is a button!</Button>
+)
+```
+For more information about each component, check out our [Storybook](https://react-staging.prima.design/).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Development
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+`@pyxis/react` is part of a `pyxis` monorepo, to develop it you need to download the [project](https://github.com/primait/pyxis).
 
-### `yarn test`
+Once you have installed the monorepo, you will be able to run commands directly from the root of `pyxis`.
+Remember that the commands launched by the root are global and could launch commands that also affect other repositories, like: `yarn build`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Development mode with Storybook
 
-### `yarn build`
+```sh
+yarn storybook:serve
+```
+This will start a development Storybook server on `http://localhost:6006`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Lint code
+```sh
+# In pyxis root directory
+yarn lint
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# To autofix errors reported by stylelint
+yarn lint:fix
+```
+---
 
-### `yarn eject`
+#### Build
+```sh
+# In pyxis root directory
+yarn build
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+This will create a `dist` folder (inside `pyxis-scss`) in which you'll find a `pyxis.css` file.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+#### Test
+```sh
+# In pyxis root directory
+# Before launching the tests, you need to launch the test-ready storybook build.
+yarn storybook:test
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# Run test
+yarn test
+```
+---
 
-## Learn More
+#### Build Storybook
+```sh
+# In pyxis root directory
+yarn storybook:build
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+This will generate the folder `storybook-static` inside `pyxis-react`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+

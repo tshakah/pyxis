@@ -1,4 +1,4 @@
-## Pyxis elm 
+## @pyxis/elm
 
 Pyxis-elm aims to be the library which is used by Prima to build UI components in Elm language.
 
