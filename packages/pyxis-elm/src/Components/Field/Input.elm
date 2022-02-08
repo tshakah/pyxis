@@ -316,7 +316,6 @@ render (Model configuration) =
         (CommonsAttributes.compose
             [ Attributes.classList
                 [ ( "form-field", True )
-                , ( "form-field--small", Size.isSmall configuration.size )
                 , ( "form-field--error", configuration.errorMessage /= Nothing )
                 , ( "form-field--disabled", configuration.disabled )
                 ]
@@ -372,7 +371,7 @@ viewInput configuration =
         (CommonsAttributes.compose
             [ Attributes.id configuration.id
             , Attributes.class "form-field__text"
-            , Attributes.classList [ ( "form-field--text-small", Size.isSmall configuration.size ) ]
+            , Attributes.classList [ ( "form-field__text--small", Size.isSmall configuration.size ) ]
             , Attributes.classList configuration.classList
             , CommonsAttributes.testId configuration.id
             , Html.Events.onInput configuration.events.onInput

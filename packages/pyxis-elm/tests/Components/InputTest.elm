@@ -239,8 +239,9 @@ suite =
                     Input.text events "test-id"
                         |> Input.withSize Size.small
                         |> renderModel
+                        |> findInput
                         |> Query.has
-                            [ Selector.class "form-field--small"
+                            [ Selector.class "form-field__text--small"
                             ]
             ]
         , Test.describe "Events"

@@ -8,6 +8,7 @@ module Commons.Validation exposing
     , ErrorMessage
     , errorMessages
     , errorMessage
+    , fromBool
     )
 
 {-|
@@ -109,3 +110,12 @@ errorMessage a =
 passed : value -> Validation value -> Bool
 passed val (Validation configuration) =
     List.all (\check -> check val == valid) configuration.checks
+
+
+fromBool : ErrorMessage -> Bool -> Response
+fromBool errorMessage_ condition =
+    if condition then
+        Passed
+
+    else
+        NotPassed errorMessage_
