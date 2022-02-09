@@ -9,17 +9,20 @@ import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Label as LabelChapter
+import Stories.Chapters.NumberField as NumberFieldChapter
 import Stories.Chapters.TextField as TextFieldChapter
 
 
 type alias SharedState =
     { textFieldModels : TextFieldChapter.Model
+    , numberFieldModels : NumberFieldChapter.Model
     }
 
 
 initialState : SharedState
 initialState =
     { textFieldModels = TextFieldChapter.init
+    , numberFieldModels = NumberFieldChapter.init
     }
 
 
@@ -45,4 +48,5 @@ main =
             , IconSetChapter.docs
             , LabelChapter.docs
             , TextFieldChapter.docs
+            , NumberFieldChapter.docs
             ]
