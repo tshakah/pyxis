@@ -146,6 +146,10 @@ requiredTextField _ value =
         Ok value
 
 ```
+---
+## Accessibility
+Whenever possible, please use the label element to associate text with form elements explicitly, with the
+`for` attribute of the label that exactly match the id of the form input.
 """
 
 

@@ -5,12 +5,15 @@ import Components.Field.Text as TextField
 import Components.IconSet as IconSet
 import Expect
 import Fuzz
+import Html
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
 import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes, tag)
+import Test.Simulation as Simulation
+import Validations
 
 
 type Msg
@@ -147,65 +150,40 @@ suite =
                 ]
             ]
         , Test.describe "Validation"
-            [ Test.test "has error" <|
-                \() ->
-                    textFieldModel
-                        |> TextField.render
-                        |> Query.fromHtml
-                        |> Query.find [ tag "input" ]
-                        |> Query.has
-                            [ attribute (Html.Attributes.id "input-id")
-                            , attribute (Html.Attributes.attribute "data-test-id" "input-id")
-                            , classes [ "form-field__text" ]
-                            ]
-            , Test.test "should pass initially if no validation is applied" <|
+            [ Test.test "should pass initially if no validation is applied" <|
                 \() ->
                     textFieldModel
                         |> TextField.getValidatedValue ()
                         |> Expect.equal (Ok "")
             , Test.fuzz Fuzz.string "should pass for every input if no validation is applied" <|
                 \str ->
-                    textFieldModel
-                        |> renderModel
-                        |> findInput
-                        |> Test.triggerMsg (Event.input str)
-                            (\(Tagger msg) ->
-                                textFieldModel
-                                    |> TextField.update () msg
-                                    |> TextField.getValidatedValue ()
-                                    |> Expect.equal (Ok str)
-                            )
+                    simulationWithoutValidation
+                        |> simulateEvents str
+                        |> Simulation.expectModel (TextField.getValidatedValue () >> Expect.equal (Ok str))
+                        |> Simulation.run
             , Test.test "should not pass initially with `notEmptyValidation` applied" <|
                 \() ->
                     textFieldModel
-                        |> TextField.withValidation (\_ -> notEmptyValidation)
+                        |> TextField.withValidation (\_ -> Validations.notEmptyValidation)
                         |> TextField.getValidatedValue ()
                         |> Expect.equal (Err "Required field")
+            , Test.test "should not pass if the input str is not compliant to validation func" <|
+                \() ->
+                    simulationWithValidation
+                        |> simulateEvents "this is lower"
+                        |> Simulation.expectModel (TextField.getValidatedValue () >> Expect.equal (Err "String must be uppercase"))
+                        |> Simulation.expectHtml (Query.contains [ Html.text "String must be uppercase" ])
+                        |> Simulation.run
             ]
         , Test.describe "Events"
             [ Test.fuzz Fuzz.string "input should update the model value" <|
                 \str ->
-                    textFieldModel
-                        |> renderModel
-                        |> findInput
-                        |> Test.triggerMsg (Event.input str)
-                            (\(Tagger msg) ->
-                                textFieldModel
-                                    |> TextField.update () msg
-                                    |> TextField.getValue
-                                    |> Expect.equal str
-                            )
+                    simulationWithValidation
+                        |> simulateEvents str
+                        |> Simulation.expectModel (TextField.getValue >> Expect.equal str)
+                        |> Simulation.run
             ]
         ]
-
-
-notEmptyValidation : String -> Result String String
-notEmptyValidation src =
-    if String.isEmpty src then
-        Err "Required field"
-
-    else
-        Ok src
 
 
 findInput : Query.Single msg -> Query.Single msg
@@ -223,3 +201,31 @@ renderModel model =
     model
         |> TextField.render
         |> Query.fromHtml
+
+
+simulationWithoutValidation : Simulation.Simulation (TextField.Model () TextField.Msg) TextField.Msg
+simulationWithoutValidation =
+    Simulation.fromSandbox
+        { init = TextField.text identity "input-id"
+        , update = TextField.update ()
+        , view = TextField.render
+        }
+
+
+simulationWithValidation : Simulation.Simulation (TextField.Model () TextField.Msg) TextField.Msg
+simulationWithValidation =
+    Simulation.fromSandbox
+        { init =
+            TextField.text identity "input-id"
+                |> TextField.withValidation (\() -> Validations.isUppercaseValidation)
+        , update = TextField.update ()
+        , view = TextField.render
+        }
+
+
+simulateEvents : String -> Simulation.Simulation model msg -> Simulation.Simulation model msg
+simulateEvents str simulation =
+    simulation
+        |> Simulation.simulate ( Event.focus, [ Selector.tag "input" ] )
+        |> Simulation.simulate ( Event.input str, [ Selector.tag "input" ] )
+        |> Simulation.simulate ( Event.blur, [ Selector.tag "input" ] )

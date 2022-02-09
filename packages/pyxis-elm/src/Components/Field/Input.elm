@@ -323,20 +323,26 @@ render (Model configuration) =
                 ]
             ]
             [ Maybe.map addonToAttribute configuration.addon
-            , Maybe.map
-                (always (configuration.id |> errorMessageId |> CommonsAttributes.ariaDescribedBy))
-                configuration.errorMessage
             ]
         )
         [ configuration.addon
             |> Maybe.map (viewInputAndAddon configuration)
             |> Maybe.withDefault (viewInput configuration)
-        , Html.div
-            [ Attributes.class "form-field__error-message"
-            , Attributes.id (errorMessageId configuration.id)
-            ]
-            [ Maybe.map Html.text configuration.errorMessage |> CommonsRender.renderMaybe
-            ]
+        , configuration.errorMessage
+            |> Maybe.map (viewError configuration.id)
+            |> CommonsRender.renderMaybe
+        ]
+
+
+{-| Internal.
+-}
+viewError : String -> String -> Html msg
+viewError id errorMessage =
+    Html.div
+        [ Attributes.class "form-field__error-message"
+        , Attributes.id (errorMessageId id)
+        ]
+        [ Html.text errorMessage
         ]
 
 
@@ -395,6 +401,9 @@ viewInput configuration =
             ]
             [ Maybe.map Attributes.name configuration.name
             , Maybe.map Attributes.placeholder configuration.placeholder
+            , Maybe.map
+                (always (configuration.id |> errorMessageId |> CommonsAttributes.ariaDescribedBy))
+                configuration.errorMessage
             ]
         )
         []

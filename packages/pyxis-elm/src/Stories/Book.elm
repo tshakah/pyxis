@@ -12,10 +12,12 @@ import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Label as LabelChapter
 import Stories.Chapters.NumberField as NumberFieldChapter
 import Stories.Chapters.TextField as TextFieldChapter
+import Stories.Chapters.Textarea as TextareaChapter
 
 
 type alias SharedState =
     { textFieldModels : TextFieldChapter.Model
+    , textareaModels : TextareaChapter.Model
     , numberFieldModels : NumberFieldChapter.Model
     , dateFieldModels : DateFieldChapter.Model
     }
@@ -24,6 +26,7 @@ type alias SharedState =
 initialState : SharedState
 initialState =
     { textFieldModels = TextFieldChapter.init
+    , textareaModels = TextareaChapter.init
     , numberFieldModels = NumberFieldChapter.init
     , dateFieldModels = DateFieldChapter.init
     }
@@ -51,6 +54,7 @@ main =
             , IconSetChapter.docs
             , LabelChapter.docs
             , TextFieldChapter.docs
+            , TextareaChapter.docs
             , NumberFieldChapter.docs
             , DateFieldChapter.docs
             ]
