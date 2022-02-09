@@ -6,6 +6,7 @@ import ElmBook.ThemeOptions
 import Html
 import Html.Attributes
 import Stories.Chapters.Buttons as ButtonChapter
+import Stories.Chapters.DateField as DateFieldChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Label as LabelChapter
@@ -16,6 +17,7 @@ import Stories.Chapters.TextField as TextFieldChapter
 type alias SharedState =
     { textFieldModels : TextFieldChapter.Model
     , numberFieldModels : NumberFieldChapter.Model
+    , dateFieldModels : DateFieldChapter.Model
     }
 
 
@@ -23,6 +25,7 @@ initialState : SharedState
 initialState =
     { textFieldModels = TextFieldChapter.init
     , numberFieldModels = NumberFieldChapter.init
+    , dateFieldModels = DateFieldChapter.init
     }
 
 
@@ -49,4 +52,5 @@ main =
             , LabelChapter.docs
             , TextFieldChapter.docs
             , NumberFieldChapter.docs
+            , DateFieldChapter.docs
             ]
