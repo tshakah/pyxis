@@ -16,12 +16,12 @@ docs =
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
-date Field are used to let the user enter a date. They include built-in validation to reject non-numerical entries.
+DateField are used to let the user enter a date.
 
 <component with-label="DateField" />
 ```
-numberField : (DateField.Msg -> msg) -> String -> Html msg
-numberField tagger id =
+dateField : (DateField.Msg -> msg) -> String -> Html msg
+dateField tagger id =
     DateField.create tagger id
         |> DateField.render
 ```
@@ -35,8 +35,8 @@ You can set your DateField with a _size_ of default or small.
 <component with-label="DateField withSize small" />
 
 ```
-numberFieldWithSize : (DateField.Msg -> msg) -> String -> Html msg
-numberFieldWithSize tagger id =
+dateFieldWithSize : (DateField.Msg -> msg) -> String -> Html msg
+dateFieldWithSize tagger id =
     DateField.create tagger id
         |> DateField.withSize Size.small
         |> DateField.render
@@ -47,8 +47,8 @@ numberFieldWithSize tagger id =
 
 <component with-label="DateField withPlaceholder" />
 ```
-numberFieldWithPlaceholder : (DateField.Msg -> msg) -> String -> Html msg
-numberFieldWithPlaceholder tagger id =
+dateFieldWithPlaceholder : (DateField.Msg -> msg) -> String -> Html msg
+dateFieldWithPlaceholder tagger id =
     DateField.create tagger id
         |> DateField.withPlaceholder "Custom placeholder"
         |> DateField.render
@@ -57,8 +57,8 @@ numberFieldWithPlaceholder tagger id =
 
 <component with-label="DateField withDefaultValue" />
 ```
-numberFieldWithName : (DateField.Msg -> msg) -> String -> Html msg
-numberFieldWithName tagger id =
+dateFieldWithName : (DateField.Msg -> msg) -> String -> Html msg
+dateFieldWithName tagger id =
     DateField.create tagger id
         |> DateField.withDefaultValue "Default Value"
         |> DateField.render
@@ -67,8 +67,8 @@ numberFieldWithName tagger id =
 
 <component with-label="DateField withDisabled" />
 ```
-numberFieldWithClassList : (DateField.Msg -> msg) -> String -> Html msg
-numberFieldWithClassList tagger id =
+dateFieldWithClassList : (DateField.Msg -> msg) -> String -> Html msg
+dateFieldWithClassList tagger id =
     DateField.create tagger id
         |> DateField.withDisabled True
         |> DateField.render
@@ -79,8 +79,8 @@ numberFieldWithClassList tagger id =
 
 <component with-label="DateField withNonGraphicalApi" />
 ```
-numberFieldWithNonGraphicalApi : (DateField.Msg -> msg) -> String -> Html msg
-numberFieldWithNonGraphicalApi tagger id =
+dateFieldWithNonGraphicalApi : (DateField.Msg -> msg) -> String -> Html msg
+dateFieldWithNonGraphicalApi tagger id =
     DateField.create OnDateFieldMsg "withNonGraphicalApi"
         |> DateField.withClassList [ ( "class-on-date-field", True ), ( "class-not-on-date-field", False ) ]
         |> DateField.withName "date-field-name"
