@@ -6,7 +6,7 @@ module Commons.Attributes exposing
     , testId
     , renderIf
     , maybe
-    , none
+    , ariaLabelledbyBy, none
     )
 
 {-|
@@ -77,6 +77,13 @@ testId =
 ariaDescribedBy : String -> Html.Attribute msg
 ariaDescribedBy =
     Html.Attributes.attribute "aria-describedby"
+
+
+{-| Creates an aria-labelledby attribute.
+-}
+ariaLabelledbyBy : String -> Html.Attribute msg
+ariaLabelledbyBy =
+    Html.Attributes.attribute "aria-labelledby"
 
 
 
