@@ -71,7 +71,7 @@ if [ "${ENV}" = "staging" ]; then
   echo "Purging cloudflare cache"
   curl --silent --show-error --fail -X POST -H "Content-Type:application/json" -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
     https://api.cloudflare.com/client/v4/zones/ae110665c7335b1a8318710ead4e263c/purge_cache \
-    --data '{"files":["https://react-staging.prima.design/*","https://scss-staging.prima.design/*"]}'
+    --data '{"prefixes":["react-staging.prima.design/","scss-staging.prima.design/"]}' | jq -e .success
   set -x
 elif [ "${ENV}" = "production" ]; then
 
@@ -86,7 +86,7 @@ elif [ "${ENV}" = "production" ]; then
   echo "Purging cloudflare cache"
   curl --silent --show-error --fail -X POST -H "Content-Type:application/json" -H "Authorization: Bearer $CLOUDFLARE_TOKEN" \
     https://api.cloudflare.com/client/v4/zones/ae110665c7335b1a8318710ead4e263c/purge_cache \
-    --data '{"files":["https://react.prima.design/*","https://scss.prima.design/*"]}'
+    --data '{"prefixes":["react.prima.design/","scss.prima.design/"]}' | jq -e .success
   set -x
 else
   echo "${ENV} not supported!"
