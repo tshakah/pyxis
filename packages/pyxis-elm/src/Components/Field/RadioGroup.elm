@@ -1,10 +1,9 @@
-module Components.Field.Radio exposing
+module Components.Field.RadioGroup exposing
     ( Model
     , create
     , option
     , withValidation
     , withClassList
-    , withLabel
     , withName
     , Msg
     , isOnCheck
@@ -12,12 +11,13 @@ module Components.Field.Radio exposing
     , validate
     , getValue
     , render
+    , withDisabled, withOptions
     )
 
 {-|
 
 
-# Input Radio component
+# Input RadioGroup component
 
 @docs Model
 @docs create
@@ -58,6 +58,7 @@ module Components.Field.Radio exposing
 import Commons.Attributes as CA
 import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Render as CR
+import Components.Label as Label
 import Html
 import Html.Attributes as Attributes
 import Html.Events
@@ -70,22 +71,15 @@ type Model value ctx msg
 
 type alias Configuration value ctx msg =
     { classList : List ( String, Bool )
-    , disabled : Bool
+    , isDisabled : Bool
     , errorMessage : Maybe String
     , id : String
-    , label : Maybe LabelConfig
     , name : Maybe String
     , options : List (Option value)
     , status : FieldStatus.StatusList
     , selectedValue : value
     , tagger : Msg value -> msg
     , validation : ctx -> value -> Result String value
-    }
-
-
-type alias LabelConfig =
-    { text : String
-    , id : String
     }
 
 
@@ -99,17 +93,16 @@ type alias OptionConfig value =
     }
 
 
-create : String -> (Msg value -> msg) -> value -> List (Option value) -> Model value ctx msg
-create id tagger value options =
+create : String -> (Msg value -> msg) -> value -> Model value ctx msg
+create id tagger defaultValue =
     Model
         { classList = []
-        , disabled = False
+        , isDisabled = False
         , errorMessage = Nothing
         , id = id
-        , label = Nothing
         , name = Nothing
-        , options = options
-        , selectedValue = value
+        , options = []
+        , selectedValue = defaultValue
         , status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
         , tagger = tagger
         , validation = always Ok
@@ -132,14 +125,19 @@ withClassList classList (Model configuration) =
     Model { configuration | classList = classList }
 
 
-withLabel : LabelConfig -> Model value ctx msg -> Model value ctx msg
-withLabel label (Model configuration) =
-    Model { configuration | label = Just label }
+withDisabled : Bool -> Model value ctx msg -> Model value ctx msg
+withDisabled isDisabled (Model configuration) =
+    Model { configuration | isDisabled = isDisabled }
 
 
 withName : String -> Model value ctx msg -> Model value ctx msg
 withName name (Model configuration) =
     Model { configuration | name = Just name }
+
+
+withOptions : List (Option value) -> Model value ctx msg -> Model value ctx msg
+withOptions options (Model configuration) =
+    Model { configuration | options = options }
 
 
 withValidation : (ctx -> value -> Result String value) -> Model value ctx msg -> Model value ctx msg
@@ -153,56 +151,38 @@ option =
 
 
 render : Model value ctx msg -> Html.Html msg
-render (Model { selectedValue, options, tagger, label, name, classList, errorMessage, id }) =
+render (Model { selectedValue, options, tagger, name, classList, errorMessage, id }) =
     Html.div
-        [ Attributes.classList ([ ( "form-item", True ) ] ++ classList)
+        [ Attributes.classList [ ( "form-control-group", True ) ]
+        , CA.role "radiogroup"
+        , CA.ariaDescribedBy (errorMessageId id)
         ]
-        [ Html.label
-            (CA.compose
-                [ Attributes.classList [ ( "form-label", True ) ]
-                ]
-                [ Maybe.map (.id >> Attributes.id) label ]
-            )
-            [ Maybe.map (.text >> Html.text) label |> CR.renderMaybe ]
-        , Html.div
-            (CA.compose
-                [ Attributes.classList [ ( "form-control-group", True ) ]
-                , CA.role "radiogroup"
-                , CA.ariaDescribedBy (errorMessageId id)
-                ]
-                [ Maybe.map (.id >> CA.ariaLabelledbyBy) label ]
-            )
-            (List.map (viewRadio name selectedValue errorMessage) options
-                ++ [ Maybe.map (viewError "") errorMessage |> CR.renderMaybe ]
-            )
-        ]
+        (List.map (viewRadio name selectedValue errorMessage) options
+            ++ [ Maybe.map (viewError id) errorMessage |> CR.renderMaybe ]
+        )
         |> Html.map tagger
 
 
 viewRadio : Maybe String -> value -> Maybe String -> Option value -> Html.Html (Msg value)
 viewRadio name selectedValue errorMessage (Option { value, label }) =
-    Html.div
-        [ Attributes.classList [ ( "form-control-group", True ) ]
+    Html.label
+        [ Attributes.classList
+            [ ( "form-control", True )
+            , ( "form-control--error", ME.isJust errorMessage )
+            ]
         ]
-        [ Html.label
-            [ Attributes.classList
-                [ ( "form-control", True )
-                , ( "form-control--error", ME.isJust errorMessage )
+        [ Html.input
+            (CA.compose
+                [ Attributes.type_ "radio"
+                , Attributes.classList [ ( "form-control__radio", True ) ]
+                , Attributes.checked (selectedValue == value)
+                , Html.Events.onCheck (OnCheck value)
                 ]
-            ]
-            [ Html.input
-                (CA.compose
-                    [ Attributes.type_ "radio"
-                    , Attributes.classList [ ( "form-control__radio", True ) ]
-                    , Attributes.checked (selectedValue == value)
-                    , Html.Events.onCheck (OnCheck value)
-                    ]
-                    [ Maybe.map Attributes.name name
-                    ]
-                )
-                []
-            , Html.text label
-            ]
+                [ Maybe.map Attributes.name name
+                ]
+            )
+            []
+        , Html.text label
         ]
 
 
