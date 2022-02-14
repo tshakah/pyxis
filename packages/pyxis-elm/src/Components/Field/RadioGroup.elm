@@ -4,14 +4,16 @@ module Components.Field.RadioGroup exposing
     , option
     , withValidation
     , withClassList
+    , withDisabled
     , withName
+    , withOptions
     , Msg
     , isOnCheck
     , update
     , validate
     , getValue
     , render
-    , withDisabled, withOptions
+    , Option
     )
 
 {-|
@@ -32,8 +34,10 @@ module Components.Field.RadioGroup exposing
 ## Generics
 
 @docs withClassList
+@docs withDisabled
 @docs withLabel
 @docs withName
+@docs withOptions
 
 
 ## Update
@@ -58,10 +62,9 @@ module Components.Field.RadioGroup exposing
 import Commons.Attributes as CA
 import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Render as CR
-import Components.Label as Label
 import Html
 import Html.Attributes as Attributes
-import Html.Events
+import Html.Events as Events
 import Maybe.Extra as ME
 
 
@@ -71,13 +74,13 @@ type Model value ctx msg
 
 type alias Configuration value ctx msg =
     { classList : List ( String, Bool )
-    , isDisabled : Bool
     , errorMessage : Maybe String
     , id : String
+    , isDisabled : Bool
     , name : Maybe String
     , options : List (Option value)
-    , status : FieldStatus.StatusList
     , selectedValue : value
+    , status : FieldStatus.StatusList
     , tagger : Msg value -> msg
     , validation : ctx -> value -> Result String value
     }
@@ -97,9 +100,9 @@ create : String -> (Msg value -> msg) -> value -> Model value ctx msg
 create id tagger defaultValue =
     Model
         { classList = []
-        , isDisabled = False
         , errorMessage = Nothing
         , id = id
+        , isDisabled = False
         , name = Nothing
         , options = []
         , selectedValue = defaultValue
@@ -176,7 +179,7 @@ viewRadio name selectedValue errorMessage (Option { value, label }) =
                 [ Attributes.type_ "radio"
                 , Attributes.classList [ ( "form-control__radio", True ) ]
                 , Attributes.checked (selectedValue == value)
-                , Html.Events.onCheck (OnCheck value)
+                , Events.onCheck (OnCheck value)
                 ]
                 [ Maybe.map Attributes.name name
                 ]
