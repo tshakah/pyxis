@@ -6,7 +6,8 @@ module Commons.Attributes exposing
     , testId
     , renderIf
     , maybe
-    , ariaLabelledbyBy, none
+    , none
+    , ariaLabelledbyBy, compose
     )
 
 {-|
@@ -27,9 +28,9 @@ module Commons.Attributes exposing
 
 ## Utilities
 
-@docs compose
 @docs renderIf
 @docs maybe
+@docs none
 
 -}
 
