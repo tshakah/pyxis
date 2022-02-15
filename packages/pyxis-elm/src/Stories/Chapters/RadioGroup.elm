@@ -1,4 +1,4 @@
-module Stories.Chapters.RadioField exposing (Model, docs, init)
+module Stories.Chapters.RadioGroup exposing (Model, docs, init)
 
 import Components.Field.RadioGroup as RadioGroup
 import ElmBook
@@ -57,6 +57,124 @@ radioOptions =
     , RadioGroup.option { value = F, label = "Female" }
     ]
 ```
+
+### Implementation with only valid options
+
+```
+type Option
+    = M
+    | F
+
+
+type Msg
+    = OnRadioFieldMsg (RadioGroup.Msg Option)
+
+
+radioGroupModel : (RadioGroup.Msg Option -> msg) -> RadioGroup.Model Option ctx msg
+radioGroupModel tagger =
+    RadioGroup.create "radio-gender-id" tagger M
+
+
+radioGroupView : Html Msg
+radioGroupView =
+    radioGroupModel OnRadioFieldMsg
+        |> RadioGroup.withName "gender"
+        |> RadioGroup.withOptions radioOptions
+        |> RadioGroup.render
+
+
+radioOptions : List (RadioGroup.Option Option)
+radioOptions =
+    [ RadioGroup.option { value = M, label = "Male" }
+    , RadioGroup.option { value = F, label = "Female" }
+    ]
+```
+
+### Implementation with Maybe String (Error prone)
+
+```
+type alias Option =
+    Maybe String
+
+
+type Msg
+    = OnRadioFieldMsg (RadioGroup.Msg Option)
+
+
+radioGroupModel : (RadioGroup.Msg Option -> msg) -> RadioGroup.Model Option ctx msg
+radioGroupModel tagger =
+    RadioGroup.create "radio-gender-id" tagger Nothing
+        |> RadioGroup.withValidation validation
+
+
+radioGroupView : Html Msg
+radioGroupView =
+    radioGroupModel OnRadioFieldMsg
+        |> RadioGroup.withName "gender"
+        |> RadioGroup.withOptions radioOptions
+        |> RadioGroup.render
+
+
+validation : ctx -> Option -> Result String Option
+validation _ value =
+    case value of
+        Just "" ->
+            Err "Required"
+
+        Nothing ->
+            Err "Required"
+
+        _ ->
+            Ok value
+
+
+radioOptions : List (RadioGroup.Option Option)
+radioOptions =
+    [ RadioGroup.option { value = Just "male", label = "Male" }
+    , RadioGroup.option { value = Just "female", label = "Female" }
+    ]
+```
+
+### Implementation with String (Error prone)
+
+```
+type alias Option =
+    String
+
+
+type Msg
+    = OnRadioFieldMsg (RadioGroup.Msg Option)
+
+
+radioGroupModel : (RadioGroup.Msg Option -> msg) -> RadioGroup.Model Option ctx msg
+radioGroupModel tagger =
+    RadioGroup.create "radio-gender-id" tagger ""
+        |> RadioGroup.withValidation validation
+
+
+radioGroupView : Html Msg
+radioGroupView =
+    radioGroupModel OnRadioFieldMsg
+        |> RadioGroup.withName "gender"
+        |> RadioGroup.withOptions radioOptions
+        |> RadioGroup.render
+
+
+validation : ctx -> Option -> Result String Option
+validation _ value =
+    if value == "female" || value == "male" then
+        Ok value
+
+    else
+        Err "Required"
+
+
+radioOptions : List (RadioGroup.Option Option)
+radioOptions =
+    [ RadioGroup.option { value = "male", label = "Male" }
+    , RadioGroup.option { value = "female", label = "Female" }
+    ]
+````
 """
 
 
