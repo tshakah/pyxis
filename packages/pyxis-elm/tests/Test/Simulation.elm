@@ -2,6 +2,7 @@ module Test.Simulation exposing
     ( Simulation
     , expectHtml
     , expectModel
+    , fromElement
     , fromSandbox
     , run
     , simulate
@@ -59,6 +60,20 @@ fromSandbox flags =
             { update = flags.update
             , view = flags.view
             }
+        }
+
+
+fromElement :
+    { init : ( model, x )
+    , update : msg -> model -> ( model, x )
+    , view : model -> Html msg
+    }
+    -> Simulation model msg
+fromElement args =
+    fromSandbox
+        { init = Tuple.first args.init
+        , update = \msg -> args.update msg >> Tuple.first
+        , view = args.view
         }
 
 

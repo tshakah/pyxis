@@ -66,7 +66,8 @@ module Components.Field.Textarea exposing
 import Commons.Attributes as CommonsAttributes
 import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Properties.Size as Size exposing (Size)
-import Commons.Render as CommonsRender
+import Commons.Render
+import Components.Field.ErrorMessage as ErrorMessage
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
@@ -261,20 +262,8 @@ render (Model configuration) =
         ]
         [ viewInput configuration
         , configuration.errorMessage
-            |> Maybe.map (viewError configuration.id)
-            |> CommonsRender.renderMaybe
-        ]
-
-
-{-| Internal.
--}
-viewError : String -> String -> Html msg
-viewError id errorMessage =
-    Html.div
-        [ Attributes.class "form-field__error-message"
-        , Attributes.id (errorMessageId id)
-        ]
-        [ Html.text errorMessage
+            |> Maybe.map (ErrorMessage.view (Just configuration.id))
+            |> Commons.Render.renderMaybe
         ]
 
 
@@ -300,15 +289,8 @@ viewInput configuration =
             [ Maybe.map Attributes.name configuration.name
             , Maybe.map Attributes.placeholder configuration.placeholder
             , Maybe.map
-                (always (configuration.id |> errorMessageId |> CommonsAttributes.ariaDescribedBy))
+                (always (configuration.id |> ErrorMessage.id |> CommonsAttributes.ariaDescribedBy))
                 configuration.errorMessage
             ]
         )
         []
-
-
-{-| Internal. For screen-reader.
--}
-errorMessageId : String -> String
-errorMessageId id =
-    id ++ "-error"

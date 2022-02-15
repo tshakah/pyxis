@@ -97,13 +97,14 @@ $_wrapperAnimationOffset: lib.rem(10px);
   user-select: none;
   will-change: background-color, color;
 
-  &:hover {
-    background-color: foundations.color(neutral95);
-  }
-
   .form-field__dropdown-wrapper--small & {
     height: $heightSmall;
   }
+}
+
+.form-field__dropdown__item:hover,
+.form-field__dropdown__item--hover {
+  background-color: foundations.color(neutral95);
 }
 
 .form-field__dropdown__item--active {

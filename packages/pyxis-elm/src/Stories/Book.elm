@@ -11,6 +11,7 @@ import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Label as LabelChapter
 import Stories.Chapters.NumberField as NumberFieldChapter
+import Stories.Chapters.SelectField as SelectChapter
 import Stories.Chapters.TextField as TextFieldChapter
 import Stories.Chapters.Textarea as TextareaChapter
 
@@ -20,6 +21,7 @@ type alias SharedState =
     , textareaModels : TextareaChapter.Model
     , numberFieldModels : NumberFieldChapter.Model
     , dateFieldModels : DateFieldChapter.Model
+    , selectModels : SelectChapter.Model
     }
 
 
@@ -29,6 +31,7 @@ initialState =
     , textareaModels = TextareaChapter.init
     , numberFieldModels = NumberFieldChapter.init
     , dateFieldModels = DateFieldChapter.init
+    , selectModels = SelectChapter.init
     }
 
 
@@ -57,4 +60,5 @@ main =
             , TextareaChapter.docs
             , NumberFieldChapter.docs
             , DateFieldChapter.docs
+            , SelectChapter.docs
             ]

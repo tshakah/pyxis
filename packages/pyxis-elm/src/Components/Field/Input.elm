@@ -79,6 +79,7 @@ import Commons.Attributes as CommonsAttributes
 import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render as CommonsRender
+import Components.Field.ErrorMessage as ErrorMessage
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Date
@@ -329,20 +330,8 @@ render (Model configuration) =
             |> Maybe.map (viewInputAndAddon configuration)
             |> Maybe.withDefault (viewInput configuration)
         , configuration.errorMessage
-            |> Maybe.map (viewError configuration.id)
+            |> Maybe.map (ErrorMessage.view (Just configuration.id))
             |> CommonsRender.renderMaybe
-        ]
-
-
-{-| Internal.
--}
-viewError : String -> String -> Html msg
-viewError id errorMessage =
-    Html.div
-        [ Attributes.class "form-field__error-message"
-        , Attributes.id (errorMessageId id)
-        ]
-        [ Html.text errorMessage
         ]
 
 
