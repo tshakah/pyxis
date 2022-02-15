@@ -19,7 +19,6 @@ module Components.Input exposing
     , password
     , render
     , small
-    , submit
     , text
     , textAddon
     , update
@@ -59,12 +58,6 @@ type Msg
     = Focus
     | Input String
     | Blur
-    | Submit
-
-
-submit : Msg
-submit =
-    Submit
 
 
 type Model data
@@ -209,9 +202,6 @@ updateWithCustomStrategy strategy msg (Model model) =
                     { model
                         | formState = FieldState.focus model.formState
                     }
-
-                Submit ->
-                    model
     in
     Model
         { newModel
@@ -263,9 +253,6 @@ validateOnBlurStrategy : ValidationMessageStrategy value
 validateOnBlurStrategy { formState, msg, previousValidation } =
     case ( formState, msg, previousValidation ) of
         ( _, Blur, _ ) ->
-            Just True
-
-        ( _, Submit, _ ) ->
             Just True
 
         _ ->
