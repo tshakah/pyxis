@@ -7,6 +7,22 @@
 @use "../../../lib";
 @use "../variables";
 
+/// Set the correct width when an addon is present.
+/// @param {Number} $width - Input width
+///
+/// @output Appropriate `width`.
+///
+/// @access private
+@mixin _fieldWithAddon() {
+  :where(
+  .form-field--with-prepend-icon,
+  .form-field--with-append-icon,
+  .form-field--with-prepend-text,
+  .form-field--with-append-text
+) & {
+    @content; }
+}
+
 /// Set properties for styling input of type text.
 ///
 /// @example scss - Default input field
@@ -23,7 +39,11 @@
 .form-field__text {
   @include foundations.horizontalPadding(s);
   height: variables.$fieldHeight;
-  width: variables.$fieldWidth;
+  width: 100%;
+
+  @include _fieldWithAddon {
+    width: variables.$fieldWidth;
+  }
 
   .form-field--with-prepend-icon & {
     padding-left: 0;
@@ -37,5 +57,8 @@
 .form-field__text--small {
   @include foundations.horizontalPadding(xs);
   height: variables.$fieldHeightSmall;
-  width: variables.$fieldWidthSmall;
+
+  @include _fieldWithAddon {
+    width: variables.$fieldWidthSmall;
+  }
 }

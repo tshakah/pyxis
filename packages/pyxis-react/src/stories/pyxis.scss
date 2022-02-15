@@ -2,14 +2,6 @@
 @forward "~@pyxis/scss/src/scss/pyxis.scss";
 @use "~@pyxis/scss/src/scss/pyxis.scss";
 
-.form-item {
-  @include pyxis.rowGap(2xs);
-  display: grid;
-  grid-template-rows: auto;
-  max-width: 720px;
-  width: 100%;
-}
-
 .alt-wrapper {
   @include pyxis.padding(2xs);
   @include pyxis.radius(2xs);

@@ -1,0 +1,55 @@
+////
+/// Generated classes for card control styling.
+/// @group COMPONENTS
+////
+
+@use "../../foundations";
+@use "../../lib";
+
+$_maxColumnSpan: 5;
+$_smallRowWidth: lib.rem(360px);
+$_largeRowWidth: lib.rem(720px);
+
+.form-grid {
+  @include foundations.rowGap(m);
+  display: grid;
+  justify-items: center;
+  width: 100%;
+}
+
+.form-grid--gap-large {
+  @include foundations.rowGap(l);
+}
+
+.form-grid__row {
+  display: grid;
+  gap: foundations.spacing(l);
+  grid-auto-columns: 1fr;
+  grid-auto-flow: row;
+  max-width: 100%;
+  width: 100%;
+
+  @include foundations.mq(xsmall) {
+    grid-auto-flow: column;
+  }
+}
+
+.form-grid__row--large {
+  max-width: $_largeRowWidth;
+}
+
+.form-grid__row--small {
+  max-width: $_smallRowWidth;
+}
+
+.form-grid__row__column {
+  grid-column: auto;
+}
+
+@include foundations.mq(xsmall) {
+  @for $i from 2 through $_maxColumnSpan {
+    .form-grid__row__column--span-#{$i} {
+      grid-column: auto / span $i;
+    }
+  }
+}

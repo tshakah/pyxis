@@ -1,0 +1,36 @@
+@use "../../foundations";
+@use "../../lib";
+
+.form-legend {
+  @include foundations.verticalSpacing(2xs);
+  display: grid;
+  justify-items: start;
+  text-align: left;
+
+  @include foundations.mq(xsmall) {
+    @include foundations.verticalSpacing(s);
+    justify-items: center;
+    text-align: center;
+  }
+}
+
+.form-legend--align-left {
+  justify-items: start;
+  text-align: left;
+}
+
+.form-legend__addon {
+  margin-bottom: foundations.spacing(xs);
+
+  @include foundations.mq(xsmall) {
+    margin-bottom: foundations.spacing(s);
+  }
+}
+
+.form-legend__title {
+  @include foundations.title(s, bold);
+}
+
+.form-legend__text {
+  @include foundations.text(l, book);
+}

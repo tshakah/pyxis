@@ -1,5 +1,15 @@
+@use "../../foundations";
+
+@forward "card";
+@forward "controls";
 @forward "dropdown";
 @forward "fields";
-@forward "controls";
-@forward "card";
+@forward "grid";
+@forward "item";
 @forward "label";
+@forward "legend";
+
+.form {
+  @include foundations.rowGap(2xl);
+  display: grid;
+}

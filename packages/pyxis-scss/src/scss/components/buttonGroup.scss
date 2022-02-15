@@ -1,0 +1,10 @@
+@use "../lib";
+@use "../foundations";
+
+.button-group {
+  align-items: center;
+  display: grid;
+  gap: foundations.spacing(s);
+  grid-auto-flow: column;
+  justify-content: space-between;
+}

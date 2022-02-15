@@ -1,0 +1,9 @@
+@use "../../foundations";
+@use "../../lib";
+
+.form-item {
+  @include foundations.rowGap(2xs);
+  display: grid;
+  grid-template-rows: auto;
+  width: 100%;
+}

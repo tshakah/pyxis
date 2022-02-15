@@ -3,7 +3,6 @@
 .wrapper {
   @include pyxis.columnGap(m);
   @include pyxis.rowGap(m);
-  margin-bottom: 2rem;
   align-items: start;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
