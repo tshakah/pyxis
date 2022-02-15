@@ -11,6 +11,7 @@ module Components.Field.RadioGroup exposing
     , isOnCheck
     , update
     , validate
+    , getValidatedValue
     , getValue
     , render
     , Option
@@ -50,6 +51,7 @@ module Components.Field.RadioGroup exposing
 
 ## Readers
 
+@docs getValidatedValue
 @docs getValue
 
 
@@ -154,20 +156,20 @@ option =
 
 
 render : Model value ctx msg -> Html.Html msg
-render (Model { selectedValue, options, tagger, name, classList, errorMessage, id }) =
+render (Model { selectedValue, options, tagger, name, classList, errorMessage, id, isDisabled }) =
     Html.div
-        [ Attributes.classList [ ( "form-control-group", True ) ]
+        [ Attributes.classList ([ ( "form-control-group", True ) ] ++ classList)
         , CA.role "radiogroup"
         , CA.ariaDescribedBy (errorMessageId id)
         ]
-        (List.map (viewRadio name selectedValue errorMessage) options
+        (List.map (viewRadio id name selectedValue isDisabled errorMessage) options
             ++ [ Maybe.map (viewError id) errorMessage |> CR.renderMaybe ]
         )
         |> Html.map tagger
 
 
-viewRadio : Maybe String -> value -> Maybe String -> Option value -> Html.Html (Msg value)
-viewRadio name selectedValue errorMessage (Option { value, label }) =
+viewRadio : String -> Maybe String -> value -> Bool -> Maybe String -> Option value -> Html.Html (Msg value)
+viewRadio id name selectedValue isDisabled errorMessage (Option { value, label }) =
     Html.label
         [ Attributes.classList
             [ ( "form-control", True )
@@ -179,6 +181,8 @@ viewRadio name selectedValue errorMessage (Option { value, label }) =
                 [ Attributes.type_ "radio"
                 , Attributes.classList [ ( "form-control__radio", True ) ]
                 , Attributes.checked (selectedValue == value)
+                , Attributes.disabled isDisabled
+                , CA.testId (radioId id label)
                 , Events.onCheck (OnCheck value)
                 ]
                 [ Maybe.map Attributes.name name
@@ -187,6 +191,18 @@ viewRadio name selectedValue errorMessage (Option { value, label }) =
             []
         , Html.text label
         ]
+
+
+radioId : String -> String -> String
+radioId id label =
+    let
+        labelKebabCase =
+            label
+                |> String.toLower
+                |> String.replace " " "-"
+    in
+    [ id, labelKebabCase, "option" ]
+        |> String.join "-"
 
 
 viewError : String -> String -> Html.Html msg
@@ -235,6 +251,11 @@ setValue value (Model configuration) =
 getValue : Model value ctx msg -> value
 getValue (Model { selectedValue }) =
     selectedValue
+
+
+getValidatedValue : ctx -> Model value ctx msg -> Result String value
+getValidatedValue ctx (Model { selectedValue, validation }) =
+    validation ctx selectedValue
 
 
 setErrorMessage : Maybe String -> Model value ctx msg -> Model value ctx msg
