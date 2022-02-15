@@ -3,6 +3,7 @@ module Components.Field.RadioGroup exposing
     , create
     , option
     , withValidation
+    , withAriaLabelledby
     , withClassList
     , withDisabled
     , withName
@@ -34,6 +35,7 @@ module Components.Field.RadioGroup exposing
 
 ## Generics
 
+@docs withAriaLabelledby
 @docs withClassList
 @docs withDisabled
 @docs withLabel
@@ -75,7 +77,8 @@ type Model value ctx msg
 
 
 type alias Configuration value ctx msg =
-    { classList : List ( String, Bool )
+    { ariaLabelledBy : Maybe String
+    , classList : List ( String, Bool )
     , errorMessage : Maybe String
     , id : String
     , isDisabled : Bool
@@ -101,7 +104,8 @@ type alias OptionConfig value =
 create : String -> (Msg value -> msg) -> value -> Model value ctx msg
 create id tagger defaultValue =
     Model
-        { classList = []
+        { ariaLabelledBy = Nothing
+        , classList = []
         , errorMessage = Nothing
         , id = id
         , isDisabled = False
@@ -123,6 +127,11 @@ isOnCheck msg =
     case msg of
         OnCheck _ _ ->
             True
+
+
+withAriaLabelledby : String -> Model value ctx msg -> Model value ctx msg
+withAriaLabelledby ariaLabelledBy (Model configuration) =
+    Model { configuration | ariaLabelledBy = Just ariaLabelledBy }
 
 
 withClassList : List ( String, Bool ) -> Model value ctx msg -> Model value ctx msg
@@ -156,12 +165,15 @@ option =
 
 
 render : Model value ctx msg -> Html.Html msg
-render (Model { selectedValue, options, tagger, name, classList, errorMessage, id, isDisabled }) =
+render (Model { selectedValue, options, tagger, name, classList, errorMessage, id, isDisabled, ariaLabelledBy }) =
     Html.div
-        [ Attributes.classList ([ ( "form-control-group", True ) ] ++ classList)
-        , CA.role "radiogroup"
-        , CA.ariaDescribedBy (errorMessageId id)
-        ]
+        (CA.compose
+            [ Attributes.classList ([ ( "form-control-group", True ) ] ++ classList)
+            , CA.role "radiogroup"
+            , CA.ariaDescribedBy (errorMessageId id)
+            ]
+            [ Maybe.map CA.ariaLabelledbyBy ariaLabelledBy ]
+        )
         (List.map (viewRadio id name selectedValue isDisabled errorMessage) options
             ++ [ Maybe.map (viewError id) errorMessage |> CR.renderMaybe ]
         )
