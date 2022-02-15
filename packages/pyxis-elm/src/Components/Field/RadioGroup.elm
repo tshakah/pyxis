@@ -196,6 +196,7 @@ viewRadio id name selectedValue isDisabled errorMessage (Option { value, label }
 radioId : String -> String -> String
 radioId id label =
     let
+        labelKebabCase : String
         labelKebabCase =
             label
                 |> String.toLower
