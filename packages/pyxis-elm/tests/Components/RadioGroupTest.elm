@@ -82,6 +82,16 @@ suite =
                                 ]
                             ]
             ]
+        , Test.describe "Vertical layout"
+            [ Test.test "should have the class for the vertical layout" <|
+                \() ->
+                    radioGroupModel
+                        |> RadioGroup.withVerticalLayout True
+                        |> renderModel
+                        |> Query.has
+                            [ Selector.classes [ "form-control-group--column" ]
+                            ]
+            ]
         , Test.describe "Validation"
             [ Test.test "should pass initially if no validation is applied" <|
                 \() ->

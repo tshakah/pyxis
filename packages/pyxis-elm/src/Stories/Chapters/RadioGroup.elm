@@ -175,6 +175,17 @@ radioOptions =
     , RadioGroup.option { value = "female", label = "Female" }
     ]
 ````
+
+# Vertical Layout
+<component with-label="RadioGroup vertical" />
+
+```
+radioGroupVerticalLayout : String -> (RadioGroup.Msg value -> msg) -> value -> Html msg
+radioGroupVerticalLayout id tagger defaultValue =
+    RadioGroup.create id tagger defaultValue
+        |> RadioGroup.withVerticalLayout True
+        |> RadioGroup.render
+```
 """
 
 
@@ -229,6 +240,9 @@ componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState 
 componentsList =
     [ ( "RadioGroup"
       , statefulComponent .base identity setBase
+      )
+    , ( "RadioGroup vertical"
+      , statefulComponent .base (RadioGroup.withVerticalLayout True) setBase
       )
     ]
 

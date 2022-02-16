@@ -8,6 +8,7 @@ module Components.Field.RadioGroup exposing
     , withDisabled
     , withName
     , withOptions
+    , withVerticalLayout
     , Msg
     , isOnCheck
     , update
@@ -41,6 +42,7 @@ module Components.Field.RadioGroup exposing
 @docs withLabel
 @docs withName
 @docs withOptions
+@docs withVerticalLayout
 
 
 ## Update
@@ -82,6 +84,7 @@ type alias Configuration value ctx msg =
     , errorMessage : Maybe String
     , id : String
     , isDisabled : Bool
+    , isLayoutVertical : Bool
     , name : Maybe String
     , options : List (Option value)
     , selectedValue : value
@@ -109,6 +112,7 @@ create id tagger defaultValue =
         , errorMessage = Nothing
         , id = id
         , isDisabled = False
+        , isLayoutVertical = False
         , name = Nothing
         , options = []
         , selectedValue = defaultValue
@@ -159,25 +163,43 @@ withValidation validation (Model configuration) =
     Model { configuration | validation = validation }
 
 
+withVerticalLayout : Bool -> Model value ctx msg -> Model value ctx msg
+withVerticalLayout isLayoutVertical (Model configuration) =
+    Model { configuration | isLayoutVertical = isLayoutVertical }
+
+
 option : OptionConfig value -> Option value
 option =
     Option
 
 
 render : Model value ctx msg -> Html.Html msg
-render (Model { selectedValue, options, tagger, name, classList, errorMessage, id, isDisabled, ariaLabelledBy }) =
+render (Model configuration) =
     Html.div
         (CA.compose
-            [ Attributes.classList ([ ( "form-control-group", True ) ] ++ classList)
+            [ Attributes.classList
+                ([ ( "form-control-group", True )
+                 , ( "form-control-group--column", configuration.isLayoutVertical )
+                 ]
+                    ++ configuration.classList
+                )
             , CA.role "radiogroup"
-            , CA.ariaDescribedBy (errorMessageId id)
+            , CA.ariaDescribedBy (errorMessageId configuration.id)
             ]
-            [ Maybe.map CA.ariaLabelledbyBy ariaLabelledBy ]
+            [ Maybe.map CA.ariaLabelledbyBy configuration.ariaLabelledBy ]
         )
-        (List.map (viewRadio id name selectedValue isDisabled errorMessage) options
-            ++ [ Maybe.map (viewError id) errorMessage |> CR.renderMaybe ]
+        (List.map
+            (viewRadio
+                configuration.id
+                configuration.name
+                configuration.selectedValue
+                configuration.isDisabled
+                configuration.errorMessage
+            )
+            configuration.options
+            ++ [ Maybe.map (viewError configuration.id) configuration.errorMessage |> CR.renderMaybe ]
         )
-        |> Html.map tagger
+        |> Html.map configuration.tagger
 
 
 viewRadio : String -> Maybe String -> value -> Bool -> Maybe String -> Option value -> Html.Html (Msg value)
