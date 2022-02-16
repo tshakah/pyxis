@@ -1,6 +1,7 @@
 module Components.Input exposing
     ( Input
     , Model
+    , ModelWithCtx
     , Msg
     , date
     , dateMax
@@ -9,19 +10,21 @@ module Components.Input exposing
     , email
     , empty
     , enhanceUpdateWithMask
-    , forceValidation
-    , getData
+    , getRawValue
     , getValue
+    , getValueFromCtx
     , iconAddon
     , init
     , medium
     , number
     , password
     , render
+    , renderWithCtx
     , small
     , text
     , textAddon
     , update
+    , validateWithCtx
     , withAddon
     , withDisabled
     , withId
@@ -60,18 +63,22 @@ type Msg
     | Blur
 
 
-type Model data
+type alias Model data =
+    ModelWithCtx () data
+
+
+type ModelWithCtx ctx data
     = Model
         { formState : FieldState
         , value : String
         , initialValue : String
         , validation : Validation String data
         , showValidation : Bool
-        , validationOverride : Maybe (Result String ())
+        , validationOverride : ctx -> Maybe (Validation data ())
         }
 
 
-init : String -> Validation String data -> Model data
+init : String -> Validation String data -> ModelWithCtx ctx data
 init initialValue validation =
     Model
         { formState = FieldState.Untouched
@@ -79,39 +86,13 @@ init initialValue validation =
         , initialValue = initialValue
         , validation = validation
         , showValidation = False
-        , validationOverride = Just (Ok ())
+        , validationOverride = \_ -> Nothing
         }
 
 
-overrideValidation : Maybe (Result String x) -> Model data -> Model data
-overrideValidation result (Model model) =
-    Model
-        { model
-            | validationOverride = Maybe.map Result.Extra.void result
-        }
-
-
-forceValidation :
-    (field -> form -> Maybe (Result String ()))
-    -> form
-    -> (form -> Model field)
-    -> Model field
-forceValidation validation form getInputModel =
-    let
-        model : Model field
-        model =
-            getInputModel form
-
-        selfResult : Result String field
-        selfResult =
-            validateBeforeOverride model
-    in
-    case selfResult of
-        Err _ ->
-            model
-
-        Ok self ->
-            overrideValidation (validation self form) model
+validateWithCtx : (ctx -> Maybe (Validation data ())) -> ModelWithCtx ctx data -> ModelWithCtx ctx data
+validateWithCtx validationOverride (Model model) =
+    Model { model | validationOverride = validationOverride }
 
 
 detectChanges : Model data -> Model (Maybe data)
@@ -130,44 +111,45 @@ detectChanges (Model model) =
         , value = model.value
         , showValidation = model.showValidation
         , initialValue = model.initialValue
-        , validationOverride = model.validationOverride
+        , validationOverride = \() -> Nothing
         , validation = validation
         }
 
 
-empty : Validation String data -> Model data
+empty : Validation String data -> ModelWithCtx ctx data
 empty =
     init ""
 
 
-getValue : Model data -> String
-getValue (Model { value }) =
+getRawValue : Model data -> String
+getRawValue (Model { value }) =
     value
 
 
-getData : Model data -> Maybe data
-getData (Model { validation, value, validationOverride }) =
+getValueFromCtx : ctx -> ModelWithCtx ctx data -> Maybe data
+getValueFromCtx ctx (Model { validation, value, validationOverride }) =
+    -- TODO refactor
     case validation value of
-        Ok x ->
-            case validationOverride of
-                Nothing ->
-                    Just x
-
-                Just (Ok ()) ->
-                    Just x
-
-                Just (Err _) ->
-                    Nothing
-
         Err _ ->
             Nothing
 
+        Ok x ->
+            case validationOverride ctx of
+                Nothing ->
+                    Just x
 
-{-| Internal implementation detail
--}
-validateBeforeOverride : Model data -> Result String data
-validateBeforeOverride (Model { validation, value }) =
-    validation value
+                Just validationOverrideValue ->
+                    case validationOverrideValue x of
+                        Ok () ->
+                            Just x
+
+                        Err _ ->
+                            Nothing
+
+
+getValue : Model data -> Maybe data
+getValue =
+    getValueFromCtx ()
 
 
 type alias ValidationMessageStrategy data =
@@ -181,8 +163,8 @@ type alias ValidationMessageStrategy data =
 updateWithCustomStrategy :
     ValidationMessageStrategy data
     -> Msg
-    -> Model data
-    -> Model data
+    -> ModelWithCtx x data
+    -> ModelWithCtx x data
 updateWithCustomStrategy strategy msg (Model model) =
     let
         newModel =
@@ -220,17 +202,17 @@ updateWithCustomStrategy strategy msg (Model model) =
         }
 
 
-update : Msg -> Model data -> Model data
+update : Msg -> ModelWithCtx x data -> ModelWithCtx x data
 update =
     updateWithCustomStrategy validateOnBlurStrategy
 
 
 enhanceUpdateWithMask :
     (String -> Maybe String)
-    -> (Msg -> Model data -> Model data)
+    -> (Msg -> ModelWithCtx ctx data -> ModelWithCtx ctx data)
     -> Msg
-    -> Model data
-    -> Model data
+    -> ModelWithCtx ctx data
+    -> ModelWithCtx ctx data
 enhanceUpdateWithMask mask update_ msg model =
     case msg of
         Input str ->
@@ -492,33 +474,31 @@ typeToString type_ =
             "text"
 
 
-getResultError : Result a value -> Maybe a
-getResultError result =
-    case result of
-        Err err ->
-            Just err
-
-        Ok _ ->
-            Nothing
-
-
 {-| Internal, no need to expose
 -}
-getErrorMessage : { r | isSubmitted : Bool } -> Model data -> Maybe String
-getErrorMessage { isSubmitted } (Model model) =
-    case model.validationOverride of
-        Just (Err msg) ->
-            Just msg
-
-        Just (Ok ()) ->
+getErrorMessage : ctx -> { r | isSubmitted : Bool } -> ModelWithCtx ctx data -> Maybe String
+getErrorMessage ctx { isSubmitted } (Model model) =
+    -- TODO refactor
+    case model.validation model.value of
+        Err msg ->
             if model.showValidation || isSubmitted then
-                getResultError (model.validation model.value)
+                Just msg
 
             else
                 Nothing
 
-        _ ->
-            Nothing
+        Ok x ->
+            case model.validationOverride ctx of
+                Nothing ->
+                    Nothing
+
+                Just validationOverrideValue ->
+                    case validationOverrideValue x of
+                        Ok () ->
+                            Nothing
+
+                        Err msg ->
+                            Just msg
 
 
 normalizeConfig : Input c -> Input c
@@ -538,16 +518,21 @@ normalizeConfig (Config config_) =
             Config config_
 
 
+render : Model value -> (Msg -> msg) -> Input x -> Html msg
+render =
+    renderWithCtx ()
+
+
 {-| Renders the Input.
 -}
-render : Model value -> (Msg -> msg) -> Input x -> Html msg
-render ((Model model_) as model) tagger rawConfig =
+renderWithCtx : ctx -> ModelWithCtx ctx value -> (Msg -> msg) -> Input x -> Html msg
+renderWithCtx ctx ((Model model_) as model) tagger rawConfig =
     let
         ((Config configuration) as configuration_) =
             normalizeConfig rawConfig
 
         errorMessage =
-            getErrorMessage configuration model
+            getErrorMessage ctx configuration model
     in
     Utils.concatArgs Html.div
         [ [ Attributes.classList

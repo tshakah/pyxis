@@ -3,6 +3,7 @@ module PipeValidation exposing
     , field
     , hardcoded
     , input
+    , inputWithCtx
     , maybe
     , succeed
     )
@@ -35,5 +36,10 @@ maybe getMaybeField f model =
 
 
 input : (model -> Input.Model field) -> Step model field data
-input getter =
-    maybe (Input.getData << getter)
+input =
+    inputWithCtx (always ())
+
+
+inputWithCtx : (model -> ctx) -> (model -> Input.ModelWithCtx ctx field) -> Step model field data
+inputWithCtx wrapper getter =
+    maybe (\model -> Input.getValueFromCtx (wrapper model) (getter model))

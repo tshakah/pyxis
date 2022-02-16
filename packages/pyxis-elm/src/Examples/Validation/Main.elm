@@ -9,6 +9,7 @@ import Email exposing (Email)
 import Html exposing (Html)
 import Html.Attributes exposing (class)
 import Html.Events
+import Maybe.Extra
 import PipeValidation
 import Validation exposing (Validation)
 import Validation.Int
@@ -95,19 +96,50 @@ passwordValidation =
     Validation.String.minLength 6 "Password needs at least 6 characters"
 
 
+type Ctx
+    = Ctx Model
+
+
 type alias Model =
     { name : Input.Model String
     , age : Input.Model Int
     , startDate : Input.Model Date
-    , endDate : Input.Model Date
+    , endDate : Input.ModelWithCtx Ctx Date
     , job : Input.Model (Maybe String)
     , id : Input.Model (Maybe String)
     , email : Input.Model Email
     , password : Input.Model String
-    , confirmPassword : Input.Model String
+    , confirmPassword : Input.ModelWithCtx Ctx String
     , submittedData : List (Result String FormData)
     , submitted : Bool
     }
+
+
+endDateCtxValidation : Ctx -> Maybe (Validation Date ())
+endDateCtxValidation (Ctx model) =
+    Just
+        (\startDate endDate ->
+            case Date.compare startDate endDate of
+                Basics.LT ->
+                    Ok ()
+
+                _ ->
+                    Err ("End date must be after " ++ Date.toIsoString startDate)
+        )
+        |> Maybe.Extra.andMap (Input.getValue model.startDate)
+
+
+confirmPasswordCtxValidation : Ctx -> Maybe (Validation String ())
+confirmPasswordCtxValidation (Ctx model) =
+    Just
+        (\password confirmPassword ->
+            if password == confirmPassword then
+                Ok ()
+
+            else
+                Err "Passwords do not match"
+        )
+        |> Maybe.Extra.andMap (Input.getValue model.password)
 
 
 init : Model
@@ -117,7 +149,9 @@ init =
 
     {- In an actual app it would be useful to `Result.mapError` for a better message -}
     , startDate = Input.empty Date.fromIsoString
-    , endDate = Input.empty Date.fromIsoString
+    , endDate =
+        Input.empty Date.fromIsoString
+            |> Input.validateWithCtx endDateCtxValidation
 
     {- Validation.String.option is a higher order Validation that, given a validator:
        * if the given string is empty, resolves to `Ok Nothing`
@@ -137,7 +171,9 @@ init =
             |> Input.detectChanges
     , email = Input.empty emailFieldValidation
     , password = Input.empty passwordValidation
-    , confirmPassword = Input.empty passwordValidation
+    , confirmPassword =
+        Input.empty passwordValidation
+            |> Input.validateWithCtx confirmPasswordCtxValidation
 
     -- Other
     , submittedData = []
@@ -218,11 +254,11 @@ parseForm =
         |> PipeValidation.input .name
         |> PipeValidation.input .age
         |> PipeValidation.input .startDate
-        |> PipeValidation.input .endDate
+        |> PipeValidation.inputWithCtx Ctx .endDate
         |> PipeValidation.input .job
         |> PipeValidation.input .id
         |> PipeValidation.input .email
-        |> PipeValidation.input .confirmPassword
+        |> PipeValidation.inputWithCtx Ctx .confirmPassword
 
 
 {-| Higher order `update` function that applies an [input mask](https://css-tricks.com/input-masking/)
@@ -246,8 +282,8 @@ idFieldMask =
     String.replace " " "-" >> Just
 
 
-baseUpdate : Msg -> Model -> Model
-baseUpdate msg model =
+update : Msg -> Model -> Model
+update msg model =
     case msg of
         NameInput subMsg ->
             { model | name = Input.update subMsg model.name }
@@ -285,91 +321,16 @@ baseUpdate msg model =
                     { model | submittedData = Ok parsedData :: model.submittedData }
 
 
-{-| This allows to perform more general validation using parsed data
-
-        -- This validation is applied to the `guideType` field
-        guideTypeMultiValidation : GuideType -> Model -> Maybe (Result String ())
-        guideTypeMultiValidation self model =
-            PipeValidation.succeed
-                (\birthDate licenceDate ->
-                    case (licenceDate, driverCategory) of
-                        (Nothing, Just _) ->
-                            Err "Without a licence date, the driver category is invalid"
-
-                        (Just dateValue, Just GuideType.Expert) ->
-                            if Date.year model.today - Date.year d1 < 25 then
-                                Err "You cannot select 'Expert' guide category"
-
-                            else
-                                Ok ()
-                       _ ->
-                            Ok ()
-                )
-           |> PipeValidation.required .birthDate -- model.birthDate : Maybe Date, fetched from the server
-           |> PipeValidation.input .licenceDate  -- model.licenceDate : Input.Model (Maybe Date), an optional date
-
-       -- ...
-
-       baseUpdate
-            |> afterUpdate
-                (\model ->
-                    { model | guideType = Input.forceValidation guideTypeMultiValidation model .guideType }
-                )
-
-Still a design pattern, not a feature
-
--}
-confirmPasswordMultiValidation : String -> Model -> Maybe (Result String ())
-confirmPasswordMultiValidation self =
-    PipeValidation.succeed
-        (\password ->
-            if password == self then
-                Ok ()
-
-            else
-                Err "Passwords do not match"
-        )
-        |> PipeValidation.input .password
-
-
-endDateMultiValidation : Date -> Model -> Maybe (Result String ())
-endDateMultiValidation endDate =
-    PipeValidation.succeed
-        (\startDate ->
-            case Date.compare startDate endDate of
-                Basics.LT ->
-                    Ok ()
-
-                _ ->
-                    Err ("End date must be after " ++ Date.toIsoString startDate)
-        )
-        |> PipeValidation.input .startDate
-
-
-afterUpdate : (Model -> Model) -> (Msg -> Model -> Model) -> Msg -> Model -> Model
-afterUpdate mapper update_ msg model =
-    mapper (update_ msg model)
-
-
-update : Msg -> Model -> Model
-update =
-    baseUpdate
-        |> afterUpdate
-            (\model ->
-                { model | confirmPassword = Input.forceValidation confirmPasswordMultiValidation model .confirmPassword }
-            )
-        |> afterUpdate
-            (\model ->
-                { model | endDate = Input.forceValidation endDateMultiValidation model .endDate }
-            )
-
-
 
 -- View
 
 
 viewForm : Model -> Html Msg
 viewForm model =
+    let
+        ctx =
+            Ctx model
+    in
     Html.form [ class "space-y", Html.Events.onSubmit Submit ]
         [ Input.text
             |> Input.withIsSubmitted model.submitted
@@ -398,7 +359,7 @@ viewForm model =
             |> Input.render model.startDate StartDateInput
         , Input.date
             |> Input.withIsSubmitted model.submitted
-            |> Input.render model.endDate EndDateInput
+            |> Input.renderWithCtx ctx model.endDate EndDateInput
         , Input.text
             |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Id"
@@ -414,7 +375,7 @@ viewForm model =
         , Input.password
             |> Input.withIsSubmitted model.submitted
             |> Input.withPlaceholder "Confirm password"
-            |> Input.render model.confirmPassword ConfirmPasswordInput
+            |> Input.renderWithCtx ctx model.confirmPassword ConfirmPasswordInput
         , Btn.primary
             |> Btn.withText "Submit"
             |> Btn.withType Btn.submit
@@ -435,23 +396,30 @@ view : Model -> Html Msg
 view model =
     Html.div []
         [ viewForm model
-
-        {-
-           , Html.div [ class "h-4" ] []
-                   , Html.hr [] []
-                   , Html.div [ class "h-4" ] []
-                   , Html.text "Submitted data: "
-              , Html.ul [ class "overflow-x-auto list-disc" ]
-                         (model.submittedData
-                             |> List.map
-                                 (\data ->
-                                     Html.li []
-                                         [ Html.pre [ class "inline" ] [ Html.text (Enc.encode 2 (encodeFormDataResult data)) ]
-                                         ]
-                                 )
-                         )
-        -}
+        , Html.div [ class "h-4" ] []
+        , Html.hr [] []
+        , Html.div [ class "h-4" ] []
+        , Html.text "Submitted data: "
+        , Html.ul [ class "overflow-x-auto list-disc" ]
+            (model.submittedData
+                |> List.map
+                    (\data ->
+                        Html.li []
+                            [ Html.pre [ class "inline" ] [ Html.text (viewSubmittedData data) ]
+                            ]
+                    )
+            )
         ]
+
+
+viewSubmittedData : Result String value -> String
+viewSubmittedData data =
+    case data of
+        Err msg ->
+            msg
+
+        Ok _ ->
+            "submitted data"
 
 
 main : Program () Model Msg

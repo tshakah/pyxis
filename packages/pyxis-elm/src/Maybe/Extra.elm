@@ -1,4 +1,4 @@
-module Maybe.Extra exposing (mapToList)
+module Maybe.Extra exposing (andMap, mapToList)
 
 
 mapToList : (a -> b) -> Maybe a -> List b
@@ -9,3 +9,8 @@ mapToList f m =
 
         Just x ->
             [ f x ]
+
+
+andMap : Maybe a -> Maybe (a -> b) -> Maybe b
+andMap =
+    Maybe.map2 (|>)
