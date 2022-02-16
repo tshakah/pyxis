@@ -4,7 +4,6 @@ module Commons.Attributes exposing
     , ariaLabel
     , role
     , testId
-    , compose
     , renderIf
     , maybe
     , none
@@ -37,15 +36,6 @@ module Commons.Attributes exposing
 import Html
 import Html.Attributes
 import Json.Encode
-
-
-{-| Useful to compose mandatory attributes with maybe ones.
--}
-compose : List (Html.Attribute msg) -> List (Maybe (Html.Attribute msg)) -> List (Html.Attribute msg)
-compose attributes maybeAttributes =
-    maybeAttributes
-        |> List.filterMap identity
-        |> List.append attributes
 
 
 {-| Creates an aria-label attribute.

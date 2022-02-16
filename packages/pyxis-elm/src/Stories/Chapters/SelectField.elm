@@ -1,12 +1,12 @@
 module Stories.Chapters.SelectField exposing (Model, docs, init)
 
+import Commons.Lens as Lens exposing (Lens)
 import Commons.Properties.Size as Size
 import Components.Field.Select as Select
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import Lens exposing (Lens)
 import PrimaFunction
 
 

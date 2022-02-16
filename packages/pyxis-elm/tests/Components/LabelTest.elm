@@ -1,7 +1,7 @@
 module Components.LabelTest exposing (suite)
 
 import Commons.Properties.Size as Size
-import Components.Label as Label
+import Components.Field.Label as Label
 import Html.Attributes
 import Test exposing (Test)
 import Test.Html.Query as Query

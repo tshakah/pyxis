@@ -61,7 +61,7 @@ import Commons.Attributes
 import Commons.Events.KeyDown as KeyDown
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
-import Components.Field.ErrorMessage as ErrorMessage
+import Components.Field.Error as Error
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -321,17 +321,22 @@ render ctx tagger ((Model { value, isOpen, validation }) as model) (Config selec
                     ]
                     :: List.map viewNativeOption select.options
                 )
-            , Html.div [ Attributes.class "form-field__addon" ]
+            , Html.div
+                [ Attributes.class "form-field__addon" ]
                 [ IconSet.ChevronDown
                     |> Icon.create
                     |> Icon.render
                 ]
             , model
                 |> getUiError ctx
-                |> Maybe.map (ErrorMessage.view select.id)
+                |> Maybe.map Error.create
+                |> Maybe.map (\error -> select.id |> Maybe.map (\id -> Error.withId id error) |> Maybe.withDefault error)
+                |> Maybe.map Error.render
                 |> Commons.Render.renderMaybe
             ]
-        , viewDropdownWrapper (Config select)
+        , select
+            |> Config
+            |> viewDropdownWrapper
         ]
         |> Html.map tagger
 
@@ -341,7 +346,9 @@ render ctx tagger ((Model { value, isOpen, validation }) as model) (Config selec
 getUiError : ctx -> Model ctx x -> Maybe String
 getUiError ctx (Model { value, isOpen, validation, blurredAtLeastOnce }) =
     if blurredAtLeastOnce then
-        Result.Extra.getError (validation ctx value)
+        value
+            |> validation ctx
+            |> Result.Extra.error
 
     else
         Nothing
@@ -363,7 +370,8 @@ viewDropdownWrapper (Config select) =
                 ]
             , Html.Events.onClick ClickedDropdownWrapper
             ]
-            [ Html.div [ Attributes.class "form-field__dropdown" ]
+            [ Html.div
+                [ Attributes.class "form-field__dropdown" ]
                 (List.map viewDropdownItem select.options)
             ]
 

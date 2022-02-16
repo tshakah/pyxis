@@ -51,13 +51,14 @@ module Components.Icon exposing
 
 -}
 
-import Commons.Attributes as CA
+import Commons.Attributes
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Properties.Theme as Theme exposing (Theme)
 import Commons.Render as CR
 import Components.IconSet as IconSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
+import Maybe.Extra
 import SvgParser
 
 
@@ -154,23 +155,20 @@ withClassList a (Model configuration) =
 render : Model -> Html msg
 render (Model configuration) =
     Html.div
-        (CA.compose
-            [ Attributes.classList
-                ([ ( "icon", True )
-                 , ( "icon--size-l", Size.isLarge configuration.size )
-                 , ( "icon--size-m", Size.isMedium configuration.size )
-                 , ( "icon--size-s", Size.isSmall configuration.size )
-                 , ( "icon--boxed", configuration.style == Boxed )
-                 , ( "icon--alt", Theme.isAlternative configuration.theme )
-                 ]
-                    ++ configuration.classList
-                )
-            , CA.ariaHidden (configuration.description == Nothing)
-            ]
-            [ Maybe.map CA.ariaLabel configuration.description
-            , Maybe.map (always (CA.role "img")) configuration.description
-            ]
-        )
+        [ Attributes.classList
+            ([ ( "icon", True )
+             , ( "icon--size-l", Size.isLarge configuration.size )
+             , ( "icon--size-m", Size.isMedium configuration.size )
+             , ( "icon--size-s", Size.isSmall configuration.size )
+             , ( "icon--boxed", configuration.style == Boxed )
+             , ( "icon--alt", Theme.isAlternative configuration.theme )
+             ]
+                ++ configuration.classList
+            )
+        , Commons.Attributes.ariaHidden (configuration.description == Nothing)
+        , Commons.Attributes.maybe Commons.Attributes.ariaLabel configuration.description
+        , Commons.Attributes.renderIf (Maybe.Extra.isJust configuration.description) (Commons.Attributes.role "img")
+        ]
         [ configuration.icon
             |> IconSet.toString
             |> SvgParser.parse

@@ -75,17 +75,18 @@ module Components.Field.Input exposing
 
 -}
 
-import Commons.Attributes as CommonsAttributes
+import Commons.Attributes
 import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render as CommonsRender
-import Components.Field.ErrorMessage as ErrorMessage
+import Components.Field.Error as Error
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Date
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
+import Maybe.Extra
 import Result.Extra
 
 
@@ -316,47 +317,54 @@ withErrorMessage mError (Model configuration) =
 render : Model msg -> Html msg
 render (Model configuration) =
     Html.div
-        (CommonsAttributes.compose
-            [ Attributes.classList
-                [ ( "form-field", True )
-                , ( "form-field--error", configuration.errorMessage /= Nothing )
-                , ( "form-field--disabled", configuration.disabled )
-                ]
+        [ Attributes.classList
+            [ ( "form-field", True )
+            , ( "form-field--error", configuration.errorMessage /= Nothing )
+            , ( "form-field--disabled", configuration.disabled )
             ]
-            [ Maybe.map addonToAttribute configuration.addon
-            ]
-        )
+        , Commons.Attributes.maybe addonToAttribute configuration.addon
+        ]
         [ configuration.addon
-            |> Maybe.map (viewInputAndAddon configuration)
+            |> Maybe.map (renderAddon configuration)
             |> Maybe.withDefault (viewInput configuration)
         , configuration.errorMessage
-            |> Maybe.map (ErrorMessage.view (Just configuration.id))
+            |> Maybe.map
+                (Error.create
+                    >> Error.withId configuration.id
+                    >> Error.render
+                )
             |> CommonsRender.renderMaybe
         ]
 
 
 {-| Internal.
 -}
-viewInputAndAddon : Configuration msg -> Addon -> Html msg
-viewInputAndAddon configuration addon =
-    Html.label [ Attributes.class "form-field__wrapper" ]
-        [ CommonsRender.renderIf (Placement.isPrepend addon.placement) (viewAddon addon.type_)
+renderAddon : Configuration msg -> Addon -> Html msg
+renderAddon configuration addon =
+    Html.label
+        [ Attributes.class "form-field__wrapper" ]
+        [ CommonsRender.renderIf (Placement.isPrepend addon.placement) (renderAddonByType addon.type_)
         , viewInput configuration
-        , CommonsRender.renderIf (Placement.isAppend addon.placement) (viewAddon addon.type_)
+        , CommonsRender.renderIf (Placement.isAppend addon.placement) (renderAddonByType addon.type_)
         ]
 
 
 {-| Internal.
 -}
-viewAddon : AddonType -> Html msg
-viewAddon type_ =
+renderAddonByType : AddonType -> Html msg
+renderAddonByType type_ =
     case type_ of
         IconAddon icon ->
-            Html.div [ Attributes.class "form-field__addon" ]
-                [ Icon.create icon |> Icon.render ]
+            Html.div
+                [ Attributes.class "form-field__addon" ]
+                [ icon
+                    |> Icon.create
+                    |> Icon.render
+                ]
 
         TextAddon str ->
-            Html.span [ Attributes.class "form-field__addon" ]
+            Html.span
+                [ Attributes.class "form-field__addon" ]
                 [ Html.text str ]
 
 
@@ -365,44 +373,32 @@ viewAddon type_ =
 viewInput : Configuration msg -> Html msg
 viewInput configuration =
     Html.input
-        (CommonsAttributes.compose
-            [ Attributes.id configuration.id
-            , Attributes.classList
-                [ -- Types
-                  ( "form-field__date", configuration.type_ == Date )
-                , ( "form-field__date--filled", configuration.type_ == Date && Result.Extra.isOk (Date.fromIsoString configuration.value) )
-                , ( "form-field__text", configuration.type_ == Text )
-                , ( "form-field__text", configuration.type_ == Number )
-                , ( "form-field__text", configuration.type_ == Password )
-                , ( "form-field__text", configuration.type_ == Email )
+        [ Attributes.id configuration.id
+        , Attributes.classList
+            [ -- Types
+              ( "form-field__date", configuration.type_ == Date )
+            , ( "form-field__date--filled", configuration.type_ == Date && Result.Extra.isOk (Date.fromIsoString configuration.value) )
+            , ( "form-field__text", configuration.type_ == Text )
+            , ( "form-field__text", configuration.type_ == Number )
+            , ( "form-field__text", configuration.type_ == Password )
+            , ( "form-field__text", configuration.type_ == Email )
 
-                -- Size
-                , ( "form-field__text--small", Size.isSmall configuration.size )
-                ]
-            , Attributes.classList configuration.classList
-            , CommonsAttributes.testId configuration.id
-            , Html.Events.onInput configuration.events.onInput
-            , Html.Events.onFocus configuration.events.onFocus
-            , Html.Events.onBlur configuration.events.onBlur
-            , typeToAttribute configuration.type_
-            , Attributes.disabled configuration.disabled
-            , Attributes.value configuration.value
+            -- Size
+            , ( "form-field__text--small", Size.isSmall configuration.size )
             ]
-            [ Maybe.map Attributes.name configuration.name
-            , Maybe.map Attributes.placeholder configuration.placeholder
-            , Maybe.map
-                (always (configuration.id |> errorMessageId |> CommonsAttributes.ariaDescribedBy))
-                configuration.errorMessage
-            ]
-        )
+        , Attributes.classList configuration.classList
+        , Attributes.disabled configuration.disabled
+        , Attributes.value configuration.value
+        , typeToAttribute configuration.type_
+        , Commons.Attributes.testId configuration.id
+        , Commons.Attributes.maybe Attributes.name configuration.name
+        , Commons.Attributes.maybe Attributes.placeholder configuration.placeholder
+        , Commons.Attributes.renderIf (Maybe.Extra.isJust configuration.errorMessage) (Commons.Attributes.ariaDescribedBy (Error.toId configuration.id))
+        , Html.Events.onInput configuration.events.onInput
+        , Html.Events.onFocus configuration.events.onFocus
+        , Html.Events.onBlur configuration.events.onBlur
+        ]
         []
-
-
-{-| Internal. For screen-reader.
--}
-errorMessageId : String -> String
-errorMessageId id =
-    id ++ "-error"
 
 
 {-| Return the input value

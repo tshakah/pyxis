@@ -27,7 +27,7 @@ const TextField: FC<TextFieldProps> = ({
   size = "large",
   value
 }) => (
-  <div className={getClasses(disabled, error, addonPlacement, Icon, addonText)} style={{width: 320}}>
+  <div className={getClasses(disabled, error, addonPlacement, Icon, addonText)}>
     <label className="form-field__wrapper">
       {(addonText || Icon) && addonPlacement === "prepend" && <div className="form-field__addon">
         {addonText && addonText}

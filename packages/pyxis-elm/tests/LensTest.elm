@@ -1,8 +1,8 @@
 module LensTest exposing (suite)
 
+import Commons.Lens as Lens exposing (Lens)
 import Expect
 import Fuzz
-import Lens exposing (Lens)
 import Test exposing (Test)
 
 

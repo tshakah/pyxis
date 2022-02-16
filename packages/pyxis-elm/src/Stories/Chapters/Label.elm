@@ -1,7 +1,7 @@
 module Stories.Chapters.Label exposing (docs)
 
 import Commons.Properties.Size as Size
-import Components.Label as Label
+import Components.Field.Label as Label
 import ElmBook
 import ElmBook.Chapter
 import Html exposing (Html)
@@ -18,7 +18,7 @@ Label component provides a label to be used within a form. It requires a _text_ 
 
 <component with-label="Label" />
 ```
-import Components.Label as Label
+import Components.Field.Label as Label
 
 myLabel: Html msg
 myLabel =
@@ -29,7 +29,7 @@ myLabel =
 ## For
 <component with-label="For" />
 ```
-import Components.Label as Label
+import Components.Field.Label as Label
 
 myLabel: Html msg
 myLabel =
@@ -40,7 +40,7 @@ myLabel =
 ## ID
 <component with-label="Id" />
 ```
-import Components.Label as Label
+import Components.Field.Label as Label
 
 {-| Note that setting an id to the Label also implies setting a data-test-id
 attribute with the same value of the id received.
@@ -57,7 +57,7 @@ Label can have an additional explanatory text or can be set with a smaller size.
 ### With an additional text
 <component with-label="Additional text" />
 ```
-import Components.Label as Label
+import Components.Field.Label as Label
 
 myLabel: Html msg
 myLabel =
@@ -69,7 +69,7 @@ myLabel =
 ### Size: small
 <component with-label="Small" />
 ```
-import Components.Label as Label
+import Components.Field.Label as Label
 import Commons.Properties.Size as Size
 
 myLabel: Html msg

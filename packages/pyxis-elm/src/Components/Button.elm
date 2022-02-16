@@ -85,7 +85,7 @@ module Components.Button exposing
 
 -}
 
-import Commons.Attributes as CA
+import Commons.Attributes
 import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Properties.Theme as Theme exposing (Theme)
@@ -310,38 +310,38 @@ withType a (Model configuration) =
 
 {-| Internal.
 -}
-typeToAttribute : Type msg -> Maybe (Html.Attribute msg)
+typeToAttribute : Type msg -> Html.Attribute msg
 typeToAttribute a =
     case a of
         Submit ->
-            Just (Attributes.type_ "submit")
+            Attributes.type_ "submit"
 
         Reset ->
-            Just (Attributes.type_ "reset")
+            Attributes.type_ "reset"
 
         Button _ ->
-            Just (Attributes.type_ "button")
+            Attributes.type_ "button"
 
         Link href ->
-            Just (Attributes.href href)
+            Attributes.href href
 
 
 {-| Internal.
 -}
-typeToEventAttribute : Type msg -> Maybe (Html.Attribute msg)
+typeToEventAttribute : Type msg -> Html.Attribute msg
 typeToEventAttribute a =
     case a of
         Button action ->
-            Just (Events.onClick action)
+            Events.onClick action
 
         Submit ->
-            Nothing
+            Commons.Attributes.none
 
         Reset ->
-            Nothing
+            Commons.Attributes.none
 
         Link _ ->
-            Nothing
+            Commons.Attributes.none
 
 
 {-| Sets a theme to the Button.
@@ -453,37 +453,34 @@ render (Model configuration) =
      else
         Html.button
     )
-        (CA.compose
-            [ Attributes.classList
-                ([ ( "button", True )
-                 , ( "button--prepend-icon", isPrepend configuration.icon )
-                 , ( "button--append-icon", isAppend configuration.icon )
-                 , ( "button--icon-only", isStandalone configuration.icon )
-                 , ( "button--alt", Theme.isAlternative configuration.theme )
-                 , ( "button--primary", configuration.variant == Primary )
-                 , ( "button--secondary", configuration.variant == Secondary )
-                 , ( "button--tertiary", configuration.variant == Tertiary )
-                 , ( "button--brand", configuration.variant == Brand )
-                 , ( "button--ghost", configuration.variant == Ghost )
-                 , ( "button--huge", Size.isHuge configuration.size )
-                 , ( "button--large", Size.isLarge configuration.size )
-                 , ( "button--medium", Size.isMedium configuration.size )
-                 , ( "button--small", Size.isSmall configuration.size )
-                 , ( "button--loading", configuration.loading )
-                 , ( "button--content-width", configuration.contentWidth )
-                 , ( "button--shadow", configuration.shadow )
-                 ]
-                    ++ configuration.classList
-                )
-            , Attributes.disabled configuration.disabled
-            ]
-            [ typeToAttribute configuration.type_
-            , typeToEventAttribute configuration.type_
-            , Maybe.map Attributes.id configuration.id
-            , Maybe.map CA.testId configuration.id
-            , Maybe.map CA.ariaLabel configuration.ariaLabel
-            ]
-        )
+        [ Attributes.classList
+            ([ ( "button", True )
+             , ( "button--prepend-icon", isPrepend configuration.icon )
+             , ( "button--append-icon", isAppend configuration.icon )
+             , ( "button--icon-only", isStandalone configuration.icon )
+             , ( "button--alt", Theme.isAlternative configuration.theme )
+             , ( "button--primary", configuration.variant == Primary )
+             , ( "button--secondary", configuration.variant == Secondary )
+             , ( "button--tertiary", configuration.variant == Tertiary )
+             , ( "button--brand", configuration.variant == Brand )
+             , ( "button--ghost", configuration.variant == Ghost )
+             , ( "button--huge", Size.isHuge configuration.size )
+             , ( "button--large", Size.isLarge configuration.size )
+             , ( "button--medium", Size.isMedium configuration.size )
+             , ( "button--small", Size.isSmall configuration.size )
+             , ( "button--loading", configuration.loading )
+             , ( "button--content-width", configuration.contentWidth )
+             , ( "button--shadow", configuration.shadow )
+             ]
+                ++ configuration.classList
+            )
+        , Attributes.disabled configuration.disabled
+        , typeToAttribute configuration.type_
+        , typeToEventAttribute configuration.type_
+        , Commons.Attributes.maybe Attributes.id configuration.id
+        , Commons.Attributes.maybe Commons.Attributes.testId configuration.id
+        , Commons.Attributes.maybe Commons.Attributes.ariaLabel configuration.ariaLabel
+        ]
         [ configuration.icon
             |> renderIcon configuration.size
             |> CR.renderIf (isPrepend configuration.icon || isStandalone configuration.icon)

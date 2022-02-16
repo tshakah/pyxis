@@ -1,4 +1,4 @@
-module Components.Label exposing
+module Components.Field.Label exposing
     ( Model
     , create
     , withFor
@@ -36,7 +36,7 @@ module Components.Label exposing
 
 -}
 
-import Commons.Attributes as CA
+import Commons.Attributes
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render as CR
 import Html exposing (Html)
@@ -63,7 +63,7 @@ type alias Configuration =
 
 {-| Inits the Label.
 
-    Import Components.Label as Label
+    Import Components.Field.Label as Label
 
     myLabel: Html msg
     myLabel =
@@ -85,7 +85,7 @@ create text =
 
 {-| Add a `for` attribute to label.
 
-    Import Components.Label as Label
+    Import Components.Field.Label as Label
 
     myLabel: Html msg
     myLabel =
@@ -101,7 +101,7 @@ withFor for (Model configuration) =
 
 {-| Add `id` and `data-test-id` attributes to label.
 
-    Import Components.Label as Label
+    Import Components.Field.Label as Label
 
     myLabel: Html msg
     myLabel =
@@ -117,7 +117,7 @@ withId id (Model configuration) =
 
 {-| Add a list of conditional classes for label.
 
-    Import Components.Label as Label
+    Import Components.Field.Label as Label
 
     myLabel: Html msg
     myLabel =
@@ -133,7 +133,7 @@ withClassList classList (Model configuration) =
 
 {-| Set label to small size.
 
-    Import Components.Label as Label
+    Import Components.Field.Label as Label
 
     myLabel: Html msg
     myLabel =
@@ -149,7 +149,7 @@ withSize a (Model configuration) =
 
 {-| Set a sub-level text for label.
 
-    Import Components.Label as Label
+    Import Components.Field.Label as Label
 
     myLabel: Html msg
     myLabel =
@@ -168,19 +168,16 @@ withSubText text (Model configuration) =
 render : Model -> Html msg
 render (Model { for, classList, id, size, text, subText }) =
     Html.label
-        (CA.compose
-            [ Html.Attributes.classList
-                ([ ( "form-label", True )
-                 , ( "form-label--small", size == Size.small )
-                 ]
-                    ++ classList
-                )
-            ]
-            [ Maybe.map Html.Attributes.for for
-            , Maybe.map Html.Attributes.id id
-            , Maybe.map CA.testId id
-            ]
-        )
+        [ Html.Attributes.classList
+            ([ ( "form-label", True )
+             , ( "form-label--small", size == Size.small )
+             ]
+                ++ classList
+            )
+        , Commons.Attributes.maybe Html.Attributes.for for
+        , Commons.Attributes.maybe Html.Attributes.id id
+        , Commons.Attributes.maybe Commons.Attributes.testId id
+        ]
         [ Html.text text
         , subText
             |> Maybe.map renderSubText

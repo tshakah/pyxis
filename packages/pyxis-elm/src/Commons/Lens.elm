@@ -1,4 +1,4 @@
-module Lens exposing
+module Commons.Lens exposing
     ( Lens
     , andCompose
     , update

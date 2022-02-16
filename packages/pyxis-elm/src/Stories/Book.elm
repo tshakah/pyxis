@@ -7,6 +7,7 @@ import Html
 import Html.Attributes
 import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.DateField as DateFieldChapter
+import Stories.Chapters.Form as FormChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Label as LabelChapter
@@ -22,6 +23,7 @@ type alias SharedState =
     , numberFieldModels : NumberFieldChapter.Model
     , dateFieldModels : DateFieldChapter.Model
     , selectModels : SelectChapter.Model
+    , formModel : FormChapter.Model
     }
 
 
@@ -32,6 +34,7 @@ initialState =
     , numberFieldModels = NumberFieldChapter.init
     , dateFieldModels = DateFieldChapter.init
     , selectModels = SelectChapter.init
+    , formModel = FormChapter.init
     }
 
 
@@ -61,4 +64,5 @@ main =
             , NumberFieldChapter.docs
             , DateFieldChapter.docs
             , SelectChapter.docs
+            , FormChapter.docs
             ]

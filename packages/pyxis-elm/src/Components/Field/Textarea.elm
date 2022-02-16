@@ -63,14 +63,15 @@ module Components.Field.Textarea exposing
 
 -}
 
-import Commons.Attributes as CommonsAttributes
+import Commons.Attributes
 import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
-import Components.Field.ErrorMessage as ErrorMessage
+import Components.Field.Error as Error
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
+import Maybe.Extra
 
 
 {-| The Textarea model.
@@ -260,37 +261,32 @@ render (Model configuration) =
             , ( "form-field--disabled", configuration.disabled )
             ]
         ]
-        [ viewInput configuration
+        [ renderTextarea configuration
         , configuration.errorMessage
-            |> Maybe.map (ErrorMessage.view (Just configuration.id))
+            |> Maybe.map (Error.create >> Error.withId configuration.id >> Error.render)
             |> Commons.Render.renderMaybe
         ]
 
 
 {-| Internal.
 -}
-viewInput : Configuration ctx msg -> Html msg
-viewInput configuration =
+renderTextarea : Configuration ctx msg -> Html msg
+renderTextarea configuration =
     Html.textarea
-        (CommonsAttributes.compose
-            [ Attributes.id configuration.id
-            , Attributes.classList
-                [ ( "form-field__textarea", True )
-                , ( "form-field__textarea--small", Size.isSmall configuration.size )
-                ]
-            , Attributes.classList configuration.classList
-            , CommonsAttributes.testId configuration.id
-            , Html.Events.onInput (OnInput >> configuration.msgTagger)
-            , Html.Events.onFocus (configuration.msgTagger OnFocus)
-            , Html.Events.onBlur (configuration.msgTagger OnBlur)
-            , Attributes.disabled configuration.disabled
-            , Attributes.value configuration.value
+        [ Attributes.id configuration.id
+        , Attributes.classList
+            [ ( "form-field__textarea", True )
+            , ( "form-field__textarea--small", Size.isSmall configuration.size )
             ]
-            [ Maybe.map Attributes.name configuration.name
-            , Maybe.map Attributes.placeholder configuration.placeholder
-            , Maybe.map
-                (always (configuration.id |> ErrorMessage.id |> CommonsAttributes.ariaDescribedBy))
-                configuration.errorMessage
-            ]
-        )
+        , Attributes.classList configuration.classList
+        , Attributes.disabled configuration.disabled
+        , Attributes.value configuration.value
+        , Commons.Attributes.testId configuration.id
+        , Commons.Attributes.maybe Attributes.name configuration.name
+        , Commons.Attributes.maybe Attributes.placeholder configuration.placeholder
+        , Commons.Attributes.renderIf (Maybe.Extra.isJust configuration.errorMessage) (Commons.Attributes.ariaDescribedBy (Error.toId configuration.id))
+        , Html.Events.onInput (OnInput >> configuration.msgTagger)
+        , Html.Events.onFocus (configuration.msgTagger OnFocus)
+        , Html.Events.onBlur (configuration.msgTagger OnBlur)
+        ]
         []
