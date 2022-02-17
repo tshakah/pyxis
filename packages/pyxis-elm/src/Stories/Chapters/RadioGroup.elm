@@ -186,6 +186,17 @@ radioGroupVerticalLayout id tagger defaultValue =
         |> RadioGroup.withVerticalLayout True
         |> RadioGroup.render
 ```
+
+
+# Disabled
+<component with-label="RadioGroup disabled" />
+```
+radioGroupDisabled : String -> (RadioGroup.Msg value -> msg) -> value -> Html msg
+radioGroupDisabled id tagger defaultValue =
+    RadioGroup.create id tagger defaultValue
+        |> RadioGroup.withDisabled True
+        |> RadioGroup.render
+```
 """
 
 
@@ -217,7 +228,7 @@ type Msg
 init : Model
 init =
     { base =
-        RadioGroup.create "radio-gender-id" OnRadioFieldMsg Default
+        RadioGroup.init "radio-gender-id" OnRadioFieldMsg Default
             |> RadioGroup.withOptions
                 [ RadioGroup.option { value = M, label = "Male" }
                 , RadioGroup.option { value = F, label = "Female" }
@@ -242,6 +253,9 @@ componentsList =
       , statefulComponent .base identity setBase
       )
     , ( "RadioGroup vertical"
+      , statefulComponent .base (RadioGroup.withVerticalLayout True) setBase
+      )
+    , ( "RadioGroup disabled"
       , statefulComponent .base (RadioGroup.withVerticalLayout True) setBase
       )
     ]

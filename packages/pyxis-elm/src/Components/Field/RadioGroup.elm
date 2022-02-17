@@ -1,6 +1,5 @@
 module Components.Field.RadioGroup exposing
     ( Model
-    , create
     , option
     , withValidation
     , withAriaLabelledby
@@ -16,7 +15,7 @@ module Components.Field.RadioGroup exposing
     , getValidatedValue
     , getValue
     , render
-    , Option
+    , Configuration, Option, config, init
     )
 
 {-|
@@ -74,24 +73,51 @@ import Html.Events as Events
 import Maybe.Extra as ME
 
 
-type Model value ctx msg
-    = Model (Configuration value ctx msg)
+type Model value ctx
+    = Model (State value ctx)
 
 
-type alias Configuration value ctx msg =
-    { ariaLabelledBy : Maybe String
-    , classList : List ( String, Bool )
-    , errorMessage : Maybe String
-    , id : String
-    , isDisabled : Bool
-    , isLayoutVertical : Bool
-    , name : Maybe String
-    , options : List (Option value)
+type alias State value ctx =
+    { errorMessage : Maybe String
     , selectedValue : value
     , status : FieldStatus.StatusList
-    , tagger : Msg value -> msg
     , validation : ctx -> value -> Result String value
     }
+
+
+init : value -> Model value ctx
+init defaultValue =
+    Model
+        { validation = always Ok
+        , errorMessage = Nothing
+        , selectedValue = defaultValue
+        , status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
+        }
+
+
+type Configuration value
+    = Configuration
+        { ariaLabelledBy : Maybe String
+        , classList : List ( String, Bool )
+        , id : String
+        , isDisabled : Bool
+        , isLayoutVertical : Bool
+        , name : Maybe String
+        , options : List (Option value)
+        }
+
+
+config : String -> Configuration value
+config id =
+    Configuration
+        { ariaLabelledBy = Nothing
+        , classList = []
+        , id = id
+        , isDisabled = False
+        , isLayoutVertical = False
+        , name = Nothing
+        , options = []
+        }
 
 
 type Option value
@@ -102,24 +128,6 @@ type alias OptionConfig value =
     { value : value
     , label : String
     }
-
-
-create : String -> (Msg value -> msg) -> value -> Model value ctx msg
-create id tagger defaultValue =
-    Model
-        { ariaLabelledBy = Nothing
-        , classList = []
-        , errorMessage = Nothing
-        , id = id
-        , isDisabled = False
-        , isLayoutVertical = False
-        , name = Nothing
-        , options = []
-        , selectedValue = defaultValue
-        , status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
-        , tagger = tagger
-        , validation = always Ok
-        }
 
 
 type Msg value
@@ -133,39 +141,39 @@ isOnCheck msg =
             True
 
 
-withAriaLabelledby : String -> Model value ctx msg -> Model value ctx msg
-withAriaLabelledby ariaLabelledBy (Model configuration) =
-    Model { configuration | ariaLabelledBy = Just ariaLabelledBy }
+withAriaLabelledby : String -> Configuration value -> Configuration value
+withAriaLabelledby ariaLabelledBy (Configuration configuration) =
+    Configuration { configuration | ariaLabelledBy = Just ariaLabelledBy }
 
 
-withClassList : List ( String, Bool ) -> Model value ctx msg -> Model value ctx msg
-withClassList classList (Model configuration) =
-    Model { configuration | classList = classList }
+withClassList : List ( String, Bool ) -> Configuration value -> Configuration value
+withClassList classList (Configuration configuration) =
+    Configuration { configuration | classList = classList }
 
 
-withDisabled : Bool -> Model value ctx msg -> Model value ctx msg
-withDisabled isDisabled (Model configuration) =
-    Model { configuration | isDisabled = isDisabled }
+withDisabled : Bool -> Configuration value -> Configuration value
+withDisabled isDisabled (Configuration configuration) =
+    Configuration { configuration | isDisabled = isDisabled }
 
 
-withName : String -> Model value ctx msg -> Model value ctx msg
-withName name (Model configuration) =
-    Model { configuration | name = Just name }
+withName : String -> Configuration value -> Configuration value
+withName name (Configuration configuration) =
+    Configuration { configuration | name = Just name }
 
 
-withOptions : List (Option value) -> Model value ctx msg -> Model value ctx msg
-withOptions options (Model configuration) =
-    Model { configuration | options = options }
+withOptions : List (Option value) -> Configuration value -> Configuration value
+withOptions options (Configuration configuration) =
+    Configuration { configuration | options = options }
 
 
-withValidation : (ctx -> value -> Result String value) -> Model value ctx msg -> Model value ctx msg
-withValidation validation (Model configuration) =
-    Model { configuration | validation = validation }
+withValidation : (ctx -> value -> Result String value) -> Model value ctx -> Model value ctx
+withValidation validation (Model model) =
+    Model { model | validation = validation }
 
 
-withVerticalLayout : Bool -> Model value ctx msg -> Model value ctx msg
-withVerticalLayout isLayoutVertical (Model configuration) =
-    Model { configuration | isLayoutVertical = isLayoutVertical }
+withVerticalLayout : Bool -> Configuration value -> Configuration value
+withVerticalLayout isLayoutVertical (Configuration configuration) =
+    Configuration { configuration | isLayoutVertical = isLayoutVertical }
 
 
 option : OptionConfig value -> Option value
@@ -173,8 +181,8 @@ option =
     Option
 
 
-render : Model value ctx msg -> Html.Html msg
-render (Model configuration) =
+render : (Msg value -> msg) -> Model value ctx -> Configuration value -> Html.Html msg
+render tagger (Model model) (Configuration configuration) =
     Html.div
         (CA.compose
             [ Attributes.classList
@@ -186,20 +194,21 @@ render (Model configuration) =
             , CA.role "radiogroup"
             , CA.ariaDescribedBy (errorMessageId configuration.id)
             ]
-            [ Maybe.map CA.ariaLabelledbyBy configuration.ariaLabelledBy ]
+            [ Maybe.map CA.ariaLabelledbyBy configuration.ariaLabelledBy
+            ]
         )
         (List.map
             (viewRadio
                 configuration.id
                 configuration.name
-                configuration.selectedValue
+                model.selectedValue
                 configuration.isDisabled
-                configuration.errorMessage
+                model.errorMessage
             )
             configuration.options
-            ++ [ Maybe.map (viewError configuration.id) configuration.errorMessage |> CR.renderMaybe ]
+            ++ [ Maybe.map (viewError configuration.id) model.errorMessage |> CR.renderMaybe ]
         )
-        |> Html.map configuration.tagger
+        |> Html.map tagger
 
 
 viewRadio : String -> Maybe String -> value -> Bool -> Maybe String -> Option value -> Html.Html (Msg value)
@@ -249,7 +258,7 @@ viewError id errorMessage =
         [ Html.text errorMessage ]
 
 
-update : ctx -> Msg value -> Model value ctx msg -> Model value ctx msg
+update : ctx -> Msg value -> Model value ctx -> Model value ctx
 update ctx msg =
     case msg of
         OnCheck value _ ->
@@ -259,7 +268,7 @@ update ctx msg =
 
 {-| Validate and update the internal model.
 -}
-validate : ctx -> Model value ctx msg -> Model value ctx msg
+validate : ctx -> Model value ctx -> Model value ctx
 validate ctx ((Model { selectedValue, validation }) as model) =
     let
         validationResult : Result String value
@@ -273,29 +282,29 @@ validate ctx ((Model { selectedValue, validation }) as model) =
 
 {-| Internal.
 -}
-addFieldStatus : FieldStatus -> Model value ctx msg -> Model value ctx msg
-addFieldStatus fieldStatus (Model configuration) =
-    Model { configuration | status = FieldStatus.addStatus fieldStatus configuration.status }
+addFieldStatus : FieldStatus -> Model value ctx -> Model value ctx
+addFieldStatus fieldStatus (Model model) =
+    Model { model | status = FieldStatus.addStatus fieldStatus model.status }
 
 
-setValue : value -> Model value ctx msg -> Model value ctx msg
-setValue value (Model configuration) =
-    Model { configuration | selectedValue = value }
+setValue : value -> Model value ctx -> Model value ctx
+setValue value (Model model) =
+    Model { model | selectedValue = value }
 
 
-getValue : Model value ctx msg -> value
+getValue : Model value ctx -> value
 getValue (Model { selectedValue }) =
     selectedValue
 
 
-getValidatedValue : ctx -> Model value ctx msg -> Result String value
+getValidatedValue : ctx -> Model value ctx -> Result String value
 getValidatedValue ctx (Model { selectedValue, validation }) =
     validation ctx selectedValue
 
 
-setErrorMessage : Maybe String -> Model value ctx msg -> Model value ctx msg
-setErrorMessage errorMessage (Model configuration) =
-    Model { configuration | errorMessage = errorMessage }
+setErrorMessage : Maybe String -> Model value ctx -> Model value ctx
+setErrorMessage errorMessage (Model model) =
+    Model { model | errorMessage = errorMessage }
 
 
 {-| Internal. For screen-reader.

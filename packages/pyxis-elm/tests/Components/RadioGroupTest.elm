@@ -30,23 +30,23 @@ suite =
         [ Test.describe "Disabled attribute"
             [ Test.test "should be False by default" <|
                 \() ->
-                    radioGroupModel
-                        |> renderModel
+                    radioGroupConfig
+                        |> renderRadioGroup
                         |> findInputs
                         |> Query.each (Query.has [ Selector.disabled False ])
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    radioGroupModel
+                    radioGroupConfig
                         |> RadioGroup.withDisabled b
-                        |> renderModel
+                        |> renderRadioGroup
                         |> findInputs
                         |> Query.each (Query.has [ Selector.disabled b ])
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                radioGroupModel
+                radioGroupConfig
                     |> RadioGroup.withName name
-                    |> renderModel
+                    |> renderRadioGroup
                     |> findInputs
                     |> Query.each
                         (Query.has
@@ -56,9 +56,9 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    radioGroupModel
+                    radioGroupConfig
                         |> RadioGroup.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
-                        |> renderModel
+                        |> renderRadioGroup
                         |> Expect.all
                             [ Query.has
                                 [ Selector.classes [ s1, s3 ]
@@ -69,10 +69,10 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    radioGroupModel
+                    radioGroupConfig
                         |> RadioGroup.withClassList [ ( s1, True ), ( s2, True ) ]
                         |> RadioGroup.withClassList [ ( s3, True ) ]
-                        |> renderModel
+                        |> renderRadioGroup
                         |> Expect.all
                             [ Query.has
                                 [ Selector.classes [ s3 ]
@@ -85,9 +85,9 @@ suite =
         , Test.describe "Vertical layout"
             [ Test.test "should have the class for the vertical layout" <|
                 \() ->
-                    radioGroupModel
+                    radioGroupConfig
                         |> RadioGroup.withVerticalLayout True
-                        |> renderModel
+                        |> renderRadioGroup
                         |> Query.has
                             [ Selector.classes [ "form-control-group--column" ]
                             ]
@@ -134,35 +134,37 @@ radioOptions =
     ]
 
 
-radioGroupModel : RadioGroup.Model Option ctx Msg
+radioGroupModel : RadioGroup.Model Option ctx
 radioGroupModel =
-    RadioGroup.create "gender" Tagger Default
+    RadioGroup.init Default
+
+
+radioGroupConfig : RadioGroup.Configuration Option
+radioGroupConfig =
+    RadioGroup.config "gender"
         |> RadioGroup.withOptions radioOptions
 
 
-renderModel : RadioGroup.Model Option ctx Msg -> Query.Single Msg
-renderModel model =
-    model
-        |> RadioGroup.withOptions radioOptions
-        |> RadioGroup.render
-        |> Query.fromHtml
+renderRadioGroup : RadioGroup.Configuration Option -> Query.Single Msg
+renderRadioGroup =
+    RadioGroup.render Tagger radioGroupModel
+        >> Query.fromHtml
 
 
-simulationWithoutValidation : Simulation.Simulation (RadioGroup.Model Option {} (RadioGroup.Msg Option)) (RadioGroup.Msg Option)
+simulationWithoutValidation : Simulation.Simulation (RadioGroup.Model Option {}) (RadioGroup.Msg Option)
 simulationWithoutValidation =
     Simulation.fromSandbox
-        { init = RadioGroup.create "gender" identity Default |> RadioGroup.withOptions radioOptions
+        { init = RadioGroup.init Default
         , update = RadioGroup.update {}
-        , view = RadioGroup.render
+        , view = \model -> RadioGroup.render identity model radioGroupConfig
         }
 
 
-simulationWithValidation : Simulation.Simulation (RadioGroup.Model Option {} (RadioGroup.Msg Option)) (RadioGroup.Msg Option)
+simulationWithValidation : Simulation.Simulation (RadioGroup.Model Option {}) (RadioGroup.Msg Option)
 simulationWithValidation =
     Simulation.fromSandbox
         { init =
-            RadioGroup.create "gender" identity Default
-                |> RadioGroup.withOptions radioOptions
+            radioGroupModel
                 |> RadioGroup.withValidation
                     (\_ value ->
                         if value == Default then
@@ -173,7 +175,7 @@ simulationWithValidation =
                     )
                 |> RadioGroup.validate {}
         , update = RadioGroup.update {}
-        , view = RadioGroup.render
+        , view = \model -> RadioGroup.render identity model radioGroupConfig
         }
 
 
