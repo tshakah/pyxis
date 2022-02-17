@@ -19,6 +19,7 @@ module Components.Input exposing
     , number
     , password
     , render
+    , renderStateless
     , renderWithCtx
     , small
     , text
@@ -34,6 +35,9 @@ module Components.Input exposing
     , withName
     , withNumberMax
     , withNumberMin
+    , withOnBlur
+    , withOnFocus
+    , withOnInput
     , withPlaceholder
     , withSize
     )
@@ -270,7 +274,7 @@ medium =
     Size Nothing
 
 
-withSize : Size -> Config x -> Config x
+withSize : Size -> Config msg x -> Config msg x
 withSize size (Config input) =
     Config { input | size = size }
 
@@ -308,55 +312,55 @@ typeToAttribute a =
 
 {-| Creates an input with [type="email"].
 -}
-email : Config { email : (), canHaveAddon : () }
+email : Config msg { email : (), canHaveAddon : () }
 email =
     config Email
 
 
 {-| Creates an input with [type="date"].
 -}
-date : Config { date : () }
+date : Config msg { date : () }
 date =
     config Date
 
 
-dateMin : Date -> Config { r | date : () } -> Config { r | date : () }
+dateMin : Date -> Config msg { r | date : () } -> Config msg { r | date : () }
 dateMin =
     withAttribute << Attributes.min << Date.toIsoString
 
 
-dateMax : Date -> Config { r | date : () } -> Config { r | date : () }
+dateMax : Date -> Config msg { r | date : () } -> Config msg { r | date : () }
 dateMax =
     withAttribute << Attributes.max << Date.toIsoString
 
 
 {-| Creates an input with [type="number"].
 -}
-number : Config { number : (), canHaveAddon : () }
+number : Config msg { number : (), canHaveAddon : () }
 number =
     config Number
 
 
-withNumberMin : Float -> Config { r | number : () } -> Config { r | number : () }
+withNumberMin : Float -> Config msg { r | number : () } -> Config msg { r | number : () }
 withNumberMin =
     withAttribute << Attributes.min << String.fromFloat
 
 
-withNumberMax : Float -> Config { r | number : () } -> Config { r | number : () }
+withNumberMax : Float -> Config msg { r | number : () } -> Config msg { r | number : () }
 withNumberMax =
     withAttribute << Attributes.max << String.fromFloat
 
 
 {-| Creates an input with [type="text"].
 -}
-text : Config { text : (), canHaveAddon : () }
+text : Config msg { text : (), canHaveAddon : () }
 text =
     config Text
 
 
 {-| Creates an input with [type="password"].
 -}
-password : Config { password : (), canHaveAddon : () }
+password : Config msg { password : (), canHaveAddon : () }
 password =
     config Password
 
@@ -377,58 +381,73 @@ textAddon =
 
 {-| Internal, DO NOT EXPOSE
 -}
-withAttribute : Html.Attribute Msg -> Config c -> Config c
+withAttribute : Html.Attribute msg -> Config msg c -> Config msg c
 withAttribute attr (Config model) =
     Config { model | attributes = attr :: model.attributes }
 
 
-withPlaceholder : String -> Config c -> Config c
+withOnFocus : msg -> Config msg c -> Config msg c
+withOnFocus =
+    withAttribute << Html.Events.onFocus
+
+
+withOnBlur : msg -> Config msg c -> Config msg c
+withOnBlur =
+    withAttribute << Html.Events.onBlur
+
+
+withOnInput : (String -> msg) -> Config msg c -> Config msg c
+withOnInput =
+    withAttribute << Html.Events.onInput
+
+
+withPlaceholder : String -> Config msg c -> Config msg c
 withPlaceholder =
     withAttribute << Attributes.placeholder
 
 
-withName : String -> Config c -> Config c
+withName : String -> Config msg c -> Config msg c
 withName =
     withAttribute << Attributes.name
 
 
-withMaxLength : Int -> Config c -> Config c
+withMaxLength : Int -> Config msg c -> Config msg c
 withMaxLength =
     withAttribute << Attributes.maxlength
 
 
-withMinLength : Int -> Config c -> Config c
+withMinLength : Int -> Config msg c -> Config msg c
 withMinLength =
     withAttribute << Attributes.minlength
 
 
 {-| Sets an Addon to the Input.
 -}
-withAddon : Placement -> AddonType -> Config { c | canHaveAddon : () } -> Config { c | canHaveAddon : () }
+withAddon : Placement -> AddonType -> Config msg { c | canHaveAddon : () } -> Config msg { c | canHaveAddon : () }
 withAddon placement type_ (Config configuration) =
     Config { configuration | addon = Just { placement = placement, type_ = type_ } }
 
 
-withIsSubmitted : Bool -> Config c -> Config c
+withIsSubmitted : Bool -> Config msg c -> Config msg c
 withIsSubmitted b (Config input) =
     Config { input | isSubmitted = b }
 
 
-withDisabled : Bool -> Config c -> Config c
+withDisabled : Bool -> Config msg c -> Config msg c
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
-withId : String -> Config c -> Config c
+withId : String -> Config msg c -> Config msg c
 withId id model =
     model
         |> withAttribute (Attributes.id id)
         |> withAttribute (CommonsAttributes.testId id)
 
 
-type Config constraints
+type Config msg constraints
     = Config
-        { attributes : List (Html.Attribute Msg)
+        { attributes : List (Html.Attribute msg)
         , addon : Maybe Addon
         , classList : List ( String, Bool )
         , size : Size
@@ -441,7 +460,7 @@ type Config constraints
 
 {-| Internal, DO NOT EXPOSE
 -}
-config : Type -> Config any
+config : Type -> Config msg any
 config type_ =
     Config
         { attributes = []
@@ -501,7 +520,7 @@ getErrorMessage ctx { isSubmitted } (Model model) =
                             Just msg
 
 
-normalizeConfig : Config c -> Config c
+normalizeConfig : Config msg c -> Config msg c
 normalizeConfig (Config config_) =
     case config_.type_ of
         Date ->
@@ -518,21 +537,19 @@ normalizeConfig (Config config_) =
             Config config_
 
 
-render : Model value -> (Msg -> msg) -> Config x -> Html msg
+render : Model value -> (Msg -> msg) -> Config Msg x -> Html msg
 render =
     renderWithCtx ()
 
 
-{-| Renders the Input.
--}
-renderWithCtx : ctx -> ModelWithCtx ctx value -> (Msg -> msg) -> Config x -> Html msg
-renderWithCtx ctx ((Model model_) as model) tagger rawConfig =
+renderStateless : String -> Result String value -> Config msg x -> Html msg
+renderStateless value error rawConfig =
     let
         ((Config configuration) as configuration_) =
             normalizeConfig rawConfig
 
         errorMessage =
-            getErrorMessage ctx configuration model
+            Result.Extra.getError error
     in
     Utils.concatArgs Html.div
         [ [ Attributes.classList
@@ -547,9 +564,8 @@ renderWithCtx ctx ((Model model_) as model) tagger rawConfig =
             (Maybe.map2 (\_ -> errorMessageId) errorMessage configuration.id)
         ]
         [ configuration.addon
-            |> Maybe.map (viewInputAndAddon model_.value configuration_)
-            |> Maybe.withDefault (viewInput model_.value configuration_)
-            |> Html.map tagger
+            |> Maybe.map (viewInputAndAddon value configuration_)
+            |> Maybe.withDefault (viewInput value configuration_)
         , Utils.concatArgs Html.div
             [ [ Attributes.class "form-field__error-message" ]
             , Maybe.Extra.mapToList (Attributes.id << errorMessageId) configuration.id
@@ -559,9 +575,30 @@ renderWithCtx ctx ((Model model_) as model) tagger rawConfig =
         ]
 
 
+{-| Renders the Input.
+-}
+renderWithCtx : ctx -> ModelWithCtx ctx value -> (Msg -> msg) -> Config Msg x -> Html msg
+renderWithCtx ctx ((Model model_) as model) tagger ((Config configData) as config_) =
+    let
+        error =
+            case getErrorMessage ctx configData model of
+                Nothing ->
+                    Ok ()
+
+                Just err ->
+                    Err err
+    in
+    config_
+        |> withOnBlur Blur
+        |> withOnFocus Focus
+        |> withOnInput Input
+        |> renderStateless model_.value error
+        |> Html.map tagger
+
+
 {-| Internal.
 -}
-viewInputAndAddon : String -> Config x -> Addon -> Html Msg
+viewInputAndAddon : String -> Config msg x -> Addon -> Html msg
 viewInputAndAddon value configuration addon =
     Html.label [ Attributes.class "form-field__wrapper" ]
         [ CommonsRender.renderIf (Placement.isPrepend addon.placement) (viewAddon addon.type_)
@@ -617,7 +654,7 @@ getFormFieldTextSizeClass (Size size) =
 
 {-| Internal.
 -}
-viewInput : String -> Config x -> Html Msg
+viewInput : String -> Config msg x -> Html msg
 viewInput value (Config configuration) =
     Utils.concatArgs Html.input
         [ List.reverse configuration.attributes
@@ -625,9 +662,6 @@ viewInput value (Config configuration) =
           , Attributes.classList configuration.classList
           , Attributes.disabled configuration.disabled
           , typeToAttribute configuration.type_
-          , Html.Events.onFocus Focus
-          , Html.Events.onBlur Blur
-          , Html.Events.onInput Input
           , Attributes.value value
           ]
         , Maybe.Extra.mapToList Attributes.class (getFormFieldTextSizeClass configuration.size)

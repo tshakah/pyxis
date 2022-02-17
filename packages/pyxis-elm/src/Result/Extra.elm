@@ -1,4 +1,4 @@
-module Result.Extra exposing (void)
+module Result.Extra exposing (getError, void)
 
 
 void : Result error value -> Result error ()
@@ -9,3 +9,13 @@ void result =
 
         Err e ->
             Err e
+
+
+getError : Result error x -> Maybe error
+getError result =
+    case result of
+        Err e ->
+            Just e
+
+        Ok _ ->
+            Nothing
