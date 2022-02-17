@@ -6,17 +6,27 @@ import Html exposing (Html)
 import Html.Attributes
 
 
+
+--statefulComponent :
+--    (sharedModel -> model)
+--    -> config
+--    -> (model -> config -> Html msg)
+--    -> (sharedModel -> model -> sharedModel)
+--    -> (msg -> model -> model)
+--    -> sharedModel
+--    -> Html (ElmBook.Msg sharedModel)
+
+
 statefulComponent :
-    (sharedModel -> model)
-    -> (model -> Html msg)
-    -> (sharedModel -> model -> sharedModel)
+    (sharedState -> model)
+    -> config
+    -> (model -> config -> Html msg)
+    -> (sharedState -> model -> sharedState)
     -> (msg -> model -> model)
-    -> sharedModel
-    -> Html (ElmBook.Msg sharedModel)
-statefulComponent mapper renderer toState update sharedModel =
-    sharedModel
-        |> mapper
-        |> renderer
+    -> model
+    -> Html (ElmBook.Msg sharedState)
+statefulComponent mapper config render toState update model =
+    render model config
         |> withErrorWrapper
         |> Html.map
             (ElmBook.Actions.mapUpdate

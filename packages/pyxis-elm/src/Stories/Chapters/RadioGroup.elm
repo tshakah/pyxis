@@ -213,7 +213,7 @@ type Option
 
 
 type alias RadioFieldModels =
-    { base : RadioGroup.Model Option {} Msg
+    { base : RadioGroup.Model Option {}
     }
 
 
@@ -228,14 +228,19 @@ type Msg
 init : Model
 init =
     { base =
-        RadioGroup.init "radio-gender-id" OnRadioFieldMsg Default
-            |> RadioGroup.withOptions
-                [ RadioGroup.option { value = M, label = "Male" }
-                , RadioGroup.option { value = F, label = "Female" }
-                ]
-            |> RadioGroup.withName "gender"
-            |> RadioGroup.withValidation validation
+        RadioGroup.init Default
+            |> RadioGroup.setValidation validation
     }
+
+
+config : RadioGroup.Config Option
+config =
+    RadioGroup.config "gender"
+        |> RadioGroup.withOptions
+            [ RadioGroup.option { value = M, label = "Male" }
+            , RadioGroup.option { value = F, label = "Female" }
+            ]
+        |> RadioGroup.withName "gender"
 
 
 validation : ctx -> Option -> Result String Option
@@ -250,29 +255,41 @@ validation _ value =
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
     [ ( "RadioGroup"
-      , statefulComponent .base identity setBase
+      , statefulComponent .base identity identity setBase
       )
     , ( "RadioGroup vertical"
-      , statefulComponent .base (RadioGroup.withVerticalLayout True) setBase
+      , statefulComponent .base identity (RadioGroup.withVerticalLayout True) setBase
       )
     , ( "RadioGroup disabled"
-      , statefulComponent .base (RadioGroup.withVerticalLayout True) setBase
+      , statefulComponent .base identity (RadioGroup.withDisabled True) setBase
       )
     ]
 
 
+
+--statefulComponent :
+--    (RadioFieldModels -> RadioGroup.Model Option {})
+--    -> (RadioGroup.Model Option {} -> RadioGroup.Model Option {})
+--    -> (RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels)
+--    -> SharedState x
+--    -> Html (ElmBook.Msg (SharedState x))
+
+
 statefulComponent :
-    (RadioFieldModels -> RadioGroup.Model Option {} Msg)
-    -> (RadioGroup.Model Option {} Msg -> RadioGroup.Model Option {} Msg)
-    -> (RadioGroup.Model Option {} Msg -> RadioFieldModels -> RadioFieldModels)
+    (RadioFieldModels -> RadioGroup.Model Option {})
+    -> (RadioGroup.Model Option {} -> RadioGroup.Model Option {})
+    -> (RadioGroup.Config Option -> RadioGroup.Config Option)
+    -> (RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels)
     -> SharedState x
-    -> Html (ElmBook.Msg (SharedState x))
-statefulComponent mapper modifier setInternalValue =
+    -> Html (ElmBook.Msg { b | radioFieldModels : RadioFieldModels })
+statefulComponent pickRadioGroupModel modelModifier configModifier setInternalValue sharedState =
     SH.statefulComponent
-        (.radioFieldModels >> mapper)
-        (modifier >> RadioGroup.render)
+        (.radioFieldModels >> pickRadioGroupModel >> modelModifier)
+        (config |> configModifier)
+        (RadioGroup.render OnRadioFieldMsg)
         (\state model -> mapRadioFieldModels (setInternalValue model) state)
         (\(OnRadioFieldMsg msg) -> RadioGroup.update {} msg)
+        (pickRadioGroupModel sharedState.radioFieldModels)
 
 
 mapRadioFieldModels : (RadioFieldModels -> RadioFieldModels) -> SharedState x -> SharedState x
@@ -280,6 +297,6 @@ mapRadioFieldModels updater state =
     { state | radioFieldModels = updater state.radioFieldModels }
 
 
-setBase : RadioGroup.Model Option {} Msg -> RadioFieldModels -> RadioFieldModels
+setBase : RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels
 setBase newModel textFieldModels =
     { textFieldModels | base = newModel }

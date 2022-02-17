@@ -1,7 +1,9 @@
 module Components.Field.RadioGroup exposing
     ( Model
+    , init
+    , Config
+    , Option
     , option
-    , withValidation
     , withAriaLabelledby
     , withClassList
     , withDisabled
@@ -12,10 +14,9 @@ module Components.Field.RadioGroup exposing
     , isOnCheck
     , update
     , validate
-    , getValidatedValue
     , getValue
     , render
-    , Configuration, Option, config, init
+    , config, setValidation
     )
 
 {-|
@@ -23,8 +24,17 @@ module Components.Field.RadioGroup exposing
 
 # Input RadioGroup component
 
+
+## Model
+
 @docs Model
-@docs create
+@docs init
+
+
+## Config
+
+@docs Config
+@docs Option
 @docs option
 
 
@@ -54,7 +64,6 @@ module Components.Field.RadioGroup exposing
 
 ## Readers
 
-@docs getValidatedValue
 @docs getValue
 
 
@@ -73,18 +82,19 @@ import Html.Events as Events
 import Maybe.Extra as ME
 
 
+{-| The RadioGroup model.
+-}
 type Model value ctx
-    = Model (State value ctx)
+    = Model
+        { errorMessage : Maybe String
+        , selectedValue : value
+        , status : FieldStatus.StatusList
+        , validation : ctx -> value -> Result String value
+        }
 
 
-type alias State value ctx =
-    { errorMessage : Maybe String
-    , selectedValue : value
-    , status : FieldStatus.StatusList
-    , validation : ctx -> value -> Result String value
-    }
-
-
+{-| Initialize the RadioGroup Model.
+-}
 init : value -> Model value ctx
 init defaultValue =
     Model
@@ -95,7 +105,9 @@ init defaultValue =
         }
 
 
-type Configuration value
+{-| The RadioGroup configuration.
+-}
+type Config value
     = Configuration
         { ariaLabelledBy : Maybe String
         , classList : List ( String, Bool )
@@ -107,7 +119,9 @@ type Configuration value
         }
 
 
-config : String -> Configuration value
+{-| Initialize the RadioGroup Config.
+-}
+config : String -> Config value
 config id =
     Configuration
         { ariaLabelledBy = Nothing
@@ -120,20 +134,28 @@ config id =
         }
 
 
+{-| Represent the single Radio option.
+-}
 type Option value
     = Option (OptionConfig value)
 
 
+{-| Internal.
+-}
 type alias OptionConfig value =
     { value : value
     , label : String
     }
 
 
+{-| Represent the messages which the RadioGroup can handle.
+-}
 type Msg value
     = OnCheck value Bool
 
 
+{-| Returns True if the message is triggered by `Html.Events.onCheck`
+-}
 isOnCheck : Msg value -> Bool
 isOnCheck msg =
     case msg of
@@ -141,37 +163,39 @@ isOnCheck msg =
             True
 
 
-withAriaLabelledby : String -> Configuration value -> Configuration value
+{-| Add the Validation rule.
+-}
+setValidation : (ctx -> value -> Result String value) -> Model value ctx -> Model value ctx
+setValidation validation (Model model) =
+    Model { model | validation = validation }
+
+
+withAriaLabelledby : String -> Config value -> Config value
 withAriaLabelledby ariaLabelledBy (Configuration configuration) =
     Configuration { configuration | ariaLabelledBy = Just ariaLabelledBy }
 
 
-withClassList : List ( String, Bool ) -> Configuration value -> Configuration value
+withClassList : List ( String, Bool ) -> Config value -> Config value
 withClassList classList (Configuration configuration) =
     Configuration { configuration | classList = classList }
 
 
-withDisabled : Bool -> Configuration value -> Configuration value
+withDisabled : Bool -> Config value -> Config value
 withDisabled isDisabled (Configuration configuration) =
     Configuration { configuration | isDisabled = isDisabled }
 
 
-withName : String -> Configuration value -> Configuration value
+withName : String -> Config value -> Config value
 withName name (Configuration configuration) =
     Configuration { configuration | name = Just name }
 
 
-withOptions : List (Option value) -> Configuration value -> Configuration value
+withOptions : List (Option value) -> Config value -> Config value
 withOptions options (Configuration configuration) =
     Configuration { configuration | options = options }
 
 
-withValidation : (ctx -> value -> Result String value) -> Model value ctx -> Model value ctx
-withValidation validation (Model model) =
-    Model { model | validation = validation }
-
-
-withVerticalLayout : Bool -> Configuration value -> Configuration value
+withVerticalLayout : Bool -> Config value -> Config value
 withVerticalLayout isLayoutVertical (Configuration configuration) =
     Configuration { configuration | isLayoutVertical = isLayoutVertical }
 
@@ -181,7 +205,7 @@ option =
     Option
 
 
-render : (Msg value -> msg) -> Model value ctx -> Configuration value -> Html.Html msg
+render : (Msg value -> msg) -> Model value ctx -> Config value -> Html.Html msg
 render tagger (Model model) (Configuration configuration) =
     Html.div
         (CA.compose
@@ -295,11 +319,6 @@ setValue value (Model model) =
 getValue : Model value ctx -> value
 getValue (Model { selectedValue }) =
     selectedValue
-
-
-getValidatedValue : ctx -> Model value ctx -> Result String value
-getValidatedValue ctx (Model { selectedValue, validation }) =
-    validation ctx selectedValue
 
 
 setErrorMessage : Maybe String -> Model value ctx -> Model value ctx

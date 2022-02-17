@@ -93,21 +93,14 @@ suite =
                             ]
             ]
         , Test.describe "Validation"
-            [ Test.test "should pass initially if no validation is applied" <|
-                \() ->
-                    radioGroupModel
-                        |> RadioGroup.getValidatedValue {}
-                        |> Expect.equal (Ok Default)
-            , Test.test "should pass for every input if no validation is applied" <|
-                \() ->
-                    simulationWithoutValidation
-                        |> simulateEvents "gender-male-option"
-                        |> Simulation.expectModel (RadioGroup.getValidatedValue {} >> Expect.equal (Ok M))
-                        |> Simulation.run
-            , Test.test "should not pass if the input is not compliant with the validation function" <|
+            [ Test.test "should not pass if the input is not compliant with the validation function" <|
                 \() ->
                     simulationWithValidation
-                        |> Simulation.expectModel (RadioGroup.getValidatedValue {} >> Expect.equal (Err "Required"))
+                        |> Simulation.expectModel
+                            (RadioGroup.getValue
+                                >> validation {}
+                                >> Expect.equal (Err "Required")
+                            )
                         |> Simulation.expectHtml (Query.find [ Selector.id "gender-error" ] >> Query.contains [ Html.text "Required" ])
                         |> Simulation.run
             ]
@@ -139,13 +132,13 @@ radioGroupModel =
     RadioGroup.init Default
 
 
-radioGroupConfig : RadioGroup.Configuration Option
+radioGroupConfig : RadioGroup.Config Option
 radioGroupConfig =
     RadioGroup.config "gender"
         |> RadioGroup.withOptions radioOptions
 
 
-renderRadioGroup : RadioGroup.Configuration Option -> Query.Single Msg
+renderRadioGroup : RadioGroup.Config Option -> Query.Single Msg
 renderRadioGroup =
     RadioGroup.render Tagger radioGroupModel
         >> Query.fromHtml
@@ -165,18 +158,20 @@ simulationWithValidation =
     Simulation.fromSandbox
         { init =
             radioGroupModel
-                |> RadioGroup.withValidation
-                    (\_ value ->
-                        if value == Default then
-                            Err "Required"
-
-                        else
-                            Ok value
-                    )
+                |> RadioGroup.setValidation validation
                 |> RadioGroup.validate {}
         , update = RadioGroup.update {}
         , view = \model -> RadioGroup.render identity model radioGroupConfig
         }
+
+
+validation : ctx -> Option -> Result String Option
+validation _ value =
+    if value == Default then
+        Err "Required"
+
+    else
+        Ok value
 
 
 simulateEvents : String -> Simulation.Simulation model msg -> Simulation.Simulation model msg
