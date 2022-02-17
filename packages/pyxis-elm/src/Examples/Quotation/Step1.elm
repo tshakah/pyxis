@@ -9,7 +9,7 @@ module Examples.Quotation.Step1 exposing
     )
 
 import Components.Button as Btn
-import Components.Input as Input exposing (Input)
+import Components.Input as Input exposing (Config)
 import Date exposing (Date)
 import Examples.Quotation.Common exposing (viewFormItem)
 import Examples.Quotation.MockData as Mock

@@ -2,7 +2,7 @@ module Components.InputTest exposing (suite)
 
 import Commons.Properties.Placement as Placement
 import Components.IconSet as IconSet
-import Components.Input as Input exposing (Input)
+import Components.Input as Input exposing (Config)
 import Fuzz
 import Html.Attributes
 import Test exposing (Test)
@@ -259,7 +259,7 @@ suite =
         ]
 
 
-renderModel : Input.Model value -> Input x -> Query.Single Input.Msg
+renderModel : Input.Model value -> Config x -> Query.Single Input.Msg
 renderModel model input =
     input
         |> Input.render model identity
