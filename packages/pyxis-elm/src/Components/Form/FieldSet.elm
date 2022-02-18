@@ -43,7 +43,6 @@ import Components.Form.Grid as Grid
 import Components.Form.Grid.Column as Column
 import Components.Form.Grid.Row as Row exposing (Row)
 import Components.Icon as Icon
-import Components.IconSet as IconSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
 
