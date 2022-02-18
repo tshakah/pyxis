@@ -85,7 +85,7 @@ fromResult result =
 render : Config -> Html.Html msg
 render (Config { id, message }) =
     Html.div
-        [ Attributes.class "form-field__error-message"
+        [ Attributes.class "form-item__error-message"
         , Commons.Attributes.maybe Attributes.id id
         ]
         [ Html.text message ]

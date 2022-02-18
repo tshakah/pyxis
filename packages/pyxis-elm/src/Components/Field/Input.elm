@@ -355,16 +355,19 @@ render ctx ((Model state) as model) ((Config configuration) as config_) =
             |> Maybe.map Label.render
             |> CommonsRender.renderMaybe
         , Html.div
-            [ Attributes.classList
-                [ ( "form-field", True )
-                , ( "form-field--error", Result.Extra.isErr (state.validation ctx (state.valueMapper state.value)) )
-                , ( "form-field--disabled", configuration.disabled )
+            [ Attributes.class "form-item__wrapper" ]
+            [ Html.div
+                [ Attributes.classList
+                    [ ( "form-field", True )
+                    , ( "form-field--error", Result.Extra.isErr (state.validation ctx (state.valueMapper state.value)) )
+                    , ( "form-field--disabled", configuration.disabled )
+                    ]
+                , Commons.Attributes.maybe addonToAttribute configuration.addon
                 ]
-            , Commons.Attributes.maybe addonToAttribute configuration.addon
-            ]
-            [ configuration.addon
-                |> Maybe.map (renderAddon ctx model config_)
-                |> Maybe.withDefault (renderInput ctx model config_)
+                [ configuration.addon
+                    |> Maybe.map (renderAddon ctx model config_)
+                    |> Maybe.withDefault (renderInput ctx model config_)
+                ]
             , state.value
                 |> state.valueMapper
                 |> state.validation ctx

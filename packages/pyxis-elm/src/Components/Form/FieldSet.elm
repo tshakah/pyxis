@@ -37,6 +37,7 @@ module Components.Form.FieldSet exposing
 
 -}
 
+import Commons.Properties.Size as Size
 import Commons.Render
 import Components.Form.Grid as Grid
 import Components.Form.Grid.Column as Column
@@ -58,7 +59,7 @@ type FieldSet msg
 type alias Configuration msg =
     { title : String
     , text : Maybe String
-    , icon : Maybe IconSet.Icon
+    , icon : Maybe Icon.Model
     , rows : List (Row msg)
     }
 
@@ -91,7 +92,7 @@ withText a (FieldSet configuration) =
 
 {-| Adds a title to the FieldSet.
 -}
-withIcon : IconSet.Icon -> FieldSet msg -> FieldSet msg
+withIcon : Icon.Model -> FieldSet msg -> FieldSet msg
 withIcon a (FieldSet configuration) =
     FieldSet { configuration | icon = Just a }
 
@@ -146,7 +147,7 @@ renderLegend configuration =
     Html.legend
         [ Attributes.class "form-legend" ]
         [ configuration.icon
-            |> Maybe.map renderIcon
+            |> Maybe.map renderIconAddon
             |> Commons.Render.renderMaybe
         , renderTitle configuration.title
         , configuration.text
@@ -157,9 +158,14 @@ renderLegend configuration =
 
 {-| Internal.
 -}
-renderIcon : IconSet.Icon -> Html msg
-renderIcon =
-    Icon.create >> Icon.render
+renderIconAddon : Icon.Model -> Html msg
+renderIconAddon icon =
+    Html.div
+        [ Attributes.class "form-legend__addon" ]
+        [ icon
+            |> Icon.withSize Size.small
+            |> Icon.render
+        ]
 
 
 {-| Internal.

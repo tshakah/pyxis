@@ -148,14 +148,11 @@ render : Column msg -> Html msg
 render (Column configuration) =
     Html.div
         [ Attributes.classList
-            [ ( "form-grid__column", True )
-            , ( "form-grid__column--span-2", configuration.span == twoColumns )
-            , ( "form-grid__column--span-3", configuration.span == threeColumns )
-            , ( "form-grid__column--span-4", configuration.span == fourColumns )
-            , ( "form-grid__column--span-5", configuration.span == fiveColumns )
+            [ ( "form-grid__row__column", True )
+            , ( "form-grid__row__column--span-2", configuration.span == twoColumns )
+            , ( "form-grid__row__column--span-3", configuration.span == threeColumns )
+            , ( "form-grid__row__column--span-4", configuration.span == fourColumns )
+            , ( "form-grid__row__column--span-5", configuration.span == fiveColumns )
             ]
         ]
-        [ Html.div
-            [ Attributes.class "form-item" ]
-            configuration.content
-        ]
+        configuration.content
