@@ -160,9 +160,3 @@
     @include _addonColors(errorBase);
   }
 }
-
-.form-field__error-message {
-  @include mixins.fieldErrorMessage;
-  left: - variables.$borderWidth;
-  top: calc(100% + #{variables.$borderWidth * 2});
-}

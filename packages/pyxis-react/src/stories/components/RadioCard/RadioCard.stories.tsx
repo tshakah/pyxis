@@ -13,6 +13,9 @@ Default.parameters = renderSourceAsHTML(Default());
 export const WithError = () => <RadioCardGroup name="error" error/>
 WithError.parameters = renderSourceAsHTML(WithError());
 
+export const WithHint = () => <RadioCardGroup name="hint" hint/>
+WithHint.parameters = renderSourceAsHTML(WithHint());
+
 export const Disabled = () => <RadioCardGroup name="disabled" disabled/>
 Disabled.parameters = renderSourceAsHTML(Disabled());
 

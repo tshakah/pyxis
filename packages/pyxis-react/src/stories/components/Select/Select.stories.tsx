@@ -13,17 +13,14 @@ Default.parameters = renderSourceAsHTML(Default());
 export const WithError = () => <Select error />
 WithError.parameters = renderSourceAsHTML(WithError());
 
+export const WithHint = () => <Select hint />
+WithHint.parameters = renderSourceAsHTML(WithHint());
+
 export const WithDisabled = () => <Select disabled />
 WithDisabled.parameters = renderSourceAsHTML(WithDisabled());
 
 export const Native = () => <Select native />
 Native.parameters = renderSourceAsHTML(Native());
 
-export const WithAccessibleLabel = () =>
-  <div style={{marginBottom: 155}}>
-    <div className="form-item" >
-      <label className="form-label" htmlFor="label-and-select">Label</label>
-      <Select id="label-and-select"/>
-    </div>
-  </div>
+export const WithAccessibleLabel = () => <Select id="label-and-select" withLabel />
 WithAccessibleLabel.parameters = renderSourceAsHTML(WithAccessibleLabel());

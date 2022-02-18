@@ -28,7 +28,7 @@ const overviewDescription = (
 const stateDescription = (
   <>
     <p>
-      Select have default (with placeholder), hover, focus, filled, error and disable states.
+      Select have default (with placeholder), hover, focus, filled, error, hint and disable states.
     </p>
     <p>
       <strong className="text-l-bold">Hint:</strong> Interact with components to see hover, focus states.
@@ -48,6 +48,10 @@ const generateStateBody = (): TableRow[] => [
   [
     <Select error />,
     "Error",
+  ],
+  [
+    <Select hint />,
+    "Hint",
   ],
   [
     <Select disabled />,

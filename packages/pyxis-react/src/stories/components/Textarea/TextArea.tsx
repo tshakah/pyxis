@@ -15,29 +15,39 @@ const getClasses = (disabled: boolean, error: boolean): string => classNames(
 const TextArea: FC<TextAreaProps> = ({
   disabled = false,
   error = false,
-  id = "",
+  hint = false,
+  id = "input-id",
   size = "large",
-  value
+  value,
+  withLabel= false,
 }) => (
-  <div className={getClasses(disabled, error)} style={{width: 320}}>
-    <textarea
-      aria-describedby={error ? "errorMessage" : undefined}
-      className={`form-field__textarea ${size === "small" ? "form-field__textarea--small" : ""}`}
-      disabled={disabled}
-      id={id}
-      placeholder="Textarea"
-      value={value}
-    />
-    {error && <div className="form-field__error-message" id="errorMessage">Error Message</div>}
+  <div className="form-item" style={{width: 320}}>
+    {withLabel && <label className="form-label" htmlFor={id}>Label</label>}
+    <div className="form-item__wrapper">
+      <div className={getClasses(disabled, error)}>
+        <textarea
+          aria-describedby={error ? "errorMessage" : hint ? "hint" : undefined}
+          className={`form-field__textarea ${size === "small" ? "form-field__textarea--small" : ""}`}
+          disabled={disabled}
+          id={id}
+          placeholder="Textarea"
+          value={value}
+        />
+      </div>
+      {error && <div className="form-item__error-message" id="errorMessage">Error Message</div>}
+      {hint && !error && <div className="form-item__hint" id="hint">Hint</div>}
+    </div>
   </div>
 );
 
 export interface TextAreaProps {
-  disabled?: boolean
-  error?: boolean
-  id?: string
+  disabled?: boolean;
+  error?: boolean;
+  hint?: boolean;
+  id?: string;
   size?: "large" | "small";
   value?: string;
+  withLabel?: boolean;
 }
 
 export default TextArea;

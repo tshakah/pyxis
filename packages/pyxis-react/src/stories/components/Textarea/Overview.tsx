@@ -29,7 +29,7 @@ const overviewDescription = (
 const stateDescription = (
   <>
     <p>
-      Text Area have default (with placeholder), hover, focus, filled, error and disable states.
+      Text Area have default (with placeholder), hover, focus, filled, error, hint and disable states.
     </p>
     <p>
       <strong className="text-l-bold">Hint:</strong> Interact with components to see hover and focus states.
@@ -49,6 +49,10 @@ const generateStateBody = (): TableRow[] => [
   [
     <TextArea error />,
     "Error",
+  ],
+  [
+    <TextArea hint />,
+    "Hint",
   ],
   [
     <TextArea disabled />,

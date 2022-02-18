@@ -106,7 +106,8 @@ const groupDescription = (
   <>
     <p>
       Radio card can be organized in groups to provide structure to the content, placing element such as label
-      and error message in a pleasant and clear way.
+      and error message in a pleasant and clear way. Also, groups could display a hint message to help final user fill
+      themselves.
     </p>
     <p>
       Radio card group have a horizontal layout as default.

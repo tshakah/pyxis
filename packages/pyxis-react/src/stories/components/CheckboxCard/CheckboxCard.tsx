@@ -53,22 +53,27 @@ const CheckboxCard: FC<CheckboxProps> =
     );
   }
 
-export const CheckboxCardGroup: FC<CheckboxProps> =
+export const CheckboxCardGroup: FC<CheckboxGroupProps> =
   ({
      error= false,
+     hint= false,
+     verticalLayout = false,
      ...props
   }) => (
   <div className="form-item">
     <label className="form-label" id="my-label-id">Label</label>
-    <div
-      className="form-card-group"
-      role="group"
-      aria-labelledby="my-label-id"
-      aria-describedby={error ? "error-id" : ""}
-    >
-      <CheckboxCard error={error} checked {...props}/>
-      <CheckboxCard error={error} {...props} />
-      {error && <div className="form-control-group__error-message" id="error-id">Error message</div>}
+    <div className="form-item__wrapper form-item__wrapper--gap-large">
+      <div
+        className={`form-card-group ${verticalLayout ? "form-card-group--column" : ""}`}
+        role="group"
+        aria-labelledby="my-label-id"
+        aria-describedby={error ? "error-id" : hint ? "hint-id" : ""}
+      >
+        <CheckboxCard error={error} checked {...props}/>
+        <CheckboxCard error={error} {...props} />
+      </div>
+      {error && <div className="form-item__error-message" id="error-id">Error message</div>}
+      {hint && !error && <div className="form-item__hint" id="hint-id">Hint</div>}
     </div>
   </div>
 )
@@ -82,6 +87,11 @@ interface CheckboxProps {
   hasText?: boolean;
   isLarge?: boolean;
   priceAddon?: boolean;
+}
+
+interface CheckboxGroupProps extends CheckboxProps {
+  verticalLayout?: boolean;
+  hint?: boolean;
 }
 
 export default CheckboxCard;

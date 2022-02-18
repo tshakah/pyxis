@@ -13,6 +13,9 @@ Default.parameters = renderSourceAsHTML(Default());
 export const WithError = () => <CheckboxCardGroup error/>
 WithError.parameters = renderSourceAsHTML(WithError());
 
+export const WithHint = () => <CheckboxCardGroup hint/>
+WithHint.parameters = renderSourceAsHTML(WithHint());
+
 export const Disabled = () => <CheckboxCardGroup disabled/>
 Disabled.parameters = renderSourceAsHTML(Disabled());
 

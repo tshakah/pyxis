@@ -72,6 +72,7 @@
 
 .form-control-group {
   @include foundations.columnGap(l);
+  @include foundations.rowGap(4xs);
   display: grid;
   grid-auto-flow: column;
   justify-content: start;
@@ -82,12 +83,4 @@
 .form-control-group--column {
   @include foundations.rowGap(xs);
   grid-auto-flow: row;
-}
-
-.form-control-group__error-message {
-  $gap: lib.rem(2px);
-
-  @include mixins.fieldErrorMessage;
-  left: 0;
-  top: calc(100% + #{$gap});
 }

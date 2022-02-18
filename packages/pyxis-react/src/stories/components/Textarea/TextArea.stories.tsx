@@ -13,14 +13,11 @@ Default.parameters = renderSourceAsHTML(Default());
 export const WithError = () => <TextArea error />
 WithError.parameters = renderSourceAsHTML(WithError());
 
+export const WithHint = () => <TextArea hint />
+WithHint.parameters = renderSourceAsHTML(WithHint());
+
 export const WithDisabled = () => <TextArea disabled />
 WithDisabled.parameters = renderSourceAsHTML(WithDisabled());
 
-export const WithAccessibleLabel = () =>
-  <>
-    <div className="form-item">
-      <label className="form-label" htmlFor="label-and-text-area">Label</label>
-      <TextArea id="label-and-text-area"/>
-    </div>
-  </>
+export const WithAccessibleLabel = () => <TextArea id="label-and-textarea" withLabel />
 WithAccessibleLabel.parameters = renderSourceAsHTML(WithAccessibleLabel());

@@ -254,9 +254,3 @@
 .form-card-group--row {
   grid-auto-flow: column;
 }
-
-.form-card-group__error-message {
-  @include mixins.fieldErrorMessage;
-  left: 0;
-  top: 100%;
-}

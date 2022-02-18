@@ -25,30 +25,38 @@ const getInputClasses = (size: "large" | "small", filled: boolean): string => cl
 const DateField: FC<DateFieldProps> = ({
   disabled = false,
   error = false,
-  id = "",
+  hint= false,
+  id = "id",
   size = "large",
-  value
+  value,
+  withLabel= false,
 }) => {
   const [isFilled, setIsFilled] = useState(!!value);
 
   return(
-    <div className={getClasses(disabled, error)} style={{width: 320}}>
-      <label className="form-field__wrapper">
-        <div className="form-field__addon">
-          <IconCalendar />
+    <div className="form-item" style={{width: 320}}>
+      {withLabel && <label className="form-label" htmlFor={id} >Label</label>}
+      <div className="form-item__wrapper">
+        <div className={getClasses(disabled, error)}>
+          <label className="form-field__wrapper">
+            <div className="form-field__addon">
+              <IconCalendar />
+            </div>
+            <input
+              aria-describedby={error ? "errorMessage" : hint ? "hint" : undefined}
+              className={getInputClasses(size, isFilled)}
+              disabled={disabled}
+              id={id}
+              onChange={(e) => setIsFilled(!!e.target.value)}
+              placeholder="Date field"
+              type="date"
+              value={value}
+            />
+          </label>
         </div>
-        <input
-          aria-describedby={error ? "errorMessage" : undefined}
-          className={getInputClasses(size, isFilled)}
-          disabled={disabled}
-          id={id}
-          onChange={(e) => setIsFilled(!!e.target.value)}
-          placeholder="Date field"
-          type="date"
-          value={value}
-        />
-      </label>
-      {error && <div className="form-field__error-message" id="errorMessage">Error Message</div>}
+        {error && <div className="form-item__error-message" id="errorMessage">Error Message</div>}
+        {hint && !error && <div className="form-item__hint" id="hint">Hint Message</div>}
+      </div>
     </div>
   );
 }
@@ -56,9 +64,11 @@ const DateField: FC<DateFieldProps> = ({
 export interface DateFieldProps {
   disabled?: boolean
   error?: boolean
-  id?: string
+  hint?: boolean;
+  id?: string;
   size?: "large" | "small";
   value?: string;
+  withLabel?: boolean;
 }
 
 export default DateField;

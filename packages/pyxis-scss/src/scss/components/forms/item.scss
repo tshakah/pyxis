@@ -7,3 +7,22 @@
   grid-template-rows: auto;
   width: 100%;
 }
+
+.form-item__wrapper {
+  @include foundations.rowGap(4xs);
+  display: grid;
+}
+
+.form-item__wrapper--gap-large {
+  @include foundations.rowGap(2xs);
+}
+
+.form-item__error-message {
+  @include foundations.text(s, book);
+  color: foundations.color(errorBase);
+}
+
+.form-item__hint {
+  @include foundations.text(s, book);
+  color: foundations.color(neutral25);
+}

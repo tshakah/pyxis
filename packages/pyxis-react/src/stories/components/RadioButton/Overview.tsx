@@ -47,7 +47,8 @@ const groupDescription = (
   <>
     <p>
       A radio group is used to combine and provide structure to group of radio buttons, placing element such as label
-      and error message in a pleasant and clear way.
+      and error message in a pleasant and clear way. Also, it could display a hint message to help final user fill
+      the group.
     </p>
     <p>
       Radio group have a horizontal layout as default, but with more then two items a vertical layout is recommended.

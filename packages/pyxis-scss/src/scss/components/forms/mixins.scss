@@ -83,17 +83,6 @@
   }
 }
 
-/// Add CSS rules for error message.
-///
-/// @access private
-@mixin fieldErrorMessage {
-  @include foundations.text(s, book);
-  color: foundations.color(errorBase);
-  pointer-events: none;
-  position: absolute;
-  user-select: none;
-}
-
 /// Add CSS rules for error control state.
 ///
 /// @access private

@@ -12,7 +12,6 @@ const setClasses = (disabled:boolean, error:boolean) => classNames(
   });
 
 const Checkbox: FC<CheckboxProps> = ({checked = false, disabled = false, error = false, indeterminate= false}) =>
-  <div className="form-control-group">
     <label className={setClasses(disabled, error)}>
       <input
         type="checkbox"
@@ -22,21 +21,29 @@ const Checkbox: FC<CheckboxProps> = ({checked = false, disabled = false, error =
         ref={(input) => input ? input.indeterminate = indeterminate : null }/>
       Option
     </label>
-  </div>
 
-export const CheckboxGroup: FC<CheckboxProps> = ({disabled = false, error = false}) => (
+export const CheckboxGroup: FC<CheckboxGroupProps> =
+  ({
+     disabled = false,
+     error = false,
+     hint = false,
+     verticalLayout= false
+  }) => (
   <div className="form-item">
     <label className="form-label" id="my-label-id">Label</label>
-    <div
-      className="form-control-group"
-      role="group"
-      aria-labelledby="my-label-id"
-      aria-describedby={error ? "error-id" : ""}
-    >
-      <Checkbox checked disabled={disabled} error={error} />
-      <Checkbox disabled={disabled} error={error} />
-      <Checkbox disabled={disabled} error={error} indeterminate/>
-      {error && <div className="form-control-group__error-message" id="error-id">Error message</div>}
+    <div className="form-item__wrapper">
+      <div
+        className={`form-control-group ${verticalLayout ? "form-control-group--column" : ""}`}
+        role="group"
+        aria-labelledby="my-label-id"
+        aria-describedby={error ? "error-id" : hint ? "hint-id" : ""}
+      >
+        <Checkbox checked disabled={disabled} error={error} />
+        <Checkbox disabled={disabled} error={error} />
+        <Checkbox disabled={disabled} error={error} indeterminate/>
+      </div>
+      {error && <div className="form-item__error-message" id="error-id">Error message</div>}
+      {hint && !error && <div className="form-item__hint" id="hint-id">Hint</div>}
     </div>
   </div>
 )
@@ -46,6 +53,11 @@ interface CheckboxProps {
   disabled?: boolean;
   error?: boolean;
   indeterminate?:boolean;
+}
+
+interface CheckboxGroupProps extends CheckboxProps {
+  verticalLayout?: boolean;
+  hint?: boolean;
 }
 
 export default Checkbox;

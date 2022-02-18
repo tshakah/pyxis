@@ -14,6 +14,9 @@ Default.parameters = renderSourceAsHTML(Default());
 export const WithError = () => <TextField error />
 WithError.parameters = renderSourceAsHTML(WithError());
 
+export const WithHint = () => <TextField hint />
+WithHint.parameters = renderSourceAsHTML(WithHint());
+
 export const WithDisabled = () => <TextField disabled />
 WithDisabled.parameters = renderSourceAsHTML(WithDisabled());
 
@@ -23,11 +26,5 @@ WithPrependIcon.parameters = renderSourceAsHTML(WithPrependIcon());
 export const WithPrependText = () => <TextField addonText="€" />
 WithPrependText.parameters = renderSourceAsHTML(WithPrependText());
 
-export const WithAccessibleLabel = () =>
-  <>
-    <div className="form-item">
-      <label className="form-label" htmlFor="label-and-text-field">Label</label>
-      <TextField id="label-and-text-field"/>
-    </div>
-  </>
+export const WithAccessibleLabel = () => <TextField id="label-and-text-field" withLabel />
 WithAccessibleLabel.parameters = renderSourceAsHTML(WithAccessibleLabel());

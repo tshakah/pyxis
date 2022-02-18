@@ -52,24 +52,29 @@ const RadioCard: FC<RadioProps> =
     </label>
 );
 
-export const RadioCardGroup: FC<RadioProps> =
+export const RadioCardGroup: FC<RadioGroupProps> =
   ({
      error= false,
+     hint = false,
+     verticalLayout = false,
      ...props
   }) => {
     const [activeIndex, setActiveIndex] = React.useState(0);
     return (
       <div className="form-item">
         <label className="form-label" id="my-label-id">Label</label>
-        <div
-          className="form-card-group"
-          role="radiogroup"
-          aria-labelledby="my-label-id"
-          aria-describedby={error ? "error-id" : ""}
-        >
-          <RadioCard error={error} {...props} checked={activeIndex === 0} onChange={() => setActiveIndex(0)}/>
-          <RadioCard error={error} {...props} checked={activeIndex === 1} onChange={() => setActiveIndex(1)} />
-          {error && <div className="form-control-group__error-message" id="error-id">Error message</div>}
+        <div className="form-item__wrapper">
+          <div
+            className={`form-card-group ${verticalLayout ? "form-card-group--column" : ""}`}
+            role="radiogroup"
+            aria-labelledby="my-label-id"
+            aria-describedby={error ? "error-id" : hint ? "hint-id" : ""}
+          >
+            <RadioCard error={error} {...props} checked={activeIndex === 0} onChange={() => setActiveIndex(0)}/>
+            <RadioCard error={error} {...props} checked={activeIndex === 1} onChange={() => setActiveIndex(1)} />
+          </div>
+          {error && <div className="form-item__error-message" id="error-id">Error message</div>}
+          {hint && !error && <div className="form-item__hint" id="hint-id">Hint</div>}
         </div>
       </div>
     )
@@ -86,6 +91,11 @@ interface RadioProps {
   name: string;
   onChange?: () => void;
   priceAddon?: boolean;
+}
+
+interface RadioGroupProps extends RadioProps {
+  verticalLayout?: boolean;
+  hint?: boolean;
 }
 
 export default RadioCard;

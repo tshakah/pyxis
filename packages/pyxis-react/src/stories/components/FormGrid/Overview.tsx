@@ -24,35 +24,34 @@ const Overview: FC = () => (
         <div className="form-grid__row form-grid__row--large">
           <div className="form-grid__row__column">
             <div className="form-item">
-              <label className="form-label" id="pedoni-ciclisti-coinvolti">
-                Pedoni o ciclisti coinvolti
-              </label>
-              <div className="form-card-group" role="radiogroup" aria-labelledby="my-label-id">
-                <label className="form-card form-card--large">
-                  <span className="form-card__addon">
-                    <img src="static/media/placeholder.7d73ad27.svg" width="70" height="70" alt=""/>
-                  </span>
-                  <span className="form-card__content-wrapper">
-                    <span className="form-card__title">Veicoli</span>
-                  </span>
-                  <input type="radio" name="large" className="form-control__radio"/>
-                </label>
-                <label className="form-card form-card--large">
-                  <span className="form-card__addon">
-                    <img src="static/media/placeholder.7d73ad27.svg" width="70" height="70" alt=""/>
-                  </span>
-                  <span className="form-card__content-wrapper">
-                    <span className="form-card__title">Casa e Famiglia</span>
-                  </span>
-                  <input type="radio" name="large" className="form-control__radio"/>
-                </label>
+              <div className="form-item__wrapper form-item__wrapper--gap-large">
+                <div className="form-card-group" role="radiogroup" aria-labelledby="my-label-id">
+                  <label className="form-card form-card--large">
+                    <span className="form-card__addon">
+                      <img src="static/media/placeholder.7d73ad27.svg" width="70" height="70" alt=""/>
+                    </span>
+                    <span className="form-card__content-wrapper">
+                      <span className="form-card__title">Veicoli</span>
+                    </span>
+                    <input type="radio" name="large" className="form-control__radio"/>
+                  </label>
+                  <label className="form-card form-card--large">
+                    <span className="form-card__addon">
+                      <img src="static/media/placeholder.7d73ad27.svg" width="70" height="70" alt=""/>
+                    </span>
+                    <span className="form-card__content-wrapper">
+                      <span className="form-card__title">Casa e Famiglia</span>
+                    </span>
+                    <input type="radio" name="large" className="form-control__radio"/>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <div className="form-grid__row form-grid__row--small">
           <div className="form-grid__row__column">
-            <div className="button-group button-group--center">
+            <div className="button-group" style={{justifyContent: "center"}}>
               <Button size="large">Procedi</Button>
             </div>
           </div>
@@ -93,36 +92,38 @@ const Overview: FC = () => (
               <div className="form-grid__row__column">
                 <div className="form-item">
                   <label className="form-label" htmlFor="targa">
-                    Targa del veicolo assicurato con Prima
-                    <small className="form-label__sub">(Veicolo A)</small>
+                    Targa
                   </label>
-                  <div className="form-field">
-                  <label className="form-field__wrapper">
-                    <input
-                      type="text"
-                      className="form-field__text"
-                      id="targa"
-                      placeholder="AA123BC"
-                    />
-                  </label>
-                </div>
+                  <div className="form-item__wrapper">
+                    <div className="form-field">
+                      <label className="form-field__wrapper">
+                        <input
+                          type="text"
+                          className="form-field__text"
+                          id="targa"
+                          placeholder="AA123BC"
+                        />
+                      </label>
+                    </div>
+                    <div className="form-item__hint">Suggerimento.</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="form-grid__row form-grid__row--small">
               <div className="form-grid__row__column">
                 <div className="form-item">
                   <label className="form-label" htmlFor="data-nascita">
-                    Data di nascita del proprietario
+                    Data di nascita
                   </label>
-                  <div className="form-field form-field--with-prepend-icon">
-                  <label className="form-field__wrapper">
-                    <div className="form-field__addon">
-                      <IconCalendar />
+                  <div className="form-item__wrapper">
+                    <div className="form-field form-field--with-prepend-icon">
+                      <label className="form-field__wrapper">
+                        <div className="form-field__addon">
+                          <IconCalendar />
+                        </div>
+                        <input type="date" className="form-field__date" id="data-nascita" placeholder="Date field"/>
+                      </label>
                     </div>
-                    <input type="date" className="form-field__date" id="data-nascita" placeholder="Date field"/>
-                  </label>
-                </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -132,13 +133,15 @@ const Overview: FC = () => (
                   <label className="form-label" htmlFor="data-sinistro">
                     Data del sinistro
                   </label>
-                  <div className="form-field form-field--with-prepend-icon">
-                    <label className="form-field__wrapper">
-                      <div className="form-field__addon">
-                        <IconCalendar />
-                      </div>
-                      <input type="date" className="form-field__date" id="data-sinistro" placeholder="Date field"/>
-                    </label>
+                  <div className="form-item__wrapper">
+                    <div className="form-field form-field--with-prepend-icon">
+                      <label className="form-field__wrapper">
+                        <div className="form-field__addon">
+                          <IconCalendar />
+                        </div>
+                        <input type="date" className="form-field__date" id="data-sinistro" placeholder="Date field"/>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -193,26 +196,40 @@ const Overview: FC = () => (
                   <label className="form-label" id="pedoni-ciclisti-coinvolti">
                     Pedoni o ciclisti coinvolti
                   </label>
-                  <div className="form-card-group form-card-group--row" role="radiogroup" aria-labelledby="pedoni-ciclisti-coinvolti">
-                    <label className="form-card">
-                    <span className="form-card__content-wrapper">
-                      <span className="form-card__text">Si</span>
-                    </span>
-                      <input type="radio" name="default" className="form-control__radio"/>
-                    </label>
-                    <label className="form-card">
+                  <div className="form-item__wrapper form-item__wrapper--gap-large">
+                    <div className="form-card-group form-card-group--row" role="radiogroup" aria-labelledby="pedoni-ciclisti-coinvolti">
+                      <label className="form-card form-card--error">
                       <span className="form-card__content-wrapper">
-                        <span className="form-card__text">No</span>
+                        <span className="form-card__text">Si</span>
                       </span>
-                      <input type="radio" name="default" className="form-control__radio"/>
-                    </label>
+                        <input type="radio" name="default" className="form-control__radio"/>
+                      </label>
+                      <label className="form-card form-card--error">
+                        <span className="form-card__content-wrapper">
+                          <span className="form-card__text">No</span>
+                        </span>
+                        <input type="radio" name="default" className="form-control__radio"/>
+                      </label>
+                    </div>
+                    <div className="form-item__error-message">Messaggio errore</div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="form-grid__row form-grid__row--small">
               <div className="form-grid__row__column">
-
+                <div className="form-item">
+                  <label className="form-label" htmlFor="label-and-text-area">Dinamica del sinistro</label>
+                  <div className="form-item__wrapper">
+                    <div className="form-field">
+                      <textarea className="form-field__textarea"  id="label-and-text-area" placeholder="Descrivi la dinamica del sinistro" />
+                    </div>
+                    <div className="form-item__hint">Suggerimento.</div>
+                  </div>
+                  <div className="custom-html-element text-s-light">
+                    Esempio: Il veicolo assicurato è uscito di strada e ha urtato un veicolo fermo a bordo strada.
+                  </div>
+                </div>
               </div>
             </div>
           </div>

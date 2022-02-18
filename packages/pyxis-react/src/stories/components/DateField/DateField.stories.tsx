@@ -13,14 +13,11 @@ Default.parameters = renderSourceAsHTML(Default());
 export const WithError = () => <DateField error />
 WithError.parameters = renderSourceAsHTML(WithError());
 
+export const WithHint = () => <DateField hint />
+WithHint.parameters = renderSourceAsHTML(WithHint());
+
 export const WithDisabled = () => <DateField disabled />
 WithDisabled.parameters = renderSourceAsHTML(WithDisabled());
 
-export const WithAccessibleLabel = () =>
-  <>
-    <div className="form-item">
-      <label className="form-label" htmlFor="label-and-date-field">Label</label>
-      <DateField id="label-and-date-field"/>
-    </div>
-  </>
+export const WithAccessibleLabel = () => <DateField id="label-and-date-field" withLabel />
 WithAccessibleLabel.parameters = renderSourceAsHTML(WithAccessibleLabel());
