@@ -214,6 +214,8 @@ type Option
 
 type alias RadioFieldModels =
     { base : RadioGroup.Model Option {}
+    , vertical : RadioGroup.Model Option {}
+    , disabled : RadioGroup.Model Option {}
     }
 
 
@@ -222,7 +224,22 @@ type alias Model =
 
 
 type Msg
-    = OnRadioFieldMsg (RadioGroup.Msg Option)
+    = OnBaseRadioFieldMsg (RadioGroup.Msg Option)
+    | OnVerticalRadioFieldMsg (RadioGroup.Msg Option)
+    | OnDisabledRadioFieldMsg (RadioGroup.Msg Option)
+
+
+update : Msg -> RadioGroup.Model Option ctx -> RadioGroup.Model Option ctx
+update msg =
+    case msg |> Debug.log "msg" of
+        OnVerticalRadioFieldMsg subMsg ->
+            RadioGroup.update subMsg
+
+        OnBaseRadioFieldMsg subMsg ->
+            RadioGroup.update subMsg
+
+        OnDisabledRadioFieldMsg subMsg ->
+            RadioGroup.update subMsg
 
 
 init : Model
@@ -230,17 +247,23 @@ init =
     { base =
         RadioGroup.init Default
             |> RadioGroup.setValidation validation
+    , vertical =
+        RadioGroup.init Default
+            |> RadioGroup.setValidation validation
+    , disabled =
+        RadioGroup.init M
+            |> RadioGroup.setValidation validation
     }
 
 
-config : RadioGroup.Config Option
-config =
-    RadioGroup.config "gender"
+config : String -> String -> RadioGroup.Config Option
+config id name =
+    RadioGroup.config id
         |> RadioGroup.withOptions
             [ RadioGroup.option { value = M, label = "Male" }
             , RadioGroup.option { value = F, label = "Female" }
             ]
-        |> RadioGroup.withName "gender"
+        |> RadioGroup.withName name
 
 
 validation : ctx -> Option -> Result String Option
@@ -255,41 +278,34 @@ validation _ value =
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
     [ ( "RadioGroup"
-      , statefulComponent .base identity identity setBase
+      , radioGroupComponent "base" "gender1" OnBaseRadioFieldMsg .base identity setBase
       )
     , ( "RadioGroup vertical"
-      , statefulComponent .base identity (RadioGroup.withVerticalLayout True) setBase
+      , radioGroupComponent "vertical" "gender2" OnVerticalRadioFieldMsg .vertical (RadioGroup.withLayout RadioGroup.vertical) setVertical
       )
     , ( "RadioGroup disabled"
-      , statefulComponent .base identity (RadioGroup.withDisabled True) setBase
+      , radioGroupComponent "disabled" "gender3" OnDisabledRadioFieldMsg .disabled (RadioGroup.withDisabled True) (always identity)
       )
     ]
 
 
-
---statefulComponent :
---    (RadioFieldModels -> RadioGroup.Model Option {})
---    -> (RadioGroup.Model Option {} -> RadioGroup.Model Option {})
---    -> (RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels)
---    -> SharedState x
---    -> Html (ElmBook.Msg (SharedState x))
-
-
-statefulComponent :
-    (RadioFieldModels -> RadioGroup.Model Option {})
-    -> (RadioGroup.Model Option {} -> RadioGroup.Model Option {})
+radioGroupComponent :
+    String
+    -> String
+    -> (RadioGroup.Msg Option -> Msg)
+    -> (RadioFieldModels -> RadioGroup.Model Option {})
     -> (RadioGroup.Config Option -> RadioGroup.Config Option)
     -> (RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels)
-    -> SharedState x
+    -> { a | radioFieldModels : RadioFieldModels }
     -> Html (ElmBook.Msg { b | radioFieldModels : RadioFieldModels })
-statefulComponent pickRadioGroupModel modelModifier configModifier setInternalValue sharedState =
+radioGroupComponent id name tagger modelMapper configModifier modelUpdater sharedState =
     SH.statefulComponent
-        (.radioFieldModels >> pickRadioGroupModel >> modelModifier)
-        (config |> configModifier)
-        (RadioGroup.render OnRadioFieldMsg)
-        (\state model -> mapRadioFieldModels (setInternalValue model) state)
-        (\(OnRadioFieldMsg msg) -> RadioGroup.update {} msg)
-        (pickRadioGroupModel sharedState.radioFieldModels)
+        (.radioFieldModels >> modelMapper)
+        (config id name |> configModifier)
+        (RadioGroup.render tagger {})
+        (\state model -> mapRadioFieldModels (modelUpdater model) state)
+        update
+        (modelMapper sharedState.radioFieldModels)
 
 
 mapRadioFieldModels : (RadioFieldModels -> RadioFieldModels) -> SharedState x -> SharedState x
@@ -300,3 +316,8 @@ mapRadioFieldModels updater state =
 setBase : RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels
 setBase newModel textFieldModels =
     { textFieldModels | base = newModel }
+
+
+setVertical : RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels
+setVertical newModel textFieldModels =
+    { textFieldModels | vertical = newModel }

@@ -86,7 +86,7 @@ suite =
             [ Test.test "should have the class for the vertical layout" <|
                 \() ->
                     radioGroupConfig
-                        |> RadioGroup.withVerticalLayout True
+                        |> RadioGroup.withLayout RadioGroup.vertical
                         |> renderRadioGroup
                         |> Query.has
                             [ Selector.classes [ "form-control-group--column" ]
@@ -140,7 +140,7 @@ radioGroupConfig =
 
 renderRadioGroup : RadioGroup.Config Option -> Query.Single Msg
 renderRadioGroup =
-    RadioGroup.render Tagger radioGroupModel
+    RadioGroup.render Tagger {} radioGroupModel
         >> Query.fromHtml
 
 
@@ -148,8 +148,8 @@ simulationWithoutValidation : Simulation.Simulation (RadioGroup.Model Option {})
 simulationWithoutValidation =
     Simulation.fromSandbox
         { init = RadioGroup.init Default
-        , update = RadioGroup.update {}
-        , view = \model -> RadioGroup.render identity model radioGroupConfig
+        , update = RadioGroup.update
+        , view = \model -> RadioGroup.render identity {} model radioGroupConfig
         }
 
 
@@ -159,9 +159,8 @@ simulationWithValidation =
         { init =
             radioGroupModel
                 |> RadioGroup.setValidation validation
-                |> RadioGroup.validate {}
-        , update = RadioGroup.update {}
-        , view = \model -> RadioGroup.render identity model radioGroupConfig
+        , update = RadioGroup.update
+        , view = \model -> RadioGroup.render identity {} model radioGroupConfig
         }
 
 
