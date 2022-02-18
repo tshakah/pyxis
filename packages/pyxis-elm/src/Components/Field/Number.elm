@@ -1,10 +1,13 @@
 module Components.Field.Number exposing
     ( Model
     , init
+    , Config
+    , config
     , iconAddon
     , textAddon
     , withAddon
     , withSize
+    , withLabel
     , withClassList
     , withDefaultValue
     , withDisabled
@@ -18,7 +21,6 @@ module Components.Field.Number exposing
     , validate
     , getValue
     , render
-    , Config, config
     )
 
 {-|
@@ -28,6 +30,12 @@ module Components.Field.Number exposing
 
 @docs Model
 @docs init
+
+
+## Configuration
+
+@docs Config
+@docs config
 
 
 ## Addon
@@ -44,6 +52,7 @@ module Components.Field.Number exposing
 
 ## Generics
 
+@docs withLabel
 @docs withClassList
 @docs withDefaultValue
 @docs withDisabled
@@ -75,6 +84,7 @@ module Components.Field.Number exposing
 import Commons.Properties.Placement exposing (Placement)
 import Commons.Properties.Size exposing (Size)
 import Components.Field.Input as Input
+import Components.Field.Label as Label
 import Components.IconSet as IconSet
 import Html exposing (Html)
 
@@ -195,6 +205,13 @@ iconAddon =
 textAddon : String -> Input.AddonType
 textAddon =
     Input.textAddon
+
+
+{-| Adds a Label to the Input.
+-}
+withLabel : Label.Model -> Config msg -> Config msg
+withLabel label =
+    mapInputConfig (Input.withLabel label)
 
 
 {-| Sets a default value to the Input Number.

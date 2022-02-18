@@ -3,6 +3,7 @@ module Components.Field.InputTest exposing (suite)
 import Commons.Properties.Placement as Placement
 import Commons.Properties.Size as Size
 import Components.Field.Input as Input
+import Components.Field.Label as LabelField
 import Components.IconSet as IconSet
 import Expect
 import Fuzz
@@ -29,6 +30,15 @@ suite =
                     |> fieldRender () fieldModel
                     |> findInput
                     |> Query.has [ Selector.class "form-field__text" ]
+        , Test.describe "Label"
+            [ Test.fuzz Fuzz.string "should be rendered correctly" <|
+                \s ->
+                    fieldConfig
+                        |> Input.withLabel (LabelField.create s)
+                        |> fieldRender () fieldModel
+                        |> findLabel
+                        |> Query.has [ Selector.text s ]
+            ]
         , Test.describe "Value attribute"
             [ Test.test "should be rendered correctly" <|
                 \() ->
@@ -142,11 +152,7 @@ suite =
                             [ Selector.class "form-field--disabled"
                             ]
             ]
-        , let
-            textAddon =
-                "Currency"
-          in
-          Test.describe "Addon"
+        , Test.describe "Addon"
             [ Test.describe "Should render the right class"
                 [ Test.describe "Icon addon"
                     [ Test.test "append positioning should be rendered correctly" <|
@@ -169,25 +175,25 @@ suite =
                                     ]
                     ]
                 , Test.describe "Text addon"
-                    [ Test.test "append positioning should be rendered correctly" <|
-                        \() ->
+                    [ Test.fuzz Fuzz.string "append positioning should be rendered correctly" <|
+                        \s ->
                             fieldConfig
-                                |> Input.withAddon Placement.append (Input.textAddon textAddon)
+                                |> Input.withAddon Placement.append (Input.textAddon s)
                                 |> fieldRender () fieldModel
                                 |> Query.has
                                     [ Selector.class "form-field--with-append-text"
                                     , Selector.class "form-field__addon"
-                                    , Selector.text textAddon
+                                    , Selector.text s
                                     ]
-                    , Test.test "prepend positioning should be rendered correctly" <|
-                        \() ->
+                    , Test.fuzz Fuzz.string "prepend positioning should be rendered correctly" <|
+                        \s ->
                             fieldConfig
-                                |> Input.withAddon Placement.prepend (Input.textAddon textAddon)
+                                |> Input.withAddon Placement.prepend (Input.textAddon s)
                                 |> fieldRender () fieldModel
                                 |> Query.has
                                     [ Selector.class "form-field--with-prepend-text"
                                     , Selector.class "form-field__addon"
-                                    , Selector.text textAddon
+                                    , Selector.text s
                                     ]
                     ]
                 ]
@@ -252,3 +258,8 @@ fieldRender ctx model =
 findInput : Query.Single msg -> Query.Single msg
 findInput =
     Query.find [ Selector.tag "input" ]
+
+
+findLabel : Query.Single msg -> Query.Single msg
+findLabel =
+    Query.find [ Selector.tag "label", Selector.class "form-label" ]

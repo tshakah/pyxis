@@ -1,6 +1,7 @@
 module Components.Field.TextTest exposing (suite)
 
 import Commons.Properties.Placement as Placement
+import Components.Field.Label as LabelField
 import Components.Field.Text as TextField
 import Components.IconSet as IconSet
 import Expect
@@ -31,6 +32,17 @@ suite =
                             [ attribute (Html.Attributes.id "input-id")
                             , attribute (Html.Attributes.attribute "data-test-id" "input-id")
                             , classes [ "form-field__text" ]
+                            ]
+            ]
+        , Test.describe "Label"
+            [ Test.fuzz Fuzz.string "the input has label" <|
+                \s ->
+                    fieldConfig
+                        |> TextField.withLabel (LabelField.create s)
+                        |> fieldRender () fieldModel
+                        |> findLabel
+                        |> Query.has
+                            [ Selector.text s
                             ]
             ]
         , Test.describe "Disabled attribute"
@@ -160,6 +172,11 @@ suite =
 findInput : Query.Single msg -> Query.Single msg
 findInput =
     Query.find [ Selector.tag "input" ]
+
+
+findLabel : Query.Single msg -> Query.Single msg
+findLabel =
+    Query.find [ Selector.tag "label", Selector.class "form-label" ]
 
 
 fieldModel : TextField.Model ctx

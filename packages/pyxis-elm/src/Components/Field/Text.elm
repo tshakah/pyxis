@@ -9,6 +9,7 @@ module Components.Field.Text exposing
     , textAddon
     , withAddon
     , withSize
+    , withLabel
     , withClassList
     , withDefaultValue
     , withDisabled
@@ -55,6 +56,7 @@ module Components.Field.Text exposing
 
 ## Generics
 
+@docs withLabel
 @docs withClassList
 @docs withDefaultValue
 @docs withDisabled
@@ -86,6 +88,7 @@ module Components.Field.Text exposing
 import Commons.Properties.Placement exposing (Placement)
 import Commons.Properties.Size exposing (Size)
 import Components.Field.Input as Input
+import Components.Field.Label as Label
 import Components.IconSet as IconSet
 import Html exposing (Html)
 
@@ -223,6 +226,13 @@ iconAddon =
 textAddon : String -> Input.AddonType
 textAddon =
     Input.textAddon
+
+
+{-| Adds a Label to the Input.
+-}
+withLabel : Label.Model -> Config msg -> Config msg
+withLabel label =
+    mapInputConfig (Input.withLabel label)
 
 
 {-| Sets a default value to the Input Text.

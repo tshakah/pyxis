@@ -4,6 +4,7 @@ module Components.Field.Date exposing
     , Config
     , config
     , withSize
+    , withLabel
     , withClassList
     , withDefaultValue
     , withDisabled
@@ -44,6 +45,7 @@ module Components.Field.Date exposing
 
 ## Generics
 
+@docs withLabel
 @docs withClassList
 @docs withDefaultValue
 @docs withDisabled
@@ -78,6 +80,7 @@ module Components.Field.Date exposing
 import Commons.Properties.Placement as Placement
 import Commons.Properties.Size exposing (Size)
 import Components.Field.Input as Input
+import Components.Field.Label as Label
 import Components.IconSet as IconSet
 import Date
 import Html exposing (Html)
@@ -216,6 +219,13 @@ mapInputModel builder (Model configuration) =
 mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
 mapInputConfig builder (Config configuration) =
     Config (builder configuration)
+
+
+{-| Adds a Label to the Input.
+-}
+withLabel : Label.Model -> Config msg -> Config msg
+withLabel label =
+    mapInputConfig (Input.withLabel label)
 
 
 {-| Sets a default value to the Input Date.

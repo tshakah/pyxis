@@ -14,6 +14,7 @@ module Components.Field.Input exposing
     , textAddon
     , withAddon
     , withSize
+    , withLabel
     , withClassList
     , withDisabled
     , withName
@@ -64,9 +65,9 @@ module Components.Field.Input exposing
 
 ## Generics
 
+@docs withLabel
 @docs withClassList
 @docs withDisabled
-
 @docs withName
 @docs withPlaceholder
 @docs setValue
@@ -98,6 +99,7 @@ import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render as CommonsRender
 import Components.Field.Error as Error
+import Components.Field.Label as Label
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Date
@@ -150,6 +152,7 @@ type Config msg
         , size : Size
         , type_ : Type
         , disabled : Bool
+        , label : Maybe Label.Model
         }
 
 
@@ -167,6 +170,7 @@ config inputType events id =
         , type_ = inputType
         , addon = Nothing
         , disabled = False
+        , label = Nothing
         }
 
 
@@ -292,6 +296,13 @@ withAddon placement type_ (Config configuration) =
     Config { configuration | addon = Just { placement = placement, type_ = type_ } }
 
 
+{-| Adds a Label to the Input.
+-}
+withLabel : Label.Model -> Config msg -> Config msg
+withLabel a (Config configuration) =
+    Config { configuration | label = Just a }
+
+
 {-| Sets the input as disabled
 -}
 withDisabled : Bool -> Config msg -> Config msg
@@ -339,22 +350,28 @@ setValue value (Model configuration) =
 render : ctx -> Model ctx value -> Config msg -> Html msg
 render ctx ((Model state) as model) ((Config configuration) as config_) =
     Html.div
-        [ Attributes.classList
-            [ ( "form-field", True )
-            , ( "form-field--error", Result.Extra.isErr (state.validation ctx (state.valueMapper state.value)) )
-            , ( "form-field--disabled", configuration.disabled )
-            ]
-        , Commons.Attributes.maybe addonToAttribute configuration.addon
-        ]
-        [ configuration.addon
-            |> Maybe.map (renderAddon ctx model config_)
-            |> Maybe.withDefault (renderInput ctx model config_)
-        , state.value
-            |> state.valueMapper
-            |> state.validation ctx
-            |> Error.fromResult
-            |> Maybe.map (Error.withId configuration.id >> Error.render)
+        [ Attributes.class "form-item" ]
+        [ configuration.label
+            |> Maybe.map Label.render
             |> CommonsRender.renderMaybe
+        , Html.div
+            [ Attributes.classList
+                [ ( "form-field", True )
+                , ( "form-field--error", Result.Extra.isErr (state.validation ctx (state.valueMapper state.value)) )
+                , ( "form-field--disabled", configuration.disabled )
+                ]
+            , Commons.Attributes.maybe addonToAttribute configuration.addon
+            ]
+            [ configuration.addon
+                |> Maybe.map (renderAddon ctx model config_)
+                |> Maybe.withDefault (renderInput ctx model config_)
+            , state.value
+                |> state.valueMapper
+                |> state.validation ctx
+                |> Error.fromResult
+                |> Maybe.map (Error.withId configuration.id >> Error.render)
+                |> CommonsRender.renderMaybe
+            ]
         ]
 
 

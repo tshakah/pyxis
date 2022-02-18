@@ -1,4 +1,4 @@
-module Components.SelectTest exposing (suite)
+module Components.Field.SelectTest exposing (suite)
 
 import Components.Field.Select as Select
 import Expect

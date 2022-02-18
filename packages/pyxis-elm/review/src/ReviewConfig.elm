@@ -42,7 +42,7 @@ config =
     , NoUnused.Exports.rule
         |> Review.Rule.ignoreErrorsForDirectories [ "src" ]
     , NoUnused.Modules.rule
-        |> Review.Rule.ignoreErrorsForDirectories [ "src/Stories" ]
+        |> Review.Rule.ignoreErrorsForDirectories [ "src/Stories", "src/Examples" ]
     , NoUnused.Variables.rule
     , Custom.SignatureInScopedLet.rule
     , Custom.NoBoolPatternMatching.rule
