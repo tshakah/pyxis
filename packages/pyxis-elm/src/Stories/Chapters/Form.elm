@@ -1,7 +1,5 @@
 module Stories.Chapters.Form exposing (Model, docs, init)
 
-import Components.Field.Label as Label
-import Components.Field.Text as TextField
 import Components.Form as Form exposing (Form)
 import Components.Form.FieldSet as FieldSet exposing (FieldSet)
 import Components.Form.Grid.Column as Column exposing (Column)
@@ -27,16 +25,12 @@ Lorem ipsum dolor sit amet.
 
 type alias SharedState x =
     { x
-        | formModel : Form Msg
+        | form : Form {}
     }
 
 
 type alias Model =
-    Form Msg
-
-
-type Msg
-    = TextFieldNoOp TextField.Msg
+    Form {}
 
 
 init : Model
@@ -54,37 +48,25 @@ componentsList =
 
 mapModel : (Model -> Model) -> SharedState x -> SharedState x
 mapModel updater state =
-    { state | formModel = updater state.formModel }
+    { state | form = updater state.form }
 
 
 statelessComponent : SharedState x -> Html (ElmBook.Msg (SharedState x))
-statelessComponent { formModel } =
+statelessComponent { form } =
     let
-        usernameColumn : Column Msg
+        usernameColumn : Column {}
         usernameColumn =
             Column.create
                 |> Column.withContent
-                    [ "Username"
-                        |> Label.create
-                        |> Label.render
-                    , "username"
-                        |> TextField.email TextFieldNoOp
-                        |> TextField.render
-                    ]
+                    []
 
-        passwordColumn : Column Msg
+        passwordColumn : Column {}
         passwordColumn =
             Column.create
                 |> Column.withContent
-                    [ "Password"
-                        |> Label.create
-                        |> Label.render
-                    , "password"
-                        |> TextField.password TextFieldNoOp
-                        |> TextField.render
-                    ]
+                    []
 
-        rows : List (Row Msg)
+        rows : List (Row {})
         rows =
             [ Row.create
                 |> Row.withColumns
@@ -93,7 +75,7 @@ statelessComponent { formModel } =
                     ]
             ]
 
-        fieldSets : List (FieldSet Msg)
+        fieldSets : List (FieldSet {})
         fieldSets =
             [ FieldSet.create
                 |> FieldSet.withIcon IconSet.User
@@ -105,13 +87,13 @@ statelessComponent { formModel } =
                 |> FieldSet.withRows rows
             ]
     in
-    formModel
+    form
         |> Form.withFieldSets fieldSets
         |> Form.render
         |> Html.map
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> mapModel identity state
-                , fromState = .formModel
+                , fromState = .form
                 , update = \_ model -> model
                 }
             )

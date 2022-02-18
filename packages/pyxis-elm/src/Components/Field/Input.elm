@@ -1,5 +1,7 @@
 module Components.Field.Input exposing
     ( Model
+    , init
+    , Config
     , date
     , email
     , number
@@ -14,11 +16,11 @@ module Components.Field.Input exposing
     , withSize
     , withClassList
     , withDisabled
-    , withErrorMessage
     , withName
     , withPlaceholder
-    , withValue
+    , setValue
     , getValue
+    , validate
     , render
     )
 
@@ -27,7 +29,13 @@ module Components.Field.Input exposing
 
 # Input component
 
-@docs Model, Type
+@docs Model
+@docs init
+
+
+## Config
+
+@docs Config
 @docs date
 @docs email
 @docs number
@@ -58,15 +66,25 @@ module Components.Field.Input exposing
 
 @docs withClassList
 @docs withDisabled
-@docs withErrorMessage
+
 @docs withName
 @docs withPlaceholder
-@docs withValue
+@docs setValue
 
 
-## Readers
+## Setters
+
+@docs setValue
+
+
+## Getters
 
 @docs getValue
+
+
+## Validation
+
+@docs validate
 
 
 ## Rendering
@@ -86,31 +104,28 @@ import Date
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
-import Maybe.Extra
 import Result.Extra
 
 
 {-| The Input model.
 -}
-type Model msg
-    = Model (Configuration msg)
+type Model ctx value
+    = Model
+        { validation : ctx -> value -> Result String value
+        , valueMapper : String -> value
+        , value : String
+        }
 
 
-{-| Internal. The internal Input configuration.
+{-| Inits the Input model.
 -}
-type alias Configuration msg =
-    { addon : Maybe Addon
-    , classList : List ( String, Bool )
-    , id : String
-    , events : Events msg
-    , name : Maybe String
-    , placeholder : Maybe String
-    , size : Size
-    , type_ : Type
-    , value : String
-    , disabled : Bool
-    , errorMessage : Maybe String
-    }
+init : (String -> value) -> (ctx -> value -> Result String value) -> Model ctx value
+init valueMapper validation =
+    Model
+        { validation = validation
+        , valueMapper = valueMapper
+        , value = ""
+        }
 
 
 {-| Events dispatched after messages.
@@ -120,6 +135,39 @@ type alias Events msg =
     , onInput : String -> msg
     , onFocus : msg
     }
+
+
+{-| The view config.
+-}
+type Config msg
+    = Config
+        { addon : Maybe Addon
+        , classList : List ( String, Bool )
+        , id : String
+        , events : Events msg
+        , name : Maybe String
+        , placeholder : Maybe String
+        , size : Size
+        , type_ : Type
+        , disabled : Bool
+        }
+
+
+{-| Internal. Creates an Input field.
+-}
+config : Type -> Events msg -> String -> Config msg
+config inputType events id =
+    Config
+        { classList = []
+        , id = id
+        , events = events
+        , name = Nothing
+        , placeholder = Nothing
+        , size = Size.medium
+        , type_ = inputType
+        , addon = Nothing
+        , disabled = False
+        }
 
 
 {-| Represent the Type(s) an Input could be.
@@ -132,58 +180,39 @@ type Type
     | Text
 
 
-{-| Internal. Creates an Input field.
--}
-create : Type -> Events msg -> String -> Model msg
-create inputType events id =
-    Model
-        { classList = []
-        , id = id
-        , events = events
-        , name = Nothing
-        , placeholder = Nothing
-        , size = Size.medium
-        , type_ = inputType
-        , addon = Nothing
-        , value = ""
-        , disabled = False
-        , errorMessage = Nothing
-        }
-
-
 {-| Creates an input with [type="email"].
 -}
-email : Events msg -> String -> Model msg
+email : Events msg -> String -> Config msg
 email =
-    create Email
+    config Email
 
 
 {-| Creates an input with [type="date"].
 -}
-date : Events msg -> String -> Model msg
+date : Events msg -> String -> Config msg
 date =
-    create Date
+    config Date
 
 
 {-| Creates an input with [type="number"].
 -}
-number : Events msg -> String -> Model msg
+number : Events msg -> String -> Config msg
 number =
-    create Number
+    config Number
 
 
 {-| Creates an input with [type="text"].
 -}
-text : Events msg -> String -> Model msg
+text : Events msg -> String -> Config msg
 text =
-    create Text
+    config Text
 
 
 {-| Creates an input with [type="password"].
 -}
-password : Events msg -> String -> Model msg
+password : Events msg -> String -> Config msg
 password =
-    create Password
+    config Password
 
 
 {-| Internal.
@@ -244,27 +273,6 @@ textAddon =
     TextAddon
 
 
-{-| Sets an Addon to the Input.
--}
-withAddon : Placement -> AddonType -> Model msg -> Model msg
-withAddon placement type_ (Model configuration) =
-    Model { configuration | addon = Just { placement = placement, type_ = type_ } }
-
-
-{-| Sets the input value attribute
--}
-withValue : String -> Model msg -> Model msg
-withValue value (Model configuration) =
-    Model { configuration | value = value }
-
-
-{-| Sets the input as disabled
--}
-withDisabled : Bool -> Model msg -> Model msg
-withDisabled isDisabled (Model configuration) =
-    Model { configuration | disabled = isDisabled }
-
-
 {-| Internal.
 -}
 addonToAttribute : Addon -> Html.Attribute msg
@@ -277,74 +285,87 @@ addonToAttribute { type_, placement } =
         |> Attributes.class
 
 
+{-| Sets an Addon to the Input.
+-}
+withAddon : Placement -> AddonType -> Config msg -> Config msg
+withAddon placement type_ (Config configuration) =
+    Config { configuration | addon = Just { placement = placement, type_ = type_ } }
+
+
+{-| Sets the input as disabled
+-}
+withDisabled : Bool -> Config msg -> Config msg
+withDisabled isDisabled (Config configuration) =
+    Config { configuration | disabled = isDisabled }
+
+
 {-| Sets a Size to the Input.
 -}
-withSize : Size -> Model msg -> Model msg
-withSize size (Model configuration) =
-    Model { configuration | size = size }
+withSize : Size -> Config msg -> Config msg
+withSize size (Config configuration) =
+    Config { configuration | size = size }
 
 
 {-| Sets a ClassList to the Input.
 -}
-withClassList : List ( String, Bool ) -> Model msg -> Model msg
-withClassList classes (Model configuration) =
-    Model { configuration | classList = classes }
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList classes (Config configuration) =
+    Config { configuration | classList = classes }
 
 
 {-| Sets a Name to the Input.
 -}
-withName : String -> Model msg -> Model msg
-withName name (Model configuration) =
-    Model { configuration | name = Just name }
+withName : String -> Config msg -> Config msg
+withName name (Config configuration) =
+    Config { configuration | name = Just name }
 
 
 {-| Sets a Placeholder to the Input.
 -}
-withPlaceholder : String -> Model msg -> Model msg
-withPlaceholder placeholder (Model configuration) =
-    Model { configuration | placeholder = Just placeholder }
+withPlaceholder : String -> Config msg -> Config msg
+withPlaceholder placeholder (Config configuration) =
+    Config { configuration | placeholder = Just placeholder }
 
 
-{-| Define the error message
+{-| Sets the input value attribute
 -}
-withErrorMessage : Maybe String -> Model msg -> Model msg
-withErrorMessage mError (Model configuration) =
-    Model { configuration | errorMessage = mError }
+setValue : String -> Model ctx value -> Model ctx value
+setValue value (Model configuration) =
+    Model { configuration | value = value }
 
 
-{-| Renders the Input.
+{-| Renders the Input.Stories/Chapters/DateField.elm
 -}
-render : Model msg -> Html msg
-render (Model configuration) =
+render : ctx -> Model ctx value -> Config msg -> Html msg
+render ctx ((Model state) as model) ((Config configuration) as config_) =
     Html.div
         [ Attributes.classList
             [ ( "form-field", True )
-            , ( "form-field--error", configuration.errorMessage /= Nothing )
+            , ( "form-field--error", Result.Extra.isErr (state.validation ctx (state.valueMapper state.value)) )
             , ( "form-field--disabled", configuration.disabled )
             ]
         , Commons.Attributes.maybe addonToAttribute configuration.addon
         ]
         [ configuration.addon
-            |> Maybe.map (renderAddon configuration)
-            |> Maybe.withDefault (viewInput configuration)
-        , configuration.errorMessage
-            |> Maybe.map
-                (Error.create
-                    >> Error.withId configuration.id
-                    >> Error.render
-                )
+            |> Maybe.map (renderAddon ctx model config_)
+            |> Maybe.withDefault (renderInput ctx model config_)
+        , state.value
+            |> state.valueMapper
+            |> state.validation ctx
+            |> Error.fromResult
+            |> Maybe.map (Error.withId configuration.id >> Error.render)
             |> CommonsRender.renderMaybe
         ]
 
 
 {-| Internal.
 -}
-renderAddon : Configuration msg -> Addon -> Html msg
-renderAddon configuration addon =
+renderAddon : ctx -> Model ctx value -> Config msg -> Addon -> Html msg
+renderAddon ctx model configuration addon =
     Html.label
         [ Attributes.class "form-field__wrapper" ]
         [ CommonsRender.renderIf (Placement.isPrepend addon.placement) (renderAddonByType addon.type_)
-        , viewInput configuration
+        , renderInput ctx model configuration
         , CommonsRender.renderIf (Placement.isAppend addon.placement) (renderAddonByType addon.type_)
         ]
 
@@ -370,30 +391,29 @@ renderAddonByType type_ =
 
 {-| Internal.
 -}
-viewInput : Configuration msg -> Html msg
-viewInput configuration =
+renderInput : ctx -> Model ctx value -> Config msg -> Html msg
+renderInput ctx (Model state) (Config configuration) =
     Html.input
         [ Attributes.id configuration.id
         , Attributes.classList
-            [ -- Types
-              ( "form-field__date", configuration.type_ == Date )
-            , ( "form-field__date--filled", configuration.type_ == Date && Result.Extra.isOk (Date.fromIsoString configuration.value) )
+            [ ( "form-field__date", configuration.type_ == Date )
+            , ( "form-field__date--filled", configuration.type_ == Date && Result.Extra.isOk (Date.fromIsoString state.value) )
             , ( "form-field__text", configuration.type_ == Text )
             , ( "form-field__text", configuration.type_ == Number )
             , ( "form-field__text", configuration.type_ == Password )
             , ( "form-field__text", configuration.type_ == Email )
-
-            -- Size
             , ( "form-field__text--small", Size.isSmall configuration.size )
             ]
         , Attributes.classList configuration.classList
         , Attributes.disabled configuration.disabled
-        , Attributes.value configuration.value
+        , Attributes.value state.value
         , typeToAttribute configuration.type_
         , Commons.Attributes.testId configuration.id
         , Commons.Attributes.maybe Attributes.name configuration.name
         , Commons.Attributes.maybe Attributes.placeholder configuration.placeholder
-        , Commons.Attributes.renderIf (Maybe.Extra.isJust configuration.errorMessage) (Commons.Attributes.ariaDescribedBy (Error.toId configuration.id))
+        , Commons.Attributes.renderIf
+            (Result.Extra.isOk (state.validation ctx (state.valueMapper state.value)))
+            (Commons.Attributes.ariaDescribedBy (Error.toId configuration.id))
         , Html.Events.onInput configuration.events.onInput
         , Html.Events.onFocus configuration.events.onFocus
         , Html.Events.onBlur configuration.events.onBlur
@@ -403,6 +423,15 @@ viewInput configuration =
 
 {-| Return the input value
 -}
-getValue : Model msg -> String
+getValue : Model ctx value -> String
 getValue (Model { value }) =
     value
+
+
+{-| Returns the validated value by running the function you gave to the init.
+-}
+validate : ctx -> Model ctx value -> Result String value
+validate ctx (Model { value, valueMapper, validation }) =
+    value
+        |> valueMapper
+        |> validation ctx

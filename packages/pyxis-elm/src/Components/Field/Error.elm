@@ -4,6 +4,7 @@ module Components.Field.Error exposing
     , withId
     , render
     , toId
+    , fromResult
     )
 
 {-|
@@ -28,6 +29,7 @@ module Components.Field.Error exposing
 ## Utils
 
 @docs toId
+@docs fromResult
 
 -}
 
@@ -64,6 +66,18 @@ withId a (Config configuration) =
 toId : String -> String
 toId fieldId =
     fieldId ++ "-error"
+
+
+{-| Tries to create an error from a Result.Err.
+-}
+fromResult : Result String value -> Maybe Config
+fromResult result =
+    case result of
+        Ok _ ->
+            Nothing
+
+        Err errorMessage ->
+            Just (create errorMessage)
 
 
 {-| View the error message

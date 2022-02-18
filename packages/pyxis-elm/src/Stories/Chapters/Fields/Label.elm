@@ -1,4 +1,4 @@
-module Stories.Chapters.Label exposing (docs)
+module Stories.Chapters.Fields.Label exposing (docs)
 
 import Commons.Properties.Size as Size
 import Components.Field.Label as Label

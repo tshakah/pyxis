@@ -1,5 +1,7 @@
 module Components.Field.Text exposing
     ( Model
+    , init
+    , Config
     , email
     , password
     , text
@@ -7,7 +9,6 @@ module Components.Field.Text exposing
     , textAddon
     , withAddon
     , withSize
-    , withValidation
     , withClassList
     , withDefaultValue
     , withDisabled
@@ -20,16 +21,21 @@ module Components.Field.Text exposing
     , update
     , validate
     , getValue
-    , getValidatedValue
     , render
     )
 
 {-|
 
 
-# Input Text component
+# Text component
 
 @docs Model
+@docs init
+
+
+## Config
+
+@docs Config
 @docs email
 @docs password
 @docs text
@@ -45,11 +51,6 @@ module Components.Field.Text exposing
 ## Size
 
 @docs withSize
-
-
-## Validation
-
-@docs withValidation
 
 
 ## Generics
@@ -74,7 +75,6 @@ module Components.Field.Text exposing
 ## Readers
 
 @docs getValue
-@docs getValidatedValue
 
 
 ## Rendering
@@ -83,7 +83,6 @@ module Components.Field.Text exposing
 
 -}
 
-import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Properties.Placement exposing (Placement)
 import Commons.Properties.Size exposing (Size)
 import Components.Field.Input as Input
@@ -91,10 +90,58 @@ import Components.IconSet as IconSet
 import Html exposing (Html)
 
 
-{-| The Input Text model.
+{-| The Text Model. This should be stored on your model.
 -}
-type Model ctx msg
-    = Model (Configuration ctx msg)
+type Model ctx
+    = Model
+        { inputModel : Input.Model ctx String
+        }
+
+
+{-| Internal.
+-}
+init : (ctx -> String -> Result String String) -> Model ctx
+init validation =
+    Model
+        { inputModel = Input.init identity validation
+        }
+
+
+{-| The view configuration.
+-}
+type Config msg
+    = Config (Input.Config msg)
+
+
+{-| Internal.
+-}
+configEvents : (Msg -> msg) -> Input.Events msg
+configEvents tagger =
+    { onInput = OnInput >> tagger
+    , onFocus = tagger OnFocus
+    , onBlur = tagger OnBlur
+    }
+
+
+{-| Creates a <input type="text">.
+-}
+text : (Msg -> msg) -> String -> Config msg
+text tagger id =
+    Config (Input.text (configEvents tagger) id)
+
+
+{-| Creates a <input type="email">.
+-}
+email : (Msg -> msg) -> String -> Config msg
+email tagger id =
+    Config (Input.email (configEvents tagger) id)
+
+
+{-| Creates a <input type="password">.
+-}
+password : (Msg -> msg) -> String -> Config msg
+password tagger id =
+    Config (Input.password (configEvents tagger) id)
 
 
 {-| Represent the messages which the Input Text can handle.
@@ -141,65 +188,27 @@ isOnBlur msg =
             False
 
 
-{-| Internal. Represents the Input Text configuration.
--}
-type alias Configuration ctx msg =
-    { status : FieldStatus.StatusList
-    , inputModel : Input.Model msg
-    , isSubmitted : Bool
-    , msgTagger : Msg -> msg
-    , validation : ctx -> String -> Result String String
-    }
-
-
 {-| Internal.
 -}
-create : (Input.Events msg -> String -> Input.Model msg) -> (Msg -> msg) -> String -> Model ctx msg
-create initInputModel msgTagger id =
-    Model
-        { status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
-        , inputModel =
-            initInputModel
-                { onInput = OnInput >> msgTagger
-                , onFocus = msgTagger OnFocus
-                , onBlur = msgTagger OnBlur
-                }
-                id
-        , isSubmitted = False
-        , msgTagger = msgTagger
-        , validation = always Ok
-        }
-
-
-text : (Msg -> msg) -> String -> Model ctx msg
-text =
-    create Input.text
-
-
-email : (Msg -> msg) -> String -> Model ctx msg
-email =
-    create Input.email
-
-
-password : (Msg -> msg) -> String -> Model ctx msg
-password =
-    create Input.password
-
-
-{-| Internal.
--}
-mapInputModel : (Input.Model msg -> Input.Model msg) -> Model ctx msg -> Model ctx msg
+mapInputModel : (Input.Model ctx String -> Input.Model ctx String) -> Model ctx -> Model ctx
 mapInputModel builder (Model configuration) =
     Model { configuration | inputModel = builder configuration.inputModel }
 
 
+{-| Internal.
+-}
+mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
+mapInputConfig builder (Config configuration) =
+    Config (builder configuration)
+
+
 {-| Sets an Addon to the Input Text
 -}
-withAddon : Placement -> Input.AddonType -> Model ctx msg -> Model ctx msg
+withAddon : Placement -> Input.AddonType -> Config msg -> Config msg
 withAddon placement addon =
     addon
         |> Input.withAddon placement
-        |> mapInputModel
+        |> mapInputConfig
 
 
 {-| Creates an Addon with an Icon from our IconSet.
@@ -218,129 +227,84 @@ textAddon =
 
 {-| Sets a default value to the Input Text.
 -}
-withDefaultValue : String -> Model ctx msg -> Model ctx msg
+withDefaultValue : String -> Model ctx -> Model ctx
 withDefaultValue defaultValue =
     setValue defaultValue
-        >> addFieldStatus FieldStatus.default
 
 
 {-| Sets a ClassList to the Input Text.
 -}
-withClassList : List ( String, Bool ) -> Model ctx msg -> Model ctx msg
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList classes =
-    mapInputModel (Input.withClassList classes)
+    mapInputConfig (Input.withClassList classes)
 
 
 {-| Sets a Name to the Input Text.
 -}
-withName : String -> Model ctx msg -> Model ctx msg
+withName : String -> Config msg -> Config msg
 withName name =
-    mapInputModel (Input.withName name)
+    mapInputConfig (Input.withName name)
 
 
 {-| Sets a Placeholder to the Input Text.
 -}
-withPlaceholder : String -> Model ctx msg -> Model ctx msg
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder placeholder =
-    mapInputModel (Input.withPlaceholder placeholder)
+    mapInputConfig (Input.withPlaceholder placeholder)
 
 
 {-| Sets a Size to the Input Text.
 -}
-withSize : Size -> Model ctx msg -> Model ctx msg
+withSize : Size -> Config msg -> Config msg
 withSize =
-    Input.withSize >> mapInputModel
-
-
-{-| Add a Validation set of rules to the Input Text.
--}
-withValidation : (ctx -> String -> Result String String) -> Model ctx msg -> Model ctx msg
-withValidation validation (Model configuration) =
-    Model { configuration | validation = validation }
+    Input.withSize >> mapInputConfig
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Model ctx msg -> Model ctx msg
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled =
-    Input.withDisabled >> mapInputModel
+    Input.withDisabled >> mapInputConfig
 
 
 {-| Render the Input Text.
 -}
-render : Model ctx msg -> Html msg
-render (Model configuration) =
-    Input.render configuration.inputModel
+render : ctx -> Model ctx -> Config msg -> Html msg
+render ctx (Model state) (Config configuration) =
+    Input.render ctx state.inputModel configuration
 
 
 {-| The update function.
 -}
-update : ctx -> Msg -> Model ctx msg -> Model ctx msg
-update ctx msg =
+update : ctx -> Msg -> Model ctx -> Model ctx
+update ctx msg model =
     case msg of
         OnBlur ->
-            validate ctx
+            model
 
         OnFocus ->
-            identity
+            model
 
         OnInput value ->
-            setValue value
+            setValue value model
 
 
 {-| Internal.
 -}
-setValue : String -> Model ctx msg -> Model ctx msg
+setValue : String -> Model ctx -> Model ctx
 setValue value =
-    mapInputModel (Input.withValue value)
+    mapInputModel (Input.setValue value)
 
 
-{-| Validate and update the internal model.
+{-| Returns the validated value by running the function you gave to the init.
 -}
-validate : ctx -> Model ctx msg -> Model ctx msg
-validate ctx ((Model { validation, inputModel }) as model) =
-    let
-        validationResult : Result String String
-        validationResult =
-            inputModel
-                |> Input.getValue
-                |> validation ctx
-    in
-    model
-        |> addFieldStatus (FieldStatus.fromResult validationResult)
-        |> mapInputModel (Input.withErrorMessage (getErrorMessage validationResult))
-
-
-{-| Internal.
--}
-getErrorMessage : Result String String -> Maybe String
-getErrorMessage result =
-    case result of
-        Ok _ ->
-            Nothing
-
-        Err error ->
-            Just error
-
-
-{-| Internal.
--}
-addFieldStatus : FieldStatus -> Model ctx msg -> Model ctx msg
-addFieldStatus fieldStatus (Model configuration) =
-    Model { configuration | status = FieldStatus.addStatus fieldStatus configuration.status }
+validate : ctx -> Model ctx -> Result String String
+validate ctx (Model { inputModel }) =
+    Input.validate ctx inputModel
 
 
 {-| Returns the current value of the Input Text.
 -}
-getValue : Model ctx msg -> String
+getValue : Model ctx -> String
 getValue (Model { inputModel }) =
     Input.getValue inputModel
-
-
-{-| Returns the validated value of the Input Text.
--}
-getValidatedValue : ctx -> Model ctx msg -> Result String String
-getValidatedValue ctx (Model { validation, inputModel }) =
-    inputModel
-        |> Input.getValue
-        |> validation ctx

@@ -1,4 +1,4 @@
-module Components.DateFieldTest exposing (suite)
+module Components.Field.DateTest exposing (suite)
 
 import Components.Field.Date as DateField
 import Date
@@ -23,8 +23,8 @@ suite =
         [ Test.describe "Default"
             [ Test.test "the input has an id and a data-test-id" <|
                 \() ->
-                    dateFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has
                             [ attribute (Html.Attributes.id "input-id")
@@ -35,32 +35,32 @@ suite =
         , Test.describe "Disabled attribute"
             [ Test.test "should be False by default" <|
                 \() ->
-                    dateFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    dateFieldModel
+                    fieldConfig
                         |> DateField.withDisabled b
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has [ Selector.disabled b ]
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                dateFieldModel
+                fieldConfig
                     |> DateField.withName name
-                    |> renderModel
+                    |> fieldRender () fieldModel
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.name name)
                         ]
         , Test.fuzz Fuzz.string "placeholder attribute should be rendered correctly" <|
             \p ->
-                dateFieldModel
+                fieldConfig
                     |> DateField.withPlaceholder p
-                    |> renderModel
+                    |> fieldRender () fieldModel
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.placeholder p)
@@ -68,9 +68,9 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    dateFieldModel
+                    fieldConfig
                         |> DateField.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Expect.all
                             [ Query.has
@@ -82,10 +82,10 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    dateFieldModel
+                    fieldConfig
                         |> DateField.withClassList [ ( s1, True ), ( s2, True ) ]
                         |> DateField.withClassList [ ( s3, True ) ]
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Expect.all
                             [ Query.hasNot
@@ -99,9 +99,8 @@ suite =
         , Test.describe "Validation"
             [ Test.test "has error" <|
                 \() ->
-                    dateFieldModel
-                        |> DateField.render
-                        |> Query.fromHtml
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> Query.find [ tag "input" ]
                         |> Query.has
                             [ attribute (Html.Attributes.id "input-id")
@@ -110,31 +109,31 @@ suite =
                             ]
             , Test.test "should pass initially if no validation is applied" <|
                 \() ->
-                    dateFieldModel
-                        |> DateField.getValidatedValue ()
-                        |> Expect.equal (Ok (DateField.Raw ""))
+                    fieldModel
+                        |> DateField.getValue
+                        |> Expect.equal (DateField.Raw "")
             , Test.fuzz Fuzz.Extra.date "should pass for every input if no validation is applied" <|
                 \date ->
-                    dateFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Test.triggerMsg (Event.input (Date.toIsoString date))
                             (\(Tagger msg) ->
-                                dateFieldModel
+                                fieldModel
                                     |> DateField.update () msg
-                                    |> DateField.getValidatedValue ()
-                                    |> Expect.equal (Ok (DateField.Parsed date))
+                                    |> DateField.getValue
+                                    |> Expect.equal (DateField.Parsed date)
                             )
             ]
         , Test.describe "Events"
             [ Test.fuzz Fuzz.Extra.date "input should update the model value" <|
                 \date ->
-                    dateFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Test.triggerMsg (Event.input (Date.toIsoString date))
                             (\(Tagger msg) ->
-                                dateFieldModel
+                                fieldModel
                                     |> DateField.update () msg
                                     |> DateField.getValue
                                     |> Expect.equal (DateField.Parsed date)
@@ -148,13 +147,16 @@ findInput =
     Query.find [ Selector.tag "input" ]
 
 
-dateFieldModel : DateField.Model ctx Msg
-dateFieldModel =
-    DateField.create Tagger "input-id"
+fieldModel : DateField.Model ctx
+fieldModel =
+    DateField.init (always Ok)
 
 
-renderModel : DateField.Model ctx msg -> Query.Single msg
-renderModel model =
-    model
-        |> DateField.render
-        |> Query.fromHtml
+fieldConfig : DateField.Config Msg
+fieldConfig =
+    DateField.config Tagger "input-id"
+
+
+fieldRender : ctx -> DateField.Model ctx -> DateField.Config msg -> Query.Single msg
+fieldRender ctx model =
+    DateField.render ctx model >> Query.fromHtml

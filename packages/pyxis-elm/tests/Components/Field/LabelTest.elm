@@ -1,4 +1,4 @@
-module Components.LabelTest exposing (suite)
+module Components.Field.LabelTest exposing (suite)
 
 import Commons.Properties.Size as Size
 import Components.Field.Label as Label

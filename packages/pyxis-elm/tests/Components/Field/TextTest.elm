@@ -1,11 +1,10 @@
-module Components.TextFieldTest exposing (suite)
+module Components.Field.TextTest exposing (suite)
 
 import Commons.Properties.Placement as Placement
 import Components.Field.Text as TextField
 import Components.IconSet as IconSet
 import Expect
 import Fuzz
-import Html
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
@@ -13,7 +12,6 @@ import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes, tag)
 import Test.Simulation as Simulation
-import Validations
 
 
 type Msg
@@ -26,8 +24,8 @@ suite =
         [ Test.describe "Default"
             [ Test.test "the input has an id and a data-test-id" <|
                 \() ->
-                    textFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has
                             [ attribute (Html.Attributes.id "input-id")
@@ -38,32 +36,32 @@ suite =
         , Test.describe "Disabled attribute"
             [ Test.test "should be False by default" <|
                 \() ->
-                    textFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    textFieldModel
+                    fieldConfig
                         |> TextField.withDisabled b
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has [ Selector.disabled b ]
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                textFieldModel
+                fieldConfig
                     |> TextField.withName name
-                    |> renderModel
+                    |> fieldRender () fieldModel
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.name name)
                         ]
         , Test.fuzz Fuzz.string "placeholder attribute should be rendered correctly" <|
             \p ->
-                textFieldModel
+                fieldConfig
                     |> TextField.withPlaceholder p
-                    |> renderModel
+                    |> fieldRender () fieldModel
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.placeholder p)
@@ -71,9 +69,9 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    textFieldModel
+                    fieldConfig
                         |> TextField.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Expect.all
                             [ Query.has
@@ -85,10 +83,10 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    textFieldModel
+                    fieldConfig
                         |> TextField.withClassList [ ( s1, True ), ( s2, True ) ]
                         |> TextField.withClassList [ ( s3, True ) ]
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Expect.all
                             [ Query.hasNot
@@ -107,18 +105,18 @@ suite =
                     [ Test.describe "Icon addon"
                         [ Test.test "append positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
+                                fieldConfig
                                     |> TextField.withAddon Placement.append (TextField.iconAddon IconSet.ArrowDown)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-append-icon"
                                         , Selector.class "form-field__addon"
                                         ]
                         , Test.test "prepend positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
+                                fieldConfig
                                     |> TextField.withAddon Placement.prepend (TextField.iconAddon IconSet.ArrowDown)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-prepend-icon"
                                         , Selector.class "form-field__addon"
@@ -127,9 +125,9 @@ suite =
                     , Test.describe "Text addon"
                         [ Test.test "append positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
+                                fieldConfig
                                     |> TextField.withAddon Placement.append (TextField.textAddon textAddon)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-append-text"
                                         , Selector.class "form-field__addon"
@@ -137,9 +135,9 @@ suite =
                                         ]
                         , Test.test "prepend positioning should be rendered correctly" <|
                             \() ->
-                                textFieldModel
+                                fieldConfig
                                     |> TextField.withAddon Placement.prepend (TextField.textAddon textAddon)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-prepend-text"
                                         , Selector.class "form-field__addon"
@@ -152,36 +150,9 @@ suite =
         , Test.describe "Validation"
             [ Test.test "should pass initially if no validation is applied" <|
                 \() ->
-                    textFieldModel
-                        |> TextField.getValidatedValue ()
-                        |> Expect.equal (Ok "")
-            , Test.fuzz Fuzz.string "should pass for every input if no validation is applied" <|
-                \str ->
-                    simulationWithoutValidation
-                        |> simulateEvents str
-                        |> Simulation.expectModel (TextField.getValidatedValue () >> Expect.equal (Ok str))
-                        |> Simulation.run
-            , Test.test "should not pass initially with `notEmptyValidation` applied" <|
-                \() ->
-                    textFieldModel
-                        |> TextField.withValidation (\_ -> Validations.notEmptyValidation)
-                        |> TextField.getValidatedValue ()
-                        |> Expect.equal (Err "Required field")
-            , Test.test "should not pass if the input str is not compliant to validation func" <|
-                \() ->
-                    simulationWithValidation
-                        |> simulateEvents "this is lower"
-                        |> Simulation.expectModel (TextField.getValidatedValue () >> Expect.equal (Err "String must be uppercase"))
-                        |> Simulation.expectHtml (Query.contains [ Html.text "String must be uppercase" ])
-                        |> Simulation.run
-            ]
-        , Test.describe "Events"
-            [ Test.fuzz Fuzz.string "input should update the model value" <|
-                \str ->
-                    simulationWithValidation
-                        |> simulateEvents str
-                        |> Simulation.expectModel (TextField.getValue >> Expect.equal str)
-                        |> Simulation.run
+                    fieldModel
+                        |> TextField.getValue
+                        |> Expect.equal ""
             ]
         ]
 
@@ -191,36 +162,19 @@ findInput =
     Query.find [ Selector.tag "input" ]
 
 
-textFieldModel : TextField.Model ctx Msg
-textFieldModel =
+fieldModel : TextField.Model ctx
+fieldModel =
+    TextField.init (always Ok)
+
+
+fieldConfig : TextField.Config Msg
+fieldConfig =
     TextField.text Tagger "input-id"
 
 
-renderModel : TextField.Model ctx msg -> Query.Single msg
-renderModel model =
-    model
-        |> TextField.render
-        |> Query.fromHtml
-
-
-simulationWithoutValidation : Simulation.Simulation (TextField.Model () TextField.Msg) TextField.Msg
-simulationWithoutValidation =
-    Simulation.fromSandbox
-        { init = TextField.text identity "input-id"
-        , update = TextField.update ()
-        , view = TextField.render
-        }
-
-
-simulationWithValidation : Simulation.Simulation (TextField.Model () TextField.Msg) TextField.Msg
-simulationWithValidation =
-    Simulation.fromSandbox
-        { init =
-            TextField.text identity "input-id"
-                |> TextField.withValidation (\() -> Validations.isUppercaseValidation)
-        , update = TextField.update ()
-        , view = TextField.render
-        }
+fieldRender : ctx -> TextField.Model ctx -> TextField.Config msg -> Query.Single msg
+fieldRender ctx model =
+    TextField.render ctx model >> Query.fromHtml
 
 
 simulateEvents : String -> Simulation.Simulation model msg -> Simulation.Simulation model msg

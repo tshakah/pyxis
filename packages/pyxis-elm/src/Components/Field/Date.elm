@@ -1,8 +1,9 @@
 module Components.Field.Date exposing
     ( Model
-    , create
+    , init
+    , Config
+    , config
     , withSize
-    , withValidation
     , withClassList
     , withDefaultValue
     , withDisabled
@@ -14,11 +15,10 @@ module Components.Field.Date exposing
     , isOnInput
     , update
     , validate
-    , getValue
-    , getValidatedValue
     , Date(..)
     , isParsed
     , isRaw
+    , getValue
     , render
     )
 
@@ -28,17 +28,18 @@ module Components.Field.Date exposing
 # Input Date component
 
 @docs Model
-@docs create
+@docs init
+
+
+## Config
+
+@docs Config
+@docs config
 
 
 ## Size
 
 @docs withSize
-
-
-## Validation
-
-@docs withValidation
 
 
 ## Generics
@@ -66,7 +67,6 @@ module Components.Field.Date exposing
 @docs isParsed
 @docs isRaw
 @docs getValue
-@docs getValidatedValue
 
 
 ## Rendering
@@ -75,7 +75,6 @@ module Components.Field.Date exposing
 
 -}
 
-import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Properties.Placement as Placement
 import Commons.Properties.Size exposing (Size)
 import Components.Field.Input as Input
@@ -115,10 +114,42 @@ isRaw id =
             False
 
 
-{-| The Input Date model.
+{-| The input date model.
 -}
-type Model ctx msg
-    = Model (Configuration ctx msg)
+type Model ctx
+    = Model
+        { inputModel : Input.Model ctx Date
+        }
+
+
+{-| Inits the date model.
+-}
+init : (ctx -> Date -> Result String Date) -> Model ctx
+init validation =
+    Model
+        { inputModel = Input.init parseDate validation
+        }
+
+
+{-| The view config.
+-}
+type Config msg
+    = Config (Input.Config msg)
+
+
+{-| Creates a <input type="date">.
+-}
+config : (Msg -> msg) -> String -> Config msg
+config tagger id =
+    Config
+        (id
+            |> Input.date
+                { onInput = parseDate >> OnInput >> tagger
+                , onFocus = tagger OnFocus
+                , onBlur = tagger OnBlur
+                }
+            |> Input.withAddon Placement.prepend (Input.iconAddon IconSet.Calendar)
+        )
 
 
 {-| Represent the messages which the Input Date can handle.
@@ -165,17 +196,6 @@ isOnBlur msg =
             False
 
 
-{-| Internal. Represents the Input Date configuration.
--}
-type alias Configuration ctx msg =
-    { status : FieldStatus.StatusList
-    , inputModel : Input.Model msg
-    , isSubmitted : Bool
-    , msgTagger : Msg -> msg
-    , validation : ctx -> Date -> Result String Date
-    }
-
-
 parseDate : String -> Date
 parseDate str =
     str
@@ -184,97 +204,76 @@ parseDate str =
         |> Result.withDefault (Raw str)
 
 
-{-| Creates the Model of an Input of type="date"
--}
-create : (Msg -> msg) -> String -> Model ctx msg
-create msgTagger id =
-    Model
-        { status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
-        , inputModel =
-            Input.date
-                { onInput = parseDate >> OnInput >> msgTagger
-                , onFocus = msgTagger OnFocus
-                , onBlur = msgTagger OnBlur
-                }
-                id
-                |> Input.withAddon Placement.prepend (Input.iconAddon IconSet.Calendar)
-        , isSubmitted = False
-        , msgTagger = msgTagger
-        , validation = always Ok
-        }
-
-
 {-| Internal.
 -}
-mapInputModel : (Input.Model msg -> Input.Model msg) -> Model ctx msg -> Model ctx msg
+mapInputModel : (Input.Model ctx Date -> Input.Model ctx Date) -> Model ctx -> Model ctx
 mapInputModel builder (Model configuration) =
     Model { configuration | inputModel = builder configuration.inputModel }
 
 
+{-| Internal.
+-}
+mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
+mapInputConfig builder (Config configuration) =
+    Config (builder configuration)
+
+
 {-| Sets a default value to the Input Date.
 -}
-withDefaultValue : Date.Date -> Model ctx msg -> Model ctx msg
+withDefaultValue : Date.Date -> Model ctx -> Model ctx
 withDefaultValue defaultValue =
     setValue (Parsed defaultValue)
-        >> addFieldStatus FieldStatus.default
 
 
 {-| Sets a ClassList to the Input Date.
 -}
-withClassList : List ( String, Bool ) -> Model ctx msg -> Model ctx msg
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList classes =
-    mapInputModel (Input.withClassList classes)
+    mapInputConfig (Input.withClassList classes)
 
 
 {-| Sets a Name to the Input Date.
 -}
-withName : String -> Model ctx msg -> Model ctx msg
+withName : String -> Config msg -> Config msg
 withName name =
-    mapInputModel (Input.withName name)
+    mapInputConfig (Input.withName name)
 
 
 {-| Sets a Placeholder to the Input Date.
 -}
-withPlaceholder : String -> Model ctx msg -> Model ctx msg
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder placeholder =
-    mapInputModel (Input.withPlaceholder placeholder)
+    mapInputConfig (Input.withPlaceholder placeholder)
 
 
 {-| Sets a Size to the Input Date.
 -}
-withSize : Size -> Model ctx msg -> Model ctx msg
+withSize : Size -> Config msg -> Config msg
 withSize =
-    Input.withSize >> mapInputModel
-
-
-{-| Add a Validation set of rules to the Input Date.
--}
-withValidation : (ctx -> Date -> Result String Date) -> Model ctx msg -> Model ctx msg
-withValidation validation (Model configuration) =
-    Model { configuration | validation = validation }
+    Input.withSize >> mapInputConfig
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Model ctx msg -> Model ctx msg
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled =
-    Input.withDisabled >> mapInputModel
+    Input.withDisabled >> mapInputConfig
 
 
 {-| Render the Input Date.
 -}
-render : Model ctx msg -> Html msg
-render (Model configuration) =
-    Input.render configuration.inputModel
+render : ctx -> Model ctx -> Config msg -> Html msg
+render ctx (Model state) (Config configuration) =
+    Input.render ctx state.inputModel configuration
 
 
 {-| The update function.
 -}
-update : ctx -> Msg -> Model ctx msg -> Model ctx msg
+update : ctx -> Msg -> Model ctx -> Model ctx
 update ctx msg model =
     case msg of
         OnBlur ->
-            validate ctx model
+            model
 
         OnFocus ->
             model
@@ -283,6 +282,8 @@ update ctx msg model =
             setValue value model
 
 
+{-| Internal.
+-}
 inputDateToString : Date -> String
 inputDateToString d =
     case d of
@@ -295,57 +296,20 @@ inputDateToString d =
 
 {-| Internal.
 -}
-setValue : Date -> Model ctx msg -> Model ctx msg
+setValue : Date -> Model ctx -> Model ctx
 setValue =
-    inputDateToString >> Input.withValue >> mapInputModel
+    inputDateToString >> Input.setValue >> mapInputModel
 
 
-{-| Validate and update the internal model.
+{-| Returns the validated value by running the function you gave to the init.
 -}
-validate : ctx -> Model ctx msg -> Model ctx msg
-validate ctx ((Model { validation, inputModel }) as model) =
-    let
-        validationResult : Result String Date
-        validationResult =
-            model
-                |> getValue
-                |> validation ctx
-    in
-    model
-        |> addFieldStatus (FieldStatus.fromResult validationResult)
-        |> mapInputModel (Input.withErrorMessage (getErrorMessage validationResult))
-
-
-{-| Internal.
--}
-getErrorMessage : Result String x -> Maybe String
-getErrorMessage result =
-    case result of
-        Ok _ ->
-            Nothing
-
-        Err error ->
-            Just error
-
-
-{-| Internal.
--}
-addFieldStatus : FieldStatus -> Model ctx msg -> Model ctx msg
-addFieldStatus fieldStatus (Model configuration) =
-    Model { configuration | status = FieldStatus.addStatus fieldStatus configuration.status }
+validate : ctx -> Model ctx -> Result String Date
+validate ctx (Model { inputModel }) =
+    Input.validate ctx inputModel
 
 
 {-| Returns the current value of the Input Date.
 -}
-getValue : Model ctx msg -> Date
+getValue : Model ctx -> Date
 getValue (Model { inputModel }) =
     parseDate (Input.getValue inputModel)
-
-
-{-| Returns the validated value of the Input Date.
--}
-getValidatedValue : ctx -> Model ctx msg -> Result String Date
-getValidatedValue ctx ((Model { validation }) as model) =
-    model
-        |> getValue
-        |> validation ctx

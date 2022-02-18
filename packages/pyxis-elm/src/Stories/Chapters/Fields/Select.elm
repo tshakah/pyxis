@@ -1,4 +1,4 @@
-module Stories.Chapters.SelectField exposing (Model, docs, init)
+module Stories.Chapters.Fields.Select exposing (Model, docs, init)
 
 import Commons.Lens as Lens exposing (Lens)
 import Commons.Properties.Size as Size
@@ -96,7 +96,7 @@ Select.create { isMobile = False }
 
 type alias SharedState x =
     { x
-        | selectModels : Model
+        | select : Model
     }
 
 
@@ -197,9 +197,9 @@ viewSection :
     -> ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 viewSection lens title select =
     let
-        composedLens : Lens { r | selectModels : Model } (Select.Model () a)
+        composedLens : Lens { r | select : Model } (Select.Model () a)
         composedLens =
-            selectModelsLens |> Lens.andCompose lens
+            selectLens |> Lens.andCompose lens
     in
     ( title
     , \sharedState ->
@@ -239,6 +239,6 @@ viewValidationSection =
     viewSection (Lens .withValidation (\x r -> { r | withValidation = x }))
 
 
-selectModelsLens : Lens { a | selectModels : b } b
-selectModelsLens =
-    Lens .selectModels (\x r -> { r | selectModels = x })
+selectLens : Lens { a | select : b } b
+selectLens =
+    Lens .select (\x r -> { r | select = x })

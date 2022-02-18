@@ -1,4 +1,4 @@
-module Components.TextareaTest exposing (suite)
+module Components.Field.TextareaTest exposing (suite)
 
 import Commons.Properties.Size as Size
 import Components.Field.Textarea as Textarea

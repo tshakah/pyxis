@@ -1,4 +1,4 @@
-module Components.NumberFieldTest exposing (suite)
+module Components.Field.NumberTest exposing (suite)
 
 import Commons.Properties.Placement as Placement
 import Components.Field.Number as NumberField
@@ -23,8 +23,8 @@ suite =
         [ Test.describe "Default"
             [ Test.test "the input has an id and a data-test-id" <|
                 \() ->
-                    numberFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has
                             [ attribute (Html.Attributes.id "input-id")
@@ -35,32 +35,32 @@ suite =
         , Test.describe "Disabled attribute"
             [ Test.test "should be False by default" <|
                 \() ->
-                    numberFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    numberFieldModel
+                    fieldConfig
                         |> NumberField.withDisabled b
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Query.has [ Selector.disabled b ]
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                numberFieldModel
+                fieldConfig
                     |> NumberField.withName name
-                    |> renderModel
+                    |> fieldRender () fieldModel
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.name name)
                         ]
         , Test.fuzz Fuzz.string "placeholder attribute should be rendered correctly" <|
             \p ->
-                numberFieldModel
+                fieldConfig
                     |> NumberField.withPlaceholder p
-                    |> renderModel
+                    |> fieldRender () fieldModel
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.placeholder p)
@@ -68,9 +68,9 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    numberFieldModel
+                    fieldConfig
                         |> NumberField.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Expect.all
                             [ Query.has
@@ -82,10 +82,10 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    numberFieldModel
+                    fieldConfig
                         |> NumberField.withClassList [ ( s1, True ), ( s2, True ) ]
                         |> NumberField.withClassList [ ( s3, True ) ]
-                        |> renderModel
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Expect.all
                             [ Query.hasNot
@@ -104,18 +104,18 @@ suite =
                     [ Test.describe "Icon addon"
                         [ Test.test "append positioning should be rendered correctly" <|
                             \() ->
-                                numberFieldModel
+                                fieldConfig
                                     |> NumberField.withAddon Placement.append (NumberField.iconAddon IconSet.ArrowDown)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-append-icon"
                                         , Selector.class "form-field__addon"
                                         ]
                         , Test.test "prepend positioning should be rendered correctly" <|
                             \() ->
-                                numberFieldModel
+                                fieldConfig
                                     |> NumberField.withAddon Placement.prepend (NumberField.iconAddon IconSet.ArrowDown)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-prepend-icon"
                                         , Selector.class "form-field__addon"
@@ -124,9 +124,9 @@ suite =
                     , Test.describe "Text addon"
                         [ Test.test "append positioning should be rendered correctly" <|
                             \() ->
-                                numberFieldModel
+                                fieldConfig
                                     |> NumberField.withAddon Placement.append (NumberField.textAddon textAddon)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-append-text"
                                         , Selector.class "form-field__addon"
@@ -134,9 +134,9 @@ suite =
                                         ]
                         , Test.test "prepend positioning should be rendered correctly" <|
                             \() ->
-                                numberFieldModel
+                                fieldConfig
                                     |> NumberField.withAddon Placement.prepend (NumberField.textAddon textAddon)
-                                    |> renderModel
+                                    |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-prepend-text"
                                         , Selector.class "form-field__addon"
@@ -149,9 +149,8 @@ suite =
         , Test.describe "Validation"
             [ Test.test "has error" <|
                 \() ->
-                    numberFieldModel
-                        |> NumberField.render
-                        |> Query.fromHtml
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> Query.find [ tag "input" ]
                         |> Query.has
                             [ attribute (Html.Attributes.id "input-id")
@@ -160,31 +159,19 @@ suite =
                             ]
             , Test.test "should pass initially if no validation is applied" <|
                 \() ->
-                    numberFieldModel
-                        |> NumberField.getValidatedValue ()
-                        |> Expect.equal (Ok 0)
-            , Test.fuzz Fuzz.int "should pass for every input if no validation is applied" <|
-                \n ->
-                    numberFieldModel
-                        |> renderModel
-                        |> findInput
-                        |> Test.triggerMsg (Event.input (String.fromInt n))
-                            (\(Tagger msg) ->
-                                numberFieldModel
-                                    |> NumberField.update () msg
-                                    |> NumberField.getValidatedValue ()
-                                    |> Expect.equal (Ok n)
-                            )
+                    fieldModel
+                        |> NumberField.getValue
+                        |> Expect.equal 0
             ]
         , Test.describe "Events"
             [ Test.fuzz Fuzz.int "input should update the model value" <|
                 \n ->
-                    numberFieldModel
-                        |> renderModel
+                    fieldConfig
+                        |> fieldRender () fieldModel
                         |> findInput
                         |> Test.triggerMsg (Event.input (String.fromInt n))
                             (\(Tagger msg) ->
-                                numberFieldModel
+                                fieldModel
                                     |> NumberField.update () msg
                                     |> NumberField.getValue
                                     |> Expect.equal n
@@ -198,13 +185,16 @@ findInput =
     Query.find [ Selector.tag "input" ]
 
 
-numberFieldModel : NumberField.Model ctx Msg
-numberFieldModel =
-    NumberField.create Tagger "input-id"
+fieldModel : NumberField.Model ctx
+fieldModel =
+    NumberField.init (always Ok)
 
 
-renderModel : NumberField.Model ctx msg -> Query.Single msg
-renderModel model =
-    model
-        |> NumberField.render
-        |> Query.fromHtml
+fieldConfig : NumberField.Config Msg
+fieldConfig =
+    NumberField.config Tagger "input-id"
+
+
+fieldRender : ctx -> NumberField.Model ctx -> NumberField.Config msg -> Query.Single msg
+fieldRender ctx model =
+    NumberField.render ctx model >> Query.fromHtml

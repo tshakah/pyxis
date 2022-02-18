@@ -1,10 +1,10 @@
 module Components.Field.Number exposing
     ( Model
+    , init
     , iconAddon
     , textAddon
     , withAddon
     , withSize
-    , withValidation
     , withClassList
     , withDefaultValue
     , withDisabled
@@ -17,9 +17,8 @@ module Components.Field.Number exposing
     , update
     , validate
     , getValue
-    , getValidatedValue
     , render
-    , create
+    , Config, config
     )
 
 {-|
@@ -28,7 +27,7 @@ module Components.Field.Number exposing
 # Input Number component
 
 @docs Model
-@docs create
+@docs init
 
 
 ## Addon
@@ -41,11 +40,6 @@ module Components.Field.Number exposing
 ## Size
 
 @docs withSize
-
-
-## Validation
-
-@docs withValidation
 
 
 ## Generics
@@ -70,7 +64,6 @@ module Components.Field.Number exposing
 ## Readers
 
 @docs getValue
-@docs getValidatedValue
 
 
 ## Rendering
@@ -79,7 +72,6 @@ module Components.Field.Number exposing
 
 -}
 
-import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Properties.Placement exposing (Placement)
 import Commons.Properties.Size exposing (Size)
 import Components.Field.Input as Input
@@ -87,10 +79,41 @@ import Components.IconSet as IconSet
 import Html exposing (Html)
 
 
-{-| The Input Numer model.
+{-| The Input Number model.
 -}
-type Model ctx msg
-    = Model (Configuration ctx msg)
+type Model ctx
+    = Model
+        { inputModel : Input.Model ctx Int
+        }
+
+
+{-| Inits the model.
+-}
+init : (ctx -> Int -> Result String Int) -> Model ctx
+init validation =
+    Model
+        { inputModel = Input.init (String.toInt >> Maybe.withDefault 0) validation
+        }
+
+
+{-| The view configuration.
+-}
+type Config msg
+    = Config (Input.Config msg)
+
+
+{-| Creates the Model of an Input of type="number"
+-}
+config : (Msg -> msg) -> String -> Config msg
+config tagger id =
+    Config
+        (Input.number
+            { onInput = String.toInt >> Maybe.withDefault 0 >> OnInput >> tagger
+            , onFocus = tagger OnFocus
+            , onBlur = tagger OnBlur
+            }
+            id
+        )
 
 
 {-| Represent the messages which the Input Number can handle.
@@ -137,50 +160,27 @@ isOnBlur msg =
             False
 
 
-{-| Internal. Represents the Input Number configuration.
--}
-type alias Configuration ctx msg =
-    { status : FieldStatus.StatusList
-    , inputModel : Input.Model msg
-    , isSubmitted : Bool
-    , msgTagger : Msg -> msg
-    , validation : ctx -> Int -> Result String Int
-    }
-
-
-{-| Creates the Model of an Input of type="number"
--}
-create : (Msg -> msg) -> String -> Model ctx msg
-create msgTagger id =
-    Model
-        { status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
-        , inputModel =
-            Input.number
-                { onInput = String.toInt >> Maybe.withDefault 0 >> OnInput >> msgTagger
-                , onFocus = msgTagger OnFocus
-                , onBlur = msgTagger OnBlur
-                }
-                id
-        , isSubmitted = False
-        , msgTagger = msgTagger
-        , validation = always Ok
-        }
-
-
 {-| Internal.
 -}
-mapInputModel : (Input.Model msg -> Input.Model msg) -> Model ctx msg -> Model ctx msg
+mapInputModel : (Input.Model ctx Int -> Input.Model ctx Int) -> Model ctx -> Model ctx
 mapInputModel builder (Model configuration) =
     Model { configuration | inputModel = builder configuration.inputModel }
 
 
+{-| Internal.
+-}
+mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
+mapInputConfig builder (Config configuration) =
+    Config (builder configuration)
+
+
 {-| Sets an Addon to the Input Number
 -}
-withAddon : Placement -> Input.AddonType -> Model ctx msg -> Model ctx msg
+withAddon : Placement -> Input.AddonType -> Config msg -> Config msg
 withAddon placement addon =
     addon
         |> Input.withAddon placement
-        |> mapInputModel
+        |> mapInputConfig
 
 
 {-| Creates an Addon with an Icon from our IconSet.
@@ -199,68 +199,60 @@ textAddon =
 
 {-| Sets a default value to the Input Number.
 -}
-withDefaultValue : Int -> Model ctx msg -> Model ctx msg
+withDefaultValue : Int -> Model msg -> Model msg
 withDefaultValue defaultValue =
     setValue defaultValue
-        >> addFieldStatus FieldStatus.default
 
 
 {-| Sets a ClassList to the Input Number.
 -}
-withClassList : List ( String, Bool ) -> Model ctx msg -> Model ctx msg
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList classes =
-    mapInputModel (Input.withClassList classes)
+    mapInputConfig (Input.withClassList classes)
 
 
 {-| Sets a Name to the Input Number.
 -}
-withName : String -> Model ctx msg -> Model ctx msg
+withName : String -> Config msg -> Config msg
 withName name =
-    mapInputModel (Input.withName name)
+    mapInputConfig (Input.withName name)
 
 
 {-| Sets a Placeholder to the Input Number.
 -}
-withPlaceholder : String -> Model ctx msg -> Model ctx msg
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder placeholder =
-    mapInputModel (Input.withPlaceholder placeholder)
+    mapInputConfig (Input.withPlaceholder placeholder)
 
 
 {-| Sets a Size to the Input Number.
 -}
-withSize : Size -> Model ctx msg -> Model ctx msg
+withSize : Size -> Config msg -> Config msg
 withSize =
-    Input.withSize >> mapInputModel
-
-
-{-| Add a Validation set of rules to the Input Number.
--}
-withValidation : (ctx -> Int -> Result String Int) -> Model ctx msg -> Model ctx msg
-withValidation validation (Model configuration) =
-    Model { configuration | validation = validation }
+    Input.withSize >> mapInputConfig
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Model ctx msg -> Model ctx msg
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled =
-    Input.withDisabled >> mapInputModel
+    Input.withDisabled >> mapInputConfig
 
 
 {-| Render the Input Number.
 -}
-render : Model ctx msg -> Html msg
-render (Model configuration) =
-    Input.render configuration.inputModel
+render : ctx -> Model ctx -> Config msg -> Html msg
+render ctx (Model state) (Config configuration) =
+    Input.render ctx state.inputModel configuration
 
 
 {-| The update function.
 -}
-update : ctx -> Msg -> Model ctx msg -> Model ctx msg
+update : ctx -> Msg -> Model ctx -> Model ctx
 update ctx msg model =
     case msg of
         OnBlur ->
-            validate ctx model
+            model
 
         OnFocus ->
             model
@@ -271,60 +263,23 @@ update ctx msg model =
 
 {-| Internal.
 -}
-setValue : Int -> Model ctx msg -> Model ctx msg
+setValue : Int -> Model ctx -> Model ctx
 setValue value =
-    mapInputModel (Input.withValue (String.fromInt value))
+    mapInputModel (Input.setValue (String.fromInt value))
 
 
-{-| Validate and update the internal model.
+{-| Returns the validated value by running the function you gave to the init.
 -}
-validate : ctx -> Model ctx msg -> Model ctx msg
-validate ctx ((Model { validation, inputModel }) as model) =
-    let
-        validationResult : Result String Int
-        validationResult =
-            model
-                |> getValue
-                |> validation ctx
-    in
-    model
-        |> addFieldStatus (FieldStatus.fromResult validationResult)
-        |> mapInputModel (Input.withErrorMessage (getErrorMessage validationResult))
-
-
-{-| Internal.
--}
-getErrorMessage : Result String x -> Maybe String
-getErrorMessage result =
-    case result of
-        Ok _ ->
-            Nothing
-
-        Err error ->
-            Just error
-
-
-{-| Internal.
--}
-addFieldStatus : FieldStatus -> Model ctx msg -> Model ctx msg
-addFieldStatus fieldStatus (Model configuration) =
-    Model { configuration | status = FieldStatus.addStatus fieldStatus configuration.status }
+validate : ctx -> Model ctx -> Result String Int
+validate ctx (Model { inputModel }) =
+    Input.validate ctx inputModel
 
 
 {-| Returns the current value of the Input Number.
 -}
-getValue : Model ctx msg -> Int
+getValue : Model ctx -> Int
 getValue (Model { inputModel }) =
     inputModel
         |> Input.getValue
         |> String.toInt
         |> Maybe.withDefault 0
-
-
-{-| Returns the validated value of the Input Number.
--}
-getValidatedValue : ctx -> Model ctx msg -> Result String Int
-getValidatedValue ctx ((Model { validation }) as model) =
-    model
-        |> getValue
-        |> validation ctx

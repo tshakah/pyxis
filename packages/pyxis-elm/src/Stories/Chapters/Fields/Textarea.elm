@@ -1,4 +1,4 @@
-module Stories.Chapters.Textarea exposing (Model, docs, init)
+module Stories.Chapters.Fields.Textarea exposing (Model, docs, init)
 
 import Commons.Properties.Size as Size
 import Components.Field.Textarea as Textarea
@@ -119,7 +119,7 @@ Whenever possible, please use the label element to associate text with form elem
 
 type alias SharedState x =
     { x
-        | textareaModels : TextareaModels
+        | textarea : Textarea
     }
 
 
@@ -127,14 +127,14 @@ type alias FormData =
     {}
 
 
-type alias TextareaModels =
+type alias Textarea =
     { base : Textarea.Model FormData Msg
     , withNonGraphicalApi : Textarea.Model FormData Msg
     }
 
 
 type alias Model =
-    TextareaModels
+    Textarea
 
 
 type Msg
@@ -193,32 +193,31 @@ componentsList =
       , statefulComponent
             "Textarea with Validation"
             .withNonGraphicalApi
-            (\state model -> mapTextareaModels (setWithNonGraphicalApi model) state)
+            (\state model -> maptextarea (setWithNonGraphicalApi model) state)
       )
     ]
         ++ sizeComponents
         ++ otherGraphicalApiComponents
 
 
-mapTextareaModels : (TextareaModels -> TextareaModels) -> SharedState x -> SharedState x
-mapTextareaModels updater state =
-    { state | textareaModels = updater state.textareaModels }
+maptextarea : (Textarea -> Textarea) -> SharedState x -> SharedState x
+maptextarea updater state =
+    { state | textarea = updater state.textarea }
 
 
-setBase : Textarea.Model FormData Msg -> TextareaModels -> TextareaModels
-setBase newModel textareaModels =
-    { textareaModels | base = newModel }
+setBase : Textarea.Model FormData Msg -> Textarea -> Textarea
+setBase newModel textarea =
+    { textarea | base = newModel }
 
 
-setWithNonGraphicalApi : Textarea.Model FormData Msg -> TextareaModels -> TextareaModels
-setWithNonGraphicalApi newModel textareaModels =
-    { textareaModels | withNonGraphicalApi = newModel }
+setWithNonGraphicalApi : Textarea.Model FormData Msg -> Textarea -> Textarea
+setWithNonGraphicalApi newModel textarea =
+    { textarea | withNonGraphicalApi = newModel }
 
 
-fromState : (TextareaModels -> Textarea.Model FormData Msg) -> SharedState x -> Textarea.Model FormData Msg
+fromState : (Textarea -> Textarea.Model FormData Msg) -> SharedState x -> Textarea.Model FormData Msg
 fromState mapper =
-    .textareaModels
-        >> mapper
+    .textarea >> mapper
 
 
 updateInternal : Msg -> Textarea.Model FormData Msg -> Textarea.Model FormData Msg
@@ -232,15 +231,15 @@ withErrorWrapper component =
 
 
 statelessComponent : String -> (Textarea.Model FormData Msg -> Textarea.Model FormData Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
-statelessComponent placeholder modifier { textareaModels } =
-    textareaModels.base
+statelessComponent placeholder modifier { textarea } =
+    textarea.base
         |> Textarea.withPlaceholder placeholder
         |> modifier
         |> Textarea.render
         |> Html.map
             (ElmBook.Actions.mapUpdate
-                { toState = \state model -> mapTextareaModels (setBase model) state
-                , fromState = .textareaModels >> .base
+                { toState = \state model -> maptextarea (setBase model) state
+                , fromState = .textarea >> .base
                 , update = \(OnTextareaMsg msg) model -> Textarea.update {} msg model
                 }
             )
@@ -248,12 +247,12 @@ statelessComponent placeholder modifier { textareaModels } =
 
 statefulComponent :
     String
-    -> (TextareaModels -> Textarea.Model FormData Msg)
+    -> (Textarea -> Textarea.Model FormData Msg)
     -> (SharedState x -> Textarea.Model FormData Msg -> SharedState x)
     -> SharedState x
     -> Html (ElmBook.Msg (SharedState x))
 statefulComponent placeholder mapper toState sharedModel =
-    sharedModel.textareaModels
+    sharedModel.textarea
         |> mapper
         |> Textarea.withPlaceholder placeholder
         |> Textarea.render

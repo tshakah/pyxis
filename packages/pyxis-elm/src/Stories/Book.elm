@@ -6,35 +6,35 @@ import ElmBook.ThemeOptions
 import Html
 import Html.Attributes
 import Stories.Chapters.Buttons as ButtonChapter
-import Stories.Chapters.DateField as DateFieldChapter
+import Stories.Chapters.Fields.Date as DateFieldChapter
+import Stories.Chapters.Fields.Label as LabelChapter
+import Stories.Chapters.Fields.Number as NumberFieldChapter
+import Stories.Chapters.Fields.Select as SelectChapter
+import Stories.Chapters.Fields.Text as TextFieldChapter
+import Stories.Chapters.Fields.Textarea as TextareaChapter
 import Stories.Chapters.Form as FormChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
-import Stories.Chapters.Label as LabelChapter
-import Stories.Chapters.NumberField as NumberFieldChapter
-import Stories.Chapters.SelectField as SelectChapter
-import Stories.Chapters.TextField as TextFieldChapter
-import Stories.Chapters.Textarea as TextareaChapter
 
 
 type alias SharedState =
-    { textFieldModels : TextFieldChapter.Model
-    , textareaModels : TextareaChapter.Model
-    , numberFieldModels : NumberFieldChapter.Model
-    , dateFieldModels : DateFieldChapter.Model
-    , selectModels : SelectChapter.Model
-    , formModel : FormChapter.Model
+    { text : TextFieldChapter.Model
+    , textarea : TextareaChapter.Model
+    , number : NumberFieldChapter.Model
+    , date : DateFieldChapter.Model
+    , select : SelectChapter.Model
+    , form : FormChapter.Model
     }
 
 
 initialState : SharedState
 initialState =
-    { textFieldModels = TextFieldChapter.init
-    , textareaModels = TextareaChapter.init
-    , numberFieldModels = NumberFieldChapter.init
-    , dateFieldModels = DateFieldChapter.init
-    , selectModels = SelectChapter.init
-    , formModel = FormChapter.init
+    { text = TextFieldChapter.init
+    , textarea = TextareaChapter.init
+    , number = NumberFieldChapter.init
+    , date = DateFieldChapter.init
+    , select = SelectChapter.init
+    , form = FormChapter.init
     }
 
 
