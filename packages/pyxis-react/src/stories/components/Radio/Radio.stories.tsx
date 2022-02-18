@@ -18,3 +18,6 @@ WithHint.parameters = renderSourceAsHTML(WithHint());
 
 export const Disabled = () => <RadioGroup name="disabled" disabled/>
 Disabled.parameters = renderSourceAsHTML(Disabled());
+
+export const VerticalLayout = () => <RadioGroup name="vertical" layout="vertical"/>
+VerticalLayout.parameters = renderSourceAsHTML(VerticalLayout());

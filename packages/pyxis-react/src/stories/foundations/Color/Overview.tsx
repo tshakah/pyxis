@@ -31,10 +31,20 @@ const gradientDescription = (
 );
 
 const usageDescription = (
-  <p>
-    Colors can be used via functions and atomic classes.
-    It is recommended that you use the functions as specified in the user guide.
-  </p>
+  <>
+    <p>
+      Colors can be used via functions and atomic classes.
+      It is recommended that you use the functions as specified in the user guide.
+    </p>
+    <p>
+      <strong>Please note</strong>
+      : Remember to generate the atomic class with the kebab-case version of the&nbsp;
+      <code>$key</code>
+      &nbsp;- e.g. atomic class for &quot;actionBase&quot; color will be&nbsp;
+      <code>.c-action-base</code>
+      .
+    </p>
+  </>
 );
 
 const generateRow = ({ name, value, type }: ColorRow): TableRow => [

@@ -50,8 +50,11 @@
   color: foundations.color(neutral50);
   cursor: pointer;
   height: variables.$fieldHeight;
+  overflow: hidden;
   padding-left: foundations.spacing(s);
+  text-overflow: ellipsis;
   user-select: none;
+  white-space: nowrap;
   width: variables.$fieldWidth;
 
   @include lib.onFirefox {
@@ -71,4 +74,13 @@
   height: variables.$fieldHeightSmall;
   padding-left: foundations.spacing(xs);
   width: variables.$fieldWidthSmall;
+}
+
+.form-field__select--native {
+  padding-right: variables.$fieldHeight;
+  width: 100%;
+
+  &.form-field__select--small {
+    padding-right: variables.$fieldHeightSmall;
+  }
 }

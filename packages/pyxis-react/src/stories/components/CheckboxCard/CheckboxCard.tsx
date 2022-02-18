@@ -6,7 +6,7 @@ import {IconPrimaLogo} from "components/Icon/Icons";
 // TODO: remove this implementation when checkboxCard will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.
 
-const setClasses = (isChecked: boolean, isLarge:boolean, error:boolean, disabled:boolean):string => classNames(
+const getClasses = (isChecked: boolean, isLarge:boolean, error:boolean, disabled:boolean):string => classNames(
   "form-card",
   {
     "form-card--large": isLarge,
@@ -22,14 +22,14 @@ const CheckboxCard: FC<CheckboxProps> =
      checked = false,
      disabled = false,
      error = false,
-     hasTitle = true,
      hasText = true,
+     hasTitle = true,
      isLarge = false,
-     priceAddon= false
+     priceAddon = false
    }) => {
     const [isChecked, setIsChecked] = React.useState(checked)
     return(
-      <label className={setClasses(isChecked, isLarge, error, disabled)}>
+      <label className={getClasses(isChecked, isLarge, error, disabled)}>
         {isLarge && <span className="form-card__addon">
           <img src={placeholder} width={70} height={70} alt=""/>
         </span>}
@@ -53,18 +53,26 @@ const CheckboxCard: FC<CheckboxProps> =
     );
   }
 
+const getGroupClasses = (layout: LayoutOptions | null):string => classNames(
+  "form-card-group",
+  {
+    "form-card-group--row": layout === 'horizontal',
+    "form-card-group--column": layout === 'vertical',
+  }
+)
+
 export const CheckboxCardGroup: FC<CheckboxGroupProps> =
   ({
      error= false,
      hint= false,
-     verticalLayout = false,
+     layout = null,
      ...props
   }) => (
   <div className="form-item">
     <label className="form-label" id="my-label-id">Label</label>
     <div className="form-item__wrapper form-item__wrapper--gap-large">
       <div
-        className={`form-card-group ${verticalLayout ? "form-card-group--column" : ""}`}
+        className={getGroupClasses(layout)}
         role="group"
         aria-labelledby="my-label-id"
         aria-describedby={error ? "error-id" : hint ? "hint-id" : ""}
@@ -78,19 +86,21 @@ export const CheckboxCardGroup: FC<CheckboxGroupProps> =
   </div>
 )
 
+type LayoutOptions = "horizontal" | "vertical";
+
 interface CheckboxProps {
   addon?: boolean;
   checked?: boolean;
   disabled?: boolean;
   error?: boolean;
-  hasTitle?: boolean;
   hasText?: boolean;
+  hasTitle?: boolean;
   isLarge?: boolean;
   priceAddon?: boolean;
 }
 
 interface CheckboxGroupProps extends CheckboxProps {
-  verticalLayout?: boolean;
+  layout?: LayoutOptions | null;
   hint?: boolean;
 }
 

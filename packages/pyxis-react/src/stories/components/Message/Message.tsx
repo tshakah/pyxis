@@ -16,7 +16,7 @@ export const messages = (withBackground?:boolean) => (
   </>
 )
 
-const classes = (ghost:boolean, withBackground:boolean, state?: string):string => classNames(
+const getClasses = (ghost:boolean, withBackground:boolean, state?: string):string => classNames(
   "message",
   {
     [`message--${state}`]: state,
@@ -46,7 +46,7 @@ const Message:FC<MessageProps> =
      withBackground= false,
      withTitle= true
   }) => (
-  <div className={classes(ghost, withBackground, state)} role={state === "error" ? "alert" : "status"}>
+  <div className={getClasses(ghost, withBackground, state)} role={state === "error" ? "alert" : "status"}>
     <div className="message__icon">
       {setIcon(state)}
     </div>

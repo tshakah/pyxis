@@ -6,6 +6,7 @@ import OverviewTemplate from "stories/utils/OverviewTemplate";
 import {Canvas, Story} from "@storybook/addon-docs";
 import OverviewIndex from "stories/utils/OverviewIndex";
 import RadioCard from "./RadioCard";
+import {linkTo} from "@storybook/addon-links";
 
 const overviewDescription = (
   <>
@@ -110,8 +111,24 @@ const groupDescription = (
       themselves.
     </p>
     <p>
-      Radio card group have a horizontal layout as default.
+      Cards are normally displayed vertically up to the <code>xsmall</code> breakpoint (768px),
+      above it they are displayed horizontally. Anyways, some classes let the user display
+      cards always horizontally or always vertically, regardless of the breakpoint.
     </p>
+    <p>
+      Usage Examples:
+    </p>
+    <ul className="list">
+      <li className="list__item">
+        <span className="link" onClick={linkTo('components-radiocard-🚧-all-stories--default')}>Default Layout</span>
+      </li>
+      <li className="list__item">
+        <span className="link" onClick={linkTo('components-radiocard-🚧-all-stories--horizontal-layout')}>Horizontal Layout</span>
+      </li>
+      <li className="list__item">
+        <span className="link" onClick={linkTo('components-radiocard-🚧-all-stories--vertical-layout')}>Vertical Layout</span>
+      </li>
+    </ul>
   </>
 )
 

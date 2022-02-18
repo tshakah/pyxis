@@ -4,6 +4,7 @@ import * as icons from 'components/Icon/Icons';
 import {IconProps} from "components/Icon";
 import Item from "./Item";
 import styles from './IconSet.module.scss';
+import {IconSearch} from "components/Icon/Icons";
 
 const initialList:[string, FC<IconProps>][] = Object.entries(icons);
 
@@ -29,8 +30,13 @@ const IconSet: FC = () => {
 
   return (
     <OverviewTemplate title="Icon Set" description={description} category={"Component"} isMain>
-      <div className="form-field">
-        <input type="text" className="form-field__text" onChange={handleChange} placeholder="Search icon..."/>
+      <div className="form-field form-field--with-prepend-icon">
+        <label className="form-field__wrapper">
+          <div className="form-field__addon">
+            <IconSearch />
+          </div>
+          <input type="text" className="form-field__text" onChange={handleChange} placeholder="Search icon..." />
+        </label>
       </div>
       <div className={styles.wrapper}>
         {iconList.map(

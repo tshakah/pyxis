@@ -27,3 +27,9 @@ WithTextAddon.parameters = renderSourceAsHTML(WithTextAddon());
 
 export const LargeSize = () => <CheckboxCardGroup isLarge/>
 LargeSize.parameters = renderSourceAsHTML(LargeSize());
+
+export const HorizontalLayout = () => <CheckboxCardGroup layout="horizontal"/>
+HorizontalLayout.parameters = renderSourceAsHTML(HorizontalLayout());
+
+export const VerticalLayout = () => <CheckboxCardGroup layout="vertical"/>
+VerticalLayout.parameters = renderSourceAsHTML(VerticalLayout());

@@ -23,7 +23,7 @@ export const badges = (alt?:boolean) => (
   </>
 );
 
-const setClasses = (alt:boolean , ghost:boolean, variant?:string):string => classNames(
+const getClasses = (alt:boolean , ghost:boolean, variant?:string):string => classNames(
   "badge",
   {
     [`badge--${variant && pascalToKebab(variant)}`]: variant,
@@ -33,7 +33,7 @@ const setClasses = (alt:boolean , ghost:boolean, variant?:string):string => clas
 );
 
 const Badge:FC<BadgeProps> = ({alt= false, variant , ghost = false, text= "Badge"}) => (
-  <span className={setClasses(alt, ghost, variant)}>{text}</span>
+  <span className={getClasses(alt, ghost, variant)}>{text}</span>
 );
 
 interface BadgeProps {

@@ -4,7 +4,7 @@ import classNames from "classnames";
 // TODO: remove this implementation when radio will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.
 
-const setClasses = (disabled:boolean, error:boolean):string => classNames(
+const getClasses = (disabled:boolean, error:boolean):string => classNames(
   'form-control',
   {
     'form-control--disabled': disabled,
@@ -19,7 +19,7 @@ const Radio: FC<RadioProps> = (
     name,
     onChange= () => {}
   }) =>
-  <label className={setClasses(disabled, error)}>
+  <label className={getClasses(disabled, error)}>
     <input
       type="radio"
       name={name}
@@ -31,15 +31,22 @@ const Radio: FC<RadioProps> = (
     Option
   </label>
 
+const getGroupClasses = (layout: LayoutOptions):string => classNames(
+  "form-control-group",
+  {
+    "form-control-group--column": layout === 'vertical',
+  }
+)
+
 export const RadioGroup: FC<RadioGroupProps> =
-  ({name, disabled= false, error= false, hint = false, verticalLayout = false}) => {
+  ({name, disabled= false, error= false, hint = false, layout = "horizontal"}) => {
   const [activeIndex, setActiveIndex] = React.useState(0);
   return (
     <div className="form-item">
       <label className="form-label" id="my-label-id">Label</label>
       <div className="form-item__wrapper">
         <div
-          className={`form-control-group ${verticalLayout ? "form-control-group--column" : ""}`}
+          className={getGroupClasses(layout)}
           role="radiogroup"
           aria-labelledby="my-label-id"
           aria-describedby={error ? "error-id" : hint ? "hint-id" : ""}
@@ -56,6 +63,8 @@ export const RadioGroup: FC<RadioGroupProps> =
   )
 }
 
+type LayoutOptions = "horizontal" | "vertical";
+
 interface RadioProps {
   checked?: boolean;
   disabled?: boolean;
@@ -65,7 +74,7 @@ interface RadioProps {
 }
 
 interface RadioGroupProps extends RadioProps {
-  verticalLayout?: boolean;
+  layout?: LayoutOptions;
   hint?: boolean;
 }
 

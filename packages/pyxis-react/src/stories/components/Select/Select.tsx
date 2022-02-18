@@ -15,10 +15,11 @@ const getClasses = (disabled: boolean, error: boolean, native: boolean, opened: 
   },
 );
 
-const getSelectClasses = (size: "large" | "small", active: boolean): string => classNames(
+const getSelectClasses = (size: "large" | "small", active: boolean, native:boolean): string => classNames(
   "form-field__select",
   {
     ["form-field__select--filled"]: active,
+    ["form-field__select--native"]: native,
     ["form-field__select--small"]: size === "small",
   },
 );
@@ -81,14 +82,14 @@ const Select: FC<SelectProps> = ({
   }
 
   return (
-    <div className="form-item" style={{width: 320}}>
+    <div className={getClasses(disabled, error, native, isOpened)} style={{width: 320}}>
       {withLabel && <label className="form-label" htmlFor={id} >Label</label>}
       <div className="form-item__wrapper">
         <div className={getClasses(disabled, error, native, isOpened)}>
           <label className="form-field__wrapper" onClick={clickOnSelect}>
             <select
               aria-describedby={error ? "errorMessage" : hint ? "hint" : undefined}
-              className={getSelectClasses(size, isActive)}
+              className={getSelectClasses(size, isActive, native)}
               disabled={disabled}
               id={id}
               onKeyDown={onKeyDown}

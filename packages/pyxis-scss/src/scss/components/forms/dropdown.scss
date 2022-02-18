@@ -71,8 +71,14 @@ $_wrapperAnimationOffset: lib.rem(10px);
   cursor: default;
   display: grid;
   max-height: $maxHeight;
+  -ms-overflow-style: none;
   overflow-x: hidden;
   overflow-y: scroll;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .form-field__dropdown-wrapper--small & {
     @include foundations.horizontalPadding(3xs);

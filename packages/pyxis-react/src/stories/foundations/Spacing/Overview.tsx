@@ -23,10 +23,16 @@ const spacingDescription = (
 );
 
 const usageDescription = (
-  <p>
-    Spacing can be used via mixins and atomic classes.
-    It is recommended that you use the functions as specified in the user guide.
-  </p>
+  <>
+    <p>
+      Spacing can be used via mixins and atomic classes.
+      It is recommended that you use the mixin as specified in the user guide.
+    </p>
+    <p>
+      Spacings can be used also with a function <code>spacing</code> for get only the <strong>"base value"</strong> of spacing,
+      without the responsive value on different breakpoints.
+    </p>
+  </>
 );
 
 const generateRow = ({ size, baseValue, maxValue }: SpacingRow): TableRow => [
@@ -72,6 +78,11 @@ const tableUsageBody: TableRow[] = [
     <CopyableCode text="@include columnGap($size)" key={shortid.generate()} />,
     <CopyableCode text=".column-gap-$size" key={shortid.generate()} />,
   ],
+  [
+    'Base Spacing',
+    <CopyableCode text="spacing($size)" key={shortid.generate()} />,
+    '-'
+  ],
 ];
 
 const Overview: FC = () => (
@@ -85,7 +96,7 @@ const Overview: FC = () => (
     </OverviewTemplate>
     <OverviewTemplate title="Usage" description={usageDescription}>
       <Table
-        head={['Name', 'Mixin', 'Atomic class']}
+        head={['Name', 'Mixin / Functions', 'Atomic class']}
         body={tableUsageBody}
         gridTemplateColumns="20%"
       />

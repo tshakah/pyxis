@@ -159,4 +159,16 @@
   .form-field.form-field--error & {
     @include _addonColors(errorBase);
   }
+
+  .form-field__select--native + & {
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: variables.$fieldHeight;
+  }
+
+  .form-field__select--native.form-field__select--small + & {
+    width: variables.$fieldHeightSmall;
+  }
 }

@@ -18,3 +18,6 @@ WithHint.parameters = renderSourceAsHTML(WithHint());
 
 export const Disabled = () => <CheckboxGroup disabled/>
 Disabled.parameters = renderSourceAsHTML(Disabled());
+
+export const VerticalLayout = () => <CheckboxGroup layout="vertical"/>
+VerticalLayout.parameters = renderSourceAsHTML(VerticalLayout());

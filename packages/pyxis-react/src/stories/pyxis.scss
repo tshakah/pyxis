@@ -8,3 +8,24 @@
   background-color: pyxis.color(neutralBase);
   display: flex;
 }
+
+.list {
+  @include pyxis.verticalSpacing(m);
+  list-style-type: none;
+  margin-top: 0;
+  padding-left: pyxis.spacing(m);
+}
+
+.list__item {
+  @include pyxis.verticalSpacing(3xs);
+}
+
+.link {
+  color: pyxis.color(actionBase);
+  cursor: pointer;
+
+  &:hover {
+    color: pyxis.color(actionDark);
+    text-decoration: underline;
+  }
+}

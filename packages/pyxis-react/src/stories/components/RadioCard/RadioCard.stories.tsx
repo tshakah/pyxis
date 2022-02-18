@@ -27,3 +27,9 @@ WithTextAddon.parameters = renderSourceAsHTML(WithTextAddon());
 
 export const LargeSize = () => <RadioCardGroup name="large" isLarge/>
 LargeSize.parameters = renderSourceAsHTML(LargeSize());
+
+export const HorizontalLayout = () => <RadioCardGroup name="default" layout="horizontal"/>
+HorizontalLayout.parameters = renderSourceAsHTML(HorizontalLayout());
+
+export const VerticalLayout = () => <RadioCardGroup name="default" layout="vertical"/>
+VerticalLayout.parameters = renderSourceAsHTML(VerticalLayout());

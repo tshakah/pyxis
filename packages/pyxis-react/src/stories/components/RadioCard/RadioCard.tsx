@@ -6,7 +6,7 @@ import {IconPrimaLogo} from "components/Icon/Icons";
 // TODO: remove this implementation when radioCard will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.
 
-const setClasses = (isChecked: boolean, isLarge:boolean, error:boolean, disabled:boolean):string => classNames(
+const getClasses = (isChecked: boolean, isLarge:boolean, error:boolean, disabled:boolean):string => classNames(
   "form-card",
   {
     "form-card--large": isLarge,
@@ -29,7 +29,7 @@ const RadioCard: FC<RadioProps> =
     onChange= () => {},
     priceAddon= false
   }) => (
-    <label className={setClasses(checked, isLarge, error, disabled)}>
+    <label className={getClasses(checked, isLarge, error, disabled)}>
       {isLarge && <span className="form-card__addon">
         <img src={placeholder} width={70} height={70} alt=""/>
       </span>}
@@ -52,11 +52,19 @@ const RadioCard: FC<RadioProps> =
     </label>
 );
 
+const getGroupClasses = (layout: LayoutOptions | null):string => classNames(
+  "form-card-group",
+  {
+    "form-card-group--row": layout === 'horizontal',
+    "form-card-group--column": layout === 'vertical',
+  }
+)
+
 export const RadioCardGroup: FC<RadioGroupProps> =
   ({
-     error= false,
+     error = false,
      hint = false,
-     verticalLayout = false,
+     layout = null,
      ...props
   }) => {
     const [activeIndex, setActiveIndex] = React.useState(0);
@@ -65,13 +73,14 @@ export const RadioCardGroup: FC<RadioGroupProps> =
         <label className="form-label" id="my-label-id">Label</label>
         <div className="form-item__wrapper">
           <div
-            className={`form-card-group ${verticalLayout ? "form-card-group--column" : ""}`}
+            className={getGroupClasses(layout)}
             role="radiogroup"
             aria-labelledby="my-label-id"
             aria-describedby={error ? "error-id" : hint ? "hint-id" : ""}
           >
             <RadioCard error={error} {...props} checked={activeIndex === 0} onChange={() => setActiveIndex(0)}/>
             <RadioCard error={error} {...props} checked={activeIndex === 1} onChange={() => setActiveIndex(1)} />
+            {error && <div className="form-control-group__error-message" id="error-id">Error message</div>}
           </div>
           {error && <div className="form-item__error-message" id="error-id">Error message</div>}
           {hint && !error && <div className="form-item__hint" id="hint-id">Hint</div>}
@@ -80,13 +89,15 @@ export const RadioCardGroup: FC<RadioGroupProps> =
     )
   }
 
+type LayoutOptions = "horizontal" | "vertical";
+
 interface RadioProps {
   addon?: boolean;
   checked?: boolean;
   disabled?: boolean;
   error?: boolean;
-  hasTitle?: boolean;
   hasText?: boolean;
+  hasTitle?: boolean;
   isLarge?: boolean;
   name: string;
   onChange?: () => void;
@@ -94,7 +105,7 @@ interface RadioProps {
 }
 
 interface RadioGroupProps extends RadioProps {
-  verticalLayout?: boolean;
+  layout?: LayoutOptions | null;
   hint?: boolean;
 }
 

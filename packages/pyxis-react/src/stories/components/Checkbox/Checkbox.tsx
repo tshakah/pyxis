@@ -4,7 +4,7 @@ import classNames from "classnames";
 // TODO: remove this implementation when checkbox will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.
 
-const setClasses = (disabled:boolean, error:boolean) => classNames(
+const getClasses = (disabled:boolean, error:boolean) => classNames(
   'form-control',
   {
     'form-control--disabled': disabled,
@@ -12,28 +12,34 @@ const setClasses = (disabled:boolean, error:boolean) => classNames(
   });
 
 const Checkbox: FC<CheckboxProps> = ({checked = false, disabled = false, error = false, indeterminate= false}) =>
-    <label className={setClasses(disabled, error)}>
-      <input
-        type="checkbox"
-        className="form-control__checkbox"
-        disabled={disabled}
-        defaultChecked={checked}
-        ref={(input) => input ? input.indeterminate = indeterminate : null }/>
-      Option
-    </label>
+  <label className={getClasses(disabled, error)}>
+    <input
+      type="checkbox"
+      className="form-control__checkbox"
+      disabled={disabled}
+      defaultChecked={checked}
+      ref={(input) => input ? input.indeterminate = indeterminate : null }/>
+    Option
+  </label>
 
-export const CheckboxGroup: FC<CheckboxGroupProps> =
-  ({
-     disabled = false,
-     error = false,
-     hint = false,
-     verticalLayout= false
-  }) => (
+const setGroupClasses = (layout: LayoutOptions):string => classNames(
+  "form-control-group",
+  {
+    "form-control-group--column": layout === 'vertical',
+  }
+)
+
+export const CheckboxGroup: FC<CheckboxGroupProps> = ({
+  disabled = false,
+  error = false,
+  hint = false,
+  layout = "horizontal"
+}) => (
   <div className="form-item">
     <label className="form-label" id="my-label-id">Label</label>
     <div className="form-item__wrapper">
       <div
-        className={`form-control-group ${verticalLayout ? "form-control-group--column" : ""}`}
+        className={setGroupClasses(layout)}
         role="group"
         aria-labelledby="my-label-id"
         aria-describedby={error ? "error-id" : hint ? "hint-id" : ""}
@@ -48,6 +54,8 @@ export const CheckboxGroup: FC<CheckboxGroupProps> =
   </div>
 )
 
+type LayoutOptions = "horizontal" | "vertical";
+
 interface CheckboxProps {
   checked?:boolean;
   disabled?: boolean;
@@ -56,7 +64,7 @@ interface CheckboxProps {
 }
 
 interface CheckboxGroupProps extends CheckboxProps {
-  verticalLayout?: boolean;
+  layout?: LayoutOptions;
   hint?: boolean;
 }
 
