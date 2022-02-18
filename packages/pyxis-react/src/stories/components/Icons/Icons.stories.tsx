@@ -14,8 +14,9 @@ export default {
         category: 'Customization',
       },
     },
-    boxed: {
-      control: { type: 'boolean' },
+    boxedVariant: {
+      options: ['neutral', 'brand', 'success', 'alert', 'error'],
+      control: { type: 'select' },
       table: {
         category: 'Customization',
       },
@@ -49,16 +50,39 @@ export const Default = Template.bind({});
 export const Boxed = Template.bind({});
 Boxed.args = {
   description: 'Icon description for screen reader',
-  boxed: true,
+  boxedVariant: 'neutral',
 };
 
-export const BoxedAlt = Template.bind({});
-BoxedAlt.args = {
+export const BoxedBrand = Template.bind({});
+BoxedBrand.args = {
+  description: 'Icon description for screen reader',
+  boxedVariant: 'brand',
+};
+
+export const BoxedSuccess = Template.bind({});
+BoxedSuccess.args = {
+  description: 'Icon description for screen reader',
+  boxedVariant: 'success',
+};
+
+export const BoxedAlert = Template.bind({});
+BoxedAlert.args = {
+  description: 'Icon description for screen reader',
+  boxedVariant: 'alert',
+};
+
+export const BoxedError = Template.bind({});
+BoxedError.args = {
+  description: 'Icon description for screen reader',
+  boxedVariant: 'error',
+};
+
+export const Alt = Template.bind({});
+Alt.args = {
   alt: true,
   description: 'Icon description for screen reader',
-  boxed: true,
 };
 
-BoxedAlt.parameters = {
+Alt.parameters = {
   backgrounds: { default: 'dark' },
 };

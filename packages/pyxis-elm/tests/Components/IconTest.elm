@@ -26,7 +26,6 @@ suite =
                 \() ->
                     IconSet.Alarm
                         |> Icon.create
-                        |> Icon.withStyle Icon.boxed
                         |> Icon.withTheme Theme.alternative
                         |> Icon.render
                         |> Query.fromHtml
@@ -67,14 +66,46 @@ suite =
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.hasNot [ classes [ "icon--boxed" ] ]
-            , Test.test "is boxed" <|
+            , Test.test "is boxed neutral" <|
                 \() ->
                     IconSet.Motorcycle
                         |> Icon.create
-                        |> Icon.withStyle Icon.boxed
+                        |> Icon.withStyle Icon.neutral
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--boxed" ] ]
+            , Test.test "is boxed brand" <|
+                \() ->
+                    IconSet.Motorcycle
+                        |> Icon.create
+                        |> Icon.withStyle Icon.brand
+                        |> Icon.render
+                        |> Query.fromHtml
+                        |> Query.has [ classes [ "icon", "icon--boxed", "icon--brand" ] ]
+            , Test.test "is boxed success" <|
+                \() ->
+                    IconSet.Motorcycle
+                        |> Icon.create
+                        |> Icon.withStyle Icon.success
+                        |> Icon.render
+                        |> Query.fromHtml
+                        |> Query.has [ classes [ "icon", "icon--boxed", "icon--success" ] ]
+            , Test.test "is boxed alert" <|
+                \() ->
+                    IconSet.Motorcycle
+                        |> Icon.create
+                        |> Icon.withStyle Icon.alert
+                        |> Icon.render
+                        |> Query.fromHtml
+                        |> Query.has [ classes [ "icon", "icon--boxed", "icon--alert" ] ]
+            , Test.test "is boxed error" <|
+                \() ->
+                    IconSet.Motorcycle
+                        |> Icon.create
+                        |> Icon.withStyle Icon.error
+                        |> Icon.render
+                        |> Query.fromHtml
+                        |> Query.has [ classes [ "icon", "icon--boxed", "icon--error" ] ]
             ]
         , Test.describe "Icon generics"
             [ Test.test "has accessible description" <|

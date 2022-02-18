@@ -5,7 +5,11 @@ module Components.Icon exposing
     , withSize
     , Style
     , default
-    , boxed
+    , neutral
+    , brand
+    , success
+    , alert
+    , error
     , withStyle
     , withDescription
     , withClassList
@@ -35,7 +39,11 @@ module Components.Icon exposing
 
 @docs Style
 @docs default
-@docs boxed
+@docs neutral
+@docs brand
+@docs success
+@docs alert
+@docs error
 @docs withStyle
 
 
@@ -112,21 +120,52 @@ withSize a (Model configuration) =
 -}
 type Style
     = Default
-    | Boxed
+    | Boxed Variant
 
 
-{-| Represent a default style for the Icon.
+{-| The available Icon variants.
+-}
+type Variant
+    = Neutral
+    | Brand
+    | Success
+    | Alert
+    | Error
+
+
+{-| Creates a Default style.
 -}
 default : Style
 default =
     Default
 
 
-{-| Represent a boxed style for the Icon.
+{-| Creates a Neutral style.
 -}
-boxed : Style
-boxed =
-    Boxed
+neutral : Style
+neutral =
+    Boxed Neutral
+
+
+{-| Creates a Brand style.
+-}
+brand : Style
+brand =
+    Boxed Brand
+
+
+{-| Creates a Success style.
+-}
+success : Style
+success =
+    Boxed Success
+
+
+{-| Creates a Alert style.
+-}
+alert : Style
+alert =
+    Boxed Alert
 
 
 {-| Sets a default style to the Icon.
@@ -134,6 +173,13 @@ boxed =
 withStyle : Style -> Model -> Model
 withStyle a (Model configuration) =
     Model { configuration | style = a }
+
+
+{-| Represent a error style for the Icon.
+-}
+error : Style
+error =
+    Boxed Error
 
 
 {-| Adds an accessible text to the Icon.
@@ -150,6 +196,18 @@ withClassList a (Model configuration) =
     Model { configuration | classList = a }
 
 
+{-| Internal.
+-}
+isBoxed : Style -> Bool
+isBoxed style =
+    case style of
+        Boxed _ ->
+            True
+
+        _ ->
+            False
+
+
 {-| Renders the Icon.
 -}
 render : Model -> Html msg
@@ -160,7 +218,11 @@ render (Model configuration) =
              , ( "icon--size-l", Size.isLarge configuration.size )
              , ( "icon--size-m", Size.isMedium configuration.size )
              , ( "icon--size-s", Size.isSmall configuration.size )
-             , ( "icon--boxed", configuration.style == Boxed )
+             , ( "icon--boxed", isBoxed configuration.style || Theme.isAlternative configuration.theme )
+             , ( "icon--brand", configuration.style == brand )
+             , ( "icon--success", configuration.style == success )
+             , ( "icon--alert", configuration.style == alert )
+             , ( "icon--error", configuration.style == error )
              , ( "icon--alt", Theme.isAlternative configuration.theme )
              ]
                 ++ configuration.classList

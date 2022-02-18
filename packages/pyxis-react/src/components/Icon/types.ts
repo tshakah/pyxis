@@ -1,19 +1,13 @@
 type IconSize = 's' | 'm' | 'l';
+type IconBoxedVariant = 'neutral' | 'brand' | 'success' | 'alert' | 'error';
 
-interface CommonIconProps {
-  alt?: never;
+export interface IconProps {
+  alt?: boolean;
+  boxedVariant?: IconBoxedVariant;
   className?: string;
   description?: string;
-  boxed?: boolean;
   size?: IconSize;
 }
-
-interface BoxedProps extends Omit<CommonIconProps, 'alt'> {
-  alt?: boolean;
-  boxed: true;
-}
-
-export type IconProps = CommonIconProps | BoxedProps;
 
 export default {};
 

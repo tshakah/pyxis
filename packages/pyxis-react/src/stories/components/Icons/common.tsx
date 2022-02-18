@@ -6,6 +6,7 @@ export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof I
 });
 
 export type Size = 's' | 'm' | 'l';
+export type Variant = 'neutral' | 'brand' | 'success' | 'alert' | 'error';
 
 export interface SizeRow {
   size: Size,
@@ -26,3 +27,5 @@ export const sizes: SizeRow[] = [
     value: '24px',
   },
 ];
+
+export const variants: Variant[] = ["neutral", "brand", "success", "alert", "error"]

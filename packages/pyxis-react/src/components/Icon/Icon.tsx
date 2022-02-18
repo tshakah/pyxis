@@ -2,24 +2,25 @@ import React, { FC } from 'react';
 import classNames from 'classnames';
 import { IconProps } from './types';
 
-const getClasses = (size: string, className: string, boxed: boolean, alt:boolean): string => classNames(
+const getClasses = (size: string, className: string, alt:boolean, boxedVariant?: string): string => classNames(
   'icon',
   `icon--size-${size}`,
   className,
-  { 'icon--boxed': boxed },
+  { 'icon--boxed': boxedVariant || alt },
   { 'icon--alt': alt },
+  { [`icon--${boxedVariant}`]: boxedVariant },
 );
 
 const Icon: FC<IconProps> = ({
   alt = false,
   className = '',
   description,
-  boxed = false,
+  boxedVariant,
   size = 'm',
   children,
 }) => (
   <div
-    className={getClasses(size, className, boxed, alt)}
+    className={getClasses(size, className, alt, boxedVariant)}
     role={description && 'img'}
     aria-label={description}
     aria-hidden={!description}

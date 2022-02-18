@@ -6,7 +6,7 @@ import OverviewIndex from "stories/utils/OverviewIndex/OverviewIndex";
 import OverviewTemplate from 'stories/utils/OverviewTemplate';
 import Table, {TableRow} from 'stories/utils/Table';
 import CopyableCode from 'stories/utils/CopyableCode';
-import {Size, SizeRow, sizes} from './common';
+import {Size, SizeRow, sizes, variants} from './common';
 import * as icons from 'components/Icon/Icons';
 import Icon from "components/Icon";
 
@@ -43,10 +43,14 @@ const sizeDescription = (
 );
 
 const variantDescription = (
-  <p>
-    Icons by default are the simple svg image. The boxed variant provide a more complex icon with a pre-assigned color
-    and wrapped in a rounded box. Remember to use the light variant in case the boxed icon is on a dark background.
-  </p>
+  <>
+    <p>
+      Icons by default are the simple svg image. Boxed variants provide a more complex icon with a pre-assigned color
+      and wrapped in a rounded box. They could have a neutral color that suggests an informational content, but
+      they can be used also to give a feedback to the final user or to indicate a branded content.
+    </p>
+    <p>Remember to use the Alt variant in case the boxed icon is on a dark background.</p>
+  </>
 );
 
 const classDescription = (
@@ -80,16 +84,18 @@ const generateVariantBody = (): TableRow[] => [
     '-',
     '-',
   ],
-  [
-    <IconPrimaLogo boxed key={shortid.generate()} />,
-    'boxed',
-    '-',
-  ],
+  ...variants.map((variant) =>
+    [
+      <IconPrimaLogo boxedVariant={variant} />,
+      `boxed ${variant}`,
+      '-'
+    ]
+  ),
   [
     <div className="bg-neutral-base padding-3xs">
-      <IconPrimaLogo boxed alt key={shortid.generate()} />
+      <IconPrimaLogo alt key={shortid.generate()} />
     </div>,
-    'boxed and alt',
+    'alt',
     'Use on dark background.',
   ],
 ];
@@ -118,7 +124,27 @@ const tableClassBody: TableRow[] = [
   [
     <CopyableCode text=".icon--boxed" key={shortid.generate()} />,
     'Variant Modifier',
-    '-',
+    'Neutral boxed variant',
+  ],
+  [
+    <CopyableCode text=".icon--brand" key={shortid.generate()} />,
+    'Variant Modifier',
+    'Use it along with `.icon--boxed`',
+  ],
+  [
+    <CopyableCode text=".icon--success" key={shortid.generate()} />,
+    'Variant Modifier',
+    'Use it along with `.icon--boxed`',
+  ],
+  [
+    <CopyableCode text=".icon--alert" key={shortid.generate()} />,
+    'Variant Modifier',
+    'Use it along with `.icon--boxed`',
+  ],
+  [
+    <CopyableCode text=".icon--error" key={shortid.generate()} />,
+    'Variant Modifier',
+    'Use it along with `.icon--boxed`',
   ],
   [
     <CopyableCode text=".icon--alt" key={shortid.generate()} />,
@@ -127,7 +153,7 @@ const tableClassBody: TableRow[] = [
   ],
 ];
 
-const Overview: FC<{}> = () => (
+const Overview: FC = () => (
   <>
     <OverviewTemplate title="Icons" description={iconsDescription} category="Component" isMain>
       <Canvas>
@@ -135,7 +161,7 @@ const Overview: FC<{}> = () => (
       </Canvas>
     </OverviewTemplate>
     <OverviewTemplate title="Table of contents">
-      <OverviewIndex titles={["Sizes", "Variants", "Accessibility", "Component API", "Overview of CSS classes"]} />
+      <OverviewIndex titles={["Sizes", "Variants", "States", "Accessibility", "Component API", "Overview of CSS classes"]} />
     </OverviewTemplate>
     <OverviewTemplate title="Sizes" description={sizeDescription}>
       <Table
