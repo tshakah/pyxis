@@ -28,18 +28,22 @@ type Msg
     = OnRadioFieldMsg (RadioGroup.Msg Option)
 
 
-radioGroupModel : (RadioGroup.Msg Option -> msg) -> RadioGroup.Model Option ctx msg
-radioGroupModel tagger =
-    RadioGroup.create "radio-gender-id" tagger Default
-        |> RadioGroup.withValidation validation
+radioGroupModel : RadioGroup.Model Option ctx
+radioGroupModel =
+    RadioGroup.init Default
+        |> RadioGroup.setValidation validation
 
 
-radioGroupView : Html Msg
-radioGroupView =
-    radioGroupModel OnRadioFieldMsg
+
+radioGroupView : ctx -> Html Msg
+radioGroupView ctx =
+    RadioGroup.config "radio-id"
         |> RadioGroup.withName "gender"
-        |> RadioGroup.withOptions radioOptions
-        |> RadioGroup.render
+        |> RadioGroup.withOptions
+            [ RadioGroup.option { value = M, label = "Male" }
+            , RadioGroup.option { value = F, label = "Female" }
+            ]
+        |> RadioGroup.render OnRadioFieldMsg ctx radioGroupModel
 
 
 validation : ctx -> Option -> Result String Option
@@ -49,13 +53,6 @@ validation _ value =
 
     else
         Ok value
-
-
-radioOptions : List (RadioGroup.Option Option)
-radioOptions =
-    [ RadioGroup.option { value = M, label = "Male" }
-    , RadioGroup.option { value = F, label = "Female" }
-    ]
 ```
 
 ### Implementation with only valid options

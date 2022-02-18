@@ -271,10 +271,8 @@ render tagger ctx (Model model) (Config configuration) =
         ]
         (List.map
             (viewRadio
-                configuration.id
-                configuration.name
+                configuration
                 model.selectedValue
-                configuration.isDisabled
                 errorMessage
             )
             configuration.options
@@ -285,8 +283,8 @@ render tagger ctx (Model model) (Config configuration) =
 
 {-| Internal.
 -}
-viewRadio : String -> Maybe String -> value -> Bool -> Maybe String -> Option value -> Html.Html (Msg value)
-viewRadio id name selectedValue isDisabled errorMessage (Option { value, label }) =
+viewRadio : { a | id : String, name : Maybe String, isDisabled : Bool } -> value -> Maybe String -> Option value -> Html.Html (Msg value)
+viewRadio { id, name, isDisabled } selectedValue errorMessage (Option { value, label }) =
     Html.label
         [ Attributes.classList
             [ ( "form-control", True )
