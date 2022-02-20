@@ -76,9 +76,9 @@ dateFieldValidation today =
     in
     Validations.requiredFieldValidation
         >> Result.andThen dateValidation
-        >> Result.andThen (Validation.fromPredicate checkDateIsNotFuture "Hai inserito una data futura")
-        >> Result.andThen (Validation.fromPredicate check25YearsOld "Devi avere almeno 25 anni")
-        >> Result.andThen (Validation.fromPredicate checkMinYear "L'anno inserito non è valido")
+        >> Result.andThen (Validation.filter checkDateIsNotFuture "Hai inserito una data futura")
+        >> Result.andThen (Validation.filter check25YearsOld "Devi avere almeno 25 anni")
+        >> Result.andThen (Validation.filter checkMinYear "L'anno inserito non è valido")
 
 
 init : Date -> Model

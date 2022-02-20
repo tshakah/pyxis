@@ -6,10 +6,10 @@ import Components.Button as Btn
 import Components.Input as Input
 import Date exposing (Date)
 import Email exposing (Email)
+import Examples.Validation.Password as Password exposing (Password)
 import Html exposing (Html)
 import Html.Attributes exposing (class)
 import Html.Events
-import Maybe.Extra
 import PipeValidation
 import Validation exposing (Validation)
 import Validation.Int
@@ -72,7 +72,7 @@ ageFieldValidation =
 
 allCharsAlpha : String -> Validation String String
 allCharsAlpha =
-    Validation.fromPredicate (String.all Char.isAlpha)
+    Validation.filter (String.all Char.isAlpha)
 
 
 jobFieldValidation : Validation String String
@@ -91,9 +91,11 @@ emailFieldValidation =
         >> Result.andThen (Email.fromString "Insert a valid email")
 
 
-passwordValidation : String -> Result String String
-passwordValidation =
-    Validation.String.minLength 6 "Password needs at least 6 characters"
+confirmPasswordCtxValidation : Ctx -> Maybe (Validation Password Password)
+confirmPasswordCtxValidation (Ctx model) =
+    Maybe.map
+        (\pw -> Validation.filter ((==) pw) "Passwords do not match")
+        (Input.getValue model.password)
 
 
 type Ctx
@@ -108,8 +110,8 @@ type alias Model =
     , job : Input.Model (Maybe String)
     , id : Input.Model (Maybe String)
     , email : Input.Model Email
-    , password : Input.Model String
-    , confirmPassword : Input.ModelWithCtx Ctx String
+    , password : Input.Model Password
+    , confirmPassword : Input.ModelWithCtx Ctx Password
     , submittedData : List (Result String FormData)
     , submitted : Bool
     }
@@ -117,7 +119,7 @@ type alias Model =
 
 endDateCtxValidation : Ctx -> Maybe (Validation Date ())
 endDateCtxValidation (Ctx model) =
-    Just
+    Maybe.map
         (\startDate endDate ->
             case Date.compare startDate endDate of
                 Basics.LT ->
@@ -126,20 +128,7 @@ endDateCtxValidation (Ctx model) =
                 _ ->
                     Err ("End date must be after " ++ Date.toIsoString startDate)
         )
-        |> Maybe.Extra.andMap (Input.getValue model.startDate)
-
-
-confirmPasswordCtxValidation : Ctx -> Maybe (Validation String ())
-confirmPasswordCtxValidation (Ctx model) =
-    Just
-        (\password confirmPassword ->
-            if password == confirmPassword then
-                Ok ()
-
-            else
-                Err "Passwords do not match"
-        )
-        |> Maybe.Extra.andMap (Input.getValue model.password)
+        (Input.getValue model.startDate)
 
 
 init : Model
@@ -170,9 +159,9 @@ init =
         Input.init "initial-value" idValidation
             |> Input.detectChanges
     , email = Input.empty emailFieldValidation
-    , password = Input.empty passwordValidation
+    , password = Input.empty Password.validation
     , confirmPassword =
-        Input.empty passwordValidation
+        Input.empty Password.validation
             |> Input.validateWithCtx confirmPasswordCtxValidation
 
     -- Other
@@ -204,7 +193,7 @@ type alias FormData =
     , job : Maybe String
     , id : Maybe String
     , email : Email
-    , password : String
+    , password : Password
     }
 
 
@@ -219,7 +208,7 @@ Input.getData : Input.Model data -> Maybe data
 Using `Maybe.mapN` instead of just asking for the string, we have the type-safe guarantee
 that we're not submitting invalid data
 
-    parseForm : Validation Model FormData
+    parseForm : Model -> Maybe FormData
     parseForm model =
         Maybe.map6 FormData
             (Input.getData model.name)
@@ -232,9 +221,9 @@ that we're not submitting invalid data
 Or we could use the general version of `Maybe.mapN`
 (it is implemented in the Maybe.Extra module, but is a one liner so we don't really need the external dep)
 
-    parseForm : Validation Model FormData
+    parseForm : Model -> Maybe FormData
     parseForm model =
-        Ok FormData
+        Just FormData
             |> Maybe.andMap (Input.getData model.name)
             |> Maybe.andMap (Input.getData model.age)
             |> Maybe.andMap (Input.getData model.date)

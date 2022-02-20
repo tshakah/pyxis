@@ -1,5 +1,6 @@
 module Validation.String exposing
-    ( maxLength
+    ( any
+    , maxLength
     , minLength
     , notEmpty
     , optional
@@ -15,14 +16,19 @@ notEmpty =
     minLength 1
 
 
+any : (Char -> Bool) -> String -> Validation String String
+any =
+    String.any >> Validation.filter
+
+
 minLength : Int -> String -> Validation String String
 minLength l =
-    Validation.fromPredicate (\s -> String.length s >= l)
+    Validation.filter (\s -> String.length s >= l)
 
 
 maxLength : Int -> String -> Validation String String
 maxLength l =
-    Validation.fromPredicate (\s -> String.length s <= l)
+    Validation.filter (\s -> String.length s <= l)
 
 
 trim : Validation String String

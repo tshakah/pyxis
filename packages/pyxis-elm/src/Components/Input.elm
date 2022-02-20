@@ -94,9 +94,14 @@ init initialValue validation =
         }
 
 
-validateWithCtx : (ctx -> Maybe (Validation data ())) -> ModelWithCtx ctx data -> ModelWithCtx ctx data
+validateWithCtx : (ctx -> Maybe (Validation data x)) -> ModelWithCtx ctx data -> ModelWithCtx ctx data
 validateWithCtx validationOverride (Model model) =
-    Model { model | validationOverride = validationOverride }
+    let
+        voidValidationOverride ctx =
+            Maybe.map (\val -> Result.Extra.void << val)
+                (validationOverride ctx)
+    in
+    Model { model | validationOverride = voidValidationOverride }
 
 
 detectChanges : Model data -> Model (Maybe data)

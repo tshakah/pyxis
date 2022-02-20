@@ -1,7 +1,7 @@
 module Validation exposing
     ( Validation
+    , filter
     , fromMaybe
-    , fromPredicate
     , map
     )
 
@@ -10,8 +10,8 @@ type alias Validation from to =
     from -> Result String to
 
 
-fromPredicate : (a -> Bool) -> String -> Validation a a
-fromPredicate pred reason x =
+filter : (a -> Bool) -> String -> Validation a a
+filter pred reason x =
     if pred x then
         Ok x
 
