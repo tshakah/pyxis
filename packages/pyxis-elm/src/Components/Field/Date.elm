@@ -6,7 +6,6 @@ module Components.Field.Date exposing
     , withSize
     , withLabel
     , withClassList
-    , withDefaultValue
     , withDisabled
     , withName
     , withPlaceholder
@@ -47,7 +46,6 @@ module Components.Field.Date exposing
 
 @docs withLabel
 @docs withClassList
-@docs withDefaultValue
 @docs withDisabled
 @docs withName
 @docs withPlaceholder
@@ -223,16 +221,9 @@ mapInputConfig builder (Config configuration) =
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Model -> Config msg -> Config msg
+withLabel : Label.Config -> Config msg -> Config msg
 withLabel label =
     mapInputConfig (Input.withLabel label)
-
-
-{-| Sets a default value to the Input Date.
--}
-withDefaultValue : Date.Date -> Model ctx -> Model ctx
-withDefaultValue defaultValue =
-    setValue (Parsed defaultValue)
 
 
 {-| Sets a ClassList to the Input Date.

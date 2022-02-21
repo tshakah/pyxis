@@ -10,7 +10,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Date"
+    "Fields/Date"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
@@ -20,8 +20,8 @@ All the properties described below concern the visual implementation of the comp
 ```
 textField : (Date.Msg -> msg) -> String -> Html msg
 textField tagger id =
-    Date.create tagger id
-        |> Date.render
+    Date.config tagger id
+        |> Date.render () (Date.init (always Ok))
 ```
 
 ## Size
@@ -35,9 +35,9 @@ You can set your TextField with a _size_ of default or small.
 ```
 textFieldWithSize : (Date.Msg -> msg) -> String -> Html msg
 textFieldWithSize tagger id =
-    Date.create tagger id
+    Date.config tagger id
         |> Date.withSize Size.small
-        |> Date.render
+        |> Date.render () (Date.init (always Ok))
 
 ```
 
@@ -47,9 +47,9 @@ textFieldWithSize tagger id =
 ```
 textFieldWithPlaceholder : (Date.Msg -> msg) -> String -> Html msg
 textFieldWithPlaceholder tagger id =
-    Date.create tagger id
+    Date.config tagger id
         |> Date.withPlaceholder "Custom placeholder"
-        |> Date.render
+        |> Date.render () (Date.init (always Ok))
 
 ```
 
@@ -57,9 +57,9 @@ textFieldWithPlaceholder tagger id =
 ```
 textFieldWithClassList : (Date.Msg -> msg) -> String -> Html msg
 textFieldWithClassList tagger id =
-    Date.create tagger id
+    Date.config tagger id
         |> Date.withDisabled True
-        |> Date.render
+        |> Date.render () (Date.init (always Ok))
 
 ```
 

@@ -1,6 +1,6 @@
 module Components.Field.Label exposing
-    ( Model
-    , create
+    ( Config
+    , config
     , withFor
     , withId
     , withSize
@@ -12,7 +12,13 @@ module Components.Field.Label exposing
 {-|
 
 
-# Label Module
+# Label component
+
+
+## Configuration
+
+@docs Config
+@docs config
 
 
 ## Types
@@ -45,7 +51,7 @@ import Html.Attributes
 
 {-| The Label model.
 -}
-type Model
+type Config
     = Model Configuration
 
 
@@ -71,8 +77,8 @@ type alias Configuration =
             |> Label.render
 
 -}
-create : String -> Model
-create text =
+config : String -> Config
+config text =
     Model
         { classList = []
         , for = Nothing
@@ -94,7 +100,7 @@ create text =
             |> Label.render
 
 -}
-withFor : String -> Model -> Model
+withFor : String -> Config -> Config
 withFor for (Model configuration) =
     Model { configuration | for = Just for }
 
@@ -110,7 +116,7 @@ withFor for (Model configuration) =
             |> Label.render
 
 -}
-withId : String -> Model -> Model
+withId : String -> Config -> Config
 withId id (Model configuration) =
     Model { configuration | id = Just id }
 
@@ -126,7 +132,7 @@ withId id (Model configuration) =
             |> Label.render
 
 -}
-withClassList : List ( String, Bool ) -> Model -> Model
+withClassList : List ( String, Bool ) -> Config -> Config
 withClassList classList (Model configuration) =
     Model { configuration | classList = classList }
 
@@ -142,7 +148,7 @@ withClassList classList (Model configuration) =
             |> Label.render
 
 -}
-withSize : Size -> Model -> Model
+withSize : Size -> Config -> Config
 withSize a (Model configuration) =
     Model { configuration | size = a }
 
@@ -158,14 +164,14 @@ withSize a (Model configuration) =
             |> Label.render
 
 -}
-withSubText : String -> Model -> Model
+withSubText : String -> Config -> Config
 withSubText text (Model configuration) =
     Model { configuration | subText = Just text }
 
 
 {-| Renders the Label.
 -}
-render : Model -> Html msg
+render : Config -> Html msg
 render (Model { for, classList, id, size, text, subText }) =
     Html.label
         [ Html.Attributes.classList

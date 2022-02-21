@@ -12,7 +12,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Text"
+    "Fields/Text"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
@@ -22,8 +22,8 @@ All the properties described below concern the visual implementation of the comp
 ```
 textField : (Text.Msg -> msg) -> String -> Html msg
 textField tagger id =
-    Text.create tagger id
-        |> Text.render
+    Text.text tagger id
+        |> Text.render () (Text.init (always Ok))
 ```
 ## Addon
 
@@ -36,9 +36,9 @@ Text field can have several addons, such as icons or texts. They are used to mak
 ```
 textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Text.create tagger id
+    Text.text tagger id
         |> Text.withAddon Placement.prepend (Text.textAddon "mq")
-        |> Text.render
+        |> Text.render () (Text.init (always Ok))
 ```
 
 ### Addon: Append Text
@@ -47,9 +47,9 @@ textFieldWithAddon tagger id =
 ```
 textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Text.create tagger id
+    Text.text tagger id
         |> Text.withAddon Placement.append (Text.textAddon "€")
-        |> Text.render
+        |> Text.render () (Text.init (always Ok))
 ```
 
 ### Addon: Prepend Icon
@@ -58,9 +58,9 @@ textFieldWithAddon tagger id =
 ```
 textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Text.create tagger id
+    Text.text tagger id
         |> Text.withAddon Placement.prepend (Text.iconAddon IconSet.AccessKey)
-        |> Text.render
+        |> Text.render () (Text.init (always Ok))
 ```
 
 ### Addon: Append Icon
@@ -69,9 +69,9 @@ textFieldWithAddon tagger id =
 ```
 textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Text.create tagger id
+    Text.text tagger id
         |> Text.withAddon Placement.append (Text.iconAddon IconSet.Bell)
-        |> Text.render
+        |> Text.render () (Text.init (always Ok))
 ```
 
 ## Size
@@ -85,9 +85,9 @@ You can set your TextField with a _size_ of default or small.
 ```
 textFieldWithSize : (Text.Msg -> msg) -> String -> Html msg
 textFieldWithSize tagger id =
-    Text.create tagger id
+    Text.text tagger id
         |> Text.withSize Size.small
-        |> Text.render
+        |> Text.render () (Text.init (always Ok))
 
 ```
 
@@ -97,9 +97,9 @@ textFieldWithSize tagger id =
 ```
 textFieldWithPlaceholder : (Text.Msg -> msg) -> String -> Html msg
 textFieldWithPlaceholder tagger id =
-    Text.create tagger id
+    Text.text tagger id
         |> Text.withPlaceholder "Custom placeholder"
-        |> Text.render
+        |> Text.render () (Text.init (always Ok))
 
 ```
 
@@ -107,9 +107,9 @@ textFieldWithPlaceholder tagger id =
 ```
 textFieldWithClassList : (Text.Msg -> msg) -> String -> Html msg
 textFieldWithClassList tagger id =
-    Text.create tagger id
+    Text.text tagger id
         |> Text.withDisabled True
-        |> Text.render
+        |> Text.render () (Text.init (always Ok))
 
 ```
 

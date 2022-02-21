@@ -1,18 +1,21 @@
 module Components.Field.Textarea exposing
     ( Model
-    , create
+    , init
+    , Config
+    , config
     , withSize
-    , withValidation
+    , withLabel
     , withClassList
-    , withDefaultValue
     , withDisabled
     , withName
     , withPlaceholder
     , Msg
+    , isOnBlur
+    , isOnFocus
+    , isOnInput
     , update
     , validate
     , getValue
-    , getValidatedValue
     , render
     )
 
@@ -22,7 +25,13 @@ module Components.Field.Textarea exposing
 # Textarea component
 
 @docs Model
-@docs create
+@docs init
+
+
+## Config
+
+@docs Config
+@docs config
 
 
 ## Size
@@ -30,15 +39,10 @@ module Components.Field.Textarea exposing
 @docs withSize
 
 
-## Validation
-
-@docs withValidation
-
-
 ## Generics
 
+@docs withLabel
 @docs withClassList
-@docs withDefaultValue
 @docs withDisabled
 @docs withName
 @docs withPlaceholder
@@ -47,6 +51,9 @@ module Components.Field.Textarea exposing
 ## Update
 
 @docs Msg
+@docs isOnBlur
+@docs isOnFocus
+@docs isOnInput
 @docs update
 @docs validate
 
@@ -54,7 +61,6 @@ module Components.Field.Textarea exposing
 ## Readers
 
 @docs getValue
-@docs getValidatedValue
 
 
 ## Rendering
@@ -64,37 +70,113 @@ module Components.Field.Textarea exposing
 -}
 
 import Commons.Attributes
-import Commons.Properties.FieldStatus as FieldStatus exposing (FieldStatus)
 import Commons.Properties.Size as Size exposing (Size)
-import Commons.Render
+import Commons.Render as CommonsRender
 import Components.Field.Error as Error
+import Components.Field.Label as Label
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
-import Maybe.Extra
+import Result.Extra
 
 
 {-| The Textarea model.
 -}
-type Model ctx msg
-    = Model (Configuration ctx msg)
+type Model ctx
+    = Model (ModelData ctx)
 
 
-{-| Internal. The internal Textarea configuration.
+{-| Internal.
 -}
-type alias Configuration ctx msg =
+type alias ModelData ctx =
+    { value : String
+    , validation : ctx -> String -> Result String String
+    }
+
+
+{-| Initializes the Textarea model.
+-}
+init : (ctx -> String -> Result String String) -> Model ctx
+init validation =
+    Model { value = "", validation = validation }
+
+
+{-| The view configuration.
+-}
+type Config msg
+    = Config (ConfigData msg)
+
+
+{-| Internal.
+-}
+type alias ConfigData msg =
     { classList : List ( String, Bool )
     , disabled : Bool
-    , errorMessage : Maybe String
     , id : String
-    , msgTagger : Msg -> msg
     , name : Maybe String
     , placeholder : Maybe String
     , size : Size
-    , status : FieldStatus.StatusList
-    , validation : ctx -> String -> Result String String
-    , value : String
+    , label : Maybe Label.Config
+    , tagger : Msg -> msg
     }
+
+
+{-| Creates a Textarea.
+-}
+config : (Msg -> msg) -> String -> Config msg
+config tagger id =
+    Config
+        { classList = []
+        , disabled = False
+        , id = id
+        , name = Nothing
+        , placeholder = Nothing
+        , size = Size.medium
+        , label = Nothing
+        , tagger = tagger
+        }
+
+
+{-| Adds a Label to the Textarea.
+-}
+withLabel : Label.Config -> Config msg -> Config msg
+withLabel a (Config configuration) =
+    Config { configuration | label = Just a }
+
+
+{-| Sets the Textarea as disabled
+-}
+withDisabled : Bool -> Config msg -> Config msg
+withDisabled isDisabled (Config configuration) =
+    Config { configuration | disabled = isDisabled }
+
+
+{-| Sets a Size to the Textarea
+-}
+withSize : Size -> Config msg -> Config msg
+withSize size (Config configuration) =
+    Config { configuration | size = size }
+
+
+{-| Sets a ClassList to the Textarea
+-}
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList classes (Config configuration) =
+    Config { configuration | classList = classes }
+
+
+{-| Sets a Name to the Textarea
+-}
+withName : String -> Config msg -> Config msg
+withName name (Config configuration) =
+    Config { configuration | name = Just name }
+
+
+{-| Sets a Placeholder to the Textarea
+-}
+withPlaceholder : String -> Config msg -> Config msg
+withPlaceholder placeholder (Config configuration) =
+    Config { configuration | placeholder = Just placeholder }
 
 
 {-| Represent the messages which the Textarea can handle.
@@ -105,188 +187,132 @@ type Msg
     | OnBlur
 
 
-{-| The update function.
+{-| Returns True if the message is triggered by `Html.Events.onInput`
 -}
-update : ctx -> Msg -> Model ctx msg -> Model ctx msg
-update ctx msg =
+isOnInput : Msg -> Bool
+isOnInput msg =
+    case msg of
+        OnInput _ ->
+            True
+
+        _ ->
+            False
+
+
+{-| Returns True if the message is triggered by `Html.Events.onFocus`
+-}
+isOnFocus : Msg -> Bool
+isOnFocus msg =
+    case msg of
+        OnFocus ->
+            True
+
+        _ ->
+            False
+
+
+{-| Returns True if the message is triggered by `Html.Events.onBlur`
+-}
+isOnBlur : Msg -> Bool
+isOnBlur msg =
     case msg of
         OnBlur ->
-            validate ctx
+            True
+
+        _ ->
+            False
+
+
+{-| The update function.
+-}
+update : ctx -> Msg -> Model ctx -> Model ctx
+update ctx msg model =
+    case msg of
+        OnBlur ->
+            model
 
         OnFocus ->
-            identity
+            model
 
         OnInput value ->
-            setValue value
-
-
-{-| Creates a Textarea.
--}
-create : (Msg -> msg) -> String -> Model ctx msg
-create msgTagger id =
-    Model
-        { classList = []
-        , disabled = False
-        , errorMessage = Nothing
-        , id = id
-        , msgTagger = msgTagger
-        , name = Nothing
-        , placeholder = Nothing
-        , size = Size.medium
-        , status = FieldStatus.initStatusList [ FieldStatus.untouched, FieldStatus.pristine ]
-        , validation = always Ok
-        , value = ""
-        }
-
-
-{-| Sets a default value to the Textarea.
--}
-withDefaultValue : String -> Model ctx msg -> Model ctx msg
-withDefaultValue defaultValue (Model configuration) =
-    Model { configuration | value = defaultValue }
-        |> addFieldStatus FieldStatus.default
-
-
-{-| Add a Validation set of rules to the Textarea.
--}
-withValidation : (ctx -> String -> Result String String) -> Model ctx msg -> Model ctx msg
-withValidation validation (Model configuration) =
-    Model { configuration | validation = validation }
-
-
-{-| Sets the Textarea as disabled
--}
-withDisabled : Bool -> Model ctx msg -> Model ctx msg
-withDisabled isDisabled (Model configuration) =
-    Model { configuration | disabled = isDisabled }
-
-
-{-| Sets a Size to the Textarea
--}
-withSize : Size -> Model ctx msg -> Model ctx msg
-withSize size (Model configuration) =
-    Model { configuration | size = size }
-
-
-{-| Sets a ClassList to the Textarea
--}
-withClassList : List ( String, Bool ) -> Model ctx msg -> Model ctx msg
-withClassList classes (Model configuration) =
-    Model { configuration | classList = classes }
-
-
-{-| Sets a Name to the Textarea
--}
-withName : String -> Model ctx msg -> Model ctx msg
-withName name (Model configuration) =
-    Model { configuration | name = Just name }
-
-
-{-| Sets a Placeholder to the Textarea
--}
-withPlaceholder : String -> Model ctx msg -> Model ctx msg
-withPlaceholder placeholder (Model configuration) =
-    Model { configuration | placeholder = Just placeholder }
+            setValue value model
 
 
 {-| Internal.
 -}
-setValue : String -> Model ctx msg -> Model ctx msg
-setValue value (Model configuration) =
-    Model { configuration | value = value }
+setValue : String -> Model ctx -> Model ctx
+setValue value (Model data) =
+    Model { data | value = value }
 
 
 {-| Validate and update the internal model.
 -}
-validate : ctx -> Model ctx msg -> Model ctx msg
-validate ctx ((Model { validation, value }) as model) =
-    let
-        validationResult : Result String String
-        validationResult =
-            validation ctx value
-    in
-    model
-        |> addFieldStatus (FieldStatus.fromResult validationResult)
-        |> setErrorMessage (getErrorMessage validationResult)
-
-
-{-| Internal.
--}
-getErrorMessage : Result String String -> Maybe String
-getErrorMessage result =
-    case result of
-        Ok _ ->
-            Nothing
-
-        Err error ->
-            Just error
-
-
-{-| Internal.
--}
-setErrorMessage : Maybe String -> Model ctx msg -> Model ctx msg
-setErrorMessage error (Model configuration) =
-    Model { configuration | errorMessage = error }
-
-
-{-| Internal.
--}
-addFieldStatus : FieldStatus -> Model ctx msg -> Model ctx msg
-addFieldStatus fieldStatus (Model configuration) =
-    Model { configuration | status = FieldStatus.addStatus fieldStatus configuration.status }
+validate : ctx -> Model ctx -> Result String String
+validate ctx (Model { validation, value }) =
+    validation ctx value
 
 
 {-| Returns the current value of the Textarea.
 -}
-getValue : Model ctx msg -> String
-getValue (Model configuration) =
-    configuration.value
-
-
-{-| Returns the validated value of the Input Text.
--}
-getValidatedValue : ctx -> Model ctx msg -> Result String String
-getValidatedValue ctx (Model { validation, value }) =
-    validation ctx value
+getValue : Model ctx -> String
+getValue (Model { value }) =
+    value
 
 
 {-| Renders the Textarea.
 -}
-render : Model ctx msg -> Html msg
-render (Model configuration) =
+render : ctx -> Model ctx -> Config msg -> Html msg
+render ctx ((Model modelData) as model) ((Config configData) as configuration) =
     Html.div
-        [ Attributes.classList
-            [ ( "form-field", True )
-            , ( "form-field--error", configuration.errorMessage /= Nothing )
-            , ( "form-field--disabled", configuration.disabled )
+        [ Attributes.class "form-item" ]
+        [ configData.label
+            |> Maybe.map Label.render
+            |> CommonsRender.renderMaybe
+        , Html.div
+            [ Attributes.class "form-item__wrapper" ]
+            [ Html.div
+                [ Attributes.classList
+                    [ ( "form-field", True )
+                    , ( "form-field--error", Result.Extra.isErr (modelData.validation ctx modelData.value) )
+                    , ( "form-field--disabled", configData.disabled )
+                    ]
+                ]
+                [ renderTextarea ctx model configuration
+                ]
+            , modelData.value
+                |> modelData.validation ctx
+                |> Error.fromResult
+                |> Maybe.map (Error.withId configData.id >> Error.render)
+                |> CommonsRender.renderMaybe
             ]
         ]
-        [ renderTextarea configuration
-        , configuration.errorMessage
-            |> Maybe.map (Error.create >> Error.withId configuration.id >> Error.render)
-            |> Commons.Render.renderMaybe
-        ]
+
+
+
+--|> Html.map configData.tagger
 
 
 {-| Internal.
 -}
-renderTextarea : Configuration ctx msg -> Html msg
-renderTextarea configuration =
+renderTextarea : ctx -> Model ctx -> Config msg -> Html msg
+renderTextarea ctx (Model modelData) (Config configData) =
     Html.textarea
-        [ Attributes.id configuration.id
+        [ Attributes.id configData.id
         , Attributes.classList
             [ ( "form-field__textarea", True )
-            , ( "form-field__textarea--small", Size.isSmall configuration.size )
+            , ( "form-field__textarea--small", Size.isSmall configData.size )
             ]
-        , Attributes.classList configuration.classList
-        , Attributes.disabled configuration.disabled
-        , Attributes.value configuration.value
-        , Commons.Attributes.testId configuration.id
-        , Commons.Attributes.maybe Attributes.name configuration.name
-        , Commons.Attributes.maybe Attributes.placeholder configuration.placeholder
-        , Commons.Attributes.renderIf (Maybe.Extra.isJust configuration.errorMessage) (Commons.Attributes.ariaDescribedBy (Error.toId configuration.id))
-        , Html.Events.onInput (OnInput >> configuration.msgTagger)
-        , Html.Events.onFocus (configuration.msgTagger OnFocus)
-        , Html.Events.onBlur (configuration.msgTagger OnBlur)
+        , Attributes.classList configData.classList
+        , Attributes.disabled configData.disabled
+        , Attributes.value modelData.value
+        , Commons.Attributes.testId configData.id
+        , Commons.Attributes.maybe Attributes.name configData.name
+        , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
+        , Commons.Attributes.renderIf
+            (Result.Extra.isOk (modelData.validation ctx modelData.value))
+            (Commons.Attributes.ariaDescribedBy (Error.toId configData.id))
+        , Html.Events.onInput (OnInput >> configData.tagger)
+        , Html.Events.onFocus (configData.tagger OnFocus)
+        , Html.Events.onBlur (configData.tagger OnBlur)
         ]
         []

@@ -8,6 +8,7 @@ import Components.Field.Date as Date
 import Components.Field.Label as Label
 import Components.Field.Number as Number
 import Components.Field.Text as Text
+import Components.Field.Textarea as Textarea
 import Components.Form as Form
 import Components.Form.FieldSet as FieldSet
 import Components.Form.Grid.Column as GridColumn
@@ -30,6 +31,7 @@ main =
 type Msg
     = Submit
     | TextFieldChanged TextField Text.Msg
+    | TextareaFieldChanged TextareaField Textarea.Msg
     | DateFieldChanged DateField Date.Msg
     | NumberFieldChanged NumberField Number.Msg
 
@@ -45,6 +47,7 @@ initialModel =
         Data
             { firstName = Text.init notEmptyStringValidation
             , lastName = Text.init notEmptyStringValidation
+            , notes = Textarea.init notEmptyStringValidation
             , age = Number.init ageValidation
             , birth = Date.init birthValidation
             , email = Text.init notEmptyStringValidation
@@ -58,6 +61,7 @@ type Data
     = Data
         { firstName : Text.Model Data
         , lastName : Text.Model Data
+        , notes : Textarea.Model Data
         , age : Number.Model Data
         , birth : Date.Model Data
         , email : Text.Model Data
@@ -71,6 +75,10 @@ type TextField
     | LastName
     | Email
     | Password
+
+
+type TextareaField
+    = Notes
 
 
 type NumberField
@@ -135,6 +143,9 @@ update msg model =
         DateFieldChanged Birth subMsg ->
             mapData (\(Data d) -> Data { d | birth = Date.update (Data d) subMsg d.birth }) model
 
+        TextareaFieldChanged Notes subMsg ->
+            mapData (\(Data d) -> Data { d | notes = Textarea.update (Data d) subMsg d.notes }) model
+
 
 mapData : (Data -> Data) -> Model -> Model
 mapData mapper model =
@@ -175,7 +186,11 @@ viewUserFieldSet ((Data config) as data) =
         |> FieldSet.withRow
             ("first_name"
                 |> Text.text (TextFieldChanged FirstName)
-                |> Text.withLabel (Label.create "First name")
+                |> Text.withLabel
+                    ("First name"
+                        |> Label.config
+                        |> Label.withSubText "Lorem ipsum dolor sit amet."
+                    )
                 |> Text.render data config.firstName
                 |> List.singleton
                 |> viewOneColumnRow
@@ -183,7 +198,11 @@ viewUserFieldSet ((Data config) as data) =
         |> FieldSet.withRow
             ("last_name"
                 |> Text.text (TextFieldChanged LastName)
-                |> Text.withLabel (Label.create "Last name")
+                |> Text.withLabel
+                    ("Last name"
+                        |> Label.config
+                        |> Label.withSubText "Lorem ipsum dolor sit amet."
+                    )
                 |> Text.render data config.lastName
                 |> List.singleton
                 |> viewOneColumnRow
@@ -191,16 +210,24 @@ viewUserFieldSet ((Data config) as data) =
         |> FieldSet.withRow
             ("age"
                 |> Number.config (NumberFieldChanged Age)
-                |> Number.withLabel (Label.create "Age")
+                |> Number.withLabel (Label.config "Age")
                 |> Number.render data config.age
                 |> List.singleton
                 |> viewTwoColumnsRow
                     ("birth_date"
                         |> Date.config (DateFieldChanged Birth)
-                        |> Date.withLabel (Label.create "Birth date")
+                        |> Date.withLabel (Label.config "Birth date")
                         |> Date.render data config.birth
                         |> List.singleton
                     )
+            )
+        |> FieldSet.withRow
+            ("notes"
+                |> Textarea.config (TextareaFieldChanged Notes)
+                |> Textarea.withLabel (Label.config "Notes")
+                |> Textarea.render data config.notes
+                |> List.singleton
+                |> viewOneColumnRow
             )
 
 
@@ -217,7 +244,7 @@ viewLoginFieldSet ((Data config) as data) =
         |> FieldSet.withRow
             ("email"
                 |> Text.text (TextFieldChanged Email)
-                |> Text.withLabel (Label.create "Email")
+                |> Text.withLabel (Label.config "Email")
                 |> Text.withAddon Placement.append (Text.iconAddon IconSet.Mail)
                 |> Text.render data config.email
                 |> List.singleton
@@ -226,7 +253,7 @@ viewLoginFieldSet ((Data config) as data) =
         |> FieldSet.withRow
             ("password"
                 |> Text.text (TextFieldChanged Password)
-                |> Text.withLabel (Label.create "Password")
+                |> Text.withLabel (Label.config "Password")
                 |> Text.withAddon Placement.append (Text.iconAddon IconSet.Lock)
                 |> Text.render data config.password
                 |> List.singleton

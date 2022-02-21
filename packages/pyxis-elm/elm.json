@@ -17,10 +17,8 @@
         "Components.Form.Grid.Row",
         "Components.Icon",
         "Components.IconSet",
-        "Commons.Properties.FieldStatus",
         "Commons.Properties.Size",
-        "Commons.Properties.Theme",
-        "Commons.Validation"
+        "Commons.Properties.Theme"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {

@@ -9,7 +9,6 @@ module Components.Field.Number exposing
     , withSize
     , withLabel
     , withClassList
-    , withDefaultValue
     , withDisabled
     , withName
     , withPlaceholder
@@ -54,7 +53,6 @@ module Components.Field.Number exposing
 
 @docs withLabel
 @docs withClassList
-@docs withDefaultValue
 @docs withDisabled
 @docs withName
 @docs withPlaceholder
@@ -209,16 +207,9 @@ textAddon =
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Model -> Config msg -> Config msg
+withLabel : Label.Config -> Config msg -> Config msg
 withLabel label =
     mapInputConfig (Input.withLabel label)
-
-
-{-| Sets a default value to the Input Number.
--}
-withDefaultValue : Int -> Model msg -> Model msg
-withDefaultValue defaultValue =
-    setValue defaultValue
 
 
 {-| Sets a ClassList to the Input Number.

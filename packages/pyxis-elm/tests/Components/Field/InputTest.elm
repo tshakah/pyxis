@@ -23,7 +23,7 @@ type Msg
 
 suite : Test
 suite =
-    Test.describe "Input component"
+    Test.describe "The Input component"
         [ Test.test "renders the `form-field__text` class" <|
             \() ->
                 fieldConfig
@@ -34,7 +34,7 @@ suite =
             [ Test.fuzz Fuzz.string "should be rendered correctly" <|
                 \s ->
                     fieldConfig
-                        |> Input.withLabel (LabelField.create s)
+                        |> Input.withLabel (LabelField.config s)
                         |> fieldRender () fieldModel
                         |> findLabel
                         |> Query.has [ Selector.text s ]

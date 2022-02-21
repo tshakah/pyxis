@@ -6,110 +6,63 @@ import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import Html.Attributes
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Textarea"
+    "Fields/Textarea"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
-
-Textarea is used when the user may insert longer form content, typically spanning across multiple lines.
-It can hold any amount of text and in doing so it grows in height.
-Unlike text fields, textarea doesn't support addons.
+All the properties described below concern the visual implementation of the component.
 
 <component with-label="Textarea" />
 ```
-import Components.Field.Textarea as Textarea
-
-textarea: (Textarea.Msg -> msg) -> String -> Html msg
-textarea tagger id =
-    Textarea.create tagger id
-        |> Textarea.render
+textareaField : (Textarea.Msg -> msg) -> String -> Html msg
+textareaField tagger id =
+    Textarea.config tagger id
+        |> Textarea.render () (Textarea.init (always Ok))
 ```
-## State
-Textarea has default (with placeholder), hover, focus, filled, error and disable states.
 
-### Default with placeholder
+## Size
+
+Sizes set the occupied space of the text-field.
+You can set your TextField with a _size_ of default or small.
+
+### Size: Small
+<component with-label="Textarea withSize small" />
+
+```
+textFieldWithSize : (Textarea.Msg -> msg) -> String -> Html msg
+textFieldWithSize tagger id =
+    Textarea.config tagger id
+        |> Textarea.withSize Size.small
+        |> Textarea.render () (Textarea.init (always Ok))
+
+```
+
+## Others
+
 <component with-label="Textarea withPlaceholder" />
 ```
-import Components.Field.Textarea as Textarea
+textFieldWithPlaceholder : (Textarea.Msg -> msg) -> String -> Html msg
+textFieldWithPlaceholder tagger id =
+    Textarea.config tagger id
+        |> Textarea.withPlaceholder "Custom placeholder"
+        |> Textarea.render () (Textarea.init (always Ok))
 
-textarea: (Textarea.Msg -> msg) -> String -> Html msg
-textarea tagger id =
-    Textarea.create tagger id
-        |> Textarea.withPlaceholder "Textarea"
-        |> Textarea.render
 ```
 
-### Disabled
 <component with-label="Textarea withDisabled" />
 ```
-import Components.Field.Textarea as Textarea
-
-textarea: (Textarea.Msg -> msg) -> String -> Html msg
-textarea tagger id =
-    Textarea.create tagger id
-        |> Textarea.withPlaceholder "Textarea"
+textFieldWithClassList : (Textarea.Msg -> msg) -> String -> Html msg
+textFieldWithClassList tagger id =
+    Textarea.config tagger id
         |> Textarea.withDisabled True
-        |> Textarea.render
-```
----
-## Validation
-Add a list of validation function to the modifier. In the example, please try to blur with empty text and
-you'll see the error.
-<component with-label="Textarea withValidation" />
-```
-import Components.Field.Textarea as Textarea
+        |> Textarea.render () (Textarea.init (always Ok))
 
-textarea: (Textarea.Msg -> msg) -> String -> Html msg
-textarea tagger id =
-    Textarea.create tagger id
-        |> Textarea.withPlaceholder "Textarea"
-        |> Textarea.withValidation []
-        |> Textarea.render
 ```
----
-## Size: small
-<component with-label="Textarea withSize small" />
-```
-import Components.Field.Textarea as Textarea
 
-textarea: (Textarea.Msg -> msg) -> String -> Html msg
-textarea tagger id =
-    Textarea.create tagger id
-        |> Textarea.withPlaceholder "Textarea"
-        |> Textarea.withSize Size.small
-        |> Textarea.render
-```
----
-## With default value
-<component with-label="Textarea withDefaultValue" />
-```
-import Components.Field.Textarea as Textarea
-
-textarea: (Textarea.Msg -> msg) -> String -> Html msg
-textarea tagger id =
-    Textarea.create tagger id
-        |> Textarea.withPlaceholder "Textarea"
-        |> Textarea.withDefaultValue "This is a default text."
-        |> Textarea.render
-```
----
-## With name
-<component with-label="Textarea withName" />
-```
-import Components.Field.Textarea as Textarea
-
-textarea: (Textarea.Msg -> msg) -> String -> Html msg
-textarea tagger id =
-    Textarea.create tagger id
-        |> Textarea.withPlaceholder "Textarea"
-        |> Textarea.withName "textarea-name"
-        |> Textarea.render
-```
 ---
 ## Accessibility
 Whenever possible, please use the label element to associate text with form elements explicitly, with the
@@ -118,149 +71,52 @@ Whenever possible, please use the label element to associate text with form elem
 
 
 type alias SharedState x =
-    { x
-        | textarea : Textarea
-    }
-
-
-type alias FormData =
-    {}
-
-
-type alias Textarea =
-    { base : Textarea.Model FormData Msg
-    , withNonGraphicalApi : Textarea.Model FormData Msg
-    }
+    { x | textarea : Model }
 
 
 type alias Model =
-    Textarea
+    { state : Textarea.Model {}
+    , config : Textarea.Config Msg
+    }
 
 
 type Msg
-    = OnTextareaMsg Textarea.Msg
+    = OnTextFieldMsg Textarea.Msg
 
 
 init : Model
 init =
-    { base = Textarea.create OnTextareaMsg "base"
-    , withNonGraphicalApi =
-        Textarea.create OnTextareaMsg "withNonGraphicalApi"
-            |> Textarea.withValidation requiredTextarea
+    { state = Textarea.init (always Ok)
+    , config = Textarea.config OnTextFieldMsg "base"
     }
-
-
-requiredTextarea : FormData -> String -> Result String String
-requiredTextarea _ value =
-    if value |> String.trim |> String.isEmpty then
-        Err "Field can not be empty"
-
-    else
-        Ok value
-
-
-sizeComponents : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
-sizeComponents =
-    [ ( "Textarea withSize small"
-      , statelessComponent "Textarea small" (Textarea.withSize Size.small)
-      )
-    ]
-
-
-otherGraphicalApiComponents : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
-otherGraphicalApiComponents =
-    [ ( "Textarea withDefaultValue"
-      , statelessComponent "Textarea withDefaultValue" (Textarea.withDefaultValue "Default Value")
-      )
-    , ( "Textarea withDisabled"
-      , statelessComponent "Textarea withDisabled" (Textarea.withDisabled True)
-      )
-    , ( "Textarea withPlaceholder"
-      , statelessComponent "Textarea withPlaceholder" (Textarea.withPlaceholder "Custom placeholder")
-      )
-    , ( "Textarea withName"
-      , statelessComponent "Textarea withName" (Textarea.withName "Textarea name")
-      )
-    ]
 
 
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
     [ ( "Textarea"
-      , statelessComponent "Textarea" identity
+      , statelessComponent identity
       )
-    , ( "Textarea withValidation"
-      , statefulComponent
-            "Textarea with Validation"
-            .withNonGraphicalApi
-            (\state model -> maptextarea (setWithNonGraphicalApi model) state)
+    , ( "Textarea withSize small"
+      , statelessComponent (Textarea.withSize Size.small)
+      )
+    , ( "Textarea withDisabled"
+      , statelessComponent (Textarea.withDisabled True)
+      )
+    , ( "Textarea withPlaceholder"
+      , statelessComponent (Textarea.withPlaceholder "Custom placeholder")
       )
     ]
-        ++ sizeComponents
-        ++ otherGraphicalApiComponents
 
 
-maptextarea : (Textarea -> Textarea) -> SharedState x -> SharedState x
-maptextarea updater state =
-    { state | textarea = updater state.textarea }
-
-
-setBase : Textarea.Model FormData Msg -> Textarea -> Textarea
-setBase newModel textarea =
-    { textarea | base = newModel }
-
-
-setWithNonGraphicalApi : Textarea.Model FormData Msg -> Textarea -> Textarea
-setWithNonGraphicalApi newModel textarea =
-    { textarea | withNonGraphicalApi = newModel }
-
-
-fromState : (Textarea -> Textarea.Model FormData Msg) -> SharedState x -> Textarea.Model FormData Msg
-fromState mapper =
-    .textarea >> mapper
-
-
-updateInternal : Msg -> Textarea.Model FormData Msg -> Textarea.Model FormData Msg
-updateInternal (OnTextareaMsg msg) model =
-    Textarea.update {} msg model
-
-
-withErrorWrapper : Html msg -> Html msg
-withErrorWrapper component =
-    Html.div [ Html.Attributes.style "margin-bottom" "20px" ] [ component ]
-
-
-statelessComponent : String -> (Textarea.Model FormData Msg -> Textarea.Model FormData Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
-statelessComponent placeholder modifier { textarea } =
-    textarea.base
-        |> Textarea.withPlaceholder placeholder
+statelessComponent : (Textarea.Config Msg -> Textarea.Config Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent modifier { textarea } =
+    textarea.config
         |> modifier
-        |> Textarea.render
+        |> Textarea.render {} textarea.state
         |> Html.map
             (ElmBook.Actions.mapUpdate
-                { toState = \state model -> maptextarea (setBase model) state
-                , fromState = .textarea >> .base
-                , update = \(OnTextareaMsg msg) model -> Textarea.update {} msg model
-                }
-            )
-
-
-statefulComponent :
-    String
-    -> (Textarea -> Textarea.Model FormData Msg)
-    -> (SharedState x -> Textarea.Model FormData Msg -> SharedState x)
-    -> SharedState x
-    -> Html (ElmBook.Msg (SharedState x))
-statefulComponent placeholder mapper toState sharedModel =
-    sharedModel.textarea
-        |> mapper
-        |> Textarea.withPlaceholder placeholder
-        |> Textarea.render
-        |> withErrorWrapper
-        |> Html.map
-            (ElmBook.Actions.mapUpdate
-                { toState = toState
-                , fromState = fromState mapper
-                , update = updateInternal
+                { toState = \state model -> { state | textarea = model }
+                , fromState = .textarea
+                , update = \(OnTextFieldMsg msg) model -> { model | state = Textarea.update {} msg model.state }
                 }
             )

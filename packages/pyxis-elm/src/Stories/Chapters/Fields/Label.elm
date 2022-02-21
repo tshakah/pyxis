@@ -9,7 +9,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter sharedState
 docs =
-    "Label"
+    "Fields/Label"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withComponentList componentsList
         |> ElmBook.Chapter.render """
@@ -22,7 +22,7 @@ import Components.Field.Label as Label
 
 myLabel: Html msg
 myLabel =
-    Label.create "Label"
+    Label.config "Label"
         |> Label.render
 ```
 
@@ -33,7 +33,7 @@ import Components.Field.Label as Label
 
 myLabel: Html msg
 myLabel =
-    Label.create "Label"
+    Label.config "Label"
         |> Label.withFor "input-id"
         |> Label.render
 ```
@@ -47,7 +47,7 @@ attribute with the same value of the id received.
 -}
 myLabel: Html msg
 myLabel =
-    Label.create "Label"
+    Label.config "Label"
         |> Label.withId "label-id"
         |> Label.render
 ```
@@ -61,7 +61,7 @@ import Components.Field.Label as Label
 
 myLabel: Html msg
 myLabel =
-    Label.create "Main label"
+    Label.config "Main label"
         |> Label.withSubText "This is an additional text"
         |> Label.render
 ```
@@ -74,7 +74,7 @@ import Commons.Properties.Size as Size
 
 myLabel: Html msg
 myLabel =
-    Label.create "Smaller label"
+    Label.config "Smaller label"
         |> Label.withSize Size.small
         |> Label.render
 ```
@@ -88,26 +88,26 @@ them together.
 componentsList : List ( String, Html (ElmBook.Msg state) )
 componentsList =
     [ ( "Label"
-      , Label.create "Label"
+      , Label.config "Label"
             |> Label.render
       )
     , ( "For"
-      , Label.create "Label"
+      , Label.config "Label"
             |> Label.withFor "input-id"
             |> Label.render
       )
     , ( "Id"
-      , Label.create "Label"
+      , Label.config "Label"
             |> Label.withId "label-id"
             |> Label.render
       )
     , ( "Additional text"
-      , Label.create "Main label"
+      , Label.config "Main label"
             |> Label.withSubText "This is an additional text"
             |> Label.render
       )
     , ( "Small"
-      , Label.create "Smaller label"
+      , Label.config "Smaller label"
             |> Label.withSize Size.small
             |> Label.render
       )

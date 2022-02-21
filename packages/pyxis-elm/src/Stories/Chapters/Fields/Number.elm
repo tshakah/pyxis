@@ -12,7 +12,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Number"
+    "Fields/Number"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
@@ -22,8 +22,8 @@ All the properties described below concern the visual implementation of the comp
 ```
 textField : (Number.Msg -> msg) -> String -> Html msg
 textField tagger id =
-    Number.create tagger id
-        |> Number.render
+    Number.config tagger id
+        |> Number.render () (Number.init (always Ok))
 ```
 ## Addon
 
@@ -36,9 +36,9 @@ Number field can have several addons, such as icons or texts. They are used to m
 ```
 textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Number.create tagger id
+    Number.config tagger id
         |> Number.withAddon Placement.prepend (Number.textAddon "mq")
-        |> Number.render
+        |> Number.render () (Number.init (always Ok))
 ```
 
 ### Addon: Append Text
@@ -47,9 +47,9 @@ textFieldWithAddon tagger id =
 ```
 textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Number.create tagger id
+    Number.config tagger id
         |> Number.withAddon Placement.append (Number.textAddon "€")
-        |> Number.render
+        |> Number.render () (Number.init (always Ok))
 ```
 
 ### Addon: Prepend Icon
@@ -58,9 +58,9 @@ textFieldWithAddon tagger id =
 ```
 textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Number.create tagger id
+    Number.config tagger id
         |> Number.withAddon Placement.prepend (Number.iconAddon IconSet.AccessKey)
-        |> Number.render
+        |> Number.render () (Number.init (always Ok))
 ```
 
 ### Addon: Append Icon
@@ -69,9 +69,9 @@ textFieldWithAddon tagger id =
 ```
 textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
 textFieldWithAddon tagger id =
-    Number.create tagger id
+    Number.config tagger id
         |> Number.withAddon Placement.append (Number.iconAddon IconSet.Bell)
-        |> Number.render
+        |> Number.render () (Number.init (always Ok))
 ```
 
 ## Size
@@ -85,9 +85,9 @@ You can set your TextField with a _size_ of default or small.
 ```
 textFieldWithSize : (Number.Msg -> msg) -> String -> Html msg
 textFieldWithSize tagger id =
-    Number.create tagger id
+    Number.config tagger id
         |> Number.withSize Size.small
-        |> Number.render
+        |> Number.render () (Number.init (always Ok))
 
 ```
 
@@ -97,9 +97,9 @@ textFieldWithSize tagger id =
 ```
 textFieldWithPlaceholder : (Number.Msg -> msg) -> String -> Html msg
 textFieldWithPlaceholder tagger id =
-    Number.create tagger id
+    Number.config tagger id
         |> Number.withPlaceholder "Custom placeholder"
-        |> Number.render
+        |> Number.render () (Number.init (always Ok))
 
 ```
 
@@ -107,9 +107,9 @@ textFieldWithPlaceholder tagger id =
 ```
 textFieldWithClassList : (Number.Msg -> msg) -> String -> Html msg
 textFieldWithClassList tagger id =
-    Number.create tagger id
+    Number.config tagger id
         |> Number.withDisabled True
-        |> Number.render
+        |> Number.render () (Number.init (always Ok))
 
 ```
 

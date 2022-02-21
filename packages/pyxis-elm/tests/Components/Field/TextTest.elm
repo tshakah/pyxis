@@ -21,7 +21,7 @@ type Msg
 
 suite : Test
 suite =
-    Test.describe "The TextField component"
+    Test.describe "The Text component"
         [ Test.describe "Default"
             [ Test.test "the input has an id and a data-test-id" <|
                 \() ->
@@ -38,7 +38,7 @@ suite =
             [ Test.fuzz Fuzz.string "the input has label" <|
                 \s ->
                     fieldConfig
-                        |> TextField.withLabel (LabelField.create s)
+                        |> TextField.withLabel (LabelField.config s)
                         |> fieldRender () fieldModel
                         |> findLabel
                         |> Query.has
@@ -108,11 +108,7 @@ suite =
                                 [ Selector.classes [ s3 ]
                                 ]
                             ]
-            , let
-                textAddon =
-                    "Currency"
-              in
-              Test.describe "Addon"
+            , Test.describe "Addon"
                 [ Test.describe "Should render the right class"
                     [ Test.describe "Icon addon"
                         [ Test.test "append positioning should be rendered correctly" <|
@@ -135,25 +131,25 @@ suite =
                                         ]
                         ]
                     , Test.describe "Text addon"
-                        [ Test.test "append positioning should be rendered correctly" <|
-                            \() ->
+                        [ Test.fuzz Fuzz.string "append positioning should be rendered correctly" <|
+                            \s ->
                                 fieldConfig
-                                    |> TextField.withAddon Placement.append (TextField.textAddon textAddon)
+                                    |> TextField.withAddon Placement.append (TextField.textAddon s)
                                     |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-append-text"
                                         , Selector.class "form-field__addon"
-                                        , Selector.text textAddon
+                                        , Selector.text s
                                         ]
-                        , Test.test "prepend positioning should be rendered correctly" <|
-                            \() ->
+                        , Test.fuzz Fuzz.string "prepend positioning should be rendered correctly" <|
+                            \s ->
                                 fieldConfig
-                                    |> TextField.withAddon Placement.prepend (TextField.textAddon textAddon)
+                                    |> TextField.withAddon Placement.prepend (TextField.textAddon s)
                                     |> fieldRender () fieldModel
                                     |> Query.has
                                         [ Selector.class "form-field--with-prepend-text"
                                         , Selector.class "form-field__addon"
-                                        , Selector.text textAddon
+                                        , Selector.text s
                                         ]
                         ]
                     ]

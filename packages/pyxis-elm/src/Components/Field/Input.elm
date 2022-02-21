@@ -152,7 +152,7 @@ type Config msg
         , size : Size
         , type_ : Type
         , disabled : Bool
-        , label : Maybe Label.Model
+        , label : Maybe Label.Config
         }
 
 
@@ -298,7 +298,7 @@ withAddon placement type_ (Config configuration) =
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Model -> Config msg -> Config msg
+withLabel : Label.Config -> Config msg -> Config msg
 withLabel a (Config configuration) =
     Config { configuration | label = Just a }
 

@@ -20,7 +20,7 @@ type Msg
 
 suite : Test
 suite =
-    Test.describe "The TextField component"
+    Test.describe "The Date component"
         [ Test.describe "Default"
             [ Test.test "the input has an id and a data-test-id" <|
                 \() ->
@@ -37,7 +37,7 @@ suite =
             [ Test.fuzz Fuzz.string "the input has label" <|
                 \s ->
                     fieldConfig
-                        |> DateField.withLabel (LabelField.create s)
+                        |> DateField.withLabel (LabelField.config s)
                         |> fieldRender () fieldModel
                         |> findLabel
                         |> Query.has

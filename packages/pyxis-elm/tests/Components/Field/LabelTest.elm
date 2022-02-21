@@ -14,7 +14,7 @@ suite =
         [ Test.describe "Default"
             [ Test.test "has a textual content" <|
                 \() ->
-                    Label.create "My label"
+                    Label.config "My label"
                         |> Label.render
                         |> Query.fromHtml
                         |> Query.has
@@ -25,7 +25,7 @@ suite =
             , Test.describe "Size"
                 [ Test.test "is small" <|
                     \() ->
-                        Label.create "My label"
+                        Label.config "My label"
                             |> Label.withSize Size.small
                             |> Label.render
                             |> Query.fromHtml
@@ -34,7 +34,7 @@ suite =
             , Test.describe "With a sub-text"
                 [ Test.test "creates a 'small' tag" <|
                     \() ->
-                        Label.create "My label"
+                        Label.config "My label"
                             |> Label.withSubText "Sub-level text"
                             |> Label.render
                             |> Query.fromHtml
@@ -47,14 +47,14 @@ suite =
             , Test.describe "Generics"
                 [ Test.test "has a for attribute" <|
                     \() ->
-                        Label.create "My label"
+                        Label.config "My label"
                             |> Label.withFor "input-id"
                             |> Label.render
                             |> Query.fromHtml
                             |> Query.has [ attribute (Html.Attributes.for "input-id") ]
                 , Test.test "has a class list" <|
                     \() ->
-                        Label.create "My label"
+                        Label.config "My label"
                             |> Label.withClassList
                                 [ ( "my-class", True )
                                 , ( "my-other-class", True )
@@ -64,7 +64,7 @@ suite =
                             |> Query.has [ classes [ "my-class", "my-other-class" ] ]
                 , Test.test "has an id" <|
                     \() ->
-                        Label.create "My label"
+                        Label.config "My label"
                             |> Label.withId "label-id"
                             |> Label.render
                             |> Query.fromHtml

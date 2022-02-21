@@ -12,7 +12,7 @@ import PrimaFunction
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Select"
+    "Fields/Select"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
