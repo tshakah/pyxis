@@ -20,7 +20,6 @@ module Components.Field.RadioGroup exposing
     , update
     , getValue
     , render
-    , setValidation
     )
 
 {-|
@@ -85,12 +84,13 @@ module Components.Field.RadioGroup exposing
 
 -}
 
-import Commons.Attributes as CA
-import Commons.Render as CR
+import Commons.Attributes as CommonsAttributes
+import Commons.Render as CommonsRender
+import Components.Field.Error as Error
 import Html
 import Html.Attributes as Attributes
 import Html.Events as Events
-import Maybe.Extra
+import Result.Extra
 
 
 {-| The RadioGroup model.
@@ -115,15 +115,18 @@ init validation defaultValue =
 {-| The RadioGroup configuration.
 -}
 type Config value
-    = Config
-        { ariaLabelledBy : Maybe String
-        , classList : List ( String, Bool )
-        , id : String
-        , isDisabled : Bool
-        , layout : Layout
-        , name : Maybe String
-        , options : List (Option value)
-        }
+    = Config (ConfigData value)
+
+
+type alias ConfigData value =
+    { ariaLabelledBy : Maybe String
+    , classList : List ( String, Bool )
+    , id : String
+    , isDisabled : Bool
+    , layout : Layout
+    , name : Maybe String
+    , options : List (Option value)
+    }
 
 
 {-| Initialize the RadioGroup Config.
@@ -243,44 +246,48 @@ option =
 {-| Render the RadioGroup.
 -}
 render : (Msg value -> msg) -> ctx -> Model value ctx -> Config value -> Html.Html msg
-render tagger ctx (Model model) (Config configuration) =
+render tagger ctx ((Model modelData) as model) (Config configData) =
     let
-        errorMessage : Maybe String
-        errorMessage =
-            model.validation ctx model.selectedValue |> resultToErrorMessage
+        isValueValid : Bool
+        isValueValid =
+            isValid ctx model
     in
     Html.div
         [ Attributes.classList
-            ([ ( "form-control-group", True )
-             , ( "form-control-group--column", configuration.layout == Vertical )
-             ]
-                ++ configuration.classList
-            )
-        , Attributes.id configuration.id
-        , CA.role "radiogroup"
-        , CA.maybe (always (CA.ariaDescribedBy (errorMessageId configuration.id))) errorMessage
-        , CA.maybe CA.ariaLabelledbyBy configuration.ariaLabelledBy
+            [ ( "form-control-group", True )
+            , ( "form-control-group--column", configData.layout == Vertical )
+            ]
+        , Attributes.classList configData.classList
+        , Attributes.id configData.id
+        , CommonsAttributes.role "radiogroup"
+        , CommonsAttributes.renderIf isValueValid (CommonsAttributes.ariaDescribedBy (errorMessageId configData.id))
+        , CommonsAttributes.maybe CommonsAttributes.ariaLabelledbyBy configData.ariaLabelledBy
         ]
         (List.map
             (viewRadio
-                configuration
-                model.selectedValue
-                errorMessage
+                configData
+                modelData.selectedValue
+                isValueValid
             )
-            configuration.options
-            ++ [ Maybe.map (viewError configuration.id) errorMessage |> CR.renderMaybe ]
+            configData.options
+            ++ [ modelData.selectedValue
+                    |> modelData.validation ctx
+                    |> Error.fromResult
+                    |> Maybe.map (Error.withId configData.id >> Error.render)
+                    |> CommonsRender.renderMaybe
+               ]
         )
         |> Html.map tagger
 
 
 {-| Internal.
 -}
-viewRadio : { a | id : String, name : Maybe String, isDisabled : Bool } -> value -> Maybe String -> Option value -> Html.Html (Msg value)
-viewRadio { id, name, isDisabled } selectedValue errorMessage (Option { value, label }) =
+viewRadio : ConfigData value -> value -> Bool -> Option value -> Html.Html (Msg value)
+viewRadio { id, name, isDisabled } selectedValue isValueValid (Option { value, label }) =
     Html.label
         [ Attributes.classList
             [ ( "form-control", True )
-            , ( "form-control--error", Maybe.Extra.isJust errorMessage )
+            , ( "form-control--error", not isValueValid )
             ]
         ]
         [ Html.input
@@ -289,8 +296,8 @@ viewRadio { id, name, isDisabled } selectedValue errorMessage (Option { value, l
             , Attributes.checked (selectedValue == value)
             , Attributes.disabled isDisabled
             , Attributes.id (radioId id label)
-            , CA.testId (radioId id label)
-            , CA.maybe Attributes.name name
+            , CommonsAttributes.testId (radioId id label)
+            , CommonsAttributes.maybe Attributes.name name
             , Events.onCheck (always (OnCheck value))
             ]
             []
@@ -304,17 +311,6 @@ radioId : String -> String -> String
 radioId id label =
     [ id, label |> toKebabCase, "option" ]
         |> String.join "-"
-
-
-{-| Internal.
--}
-viewError : String -> String -> Html.Html msg
-viewError id errorMessage =
-    Html.div
-        [ Attributes.class "form-control-group__error-message"
-        , Attributes.id (errorMessageId id)
-        ]
-        [ Html.text errorMessage ]
 
 
 {-| Update the RadioGroup Model.
@@ -363,12 +359,7 @@ resultToErrorMessage result =
 -}
 isValid : ctx -> Model value ctx -> Bool
 isValid ctx (Model { validation, selectedValue }) =
-    case validation ctx selectedValue of
-        Ok _ ->
-            True
-
-        Err _ ->
-            False
+    validation ctx selectedValue |> Result.Extra.isOk
 
 
 

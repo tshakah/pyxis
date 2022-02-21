@@ -127,11 +127,6 @@ radioOptions =
     ]
 
 
-radioGroupModel : RadioGroup.Model Option ctx
-radioGroupModel =
-    RadioGroup.init Default
-
-
 radioGroupConfig : RadioGroup.Config Option
 radioGroupConfig =
     RadioGroup.config "gender"
@@ -140,14 +135,14 @@ radioGroupConfig =
 
 renderRadioGroup : RadioGroup.Config Option -> Query.Single Msg
 renderRadioGroup =
-    RadioGroup.render Tagger {} radioGroupModel
+    RadioGroup.render Tagger {} (RadioGroup.init validation Default)
         >> Query.fromHtml
 
 
 simulationWithoutValidation : Simulation.Simulation (RadioGroup.Model Option {}) (RadioGroup.Msg Option)
 simulationWithoutValidation =
     Simulation.fromSandbox
-        { init = RadioGroup.init Default
+        { init = RadioGroup.init (always Ok) Default
         , update = RadioGroup.update
         , view = \model -> RadioGroup.render identity {} model radioGroupConfig
         }
@@ -156,9 +151,7 @@ simulationWithoutValidation =
 simulationWithValidation : Simulation.Simulation (RadioGroup.Model Option {}) (RadioGroup.Msg Option)
 simulationWithValidation =
     Simulation.fromSandbox
-        { init =
-            radioGroupModel
-                |> RadioGroup.setValidation validation
+        { init = RadioGroup.init validation Default
         , update = RadioGroup.update
         , view = \model -> RadioGroup.render identity {} model radioGroupConfig
         }

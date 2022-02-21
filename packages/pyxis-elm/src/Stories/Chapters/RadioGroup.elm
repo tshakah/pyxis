@@ -9,7 +9,7 @@ import Stories.Helpers as SH
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "RadioGroup"
+    "Field/RadioGroup"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
@@ -199,7 +199,7 @@ radioGroupDisabled id tagger defaultValue =
 
 type alias SharedState x =
     { x
-        | radioFieldModels : RadioFieldModels
+        | radio : RadioFieldModels
     }
 
 
@@ -242,14 +242,11 @@ update msg =
 init : Model
 init =
     { base =
-        RadioGroup.init Default
-            |> RadioGroup.setValidation validation
+        RadioGroup.init validation Default
     , vertical =
-        RadioGroup.init Default
-            |> RadioGroup.setValidation validation
+        RadioGroup.init validation Default
     , disabled =
-        RadioGroup.init M
-            |> RadioGroup.setValidation validation
+        RadioGroup.init validation M
     }
 
 
@@ -293,21 +290,21 @@ radioGroupComponent :
     -> (RadioFieldModels -> RadioGroup.Model Option {})
     -> (RadioGroup.Config Option -> RadioGroup.Config Option)
     -> (RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels)
-    -> { a | radioFieldModels : RadioFieldModels }
-    -> Html (ElmBook.Msg { b | radioFieldModels : RadioFieldModels })
+    -> { a | radio : RadioFieldModels }
+    -> Html (ElmBook.Msg { b | radio : RadioFieldModels })
 radioGroupComponent id name tagger modelMapper configModifier modelUpdater sharedState =
     SH.statefulComponent
-        (.radioFieldModels >> modelMapper)
+        (.radio >> modelMapper)
         (config id name |> configModifier)
         (RadioGroup.render tagger {})
         (\state model -> mapRadioFieldModels (modelUpdater model) state)
         update
-        (modelMapper sharedState.radioFieldModels)
+        (modelMapper sharedState.radio)
 
 
 mapRadioFieldModels : (RadioFieldModels -> RadioFieldModels) -> SharedState x -> SharedState x
 mapRadioFieldModels updater state =
-    { state | radioFieldModels = updater state.radioFieldModels }
+    { state | radio = updater state.radio }
 
 
 setBase : RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels
