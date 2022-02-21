@@ -2,12 +2,12 @@ module Commons.Attributes exposing
     ( ariaDescribedBy
     , ariaHidden
     , ariaLabel
+    , ariaLabelledbyBy
     , role
     , testId
     , renderIf
     , maybe
     , none
-    , ariaLabelledbyBy, compose
     )
 
 {-|
@@ -18,6 +18,7 @@ module Commons.Attributes exposing
 @docs ariaDescribedBy
 @docs ariaHidden
 @docs ariaLabel
+@docs ariaLabelledbyBy
 @docs role
 
 

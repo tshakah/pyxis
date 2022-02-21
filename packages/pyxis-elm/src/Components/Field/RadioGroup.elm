@@ -9,7 +9,6 @@ module Components.Field.RadioGroup exposing
     , horizontal
     , vertical
     , withLayout
-    , setValidation
     , isValid
     , withAriaLabelledby
     , withClassList
@@ -21,6 +20,7 @@ module Components.Field.RadioGroup exposing
     , update
     , getValue
     , render
+    , setValidation
     )
 
 {-|
@@ -53,7 +53,6 @@ module Components.Field.RadioGroup exposing
 
 ## Validation
 
-@docs setValidation
 @docs isValid
 
 
@@ -91,7 +90,7 @@ import Commons.Render as CR
 import Html
 import Html.Attributes as Attributes
 import Html.Events as Events
-import Maybe.Extra as ME
+import Maybe.Extra
 
 
 {-| The RadioGroup model.
@@ -105,11 +104,11 @@ type Model value ctx
 
 {-| Initialize the RadioGroup Model.
 -}
-init : value -> Model value ctx
-init defaultValue =
+init : (ctx -> value -> Result String value) -> value -> Model value ctx
+init validation defaultValue =
     Model
         { selectedValue = defaultValue
-        , validation = always Ok
+        , validation = validation
         }
 
 
@@ -190,13 +189,6 @@ horizontal =
 vertical : Layout
 vertical =
     Vertical
-
-
-{-| Add the Validation rule.
--}
-setValidation : (ctx -> value -> Result String value) -> Model value ctx -> Model value ctx
-setValidation validation (Model model) =
-    Model { model | validation = validation }
 
 
 {-| Add the aria-labelledby for accessibility.
@@ -288,7 +280,7 @@ viewRadio { id, name, isDisabled } selectedValue errorMessage (Option { value, l
     Html.label
         [ Attributes.classList
             [ ( "form-control", True )
-            , ( "form-control--error", ME.isJust errorMessage )
+            , ( "form-control--error", Maybe.Extra.isJust errorMessage )
             ]
         ]
         [ Html.input
