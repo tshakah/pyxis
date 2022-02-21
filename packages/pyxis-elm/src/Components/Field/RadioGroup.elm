@@ -343,18 +343,6 @@ errorMessageId id =
     id ++ "-error"
 
 
-{-| Internal.
--}
-resultToErrorMessage : Result String value -> Maybe String
-resultToErrorMessage result =
-    case result of
-        Ok _ ->
-            Nothing
-
-        Err error ->
-            Just error
-
-
 {-| Check if the selected valued is valid.
 -}
 isValid : ctx -> Model value ctx -> Bool
