@@ -6,8 +6,6 @@ module Test.Simulation exposing
     , fromSandbox
     , run
     , simulate
-    , simulateBy
-    , triggerMsg
     )
 
 {-| Experimental testing utility
@@ -24,7 +22,7 @@ module Test.Simulation exposing
 import Expect
 import Html exposing (Html)
 import Json.Encode exposing (Value)
-import Test.Html.Event as Event exposing (Event)
+import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (Selector)
 
@@ -131,38 +129,6 @@ expectHtml expect =
                         |> expect
             in
             { state | expectations = state.expectations ++ [ expectation ] }
-
-
-triggerMsg : msg -> Simulation model msg -> Simulation model msg
-triggerMsg msg =
-    whenOk <|
-        \model state ->
-            { state | modelResult = Ok (state.app.update msg model) }
-
-
-simulateBy :
-    (msg -> Result String msg)
-    -> ( ( String, Value ), List Selector )
-    -> Simulation model msg
-    -> Simulation model msg
-simulateBy extractMsg ( event, selectors ) =
-    whenOk <|
-        \model state ->
-            { state
-                | modelResult =
-                    state.app.view model
-                        |> Query.fromHtml
-                        |> Query.find selectors
-                        |> Event.simulate event
-                        |> Event.toResult
-                        |> Result.andThen (\msg -> extractMsg msg |> Result.map (\newMsg -> ( msg, newMsg )))
-                        |> Result.map
-                            (\( msg, newMsg ) ->
-                                model
-                                    |> state.app.update msg
-                                    |> state.app.update newMsg
-                            )
-            }
 
 
 simulate : ( ( String, Value ), List Selector ) -> Simulation model msg -> Simulation model msg

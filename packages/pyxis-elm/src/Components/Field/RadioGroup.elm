@@ -9,7 +9,6 @@ module Components.Field.RadioGroup exposing
     , horizontal
     , vertical
     , withLayout
-    , isValid
     , withClassList
     , withDisabled
     , withLabel
@@ -48,11 +47,6 @@ module Components.Field.RadioGroup exposing
 @docs horizontal
 @docs vertical
 @docs withLayout
-
-
-## Validation
-
-@docs isValid
 
 
 ## Generics
@@ -104,8 +98,8 @@ type Model ctx value
 
 {-| Initialize the RadioGroup Model.
 -}
-init : (ctx -> value -> Result String value) -> value -> Model ctx value
-init validation defaultValue =
+init : value -> (ctx -> value -> Result String value) -> Model ctx value
+init defaultValue validation =
     Model
         { selectedValue = defaultValue
         , validation = validation
@@ -114,12 +108,13 @@ init validation defaultValue =
 
 {-| The RadioGroup configuration.
 -}
-type Config value
-    = Config (ConfigData value)
+type Config msg value
+    = Config (ConfigData msg value)
 
 
-type alias ConfigData value =
-    { classList : List ( String, Bool )
+type alias ConfigData msg value =
+    { tagger : Msg value -> msg
+    , classList : List ( String, Bool )
     , id : String
     , isDisabled : Bool
     , label : Maybe Label.Config
@@ -131,10 +126,11 @@ type alias ConfigData value =
 
 {-| Initialize the RadioGroup Config.
 -}
-config : String -> Config value
-config id =
+config : (Msg value -> msg) -> String -> Config msg value
+config tagger id =
     Config
-        { classList = []
+        { tagger = tagger
+        , classList = []
         , id = id
         , isDisabled = False
         , layout = Horizontal
@@ -196,42 +192,42 @@ vertical =
 
 {-| Add the classes to the group wrapper.
 -}
-withClassList : List ( String, Bool ) -> Config value -> Config value
+withClassList : List ( String, Bool ) -> Config msg value -> Config msg value
 withClassList classList (Config configuration) =
     Config { configuration | classList = classList }
 
 
 {-| Define if the group is disabled or not.
 -}
-withDisabled : Bool -> Config value -> Config value
+withDisabled : Bool -> Config msg value -> Config msg value
 withDisabled isDisabled (Config configuration) =
     Config { configuration | isDisabled = isDisabled }
 
 
 {-| Add a name to the inputs.
 -}
-withName : String -> Config value -> Config value
+withName : String -> Config msg value -> Config msg value
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Add a label to the inputs.
 -}
-withLabel : String -> Config value -> Config value
+withLabel : Label.Config -> Config msg value -> Config msg value
 withLabel label (Config configuration) =
-    Config { configuration | name = Just label }
+    Config { configuration | label = Just label }
 
 
 {-| Define the visible options in the radio group.
 -}
-withOptions : List (Option value) -> Config value -> Config value
+withOptions : List (Option value) -> Config msg value -> Config msg value
 withOptions options (Config configuration) =
     Config { configuration | options = options }
 
 
 {-| Change the visual layout. The default one is horizontal.
 -}
-withLayout : Layout -> Config value -> Config value
+withLayout : Layout -> Config msg value -> Config msg value
 withLayout layout (Config configuration) =
     Config { configuration | layout = layout }
 
@@ -245,16 +241,13 @@ option =
 
 {-| Render the RadioGroup.
 -}
-render : (Msg value -> msg) -> ctx -> Model ctx value -> Config value -> Html.Html msg
-render tagger ctx ((Model modelData) as model) (Config configData) =
-    let
-        isValueValid : Bool
-        isValueValid =
-            isValid ctx model
-    in
-    Html.div [ Attributes.class "form-item" ]
+render : ctx -> Model ctx value -> Config msg value -> Html.Html msg
+render ctx ((Model modelData) as model) ((Config configData) as config_) =
+    Html.div
+        [ Attributes.class "form-item" ]
         [ renderLabel configData.label configData.id
-        , Html.div [ Attributes.class "form-item__wrapper" ]
+        , Html.div
+            [ Attributes.class "form-item__wrapper" ]
             [ Html.div
                 [ Attributes.classList
                     [ ( "form-control-group", True )
@@ -264,16 +257,11 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                 , Attributes.id configData.id
                 , CommonsAttributes.role "radiogroup"
                 , CommonsAttributes.ariaLabelledbyBy (labelId configData.id)
-                , CommonsAttributes.renderIf isValueValid (CommonsAttributes.ariaDescribedBy (Error.toId configData.id))
+                , CommonsAttributes.renderIf
+                    (Result.Extra.isErr (modelData.validation ctx modelData.selectedValue))
+                    (CommonsAttributes.ariaDescribedBy (Error.toId configData.id))
                 ]
-                (List.map
-                    (renderRadio
-                        configData
-                        modelData.selectedValue
-                        isValueValid
-                    )
-                    configData.options
-                )
+                (List.map (renderRadio ctx model config_) configData.options)
             , modelData.selectedValue
                 |> modelData.validation ctx
                 |> Error.fromResult
@@ -281,7 +269,7 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                 |> CommonsRender.renderMaybe
             ]
         ]
-        |> Html.map tagger
+        |> Html.map configData.tagger
 
 
 {-| Internal.
@@ -302,12 +290,12 @@ labelId =
 
 {-| Internal.
 -}
-renderRadio : ConfigData value -> value -> Bool -> Option value -> Html.Html (Msg value)
-renderRadio { id, name, isDisabled } selectedValue isValueValid (Option { value, label }) =
+renderRadio : ctx -> Model ctx value -> Config msg value -> Option value -> Html.Html (Msg value)
+renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
     Html.label
         [ Attributes.classList
             [ ( "form-control", True )
-            , ( "form-control--error", not isValueValid )
+            , ( "form-control--error", Result.Extra.isErr (validation ctx selectedValue) )
             ]
         ]
         [ Html.input
@@ -335,8 +323,8 @@ radioId id label =
 
 {-| Update the RadioGroup Model.
 -}
-update : Msg value -> Model ctx value -> Model ctx value
-update msg =
+update : ctx -> Msg value -> Model ctx value -> Model ctx value
+update ctx msg =
     case msg of
         OnCheck value ->
             setValue value
@@ -354,13 +342,6 @@ setValue value (Model model) =
 getValue : Model ctx value -> value
 getValue (Model { selectedValue }) =
     selectedValue
-
-
-{-| Check if the selected valued is valid.
--}
-isValid : ctx -> Model ctx value -> Bool
-isValid ctx (Model { validation, selectedValue }) =
-    validation ctx selectedValue |> Result.Extra.isOk
 
 
 

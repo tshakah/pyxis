@@ -115,7 +115,7 @@ suite =
         ]
 
 
-findInputs : Query.Single msg -> Query.Multiple msg
+findInputs : Query.Single Msg -> Query.Multiple Msg
 findInputs =
     Query.findAll [ Selector.tag "input" ]
 
@@ -127,33 +127,23 @@ radioOptions =
     ]
 
 
-radioGroupConfig : RadioGroup.Config Option
+radioGroupConfig : RadioGroup.Config Msg Option
 radioGroupConfig =
-    RadioGroup.config "gender"
-        |> RadioGroup.withOptions radioOptions
+    RadioGroup.config Tagger "gender" |> RadioGroup.withOptions radioOptions
 
 
-renderRadioGroup : RadioGroup.Config Option -> Query.Single Msg
+renderRadioGroup : RadioGroup.Config Msg Option -> Query.Single Msg
 renderRadioGroup =
-    RadioGroup.render Tagger {} (RadioGroup.init validation Default)
+    RadioGroup.render {} (RadioGroup.init Default validation)
         >> Query.fromHtml
 
 
-simulationWithoutValidation : Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
-simulationWithoutValidation =
-    Simulation.fromSandbox
-        { init = RadioGroup.init (always Ok) Default
-        , update = RadioGroup.update
-        , view = \model -> RadioGroup.render identity {} model radioGroupConfig
-        }
-
-
-simulationWithValidation : Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
+simulationWithValidation : Simulation.Simulation (RadioGroup.Model {} Option) Msg
 simulationWithValidation =
     Simulation.fromSandbox
-        { init = RadioGroup.init validation Default
-        , update = RadioGroup.update
-        , view = \model -> RadioGroup.render identity {} model radioGroupConfig
+        { init = RadioGroup.init Default validation
+        , update = \(Tagger subMsg) model -> RadioGroup.update {} subMsg model
+        , view = \model -> RadioGroup.render {} model radioGroupConfig
         }
 
 
@@ -166,7 +156,7 @@ validation _ value =
         Ok value
 
 
-simulateEvents : String -> Simulation.Simulation model msg -> Simulation.Simulation model msg
+simulateEvents : String -> Simulation.Simulation (RadioGroup.Model {} Option) Msg -> Simulation.Simulation (RadioGroup.Model {} Option) Msg
 simulateEvents testId simulation =
     simulation
         |> Simulation.simulate ( Event.check True, [ Selector.attribute (CA.testId testId) ] )

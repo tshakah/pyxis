@@ -1,4 +1,4 @@
-module Stories.Chapters.RadioGroup exposing (Model, docs, init)
+module Stories.Chapters.Fields.RadioGroup exposing (Model, docs, init)
 
 import Components.Field.RadioGroup as RadioGroup
 import ElmBook
@@ -36,13 +36,13 @@ radioGroupModel =
 
 radioGroupView : ctx -> Html Msg
 radioGroupView ctx =
-    RadioGroup.config "radio-id"
+    RadioGroup.config OnRadioFieldMsg "radio-id"
         |> RadioGroup.withName "gender"
         |> RadioGroup.withOptions
             [ RadioGroup.option { value = M, label = "Male" }
             , RadioGroup.option { value = F, label = "Female" }
             ]
-        |> RadioGroup.render OnRadioFieldMsg ctx radioGroupModel
+        |> RadioGroup.render ctx radioGroupModel
 
 
 validation : ctx -> Option -> Result String Option
@@ -64,9 +64,9 @@ Radio group have a horizontal layout as default, but with more then two items a 
 ```
 radioGroupVerticalLayout : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value -> Html msg
 radioGroupVerticalLayout id tagger ctx radioModel =
-    RadioGroup.config id
+    RadioGroup.config tagger id
         |> RadioGroup.withLayout RadioGroup.vertical
-        |> RadioGroup.render tagger ctx radioModel
+        |> RadioGroup.render ctx radioModel
 ```
 
 
@@ -75,9 +75,9 @@ radioGroupVerticalLayout id tagger ctx radioModel =
 ```
 radioGroupDisabled : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value -> Html msg
 radioGroupDisabled id tagger ctx radioModel =
-    RadioGroup.config id
+    RadioGroup.config tagger id
         |> RadioGroup.withDisabled True
-        |> RadioGroup.render tagger ctx radioModel
+        |> RadioGroup.render ctx radioModel
 ```
 """
 
@@ -106,38 +106,30 @@ type alias Model =
 
 
 type Msg
-    = OnBaseRadioFieldMsg (RadioGroup.Msg Option)
-    | OnVerticalRadioFieldMsg (RadioGroup.Msg Option)
-    | OnDisabledRadioFieldMsg (RadioGroup.Msg Option)
+    = RadioFieldChanged (RadioGroup.Msg Option)
 
 
-update : Msg -> RadioGroup.Model ctx Option -> RadioGroup.Model ctx Option
+update : Msg -> RadioGroup.Model {} Option -> RadioGroup.Model {} Option
 update msg =
-    case msg |> Debug.log "msg" of
-        OnVerticalRadioFieldMsg subMsg ->
-            RadioGroup.update subMsg
-
-        OnBaseRadioFieldMsg subMsg ->
-            RadioGroup.update subMsg
-
-        OnDisabledRadioFieldMsg subMsg ->
-            RadioGroup.update subMsg
+    case msg of
+        RadioFieldChanged subMsg ->
+            RadioGroup.update {} subMsg
 
 
 init : Model
 init =
     { base =
-        RadioGroup.init validation Default
+        RadioGroup.init Default validation
     , vertical =
-        RadioGroup.init validation Default
+        RadioGroup.init Default validation
     , disabled =
-        RadioGroup.init validation M
+        RadioGroup.init M validation
     }
 
 
-config : String -> String -> RadioGroup.Config Option
+config : String -> String -> RadioGroup.Config Msg Option
 config id name =
-    RadioGroup.config id
+    RadioGroup.config RadioFieldChanged id
         |> RadioGroup.withOptions
             [ RadioGroup.option { value = M, label = "Male" }
             , RadioGroup.option { value = F, label = "Female" }
@@ -157,13 +149,13 @@ validation _ value =
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
     [ ( "RadioGroup"
-      , radioGroupComponent "base" "gender1" OnBaseRadioFieldMsg .base identity setBase
+      , radioGroupComponent "base" "gender1" .base identity setBase
       )
     , ( "RadioGroup vertical"
-      , radioGroupComponent "vertical" "gender2" OnVerticalRadioFieldMsg .vertical (RadioGroup.withLayout RadioGroup.vertical) setVertical
+      , radioGroupComponent "vertical" "gender2" .vertical (RadioGroup.withLayout RadioGroup.vertical) setVertical
       )
     , ( "RadioGroup disabled"
-      , radioGroupComponent "disabled" "gender3" OnDisabledRadioFieldMsg .disabled (RadioGroup.withDisabled True) (always identity)
+      , radioGroupComponent "disabled" "gender3" .disabled (RadioGroup.withDisabled True) (always identity)
       )
     ]
 
@@ -171,17 +163,16 @@ componentsList =
 radioGroupComponent :
     String
     -> String
-    -> (RadioGroup.Msg Option -> Msg)
     -> (RadioFieldModels -> RadioGroup.Model {} Option)
-    -> (RadioGroup.Config Option -> RadioGroup.Config Option)
+    -> (RadioGroup.Config Msg Option -> RadioGroup.Config Msg Option)
     -> (RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels)
     -> { a | radio : RadioFieldModels }
     -> Html (ElmBook.Msg { b | radio : RadioFieldModels })
-radioGroupComponent id name tagger modelMapper configModifier modelUpdater sharedState =
+radioGroupComponent id name modelMapper configModifier modelUpdater sharedState =
     SH.statefulComponent
         (.radio >> modelMapper)
         (config id name |> configModifier)
-        (RadioGroup.render tagger {})
+        (RadioGroup.render {})
         (\state model -> mapRadioFieldModels (modelUpdater model) state)
         update
         (modelMapper sharedState.radio)

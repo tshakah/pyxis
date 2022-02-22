@@ -1,9 +1,6 @@
 module Fuzz.Extra exposing
     ( className
     , date
-    , dayUpTo28
-    , month
-    , year
     )
 
 import Date exposing (Date)

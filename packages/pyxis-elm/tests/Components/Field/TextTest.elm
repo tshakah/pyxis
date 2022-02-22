@@ -9,10 +9,8 @@ import Fuzz
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
-import Test.Html.Event as Event
 import Test.Html.Query as Query
-import Test.Html.Selector as Selector exposing (attribute, classes, tag)
-import Test.Simulation as Simulation
+import Test.Html.Selector as Selector exposing (attribute, classes)
 
 
 type Msg
@@ -188,11 +186,3 @@ fieldConfig =
 fieldRender : ctx -> TextField.Model ctx -> TextField.Config msg -> Query.Single msg
 fieldRender ctx model =
     TextField.render ctx model >> Query.fromHtml
-
-
-simulateEvents : String -> Simulation.Simulation model msg -> Simulation.Simulation model msg
-simulateEvents str simulation =
-    simulation
-        |> Simulation.simulate ( Event.focus, [ Selector.tag "input" ] )
-        |> Simulation.simulate ( Event.input str, [ Selector.tag "input" ] )
-        |> Simulation.simulate ( Event.blur, [ Selector.tag "input" ] )

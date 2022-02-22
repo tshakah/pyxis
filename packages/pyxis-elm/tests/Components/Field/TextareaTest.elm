@@ -1,18 +1,14 @@
 module Components.Field.TextareaTest exposing (suite)
 
-import Commons.Properties.Placement as Placement
 import Components.Field.Label as LabelField
 import Components.Field.Textarea as TextareaField
-import Components.IconSet as IconSet
 import Expect
 import Fuzz
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
-import Test.Html.Event as Event
 import Test.Html.Query as Query
-import Test.Html.Selector as Selector exposing (attribute, classes, tag)
-import Test.Simulation as Simulation
+import Test.Html.Selector as Selector exposing (attribute, classes)
 
 
 type Msg
