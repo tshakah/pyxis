@@ -15,6 +15,7 @@ import Stories.Chapters.Fields.Textarea as TextareaChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Message as Message
+import Stories.Chapters.RadioGroup as RadioFieldChapter
 
 
 type alias SharedState =
@@ -23,6 +24,7 @@ type alias SharedState =
     , number : NumberFieldChapter.Model
     , date : DateFieldChapter.Model
     , select : SelectChapter.Model
+    , radio : RadioFieldChapter.Model
     }
 
 
@@ -33,6 +35,7 @@ initialState =
     , number = NumberFieldChapter.init
     , date = DateFieldChapter.init
     , select = SelectChapter.init
+    , radio = RadioFieldChapter.init
     }
 
 
@@ -58,6 +61,7 @@ main =
             , IconSetChapter.docs
             , LabelChapter.docs
             , TextFieldChapter.docs
+            , RadioFieldChapter.docs
             , TextareaChapter.docs
             , NumberFieldChapter.docs
             , DateFieldChapter.docs
