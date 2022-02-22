@@ -1,4 +1,4 @@
-module Components.RadioGroupTest exposing (suite)
+module Components.Field.RadioGroupTest exposing (suite)
 
 import Commons.Attributes as CA
 import Components.Field.RadioGroup as RadioGroup
