@@ -14,6 +14,7 @@ import Stories.Chapters.Fields.Text as TextFieldChapter
 import Stories.Chapters.Fields.Textarea as TextareaChapter
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
+import Stories.Chapters.Message as Message
 
 
 type alias SharedState =
@@ -61,4 +62,5 @@ main =
             , NumberFieldChapter.docs
             , DateFieldChapter.docs
             , SelectChapter.docs
+            , Message.docs
             ]
