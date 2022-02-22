@@ -10,7 +10,6 @@ module Components.Field.RadioGroup exposing
     , vertical
     , withLayout
     , isValid
-    , withAriaLabelledby
     , withClassList
     , withDisabled
     , withName
@@ -57,7 +56,6 @@ module Components.Field.RadioGroup exposing
 
 ## Generics
 
-@docs withAriaLabelledby
 @docs withClassList
 @docs withDisabled
 @docs withLabel
@@ -87,6 +85,7 @@ module Components.Field.RadioGroup exposing
 import Commons.Attributes as CommonsAttributes
 import Commons.Render as CommonsRender
 import Components.Field.Error as Error
+import Components.Field.Label as Label
 import Html
 import Html.Attributes as Attributes
 import Html.Events as Events
@@ -119,10 +118,10 @@ type Config value
 
 
 type alias ConfigData value =
-    { ariaLabelledBy : Maybe String
-    , classList : List ( String, Bool )
+    { classList : List ( String, Bool )
     , id : String
     , isDisabled : Bool
+    , label : Maybe Label.Config
     , layout : Layout
     , name : Maybe String
     , options : List (Option value)
@@ -134,11 +133,11 @@ type alias ConfigData value =
 config : String -> Config value
 config id =
     Config
-        { ariaLabelledBy = Nothing
-        , classList = []
+        { classList = []
         , id = id
         , isDisabled = False
         , layout = Horizontal
+        , label = Nothing
         , name = Nothing
         , options = []
         }
@@ -194,13 +193,6 @@ vertical =
     Vertical
 
 
-{-| Add the aria-labelledby for accessibility.
--}
-withAriaLabelledby : String -> Config value -> Config value
-withAriaLabelledby ariaLabelledBy (Config configuration) =
-    Config { configuration | ariaLabelledBy = Just ariaLabelledBy }
-
-
 {-| Add the classes to the group wrapper.
 -}
 withClassList : List ( String, Bool ) -> Config value -> Config value
@@ -220,6 +212,13 @@ withDisabled isDisabled (Config configuration) =
 withName : String -> Config value -> Config value
 withName name (Config configuration) =
     Config { configuration | name = Just name }
+
+
+{-| Add a label to the inputs.
+-}
+withLabel : String -> Config value -> Config value
+withLabel label (Config configuration) =
+    Config { configuration | name = Just label }
 
 
 {-| Define the visible options in the radio group.
@@ -252,32 +251,48 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
         isValueValid =
             isValid ctx model
     in
-    Html.div
-        [ Attributes.classList
-            [ ( "form-control-group", True )
-            , ( "form-control-group--column", configData.layout == Vertical )
+    Html.div [ Attributes.class "form-item" ]
+        [ viewLabel configData.label configData.id
+        , Html.div [ Attributes.class "form-item__wrapper" ]
+            [ Html.div
+                [ Attributes.classList
+                    [ ( "form-control-group", True )
+                    , ( "form-control-group--column", configData.layout == Vertical )
+                    ]
+                , Attributes.classList configData.classList
+                , Attributes.id configData.id
+                , CommonsAttributes.role "radiogroup"
+                , CommonsAttributes.ariaLabelledbyBy (labelId configData.id)
+                , CommonsAttributes.renderIf isValueValid (CommonsAttributes.ariaDescribedBy (Error.toId configData.id))
+                ]
+                (List.map
+                    (viewRadio
+                        configData
+                        modelData.selectedValue
+                        isValueValid
+                    )
+                    configData.options
+                )
+            , modelData.selectedValue
+                |> modelData.validation ctx
+                |> Error.fromResult
+                |> Maybe.map (Error.withId configData.id >> Error.render)
+                |> CommonsRender.renderMaybe
             ]
-        , Attributes.classList configData.classList
-        , Attributes.id configData.id
-        , CommonsAttributes.role "radiogroup"
-        , CommonsAttributes.renderIf isValueValid (CommonsAttributes.ariaDescribedBy (errorMessageId configData.id))
-        , CommonsAttributes.maybe CommonsAttributes.ariaLabelledbyBy configData.ariaLabelledBy
         ]
-        (List.map
-            (viewRadio
-                configData
-                modelData.selectedValue
-                isValueValid
-            )
-            configData.options
-            ++ [ modelData.selectedValue
-                    |> modelData.validation ctx
-                    |> Error.fromResult
-                    |> Maybe.map (Error.withId configData.id >> Error.render)
-                    |> CommonsRender.renderMaybe
-               ]
-        )
         |> Html.map tagger
+
+
+viewLabel : Maybe Label.Config -> String -> Html.Html msg
+viewLabel label id =
+    label
+        |> Maybe.map (Label.withId (labelId id) >> Label.render)
+        |> CommonsRender.renderMaybe
+
+
+labelId : String -> String
+labelId =
+    (++) "label-"
 
 
 {-| Internal.
@@ -334,13 +349,6 @@ setValue value (Model model) =
 getValue : Model ctx value -> value
 getValue (Model { selectedValue }) =
     selectedValue
-
-
-{-| Internal. For screen-reader.
--}
-errorMessageId : String -> String
-errorMessageId id =
-    id ++ "-error"
 
 
 {-| Check if the selected valued is valid.

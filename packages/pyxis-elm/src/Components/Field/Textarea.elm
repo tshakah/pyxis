@@ -288,10 +288,6 @@ render ctx ((Model modelData) as model) ((Config configData) as configuration) =
         ]
 
 
-
---|> Html.map configData.tagger
-
-
 {-| Internal.
 -}
 renderTextarea : ctx -> Model ctx -> Config msg -> Html msg
