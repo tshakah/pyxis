@@ -139,7 +139,7 @@ renderRadioGroup =
         >> Query.fromHtml
 
 
-simulationWithoutValidation : Simulation.Simulation (RadioGroup.Model Option {}) (RadioGroup.Msg Option)
+simulationWithoutValidation : Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
 simulationWithoutValidation =
     Simulation.fromSandbox
         { init = RadioGroup.init (always Ok) Default
@@ -148,7 +148,7 @@ simulationWithoutValidation =
         }
 
 
-simulationWithValidation : Simulation.Simulation (RadioGroup.Model Option {}) (RadioGroup.Msg Option)
+simulationWithValidation : Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
 simulationWithValidation =
     Simulation.fromSandbox
         { init = RadioGroup.init validation Default

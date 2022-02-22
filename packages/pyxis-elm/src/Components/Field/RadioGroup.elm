@@ -95,7 +95,7 @@ import Result.Extra
 
 {-| The RadioGroup model.
 -}
-type Model value ctx
+type Model ctx value
     = Model
         { selectedValue : value
         , validation : ctx -> value -> Result String value
@@ -104,7 +104,7 @@ type Model value ctx
 
 {-| Initialize the RadioGroup Model.
 -}
-init : (ctx -> value -> Result String value) -> value -> Model value ctx
+init : (ctx -> value -> Result String value) -> value -> Model ctx value
 init validation defaultValue =
     Model
         { selectedValue = defaultValue
@@ -245,7 +245,7 @@ option =
 
 {-| Render the RadioGroup.
 -}
-render : (Msg value -> msg) -> ctx -> Model value ctx -> Config value -> Html.Html msg
+render : (Msg value -> msg) -> ctx -> Model ctx value -> Config value -> Html.Html msg
 render tagger ctx ((Model modelData) as model) (Config configData) =
     let
         isValueValid : Bool
@@ -315,7 +315,7 @@ radioId id label =
 
 {-| Update the RadioGroup Model.
 -}
-update : Msg value -> Model value ctx -> Model value ctx
+update : Msg value -> Model ctx value -> Model ctx value
 update msg =
     case msg of
         OnCheck value ->
@@ -324,14 +324,14 @@ update msg =
 
 {-| Internal.
 -}
-setValue : value -> Model value ctx -> Model value ctx
+setValue : value -> Model ctx value -> Model ctx value
 setValue value (Model model) =
     Model { model | selectedValue = value }
 
 
 {-| Return the selected value.
 -}
-getValue : Model value ctx -> value
+getValue : Model ctx value -> value
 getValue (Model { selectedValue }) =
     selectedValue
 
@@ -345,7 +345,7 @@ errorMessageId id =
 
 {-| Check if the selected valued is valid.
 -}
-isValid : ctx -> Model value ctx -> Bool
+isValid : ctx -> Model ctx value -> Bool
 isValid ctx (Model { validation, selectedValue }) =
     validation ctx selectedValue |> Result.Extra.isOk
 

@@ -18,21 +18,21 @@ Radio group have a horizontal layout as default, but with more then two items a 
 
 <component with-label="RadioGroup" />
 ```
-type Option
+type
+    Option
+    -- Can be a String or Maybe String alias
     = M
     | F
-    | Default
+    | Default -- Add a Default/None/NoSelection/... option to handle the possibility of no selection.
 
 
 type Msg
     = OnRadioFieldMsg (RadioGroup.Msg Option)
 
 
-radioGroupModel : RadioGroup.Model Option ctx
+radioGroupModel : RadioGroup.Model ctx Option
 radioGroupModel =
-    RadioGroup.init Default
-        |> RadioGroup.setValidation validation
-
+    RadioGroup.init validation Default
 
 
 radioGroupView : ctx -> Html Msg
@@ -55,144 +55,26 @@ validation _ value =
         Ok value
 ```
 
-### Implementation with only valid options
-
-```
-type Option
-    = M
-    | F
-
-
-type Msg
-    = OnRadioFieldMsg (RadioGroup.Msg Option)
-
-
-radioGroupModel : (RadioGroup.Msg Option -> msg) -> RadioGroup.Model Option ctx msg
-radioGroupModel tagger =
-    RadioGroup.create "radio-gender-id" tagger M
-
-
-radioGroupView : Html Msg
-radioGroupView =
-    radioGroupModel OnRadioFieldMsg
-        |> RadioGroup.withName "gender"
-        |> RadioGroup.withOptions radioOptions
-        |> RadioGroup.render
-
-
-radioOptions : List (RadioGroup.Option Option)
-radioOptions =
-    [ RadioGroup.option { value = M, label = "Male" }
-    , RadioGroup.option { value = F, label = "Female" }
-    ]
-```
-
-### Implementation with Maybe String (Error prone)
-
-```
-type alias Option =
-    Maybe String
-
-
-type Msg
-    = OnRadioFieldMsg (RadioGroup.Msg Option)
-
-
-radioGroupModel : (RadioGroup.Msg Option -> msg) -> RadioGroup.Model Option ctx msg
-radioGroupModel tagger =
-    RadioGroup.create "radio-gender-id" tagger Nothing
-        |> RadioGroup.withValidation validation
-
-
-radioGroupView : Html Msg
-radioGroupView =
-    radioGroupModel OnRadioFieldMsg
-        |> RadioGroup.withName "gender"
-        |> RadioGroup.withOptions radioOptions
-        |> RadioGroup.render
-
-
-validation : ctx -> Option -> Result String Option
-validation _ value =
-    case value of
-        Just "" ->
-            Err "Required"
-
-        Nothing ->
-            Err "Required"
-
-        _ ->
-            Ok value
-
-
-radioOptions : List (RadioGroup.Option Option)
-radioOptions =
-    [ RadioGroup.option { value = Just "male", label = "Male" }
-    , RadioGroup.option { value = Just "female", label = "Female" }
-    ]
-```
-
-### Implementation with String (Error prone)
-
-```
-type alias Option =
-    String
-
-
-type Msg
-    = OnRadioFieldMsg (RadioGroup.Msg Option)
-
-
-radioGroupModel : (RadioGroup.Msg Option -> msg) -> RadioGroup.Model Option ctx msg
-radioGroupModel tagger =
-    RadioGroup.create "radio-gender-id" tagger ""
-        |> RadioGroup.withValidation validation
-
-
-radioGroupView : Html Msg
-radioGroupView =
-    radioGroupModel OnRadioFieldMsg
-        |> RadioGroup.withName "gender"
-        |> RadioGroup.withOptions radioOptions
-        |> RadioGroup.render
-
-
-validation : ctx -> Option -> Result String Option
-validation _ value =
-    if value == "female" || value == "male" then
-        Ok value
-
-    else
-        Err "Required"
-
-
-radioOptions : List (RadioGroup.Option Option)
-radioOptions =
-    [ RadioGroup.option { value = "male", label = "Male" }
-    , RadioGroup.option { value = "female", label = "Female" }
-    ]
-````
-
 # Vertical Layout
 <component with-label="RadioGroup vertical" />
 
 ```
-radioGroupVerticalLayout : String -> (RadioGroup.Msg value -> msg) -> value -> Html msg
-radioGroupVerticalLayout id tagger defaultValue =
-    RadioGroup.create id tagger defaultValue
-        |> RadioGroup.withVerticalLayout True
-        |> RadioGroup.render
+radioGroupVerticalLayout : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value -> Html msg
+radioGroupVerticalLayout id tagger ctx radioModel =
+    RadioGroup.config id
+        |> RadioGroup.withLayout RadioGroup.vertical
+        |> RadioGroup.render tagger ctx radioModel
 ```
 
 
 # Disabled
 <component with-label="RadioGroup disabled" />
 ```
-radioGroupDisabled : String -> (RadioGroup.Msg value -> msg) -> value -> Html msg
-radioGroupDisabled id tagger defaultValue =
-    RadioGroup.create id tagger defaultValue
+radioGroupDisabled : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value -> Html msg
+radioGroupDisabled id tagger ctx radioModel =
+    RadioGroup.config id
         |> RadioGroup.withDisabled True
-        |> RadioGroup.render
+        |> RadioGroup.render tagger ctx radioModel
 ```
 """
 
@@ -210,9 +92,9 @@ type Option
 
 
 type alias RadioFieldModels =
-    { base : RadioGroup.Model Option {}
-    , vertical : RadioGroup.Model Option {}
-    , disabled : RadioGroup.Model Option {}
+    { base : RadioGroup.Model {} Option
+    , vertical : RadioGroup.Model {} Option
+    , disabled : RadioGroup.Model {} Option
     }
 
 
@@ -226,7 +108,7 @@ type Msg
     | OnDisabledRadioFieldMsg (RadioGroup.Msg Option)
 
 
-update : Msg -> RadioGroup.Model Option ctx -> RadioGroup.Model Option ctx
+update : Msg -> RadioGroup.Model ctx Option -> RadioGroup.Model ctx Option
 update msg =
     case msg |> Debug.log "msg" of
         OnVerticalRadioFieldMsg subMsg ->
@@ -287,9 +169,9 @@ radioGroupComponent :
     String
     -> String
     -> (RadioGroup.Msg Option -> Msg)
-    -> (RadioFieldModels -> RadioGroup.Model Option {})
+    -> (RadioFieldModels -> RadioGroup.Model {} Option)
     -> (RadioGroup.Config Option -> RadioGroup.Config Option)
-    -> (RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels)
+    -> (RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels)
     -> { a | radio : RadioFieldModels }
     -> Html (ElmBook.Msg { b | radio : RadioFieldModels })
 radioGroupComponent id name tagger modelMapper configModifier modelUpdater sharedState =
@@ -307,11 +189,11 @@ mapRadioFieldModels updater state =
     { state | radio = updater state.radio }
 
 
-setBase : RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels
+setBase : RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels
 setBase newModel textFieldModels =
     { textFieldModels | base = newModel }
 
 
-setVertical : RadioGroup.Model Option {} -> RadioFieldModels -> RadioFieldModels
+setVertical : RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels
 setVertical newModel textFieldModels =
     { textFieldModels | vertical = newModel }
