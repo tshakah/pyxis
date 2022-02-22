@@ -12,6 +12,7 @@ module Components.Field.RadioGroup exposing
     , isValid
     , withClassList
     , withDisabled
+    , withLabel
     , withName
     , withOptions
     , Msg
