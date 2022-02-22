@@ -2,6 +2,7 @@ module Stories.Chapters.Fields.Select exposing (Model, docs, init)
 
 import Commons.Lens as Lens exposing (Lens)
 import Commons.Properties.Size as Size
+import Components.Field.Label as Label
 import Components.Field.Select as Select
 import ElmBook
 import ElmBook.Actions
@@ -23,13 +24,16 @@ The select component uses a custom wrapper on desktop:
 
 <component with-label="Select (desktop)" />
 ```
-Select.create { isMobile = False }
+Select.create False "select-id"
     |> Select.withPlaceholder "Select your role..."
     |> Select.withOptions
-        [ Select.option { value = "DEVELOPER", label = "Developer" }
-        , Select.option { value = "DESIGNER", label = "Designer" }
-        , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
-        ]
+          [ Select.option { value = "DEVELOPER", label = "Developer" }
+          , Select.option { value = "DESIGNER", label = "Designer" }
+          , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
+          , Select.option { value = "CEO", label = "Chief executive officer" }
+          , Select.option { value = "CTO", label = "Chief technology officer" }
+          , Select.option { value = "CONSULTANT", label = "Consultant" }
+          ]
     |> Select.render ctx Tagger model.roleSelectModel
 ```
 
@@ -37,13 +41,12 @@ And the native `<select>` on mobile:
 
 <component with-label="Select (mobile)" />
 ```
-Select.create { isMobile = True }
+Select.create True "select-id"
     |> Select.withPlaceholder "Select your role..."
     |> Select.withOptions
-        [ Select.option { value = "DEVELOPER", label = "Developer" }
-        , Select.option { value = "DESIGNER", label = "Designer" }
-        , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
-        ]
+          [ Select.option { value = "DEVELOPER", label = "Developer" }
+          , ...
+          ]
     |> Select.render ctx Tagger model.roleSelectModel
 ```
 
@@ -51,14 +54,13 @@ Select.create { isMobile = True }
 
 <component with-label="Select with disabled=True" />
 ```
-Select.create { isMobile = False }
+Select.create False "select-id"
     |> Select.withPlaceholder "Select your role..."
     |> Select.withDisabled True
     |> Select.withOptions
-        [ Select.option { value = "DEVELOPER", label = "Developer" }
-        , Select.option { value = "DESIGNER", label = "Designer" }
-        , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
-        ]
+          [ Select.option { value = "DEVELOPER", label = "Developer" }
+          , ...
+          ]
     |> Select.render ctx Tagger model.roleSelectModel
 ```
 
@@ -67,14 +69,28 @@ Select can have two size: default or small.
 
 <component with-label="Select with size=Small" />
 ```
-Select.create { isMobile = False }
+Select.create False "select-id"
     |> Select.withPlaceholder "Select your role..."
     |> Select.withDisabled True
     |> Select.withOptions
-        [ Select.option { value = "DEVELOPER", label = "Developer" }
-        , Select.option { value = "DESIGNER", label = "Designer" }
-        , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
-        ]
+          [ Select.option { value = "DEVELOPER", label = "Developer" }
+          , ...
+          ]
+    |> Select.render ctx Tagger model.roleSelectModel
+```
+
+### Label
+Select can have two size: default or small.
+
+<component with-label="Select with label" />
+```
+Select.create False "select-id"
+    |> Select.withPlaceholder "Select your role..."
+    |> Select.withLabel (Label.config "Label")
+    |> Select.withOptions
+          [ Select.option { value = "DEVELOPER", label = "Developer" }
+          , ...
+          ]
     |> Select.render ctx Tagger model.roleSelectModel
 ```
 
@@ -82,13 +98,12 @@ Select.create { isMobile = False }
 ### Validation
 <component with-label="Select with error message" />
 ```
-Select.create { isMobile = False }
+Select.create False "select-id"
     |> Select.withPlaceholder "Select your role..."
     |> Select.withOptions
-        [ Select.option { value = "DEVELOPER", label = "Developer" }
-        , Select.option { value = "DESIGNER", label = "Designer" }
-        , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
-        ]
+          [ Select.option { value = "DEVELOPER", label = "Developer" }
+          , ...
+          ]
     |> Select.render ctx Tagger model.roleSelectModel
 ```
 """
@@ -174,19 +189,23 @@ type Job
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
     [ viewBaseSection "Select (desktop)"
-        (Select.create { isMobile = False })
+        (Select.config False "desktop-select")
     , viewBaseSection "Select (mobile)"
-        (Select.create { isMobile = True })
+        (Select.config True "mobile-select")
     , viewBaseSection "Select with disabled=True"
-        (Select.create { isMobile = False }
+        (Select.config False "disabled-select"
             |> Select.withDisabled True
         )
     , viewBaseSection "Select with size=Small"
-        (Select.create { isMobile = False }
+        (Select.config False "small-select"
             |> Select.withSize Size.small
         )
+    , viewBaseSection "Select with label"
+        (Select.config False "labelled-select"
+            |> Select.withLabel (Label.config "Label")
+        )
     , viewValidationSection "Select with error message"
-        (Select.create { isMobile = False })
+        (Select.config False "validation-select")
     ]
 
 
@@ -210,6 +229,9 @@ viewSection lens title select =
                 [ Select.option { value = "DEVELOPER", label = "Developer" }
                 , Select.option { value = "DESIGNER", label = "Designer" }
                 , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
+                , Select.option { value = "CEO", label = "Chief executive officer" }
+                , Select.option { value = "CTO", label = "Chief technology officer" }
+                , Select.option { value = "CONSULTANT", label = "Consultant" }
                 ]
             -- Rendering
             |> Select.render () identity (composedLens.get sharedState)

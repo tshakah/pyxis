@@ -24,8 +24,7 @@ suite =
         [ Test.describe "Default"
             [ Test.fuzz Fuzz.string "the input has an id and a data-test-id" <|
                 \id ->
-                    Select.create { isMobile = False }
-                        |> Select.withId id
+                    Select.config False id
                         |> renderSelect
                         |> Query.has
                             [ attribute (Html.Attributes.id id)
@@ -35,13 +34,13 @@ suite =
         , Test.describe "Disabled attribute"
             [ Test.test "should be False by default" <|
                 \() ->
-                    Select.create { isMobile = False }
+                    Select.config False "select-id"
                         |> renderSelect
                         |> findSelect
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    Select.create { isMobile = False }
+                    Select.config False "select-id"
                         |> Select.withDisabled b
                         |> renderSelect
                         |> findSelect
@@ -49,7 +48,7 @@ suite =
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                Select.create { isMobile = False }
+                Select.config False "select-id"
                     |> Select.withName name
                     |> renderSelect
                     |> findSelect
@@ -58,7 +57,7 @@ suite =
                         ]
         , Test.fuzz Fuzz.string "placeholder attribute should be rendered correctly" <|
             \p ->
-                Select.create { isMobile = False }
+                Select.config False "select-id"
                     |> Select.withPlaceholder p
                     |> renderSelect
                     |> findSelect
@@ -68,7 +67,7 @@ suite =
                         ]
         , Test.fuzz Fuzz.string "error message should be rendered correctly" <|
             \p ->
-                Select.create { isMobile = False }
+                Select.config False "select-id"
                     |> Select.withPlaceholder p
                     |> renderSelect
                     |> findSelect
@@ -79,7 +78,7 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    Select.create { isMobile = False }
+                    Select.config False "select-id"
                         |> Select.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
                         |> renderSelect
                         |> findSelect
@@ -93,7 +92,7 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    Select.create { isMobile = False }
+                    Select.config False "select-id"
                         |> Select.withClassList [ ( s1, True ), ( s2, True ) ]
                         |> Select.withClassList [ ( s3, True ) ]
                         |> renderSelect
@@ -114,7 +113,7 @@ suite =
                         |> Simulation.simulate ( Event.input "DEVELOPER", [ Selector.tag "select" ] )
                         |> Simulation.expectModel
                             (Expect.all
-                                [ Select.getValue () >> Expect.equal (Just Developer)
+                                [ Select.validate () >> Expect.equal (Ok Developer)
                                 ]
                             )
                         |> Simulation.run
@@ -168,7 +167,7 @@ simulationDesktop =
         , update = Select.update
         , view =
             \model ->
-                Select.create { isMobile = False }
+                Select.config False "select-id"
                     |> Select.withOptions
                         [ Select.option { value = "DEVELOPER", label = "Developer" }
                         , Select.option { value = "DESIGNER", label = "Designer" }

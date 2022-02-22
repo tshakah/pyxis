@@ -1,7 +1,12 @@
 module Commons.Events.KeyDown exposing
     ( Event
     , decoder
+    , isArrowDown
+    , isArrowUp
+    , isEnter
+    , isEsc
     , isSpace
+    , isTab
     , onKeyDown
     , onKeyDownPreventDefaultOn
     )
@@ -24,7 +29,32 @@ type Event
 -}
 isSpace : Event -> Bool
 isSpace =
-    makePredicate 42
+    makePredicate 32
+
+
+isTab : Event -> Bool
+isTab =
+    makePredicate 9
+
+
+isEnter : Event -> Bool
+isEnter =
+    makePredicate 13
+
+
+isArrowDown : Event -> Bool
+isArrowDown =
+    makePredicate 40
+
+
+isArrowUp : Event -> Bool
+isArrowUp =
+    makePredicate 38
+
+
+isEsc : Event -> Bool
+isEsc =
+    makePredicate 27
 
 
 {-| Internal

@@ -259,6 +259,16 @@ getValue (Model { value }) =
     value
 
 
+{-| Internal
+-}
+withLabelArgs : ConfigData msg -> Label.Config -> Label.Config
+withLabelArgs configData label =
+    label
+        |> Label.withId (configData.id ++ "-label")
+        |> Label.withFor configData.id
+        |> Label.withSize configData.size
+
+
 {-| Renders the Textarea.
 -}
 render : ctx -> Model ctx -> Config msg -> Html msg
@@ -266,7 +276,7 @@ render ctx ((Model modelData) as model) ((Config configData) as configuration) =
     Html.div
         [ Attributes.class "form-item" ]
         [ configData.label
-            |> Maybe.map Label.render
+            |> Maybe.map (withLabelArgs configData >> Label.render)
             |> CommonsRender.renderMaybe
         , Html.div
             [ Attributes.class "form-item__wrapper" ]
