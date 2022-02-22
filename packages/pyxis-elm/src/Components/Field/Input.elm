@@ -345,14 +345,24 @@ setValue value (Model configuration) =
     Model { configuration | value = value }
 
 
+{-| Internal
+-}
+withLabelArgs : Config msg -> Label.Config -> Label.Config
+withLabelArgs (Config configData) label =
+    label
+        |> Label.withId (configData.id ++ "-label")
+        |> Label.withFor configData.id
+        |> Label.withSize configData.size
+
+
 {-| Renders the Input.Stories/Chapters/DateField.elm
 -}
 render : ctx -> Model ctx value -> Config msg -> Html msg
-render ctx ((Model state) as model) ((Config configuration) as config_) =
+render ctx ((Model state) as model) ((Config configData) as config_) =
     Html.div
         [ Attributes.class "form-item" ]
-        [ configuration.label
-            |> Maybe.map Label.render
+        [ configData.label
+            |> Maybe.map (withLabelArgs config_ >> Label.render)
             |> CommonsRender.renderMaybe
         , Html.div
             [ Attributes.class "form-item__wrapper" ]
@@ -360,11 +370,11 @@ render ctx ((Model state) as model) ((Config configuration) as config_) =
                 [ Attributes.classList
                     [ ( "form-field", True )
                     , ( "form-field--error", Result.Extra.isErr (state.validation ctx (state.valueMapper state.value)) )
-                    , ( "form-field--disabled", configuration.disabled )
+                    , ( "form-field--disabled", configData.disabled )
                     ]
-                , Commons.Attributes.maybe addonToAttribute configuration.addon
+                , Commons.Attributes.maybe addonToAttribute configData.addon
                 ]
-                [ configuration.addon
+                [ configData.addon
                     |> Maybe.map (renderAddon ctx model config_)
                     |> Maybe.withDefault (renderInput ctx model config_)
                 ]
@@ -372,7 +382,7 @@ render ctx ((Model state) as model) ((Config configuration) as config_) =
                 |> state.valueMapper
                 |> state.validation ctx
                 |> Error.fromResult
-                |> Maybe.map (Error.withId configuration.id >> Error.render)
+                |> Maybe.map (Error.withId configData.id >> Error.render)
                 |> CommonsRender.renderMaybe
             ]
         ]
