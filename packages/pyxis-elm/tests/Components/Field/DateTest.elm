@@ -132,7 +132,7 @@ suite =
                         |> Test.triggerMsg (Event.input (Date.toIsoString date))
                             (\(Tagger msg) ->
                                 fieldModel
-                                    |> DateField.update () msg
+                                    |> DateField.update msg
                                     |> DateField.getValue
                                     |> Expect.equal (DateField.Parsed date)
                             )
@@ -146,7 +146,7 @@ suite =
                         |> Test.triggerMsg (Event.input (Date.toIsoString date))
                             (\(Tagger msg) ->
                                 fieldModel
-                                    |> DateField.update () msg
+                                    |> DateField.update msg
                                     |> DateField.getValue
                                     |> Expect.equal (DateField.Parsed date)
                             )

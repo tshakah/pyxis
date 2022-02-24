@@ -7,6 +7,7 @@ module Components.Field.Textarea exposing
     , withLabel
     , withClassList
     , withDisabled
+    , withHint
     , withName
     , withPlaceholder
     , Msg
@@ -44,6 +45,7 @@ module Components.Field.Textarea exposing
 @docs withLabel
 @docs withClassList
 @docs withDisabled
+@docs withHint
 @docs withName
 @docs withPlaceholder
 
@@ -71,8 +73,9 @@ module Components.Field.Textarea exposing
 
 import Commons.Attributes
 import Commons.Properties.Size as Size exposing (Size)
-import Commons.Render as CommonsRender
+import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Html exposing (Html)
 import Html.Attributes as Attributes
@@ -112,6 +115,7 @@ type Config msg
 type alias ConfigData msg =
     { classList : List ( String, Bool )
     , disabled : Bool
+    , hint : Maybe Hint.Config
     , id : String
     , name : Maybe String
     , placeholder : Maybe String
@@ -128,6 +132,7 @@ config tagger id =
     Config
         { classList = []
         , disabled = False
+        , hint = Nothing
         , id = id
         , name = Nothing
         , placeholder = Nothing
@@ -149,6 +154,19 @@ withLabel a (Config configuration) =
 withDisabled : Bool -> Config msg -> Config msg
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
+
+
+{-| Adds the hint to the TextArea.
+-}
+withHint : String -> Config msg -> Config msg
+withHint hintMessage (Config configuration) =
+    Config
+        { configuration
+            | hint =
+                Hint.config hintMessage
+                    |> Hint.withFieldId configuration.id
+                    |> Just
+        }
 
 
 {-| Sets a Size to the Textarea
@@ -225,8 +243,8 @@ isOnBlur msg =
 
 {-| The update function.
 -}
-update : ctx -> Msg -> Model ctx -> Model ctx
-update ctx msg model =
+update : Msg -> Model ctx -> Model ctx
+update msg model =
     case msg of
         OnBlur ->
             model
@@ -277,7 +295,7 @@ render ctx ((Model modelData) as model) ((Config configData) as configuration) =
         [ Attributes.class "form-item" ]
         [ configData.label
             |> Maybe.map (withLabelArgs configData >> Label.render)
-            |> CommonsRender.renderMaybe
+            |> Commons.Render.renderMaybe
         , Html.div
             [ Attributes.class "form-item__wrapper" ]
             [ Html.div
@@ -292,8 +310,7 @@ render ctx ((Model modelData) as model) ((Config configData) as configuration) =
             , modelData.value
                 |> modelData.validation ctx
                 |> Error.fromResult
-                |> Maybe.map (Error.withId configData.id >> Error.render)
-                |> CommonsRender.renderMaybe
+                |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
         ]
 
@@ -314,9 +331,12 @@ renderTextarea ctx (Model modelData) (Config configData) =
         , Commons.Attributes.testId configData.id
         , Commons.Attributes.maybe Attributes.name configData.name
         , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
-        , Commons.Attributes.renderIf
-            (Result.Extra.isOk (modelData.validation ctx modelData.value))
-            (Commons.Attributes.ariaDescribedBy (Error.toId configData.id))
+        , modelData.value
+            |> modelData.validation ctx
+            |> Error.fromResult
+            |> Maybe.map (always (Error.toId configData.id))
+            |> Commons.Attributes.ariaDescribedByErrorOrHint
+                (Maybe.map (always (Hint.toId configData.id)) configData.hint)
         , Html.Events.onInput (OnInput >> configData.tagger)
         , Html.Events.onFocus (configData.tagger OnFocus)
         , Html.Events.onBlur (configData.tagger OnBlur)

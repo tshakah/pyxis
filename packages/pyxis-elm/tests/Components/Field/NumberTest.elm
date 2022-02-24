@@ -180,7 +180,7 @@ suite =
                         |> Test.triggerMsg (Event.input (String.fromInt n))
                             (\(Tagger msg) ->
                                 fieldModel
-                                    |> NumberField.update () msg
+                                    |> NumberField.update msg
                                     |> NumberField.getValue
                                     |> Expect.equal n
                             )

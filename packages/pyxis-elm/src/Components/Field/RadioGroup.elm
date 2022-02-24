@@ -11,6 +11,7 @@ module Components.Field.RadioGroup exposing
     , withLayout
     , withClassList
     , withDisabled
+    , withHint
     , withLabel
     , withName
     , withOptions
@@ -53,6 +54,7 @@ module Components.Field.RadioGroup exposing
 
 @docs withClassList
 @docs withDisabled
+@docs withHint
 @docs withLabel
 @docs withName
 @docs withOptions
@@ -77,9 +79,10 @@ module Components.Field.RadioGroup exposing
 
 -}
 
-import Commons.Attributes as CommonsAttributes
-import Commons.Render as CommonsRender
+import Commons.Attributes
+import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Html
 import Html.Attributes as Attributes
@@ -115,6 +118,7 @@ type Config msg value
 type alias ConfigData msg value =
     { tagger : Msg value -> msg
     , classList : List ( String, Bool )
+    , hint : Maybe Hint.Config
     , id : String
     , isDisabled : Bool
     , label : Maybe Label.Config
@@ -131,6 +135,7 @@ config tagger id =
     Config
         { tagger = tagger
         , classList = []
+        , hint = Nothing
         , id = id
         , isDisabled = False
         , layout = Horizontal
@@ -204,6 +209,19 @@ withDisabled isDisabled (Config configuration) =
     Config { configuration | isDisabled = isDisabled }
 
 
+{-| Adds the hint to the TextArea.
+-}
+withHint : String -> Config msg value -> Config msg value
+withHint hintMessage (Config configuration) =
+    Config
+        { configuration
+            | hint =
+                Hint.config hintMessage
+                    |> Hint.withFieldId configuration.id
+                    |> Just
+        }
+
+
 {-| Add a name to the inputs.
 -}
 withName : String -> Config msg value -> Config msg value
@@ -255,18 +273,20 @@ render ctx ((Model modelData) as model) ((Config configData) as config_) =
                     ]
                 , Attributes.classList configData.classList
                 , Attributes.id configData.id
-                , CommonsAttributes.role "radiogroup"
-                , CommonsAttributes.ariaLabelledbyBy (labelId configData.id)
-                , CommonsAttributes.renderIf
-                    (Result.Extra.isErr (modelData.validation ctx modelData.selectedValue))
-                    (CommonsAttributes.ariaDescribedBy (Error.toId configData.id))
+                , Commons.Attributes.role "radiogroup"
+                , Commons.Attributes.ariaLabelledbyBy (labelId configData.id)
+                , modelData.selectedValue
+                    |> modelData.validation ctx
+                    |> Error.fromResult
+                    |> Maybe.map (always (Error.toId configData.id))
+                    |> Commons.Attributes.ariaDescribedByErrorOrHint
+                        (Maybe.map (always (Hint.toId configData.id)) configData.hint)
                 ]
                 (List.map (renderRadio ctx model config_) configData.options)
             , modelData.selectedValue
                 |> modelData.validation ctx
                 |> Error.fromResult
-                |> Maybe.map (Error.withId configData.id >> Error.render)
-                |> CommonsRender.renderMaybe
+                |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
         ]
         |> Html.map configData.tagger
@@ -278,7 +298,7 @@ renderLabel : Maybe Label.Config -> String -> Html.Html msg
 renderLabel label id =
     label
         |> Maybe.map (Label.withId (labelId id) >> Label.render)
-        |> CommonsRender.renderMaybe
+        |> Commons.Render.renderMaybe
 
 
 {-| Internal.
@@ -304,8 +324,8 @@ renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisa
             , Attributes.checked (selectedValue == value)
             , Attributes.disabled isDisabled
             , Attributes.id (radioId id label)
-            , CommonsAttributes.testId (radioId id label)
-            , CommonsAttributes.maybe Attributes.name name
+            , Commons.Attributes.testId (radioId id label)
+            , Commons.Attributes.maybe Attributes.name name
             , Events.onCheck (always (OnCheck value))
             ]
             []
@@ -323,8 +343,8 @@ radioId id label =
 
 {-| Update the RadioGroup Model.
 -}
-update : ctx -> Msg value -> Model ctx value -> Model ctx value
-update ctx msg =
+update : Msg value -> Model ctx value -> Model ctx value
+update msg =
     case msg of
         OnCheck value ->
             setValue value

@@ -1,5 +1,6 @@
 module Commons.Attributes exposing
     ( ariaDescribedBy
+    , ariaDescribedByErrorOrHint
     , ariaHidden
     , ariaLabel
     , ariaLabelledbyBy
@@ -16,6 +17,7 @@ module Commons.Attributes exposing
 ## A11Y Attributes
 
 @docs ariaDescribedBy
+@docs ariaDescribedByErrorOrHint
 @docs ariaHidden
 @docs ariaLabel
 @docs ariaLabelledbyBy
@@ -38,6 +40,7 @@ module Commons.Attributes exposing
 import Html
 import Html.Attributes
 import Json.Encode
+import Maybe.Extra
 
 
 {-| Creates an aria-label attribute.
@@ -79,6 +82,15 @@ testId =
 ariaDescribedBy : String -> Html.Attribute msg
 ariaDescribedBy =
     Html.Attributes.attribute "aria-describedby"
+
+
+{-| Creates an aria-describedby attribute based on Error or Hint
+-}
+ariaDescribedByErrorOrHint : Maybe String -> Maybe String -> Html.Attribute msg
+ariaDescribedByErrorOrHint errorId hintId =
+    Maybe.Extra.or errorId hintId
+        |> Maybe.map ariaDescribedBy
+        |> Maybe.withDefault none
 
 
 {-| Creates an aria-labelledby attribute.

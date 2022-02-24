@@ -142,7 +142,7 @@ simulationWithValidation : Simulation.Simulation (RadioGroup.Model {} Option) Ms
 simulationWithValidation =
     Simulation.fromSandbox
         { init = RadioGroup.init Default validation
-        , update = \(Tagger subMsg) model -> RadioGroup.update {} subMsg model
+        , update = \(Tagger subMsg) model -> RadioGroup.update subMsg model
         , view = \model -> RadioGroup.render {} model radioGroupConfig
         }
 

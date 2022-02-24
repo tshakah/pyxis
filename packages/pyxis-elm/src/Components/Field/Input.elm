@@ -17,6 +17,7 @@ module Components.Field.Input exposing
     , withLabel
     , withClassList
     , withDisabled
+    , withHint
     , withName
     , withPlaceholder
     , setValue
@@ -68,6 +69,7 @@ module Components.Field.Input exposing
 @docs withLabel
 @docs withClassList
 @docs withDisabled
+@docs withHint
 @docs withName
 @docs withPlaceholder
 @docs setValue
@@ -97,8 +99,9 @@ module Components.Field.Input exposing
 import Commons.Attributes
 import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
-import Commons.Render as CommonsRender
+import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -145,6 +148,7 @@ type Config msg
     = Config
         { addon : Maybe Addon
         , classList : List ( String, Bool )
+        , hint : Maybe Hint.Config
         , id : String
         , events : Events msg
         , name : Maybe String
@@ -162,6 +166,7 @@ config : Type -> Events msg -> String -> Config msg
 config inputType events id =
     Config
         { classList = []
+        , hint = Nothing
         , id = id
         , events = events
         , name = Nothing
@@ -310,6 +315,19 @@ withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
+{-| Sets the input hint
+-}
+withHint : String -> Config msg -> Config msg
+withHint hintMessage (Config configuration) =
+    Config
+        { configuration
+            | hint =
+                Hint.config hintMessage
+                    |> Hint.withFieldId configuration.id
+                    |> Just
+        }
+
+
 {-| Sets a Size to the Input.
 -}
 withSize : Size -> Config msg -> Config msg
@@ -353,7 +371,7 @@ render ctx ((Model state) as model) ((Config configuration) as config_) =
         [ Attributes.class "form-item" ]
         [ configuration.label
             |> Maybe.map Label.render
-            |> CommonsRender.renderMaybe
+            |> Commons.Render.renderMaybe
         , Html.div
             [ Attributes.class "form-item__wrapper" ]
             [ Html.div
@@ -372,8 +390,7 @@ render ctx ((Model state) as model) ((Config configuration) as config_) =
                 |> state.valueMapper
                 |> state.validation ctx
                 |> Error.fromResult
-                |> Maybe.map (Error.withId configuration.id >> Error.render)
-                |> CommonsRender.renderMaybe
+                |> Commons.Render.renderErrorOrHint configuration.id configuration.hint
             ]
         ]
 
@@ -384,9 +401,9 @@ renderAddon : ctx -> Model ctx value -> Config msg -> Addon -> Html msg
 renderAddon ctx model configuration addon =
     Html.label
         [ Attributes.class "form-field__wrapper" ]
-        [ CommonsRender.renderIf (Placement.isPrepend addon.placement) (renderAddonByType addon.type_)
+        [ Commons.Render.renderIf (Placement.isPrepend addon.placement) (renderAddonByType addon.type_)
         , renderInput ctx model configuration
-        , CommonsRender.renderIf (Placement.isAppend addon.placement) (renderAddonByType addon.type_)
+        , Commons.Render.renderIf (Placement.isAppend addon.placement) (renderAddonByType addon.type_)
         ]
 
 
@@ -431,9 +448,13 @@ renderInput ctx (Model state) (Config configuration) =
         , Commons.Attributes.testId configuration.id
         , Commons.Attributes.maybe Attributes.name configuration.name
         , Commons.Attributes.maybe Attributes.placeholder configuration.placeholder
-        , Commons.Attributes.renderIf
-            (Result.Extra.isOk (state.validation ctx (state.valueMapper state.value)))
-            (Commons.Attributes.ariaDescribedBy (Error.toId configuration.id))
+        , state.value
+            |> state.valueMapper
+            |> state.validation ctx
+            |> Error.fromResult
+            |> Maybe.map (always (Error.toId configuration.id))
+            |> Commons.Attributes.ariaDescribedByErrorOrHint
+                (Maybe.map (always (Hint.toId configuration.id)) configuration.hint)
         , Html.Events.onInput configuration.events.onInput
         , Html.Events.onFocus configuration.events.onFocus
         , Html.Events.onBlur configuration.events.onBlur

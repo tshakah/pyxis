@@ -113,7 +113,7 @@ update : Msg -> RadioGroup.Model {} Option -> RadioGroup.Model {} Option
 update msg =
     case msg of
         RadioFieldChanged subMsg ->
-            RadioGroup.update {} subMsg
+            RadioGroup.update subMsg
 
 
 init : Model

@@ -183,6 +183,6 @@ statelessComponent modifier { text } =
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | text = model }
                 , fromState = .text
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Text.update {} msg model.state }
+                , update = \(OnTextFieldMsg msg) model -> { model | state = Text.update msg model.state }
                 }
             )

@@ -10,6 +10,7 @@ module Components.Field.Number exposing
     , withLabel
     , withClassList
     , withDisabled
+    , withHint
     , withName
     , withPlaceholder
     , Msg
@@ -54,6 +55,7 @@ module Components.Field.Number exposing
 @docs withLabel
 @docs withClassList
 @docs withDisabled
+@docs withHint
 @docs withName
 @docs withPlaceholder
 
@@ -247,6 +249,13 @@ withDisabled =
     Input.withDisabled >> mapInputConfig
 
 
+{-| Adds the hint to the Input.
+-}
+withHint : String -> Config msg -> Config msg
+withHint hint =
+    mapInputConfig (Input.withHint hint)
+
+
 {-| Render the Input Number.
 -}
 render : ctx -> Model ctx -> Config msg -> Html msg
@@ -256,8 +265,8 @@ render ctx (Model state) (Config configuration) =
 
 {-| The update function.
 -}
-update : ctx -> Msg -> Model ctx -> Model ctx
-update ctx msg model =
+update : Msg -> Model ctx -> Model ctx
+update msg model =
     case msg of
         OnBlur ->
             model

@@ -183,6 +183,6 @@ statelessComponent modifier { number } =
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | number = model }
                 , fromState = .number
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Number.update {} msg model.state }
+                , update = \(OnTextFieldMsg msg) model -> { model | state = Number.update msg model.state }
                 }
             )

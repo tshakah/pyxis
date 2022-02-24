@@ -6,6 +6,7 @@ module Components.Field.Select exposing
     , Config
     , withClassList
     , withDisabled
+    , withHint
     , withName
     , withLabel
     , withPlaceholder
@@ -36,6 +37,7 @@ module Components.Field.Select exposing
 @docs Config, create
 @docs withClassList
 @docs withDisabled
+@docs withHint
 @docs withName
 @docs withLabel
 @docs withPlaceholder
@@ -67,6 +69,7 @@ import Commons.List
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -374,6 +377,7 @@ hoverFirstDropdownItem { options, id, delayed } ((Model modelData) as model) =
 type alias ConfigData =
     { classList : List ( String, Bool )
     , disabled : Bool
+    , hint : Maybe Hint.Config
     , id : String
     , isMobile : Bool
     , name : Maybe String
@@ -399,6 +403,7 @@ config isMobile id =
     Config
         { classList = []
         , disabled = False
+        , hint = Nothing
         , id = id
         , isMobile = isMobile
         , name = Nothing
@@ -445,6 +450,19 @@ withPlaceholder placeholder (Config select) =
 withDisabled : Bool -> Config -> Config
 withDisabled disabled (Config select) =
     Config { select | disabled = disabled }
+
+
+{-| Adds the hint to the Select.
+-}
+withHint : String -> Config -> Config
+withHint hintMessage (Config configuration) =
+    Config
+        { configuration
+            | hint =
+                Hint.config hintMessage
+                    |> Hint.withFieldId configuration.id
+                    |> Just
+        }
 
 
 {-| Set the name attribute
@@ -556,6 +574,12 @@ render ctx tagger ((Model modelData) as model) (Config configData) =
                         , Commons.Attributes.testId configData.id
                         , Attributes.classList configData.classList
                         , Attributes.disabled configData.disabled
+                        , modelData.value
+                            |> modelData.validation ctx
+                            |> Error.fromResult
+                            |> Maybe.map (always (Error.toId configData.id))
+                            |> Commons.Attributes.ariaDescribedByErrorOrHint
+                                (Maybe.map (always (Hint.toId configData.id)) configData.hint)
 
                         -- Conditional attributes
                         , Commons.Attributes.maybe Attributes.value modelData.value
@@ -585,22 +609,13 @@ render ctx tagger ((Model modelData) as model) (Config configData) =
                     ]
                 , renderDropdownWrapper model (Config configData)
                 ]
-            , model
-                |> getUiError ctx
-                |> Maybe.map (renderError configData.id)
-                |> Commons.Render.renderMaybe
+            , modelData.value
+                |> modelData.validation ctx
+                |> Error.fromResult
+                |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
         ]
         |> Html.map tagger
-
-
-{-| Internal.
--}
-renderError : String -> String -> Html msg
-renderError id error =
-    Error.create error
-        |> Error.withId id
-        |> Error.render
 
 
 {-| Internal.

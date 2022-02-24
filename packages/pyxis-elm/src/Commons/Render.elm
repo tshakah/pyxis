@@ -1,6 +1,7 @@
 module Commons.Render exposing
     ( empty
     , renderIf
+    , renderErrorOrHint
     , renderUnless
     , renderListIf
     , renderListUnless
@@ -15,6 +16,7 @@ module Commons.Render exposing
 ## Render
 
 @docs renderIf
+@docs renderErrorOrHint
 @docs renderUnless
 @docs renderListIf
 @docs renderListUnless
@@ -22,7 +24,10 @@ module Commons.Render exposing
 
 -}
 
+import Components.Field.Error as Error
+import Components.Field.Hint as Hint
 import Html exposing (Html)
+import Maybe.Extra
 
 
 {-| Renders an empty Html node.
@@ -73,3 +78,12 @@ renderListUnless condition =
 renderMaybe : Maybe (Html msg) -> Html msg
 renderMaybe =
     Maybe.withDefault empty
+
+
+{-| -}
+renderErrorOrHint : String -> Maybe Hint.Config -> Maybe Error.Config -> Html msg
+renderErrorOrHint id hintConfig errorConfig =
+    Maybe.Extra.or
+        (Maybe.map (Error.withFieldId id >> Error.render) errorConfig)
+        (Maybe.map (Hint.withFieldId id >> Hint.render) hintConfig)
+        |> renderMaybe

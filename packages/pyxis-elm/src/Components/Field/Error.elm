@@ -1,7 +1,7 @@
 module Components.Field.Error exposing
     ( Config
-    , create
-    , withId
+    , config
+    , withFieldId
     , render
     , toId
     , fromResult
@@ -13,12 +13,12 @@ module Components.Field.Error exposing
 # Error
 
 @docs Config
-@docs create
+@docs config
 
 
 ## Generics
 
-@docs withId
+@docs withFieldId
 
 
 ## Rendering
@@ -49,15 +49,15 @@ type Config
 
 {-| Creates an error message.
 -}
-create : String -> Config
-create message =
+config : String -> Config
+config message =
     Config { id = Nothing, message = message }
 
 
 {-| Adds an id to the error.
 -}
-withId : String -> Config -> Config
-withId a (Config configuration) =
+withFieldId : String -> Config -> Config
+withFieldId a (Config configuration) =
     Config { configuration | id = Just (toId a) }
 
 
@@ -77,7 +77,7 @@ fromResult result =
             Nothing
 
         Err errorMessage ->
-            Just (create errorMessage)
+            Just (config errorMessage)
 
 
 {-| View the error message

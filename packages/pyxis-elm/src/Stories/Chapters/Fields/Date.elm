@@ -117,6 +117,6 @@ statelessComponent modifier { date } =
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | date = model }
                 , fromState = .date
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Date.update {} msg model.state }
+                , update = \(OnTextFieldMsg msg) model -> { model | state = Date.update msg model.state }
                 }
             )

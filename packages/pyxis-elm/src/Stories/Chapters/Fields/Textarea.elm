@@ -117,6 +117,6 @@ statelessComponent modifier { textarea } =
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | textarea = model }
                 , fromState = .textarea
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Textarea.update {} msg model.state }
+                , update = \(OnTextFieldMsg msg) model -> { model | state = Textarea.update msg model.state }
                 }
             )

@@ -7,6 +7,7 @@ module Components.Field.Date exposing
     , withLabel
     , withClassList
     , withDisabled
+    , withHint
     , withName
     , withPlaceholder
     , Msg
@@ -47,6 +48,7 @@ module Components.Field.Date exposing
 @docs withLabel
 @docs withClassList
 @docs withDisabled
+@docs withHint
 @docs withName
 @docs withPlaceholder
 
@@ -233,6 +235,13 @@ withClassList classes =
     mapInputConfig (Input.withClassList classes)
 
 
+{-| Adds the hint to the Input.
+-}
+withHint : String -> Config msg -> Config msg
+withHint hint =
+    mapInputConfig (Input.withHint hint)
+
+
 {-| Sets a Name to the Input Date.
 -}
 withName : String -> Config msg -> Config msg
@@ -270,8 +279,8 @@ render ctx (Model state) (Config configuration) =
 
 {-| The update function.
 -}
-update : ctx -> Msg -> Model ctx -> Model ctx
-update ctx msg model =
+update : Msg -> Model ctx -> Model ctx
+update msg model =
     case msg of
         OnBlur ->
             model
