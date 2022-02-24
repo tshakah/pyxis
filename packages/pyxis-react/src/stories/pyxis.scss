@@ -1,6 +1,7 @@
 @forward "~@pyxis/scss/src/scss/components";
 @forward "~@pyxis/scss/src/scss/pyxis.scss";
 @use "~@pyxis/scss/src/scss/pyxis.scss";
+@use "scss/form";
 
 .alt-wrapper {
   @include pyxis.padding(2xs);
@@ -28,4 +29,8 @@
     color: pyxis.color(actionDark);
     text-decoration: underline;
   }
+}
+
+.full-width {
+  width: 100%;
 }

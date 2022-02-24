@@ -8,10 +8,10 @@ const renderToHTML = (element:React.ReactElement):string =>
   prettier.format(
     decode(renderToStaticMarkup(element).replaceAll(/aria-[a-z]+=""|=""/g, '')),
     {
+      htmlWhitespaceSensitivity: 'ignore',
       parser: 'html',
       plugins: [HTMLParser],
-      htmlWhitespaceSensitivity: 'ignore',
-      printWidth: 100
+      printWidth: 60
     }
   );
 

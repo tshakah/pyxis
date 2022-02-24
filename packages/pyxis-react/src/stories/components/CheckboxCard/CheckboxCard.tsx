@@ -81,7 +81,7 @@ export const CheckboxCardGroup: FC<CheckboxGroupProps> =
         <CheckboxCard error={error} {...props} />
       </div>
       {error && <div className="form-item__error-message" id="error-id">Error message</div>}
-      {hint && !error && <div className="form-item__hint" id="hint-id">Hint</div>}
+      {hint && !error && <div className="form-item__hint" id="hint-id">Hint message</div>}
     </div>
   </div>
 )

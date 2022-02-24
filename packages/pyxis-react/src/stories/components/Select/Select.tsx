@@ -47,7 +47,6 @@ const Select: FC<SelectProps> = ({
   const clickOnSelect = (event: any) => {
     setIsOpened(!isOpened);
     event.preventDefault();
-    console.log(event)
   }
 
   const clickOnItem = () => {
@@ -82,7 +81,7 @@ const Select: FC<SelectProps> = ({
   }
 
   return (
-    <div className={getClasses(disabled, error, native, isOpened)} style={{width: 320}}>
+    <div className="form-item" style={{width: 320}}>
       {withLabel && <label className="form-label" htmlFor={id} >Label</label>}
       <div className="form-item__wrapper">
         <div className={getClasses(disabled, error, native, isOpened)}>

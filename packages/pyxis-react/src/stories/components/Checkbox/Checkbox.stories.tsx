@@ -1,6 +1,6 @@
 import React from 'react';
 import {ComponentMeta} from '@storybook/react';
-import {CheckboxGroup} from "./Checkbox";
+import Checkbox, {CheckboxGroup} from "./Checkbox";
 import renderSourceAsHTML from "stories/utils/renderSourceAsHTML";
 
 export default {
@@ -21,3 +21,12 @@ Disabled.parameters = renderSourceAsHTML(Disabled());
 
 export const VerticalLayout = () => <CheckboxGroup layout="vertical"/>
 VerticalLayout.parameters = renderSourceAsHTML(VerticalLayout());
+
+export const WithoutGroup = () => (
+  <div className="form-item">
+    <div className="form-item__wrapper">
+      <Checkbox />
+    </div>
+  </div>
+);
+WithoutGroup.parameters = renderSourceAsHTML(WithoutGroup());

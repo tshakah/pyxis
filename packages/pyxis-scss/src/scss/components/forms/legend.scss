@@ -29,8 +29,10 @@
 
 .form-legend__title {
   @include foundations.title(s, bold);
+  color: foundations.color(neutralBase);
 }
 
 .form-legend__text {
   @include foundations.text(l, book);
+  color: foundations.color(neutral25);
 }

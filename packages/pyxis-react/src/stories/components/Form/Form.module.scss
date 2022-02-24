@@ -1,0 +1,16 @@
+@use "~@pyxis/scss/src/scss/pyxis.scss";
+
+.wrapper {
+  min-height: 100vh;
+}
+
+.showGrid {
+  @include pyxis.elevation(s, neutral15);
+  @include pyxis.padding(s);
+  background-color: pyxis.color(neutralLight);
+  border-bottom-left-radius: pyxis.rem(4px);
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}

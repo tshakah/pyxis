@@ -38,10 +38,12 @@ $_states: (brand, alert, success, error);
 
 .message__title {
   @include foundations.text(s, bold);
+  color: foundations.color(neutralBase);
 }
 
 .message__text {
   @include foundations.text(s, light);
+  color: foundations.color(neutralBase);
 }
 
 .message__close {

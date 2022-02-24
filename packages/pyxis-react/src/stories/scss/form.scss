@@ -1,0 +1,174 @@
+@use "~@pyxis/scss/src/scss/pyxis.scss";
+@use "~@pyxis/scss/src/scss/tokens/spacings";
+
+$formBackground: #0094FF;
+$gapBackground: #FDEEC0;
+
+/// Includes the size contained in the spacings map on height/top in every breakpoints
+///
+/// @param {String} $size - Name of the size
+/// @throw {Error}
+/// @access private
+@mixin _heightFromGap($size) {
+  @each $breakpoint, $space in pyxis.get(spacings.$spacings, $size) {
+    @include pyxis.mq($breakpoint) {
+      height: pyxis.rem($space);
+      top: -#{pyxis.rem($space)};
+    }
+  }
+}
+
+/// Includes content if parent have class `.form-show-grid`
+///
+/// @access private
+@mixin _visualGrid {
+  .form-show-grid & {
+    @content;
+  }
+}
+
+/// Includes content if parent have class `.form-item-show-gap`
+///
+/// @access private
+@mixin _visualGap {
+  .form-item-show-gap & {
+    @content;
+  }
+}
+
+/// Include the gap style without height
+///
+/// @access private
+@mixin _gapStyle {
+  @include pyxis.radius(2xs);
+  background-color: $gapBackground;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.form-show-grid {
+  color: pyxis.color(neutralLight);
+}
+
+.form,
+.form-fieldset,
+.form-grid,
+.form-grid__row,
+.form-grid__row__column,
+.form-item {
+  @include _visualGrid {
+    @include pyxis.horizontalPadding(xs);
+    @include pyxis.radius(2xs);
+    @include pyxis.text(s, bold);
+    @include pyxis.verticalPadding(m);
+    position: relative;
+
+    &:before {
+      color: pyxis.color(neutralBase);
+      left: pyxis.spacing(xs);
+      position: absolute;
+      top: pyxis.spacing(4xs);
+    }
+  }
+}
+
+.form,
+.form-fieldset,
+.form-grid {
+  @include _visualGrid {
+    background-color: rgba($formBackground, 0.1);
+    border: pyxis.rem(1px) dashed $formBackground;
+  }
+}
+
+.form:before {
+  @include _visualGrid {
+    content: "form"
+  }
+}
+
+.form-fieldset:before {
+  @include _visualGrid {
+    content: "fieldset"
+  }
+}
+
+.form-grid:before {
+  @include _visualGrid {
+    content: "grid"
+  }
+}
+
+.form-grid__row {
+  @include _visualGrid {
+    background-color: rgba($formBackground, 0.3);
+
+    &:before {
+      content: "row"
+    }
+  }
+}
+
+.form-grid__row + .form-grid__row {
+  @include _visualGrid {
+    &:after {
+      @include _gapStyle;
+      @include _heightFromGap(m);
+    }
+  }
+}
+
+.form-grid--gap-large > .form-grid__row + .form-grid__row {
+  @include _visualGrid {
+    &:after {
+      @include _heightFromGap(l);
+    }
+  }
+}
+
+.form-grid__row__column {
+  @include _visualGrid {
+    background-color: rgba($formBackground, 0.3);
+    color: pyxis.color(neutralBase);
+
+    &:before {
+      content: "column";
+    }
+  }
+}
+
+.form-item {
+  @include _visualGrid {
+    background-color: $formBackground;
+
+    &:before {
+      color: pyxis.color(neutralLight);
+      content: "item";
+    }
+  }
+
+  @include _visualGap {
+    @include pyxis.verticalSpacing(m);
+  }
+}
+
+.form-item__wrapper .form-item__hint {
+  @include _visualGap {
+    position: relative;
+
+    &:after {
+      @include _gapStyle;
+      @include _heightFromGap(4xs);
+    }
+  }
+}
+
+.form-item__wrapper--gap-large .form-item__hint {
+  @include _visualGap {
+    &:after {
+      @include _heightFromGap(2xs);
+    }
+  }
+}

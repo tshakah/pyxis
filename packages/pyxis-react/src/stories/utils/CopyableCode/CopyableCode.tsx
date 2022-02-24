@@ -7,8 +7,10 @@ const CopyableCode: FC<CopyableCodeProps> = ({ text }) => {
 
   return (
     <>
-      <code onClick={handleCopyClick} aria-hidden="true" className={styles.wrapper}>{text}</code>
-      {isCopied && <span className={styles.badge}>Copied!</span>}
+      <code onClick={handleCopyClick} aria-hidden="true" className={styles.wrapper}>
+        {text}
+        {isCopied && <span className={styles.badge}>Copied!</span>}
+      </code>
     </>
   );
 };

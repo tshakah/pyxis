@@ -1,5 +1,10 @@
 @use "../../pyxis";
 
+.wrapper {
+  @include pyxis.verticalSpacing(m);
+  color: pyxis.color(neutral25);
+}
+
 .header {
   @include pyxis.verticalSpacing(s);
   border-bottom: pyxis.rem(1px) solid pyxis.color(neutral85);
@@ -12,21 +17,21 @@
 
 .category {
   @include pyxis.text(l, book);
-  color: pyxis.color(neutral25);
 }
 
 .mainTitle {
   @include pyxis.title(xl, bold);
+  color: pyxis.color(neutralBase);
 }
 
 .title {
   @include pyxis.title(l, bold);
+  color: pyxis.color(neutralBase);
 }
 
 .description {
   @include pyxis.verticalSpacing(m);
   @include pyxis.rowGap(xs);
   @include pyxis.text(l, book);
-  color: pyxis.color(neutral25);
   display: grid;
 }

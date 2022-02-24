@@ -18,6 +18,7 @@
 .head {
   @include pyxis.text(l, bold);
   @include pyxis.verticalPadding(2xs);
+  color: pyxis.color(neutralBase);
 }
 
 .row {

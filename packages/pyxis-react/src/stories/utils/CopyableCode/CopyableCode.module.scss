@@ -9,6 +9,7 @@
   display: inline-block;
   font-size: pyxis.rem(14px);
   line-height: pyxis.rem(25px);
+  position: relative;
   user-select: none;
 }
 
@@ -23,4 +24,8 @@
   height: pyxis.rem(24px);
   line-height: pyxis.rem(20px);
   pointer-events: none;
+  position: absolute;
+  right: pyxis.rem(-10px);
+  top: 0;
+  transform: translateX(100%);
 }

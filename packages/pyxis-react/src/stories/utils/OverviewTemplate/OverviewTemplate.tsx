@@ -11,7 +11,7 @@ const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
     isMain,
   },
 ) => (
-  <>
+  <div className={styles.wrapper}>
     <div className={styles.header}>
       {category && isMain && <div className={styles.category}>{category}</div>}
       <h2 className={isMain ? styles.mainTitle : styles.title} id={pascalToKebab(title)}>{title}</h2>
@@ -22,7 +22,7 @@ const OverviewTemplate: FC<AllStoriesOverviewGeneratorProps> = (
     </div>}
 
     {children}
-  </>
+  </div>
 );
 
 export default OverviewTemplate;
