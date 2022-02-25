@@ -20,10 +20,6 @@ type Option
     | Default
 
 
-type Msg
-    = Tagger (RadioGroup.Msg Option)
-
-
 suite : Test
 suite =
     Test.describe "The RadioGroup component"
@@ -115,7 +111,7 @@ suite =
         ]
 
 
-findInputs : Query.Single Msg -> Query.Multiple Msg
+findInputs : Query.Single msg -> Query.Multiple msg
 findInputs =
     Query.findAll [ Selector.tag "input" ]
 
@@ -127,23 +123,23 @@ radioOptions =
     ]
 
 
-radioGroupConfig : RadioGroup.Config Msg Option
+radioGroupConfig : RadioGroup.Config Option
 radioGroupConfig =
-    RadioGroup.config Tagger "gender" |> RadioGroup.withOptions radioOptions
+    RadioGroup.config "gender" |> RadioGroup.withOptions radioOptions
 
 
-renderRadioGroup : RadioGroup.Config Msg Option -> Query.Single Msg
+renderRadioGroup : RadioGroup.Config Option -> Query.Single (RadioGroup.Msg Option)
 renderRadioGroup =
-    RadioGroup.render {} (RadioGroup.init Default validation)
+    RadioGroup.render identity {} (RadioGroup.init Default validation)
         >> Query.fromHtml
 
 
-simulationWithValidation : Simulation.Simulation (RadioGroup.Model {} Option) Msg
+simulationWithValidation : Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
 simulationWithValidation =
     Simulation.fromSandbox
         { init = RadioGroup.init Default validation
-        , update = \(Tagger subMsg) model -> RadioGroup.update subMsg model
-        , view = \model -> RadioGroup.render {} model radioGroupConfig
+        , update = \subMsg model -> RadioGroup.update subMsg model
+        , view = \model -> RadioGroup.render identity {} model radioGroupConfig
         }
 
 
@@ -156,7 +152,7 @@ validation _ value =
         Ok value
 
 
-simulateEvents : String -> Simulation.Simulation (RadioGroup.Model {} Option) Msg -> Simulation.Simulation (RadioGroup.Model {} Option) Msg
+simulateEvents : String -> Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option) -> Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
 simulateEvents testId simulation =
     simulation
         |> Simulation.simulate ( Event.check True, [ Selector.attribute (CA.testId testId) ] )

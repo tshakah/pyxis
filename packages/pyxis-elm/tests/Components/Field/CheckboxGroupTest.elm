@@ -215,7 +215,7 @@ findInput label =
 
 renderCheckboxGroup : CheckboxGroup.Config value -> Query.Single (CheckboxGroup.Msg value)
 renderCheckboxGroup =
-    CheckboxGroup.render () identity (CheckboxGroup.init (always Ok)) >> Query.fromHtml
+    CheckboxGroup.render identity () (CheckboxGroup.init (always Ok)) >> Query.fromHtml
 
 
 type alias NonemptyList a =
@@ -243,5 +243,5 @@ simulation =
         , view =
             \model ->
                 langsConfig
-                    |> CheckboxGroup.render () identity model
+                    |> CheckboxGroup.render identity () model
         }

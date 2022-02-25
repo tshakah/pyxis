@@ -30,7 +30,7 @@ CheckboxGroup.config "checkboxgroup-id"
         , CheckboxGroup.option { value = Rust, label = "Rust" }
         , CheckboxGroup.option { value = Elixir, label = "Elixir" }
         ]
-    |> CheckboxGroup.render ctx CheckboxGroupMsg model.langsModel
+    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
 ```
 
 <component with-label="CheckboxGroup with validation" />
@@ -54,13 +54,13 @@ CheckboxGroup.config "checkboxgroup-id"
         [ CheckboxGroup.option { value = Elm, label = "Elm" }
         , ...
         ]
-    |> CheckboxGroup.render ctx CheckboxGroupMsg model.langsModel
+    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
 ```
 
 <component with-label="CheckboxGroup with single Checkbox" />
 ```
 CheckboxGroup.single "Accept the policy" "checkbox-id"
-|> CheckboxGroup.render ctx CheckboxGroupMsg model.cookieCheckboxModel
+|> CheckboxGroup.render CheckboxGroupMsg ctx model.cookieCheckboxModel
 ```
 
 <component with-label="CheckboxGroup with disabled options" />
@@ -73,7 +73,7 @@ CheckboxGroup.config "checkboxgroup-id"
         , CheckboxGroup.option { value = Elixir, label = "Elixir" }
             |> CheckboxGroup.withDisabledOption True
         ]
-    |> CheckboxGroup.render ctx CheckboxGroupMsg model.langsModel
+    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
 ```
 
 <component with-label="CheckboxGroup with vertical layout" />
@@ -84,7 +84,7 @@ CheckboxGroup.config "checkboxgroup-id"
         , ...
         ]
     |> CheckboxGroup.withLayout CheckboxGroup.vertical
-    |> CheckboxGroup.render ctx CheckboxGroupMsg model.langsModel
+    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
 ```
 
 """
@@ -189,7 +189,7 @@ viewSection title lens checkbox =
     , \sharedState ->
         checkbox
             |> CheckboxGroup.withLabel (Label.config "Label")
-            |> CheckboxGroup.render () identity (composedLens.get sharedState)
+            |> CheckboxGroup.render identity () (composedLens.get sharedState)
             |> Html.map
                 (ElmBook.Actions.mapUpdate
                     { toState = PrimaFunction.flip composedLens.set

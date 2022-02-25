@@ -1,5 +1,5 @@
 module Components.Button exposing
-    ( Model, Variant
+    ( Variant
     , primary
     , secondary
     , tertiary
@@ -25,6 +25,7 @@ module Components.Button exposing
     , withShadow
     , withText
     , render
+    , Config
     )
 
 {-|
@@ -97,15 +98,9 @@ import Html.Attributes as Attributes
 import Html.Events as Events
 
 
-{-| The Button model.
--}
-type Model msg
-    = Model (Configuration msg)
-
-
 {-| Internal. The internal Button configuration.
 -}
-type alias Configuration msg =
+type alias ConfigData msg =
     { ariaLabel : Maybe String
     , classList : List ( String, Bool )
     , contentWidth : Bool
@@ -120,6 +115,12 @@ type alias Configuration msg =
     , type_ : Type msg
     , variant : Variant
     }
+
+
+{-| The Button configuration.
+-}
+type Config msg
+    = Config (ConfigData msg)
 
 
 {-| Inits the Button.
@@ -147,9 +148,9 @@ type alias Configuration msg =
             |> Button.render
 
 -}
-init : Variant -> Model msg
-init variant =
-    Model
+config : Variant -> Config msg
+config variant =
+    Config
         { ariaLabel = Nothing
         , classList = []
         , contentWidth = False
@@ -168,37 +169,37 @@ init variant =
 
 {-| Creates a Button with a Primary variant.
 -}
-primary : Model msg
+primary : Config msg
 primary =
-    init Primary
+    config Primary
 
 
 {-| Creates a Button with a Secondary variant.
 -}
-secondary : Model msg
+secondary : Config msg
 secondary =
-    init Secondary
+    config Secondary
 
 
 {-| Creates a Button with a Tertiary variant.
 -}
-tertiary : Model msg
+tertiary : Config msg
 tertiary =
-    init Tertiary
+    config Tertiary
 
 
 {-| Creates a Button with a Brand variant.
 -}
-brand : Model msg
+brand : Config msg
 brand =
-    init Brand
+    config Brand
 
 
 {-| Creates a Button with a Ghost variant.
 -}
-ghost : Model msg
+ghost : Config msg
 ghost =
-    init Ghost
+    config Ghost
 
 
 {-| Internal.
@@ -303,9 +304,9 @@ isLinkType a =
 
 {-| Sets a type to the Button.
 -}
-withType : Type msg -> Model msg -> Model msg
-withType a (Model configuration) =
-    Model { configuration | type_ = a }
+withType : Type msg -> Config msg -> Config msg
+withType a (Config configuration) =
+    Config { configuration | type_ = a }
 
 
 {-| Internal.
@@ -346,9 +347,9 @@ typeToEventAttribute a =
 
 {-| Sets a theme to the Button.
 -}
-withTheme : Theme -> Model msg -> Model msg
-withTheme a (Model configuration) =
-    Model { configuration | theme = a }
+withTheme : Theme -> Config msg -> Config msg
+withTheme a (Config configuration) =
+    Config { configuration | theme = a }
 
 
 {-| The available Button variant.
@@ -361,92 +362,92 @@ type Variant
     | Ghost
 
 
-withSize : Size -> Model msg -> Model msg
-withSize a (Model configuration) =
-    Model { configuration | size = a }
+withSize : Size -> Config msg -> Config msg
+withSize a (Config configuration) =
+    Config { configuration | size = a }
 
 
 {-| Adds an icon to the Button. The icon will be shown before button's content from ltr.
 -}
-withIconPrepend : IconSet.Icon -> Model msg -> Model msg
-withIconPrepend icon (Model configuration) =
-    Model { configuration | icon = PlacedIcon Placement.prepend icon }
+withIconPrepend : IconSet.Icon -> Config msg -> Config msg
+withIconPrepend icon (Config configuration) =
+    Config { configuration | icon = PlacedIcon Placement.prepend icon }
 
 
 {-| Adds an icon to the Button. The icon will be shown after button's content from ltr.
 -}
-withIconAppend : IconSet.Icon -> Model msg -> Model msg
-withIconAppend icon (Model configuration) =
-    Model { configuration | icon = PlacedIcon Placement.append icon }
+withIconAppend : IconSet.Icon -> Config msg -> Config msg
+withIconAppend icon (Config configuration) =
+    Config { configuration | icon = PlacedIcon Placement.append icon }
 
 
 {-| Adds an icon to the Button. This will be the only content of the Button..
 -}
-withIconOnly : IconSet.Icon -> Model msg -> Model msg
-withIconOnly icon (Model configuration) =
-    Model { configuration | icon = Standalone icon }
+withIconOnly : IconSet.Icon -> Config msg -> Config msg
+withIconOnly icon (Config configuration) =
+    Config { configuration | icon = Standalone icon }
 
 
 {-| Sets whether the Button should be disabled or not.
 -}
-withDisabled : Bool -> Model msg -> Model msg
-withDisabled a (Model configuration) =
-    Model { configuration | disabled = a }
+withDisabled : Bool -> Config msg -> Config msg
+withDisabled a (Config configuration) =
+    Config { configuration | disabled = a }
 
 
 {-| Sets an aria-label to the Button.
 -}
-withAriaLabel : String -> Model msg -> Model msg
-withAriaLabel a (Model configuration) =
-    Model { configuration | ariaLabel = Just a }
+withAriaLabel : String -> Config msg -> Config msg
+withAriaLabel a (Config configuration) =
+    Config { configuration | ariaLabel = Just a }
 
 
 {-| Sets an id to the Button.
 -}
-withId : String -> Model msg -> Model msg
-withId a (Model configuration) =
-    Model { configuration | id = Just a }
+withId : String -> Config msg -> Config msg
+withId a (Config configuration) =
+    Config { configuration | id = Just a }
 
 
 {-| Sets whether the Button should show a loading spinner or not.
 -}
-withLoading : Bool -> Model msg -> Model msg
-withLoading a (Model configuration) =
-    Model { configuration | loading = a }
+withLoading : Bool -> Config msg -> Config msg
+withLoading a (Config configuration) =
+    Config { configuration | loading = a }
 
 
 {-| Sets whether the Button should have a content width or not.
 -}
-withContentWidth : Model msg -> Model msg
-withContentWidth (Model configuration) =
-    Model { configuration | contentWidth = True }
+withContentWidth : Config msg -> Config msg
+withContentWidth (Config configuration) =
+    Config { configuration | contentWidth = True }
 
 
 {-| Sets whether the Button should have a shadow or not.
 -}
-withShadow : Model msg -> Model msg
-withShadow (Model configuration) =
-    Model { configuration | shadow = True }
+withShadow : Config msg -> Config msg
+withShadow (Config configuration) =
+    Config { configuration | shadow = True }
 
 
 {-| Adds a textual content to the Button.
 -}
-withText : String -> Model msg -> Model msg
-withText a (Model configuration) =
-    Model { configuration | text = a }
+withText : String -> Config msg -> Config msg
+withText a (Config configuration) =
+    Config { configuration | text = a }
 
 
 {-| Adds a classList to the Button.
 -}
-withClassList : List ( String, Bool ) -> Model msg -> Model msg
-withClassList a (Model configuration) =
-    Model { configuration | classList = a }
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList a (Config configuration) =
+    Config { configuration | classList = a }
 
 
 {-| Renders the Button.
 -}
-render : Model msg -> Html msg
-render (Model configuration) =
+render : Config msg -> Html msg
+render (Config configuration) =
     (if isLinkType configuration.type_ then
         Html.a
 

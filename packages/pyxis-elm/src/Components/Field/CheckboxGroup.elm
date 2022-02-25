@@ -270,8 +270,8 @@ single label id =
 
 {-| Render the CheckboxGroup
 -}
-render : ctx -> (Msg value -> msg) -> Model ctx value parsed -> Config value -> Html msg
-render ctx tagger ((Model modelData) as model) (Config configData) =
+render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
+render tagger ctx ((Model modelData) as model) (Config configData) =
     let
         validationResult : Result String parsed
         validationResult =
@@ -348,7 +348,7 @@ getValue (Model modelData) =
 renderErrorConfig : ConfigData value -> Error.Config -> Html msg
 renderErrorConfig configData errorConfig =
     errorConfig
-        |> Error.withId configData.id
+        |> Error.withFieldId configData.id
         |> Error.render
 
 

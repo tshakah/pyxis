@@ -127,9 +127,9 @@ init =
     }
 
 
-config : String -> String -> RadioGroup.Config Msg Option
+config : String -> String -> RadioGroup.Config Option
 config id name =
-    RadioGroup.config RadioFieldChanged id
+    RadioGroup.config id
         |> RadioGroup.withOptions
             [ RadioGroup.option { value = M, label = "Male" }
             , RadioGroup.option { value = F, label = "Female" }
@@ -164,7 +164,7 @@ radioGroupComponent :
     String
     -> String
     -> (RadioFieldModels -> RadioGroup.Model {} Option)
-    -> (RadioGroup.Config Msg Option -> RadioGroup.Config Msg Option)
+    -> (RadioGroup.Config Option -> RadioGroup.Config Option)
     -> (RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels)
     -> { a | radio : RadioFieldModels }
     -> Html (ElmBook.Msg { b | radio : RadioFieldModels })
@@ -172,7 +172,7 @@ radioGroupComponent id name modelMapper configModifier modelUpdater sharedState 
     SH.statefulComponent
         (.radio >> modelMapper)
         (config id name |> configModifier)
-        (RadioGroup.render {})
+        (RadioGroup.render RadioFieldChanged {})
         (\state model -> mapRadioFieldModels (modelUpdater model) state)
         update
         (modelMapper sharedState.radio)

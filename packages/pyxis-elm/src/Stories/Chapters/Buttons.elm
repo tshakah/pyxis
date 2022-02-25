@@ -387,7 +387,7 @@ btn =
 """
 
 
-withCommonOptions : Button.Model (ElmBook.Msg state) -> Button.Model (ElmBook.Msg state)
+withCommonOptions : Button.Config (ElmBook.Msg state) -> Button.Config (ElmBook.Msg state)
 withCommonOptions =
     Button.withText "Click me!"
         >> Button.withType (Button.button (ElmBook.Actions.logAction "Button clicked"))

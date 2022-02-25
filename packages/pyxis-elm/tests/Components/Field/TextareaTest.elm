@@ -11,10 +11,6 @@ import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes)
 
 
-type Msg
-    = Tagger TextareaField.Msg
-
-
 suite : Test
 suite =
     Test.describe "The Textarea component"
@@ -130,11 +126,11 @@ fieldModel =
     TextareaField.init (always Ok)
 
 
-fieldConfig : TextareaField.Config Msg
+fieldConfig : TextareaField.Config
 fieldConfig =
-    TextareaField.config Tagger "input-id"
+    TextareaField.config "input-id"
 
 
-fieldRender : ctx -> TextareaField.Model ctx -> TextareaField.Config msg -> Query.Single msg
+fieldRender : ctx -> TextareaField.Model ctx -> TextareaField.Config -> Query.Single TextareaField.Msg
 fieldRender ctx model =
-    TextareaField.render ctx model >> Query.fromHtml
+    TextareaField.render identity ctx model >> Query.fromHtml

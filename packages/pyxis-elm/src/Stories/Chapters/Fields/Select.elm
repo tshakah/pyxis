@@ -34,7 +34,7 @@ Select.create False "select-id"
           , Select.option { value = "CTO", label = "Chief technology officer" }
           , Select.option { value = "CONSULTANT", label = "Consultant" }
           ]
-    |> Select.render ctx Tagger model.roleSelectModel
+    |> Select.render Tagger ctx model.roleSelectModel
 ```
 
 And the native `<select>` on mobile:
@@ -47,7 +47,7 @@ Select.create True "select-id"
           [ Select.option { value = "DEVELOPER", label = "Developer" }
           , ...
           ]
-    |> Select.render ctx Tagger model.roleSelectModel
+    |> Select.render Tagger ctx model.roleSelectModel
 ```
 
 ### Disabled
@@ -61,7 +61,7 @@ Select.create False "select-id"
           [ Select.option { value = "DEVELOPER", label = "Developer" }
           , ...
           ]
-    |> Select.render ctx Tagger model.roleSelectModel
+    |> Select.render Tagger ctx model.roleSelectModel
 ```
 
 ### Size
@@ -76,7 +76,7 @@ Select.create False "select-id"
           [ Select.option { value = "DEVELOPER", label = "Developer" }
           , ...
           ]
-    |> Select.render ctx Tagger model.roleSelectModel
+    |> Select.render Tagger ctx model.roleSelectModel
 ```
 
 ### Label
@@ -91,7 +91,7 @@ Select.create False "select-id"
           [ Select.option { value = "DEVELOPER", label = "Developer" }
           , ...
           ]
-    |> Select.render ctx Tagger model.roleSelectModel
+    |> Select.render Tagger ctx model.roleSelectModel
 ```
 
 
@@ -104,7 +104,7 @@ Select.create False "select-id"
           [ Select.option { value = "DEVELOPER", label = "Developer" }
           , ...
           ]
-    |> Select.render ctx Tagger model.roleSelectModel
+    |> Select.render Tagger ctx model.roleSelectModel
 ```
 """
 
@@ -234,7 +234,7 @@ viewSection lens title select =
                 , Select.option { value = "CONSULTANT", label = "Consultant" }
                 ]
             -- Rendering
-            |> Select.render () identity (composedLens.get sharedState)
+            |> Select.render identity () (composedLens.get sharedState)
             |> Html.map
                 (ElmBook.Actions.mapUpdateWithCmd
                     { toState = PrimaFunction.flip composedLens.set

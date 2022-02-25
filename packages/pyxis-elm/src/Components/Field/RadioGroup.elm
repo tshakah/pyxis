@@ -111,13 +111,12 @@ init defaultValue validation =
 
 {-| The RadioGroup configuration.
 -}
-type Config msg value
-    = Config (ConfigData msg value)
+type Config value
+    = Config (ConfigData value)
 
 
-type alias ConfigData msg value =
-    { tagger : Msg value -> msg
-    , classList : List ( String, Bool )
+type alias ConfigData value =
+    { classList : List ( String, Bool )
     , hint : Maybe Hint.Config
     , id : String
     , isDisabled : Bool
@@ -130,11 +129,10 @@ type alias ConfigData msg value =
 
 {-| Initialize the RadioGroup Config.
 -}
-config : (Msg value -> msg) -> String -> Config msg value
-config tagger id =
+config : String -> Config value
+config id =
     Config
-        { tagger = tagger
-        , classList = []
+        { classList = []
         , hint = Nothing
         , id = id
         , isDisabled = False
@@ -197,21 +195,21 @@ vertical =
 
 {-| Add the classes to the group wrapper.
 -}
-withClassList : List ( String, Bool ) -> Config msg value -> Config msg value
+withClassList : List ( String, Bool ) -> Config value -> Config value
 withClassList classList (Config configuration) =
     Config { configuration | classList = classList }
 
 
 {-| Define if the group is disabled or not.
 -}
-withDisabled : Bool -> Config msg value -> Config msg value
+withDisabled : Bool -> Config value -> Config value
 withDisabled isDisabled (Config configuration) =
     Config { configuration | isDisabled = isDisabled }
 
 
 {-| Adds the hint to the TextArea.
 -}
-withHint : String -> Config msg value -> Config msg value
+withHint : String -> Config value -> Config value
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -224,28 +222,28 @@ withHint hintMessage (Config configuration) =
 
 {-| Add a name to the inputs.
 -}
-withName : String -> Config msg value -> Config msg value
+withName : String -> Config value -> Config value
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Add a label to the inputs.
 -}
-withLabel : Label.Config -> Config msg value -> Config msg value
+withLabel : Label.Config -> Config value -> Config value
 withLabel label (Config configuration) =
     Config { configuration | label = Just label }
 
 
 {-| Define the visible options in the radio group.
 -}
-withOptions : List (Option value) -> Config msg value -> Config msg value
+withOptions : List (Option value) -> Config value -> Config value
 withOptions options (Config configuration) =
     Config { configuration | options = options }
 
 
 {-| Change the visual layout. The default one is horizontal.
 -}
-withLayout : Layout -> Config msg value -> Config msg value
+withLayout : Layout -> Config value -> Config value
 withLayout layout (Config configuration) =
     Config { configuration | layout = layout }
 
@@ -259,8 +257,8 @@ option =
 
 {-| Render the RadioGroup.
 -}
-render : ctx -> Model ctx value -> Config msg value -> Html.Html msg
-render ctx ((Model modelData) as model) ((Config configData) as config_) =
+render : (Msg value -> msg) -> ctx -> Model ctx value -> Config value -> Html.Html msg
+render tagger ctx ((Model modelData) as model) ((Config configData) as config_) =
     Html.div
         [ Attributes.class "form-item" ]
         [ renderLabel configData.label configData.id
@@ -289,7 +287,7 @@ render ctx ((Model modelData) as model) ((Config configData) as config_) =
                 |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
         ]
-        |> Html.map configData.tagger
+        |> Html.map tagger
 
 
 {-| Internal.
@@ -310,7 +308,7 @@ labelId =
 
 {-| Internal.
 -}
-renderRadio : ctx -> Model ctx value -> Config msg value -> Option value -> Html.Html (Msg value)
+renderRadio : ctx -> Model ctx value -> Config value -> Option value -> Html.Html (Msg value)
 renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
     Html.label
         [ Attributes.classList

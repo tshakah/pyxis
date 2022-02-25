@@ -76,18 +76,14 @@ type alias SharedState x =
 
 type alias Model =
     { state : Textarea.Model {}
-    , config : Textarea.Config Msg
+    , config : Textarea.Config
     }
-
-
-type Msg
-    = OnTextFieldMsg Textarea.Msg
 
 
 init : Model
 init =
     { state = Textarea.init (always Ok)
-    , config = Textarea.config OnTextFieldMsg "base"
+    , config = Textarea.config "base"
     }
 
 
@@ -108,15 +104,15 @@ componentsList =
     ]
 
 
-statelessComponent : (Textarea.Config Msg -> Textarea.Config Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent : (Textarea.Config -> Textarea.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
 statelessComponent modifier { textarea } =
     textarea.config
         |> modifier
-        |> Textarea.render {} textarea.state
+        |> Textarea.render identity {} textarea.state
         |> Html.map
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | textarea = model }
                 , fromState = .textarea
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Textarea.update msg model.state }
+                , update = \msg model -> { model | state = Textarea.update msg model.state }
                 }
             )

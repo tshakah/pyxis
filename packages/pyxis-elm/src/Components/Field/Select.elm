@@ -542,8 +542,8 @@ withLabelArgs configData label =
 
 {-| Render the html
 -}
-render : ctx -> (Msg -> msg) -> Model ctx a -> Config -> Html msg
-render ctx tagger ((Model modelData) as model) (Config configData) =
+render : (Msg -> msg) -> ctx -> Model ctx a -> Config -> Html msg
+render tagger ctx ((Model modelData) as model) (Config configData) =
     Html.div [ Attributes.class "form-item" ]
         [ configData.label
             |> Maybe.map (withLabelArgs configData >> Label.render)

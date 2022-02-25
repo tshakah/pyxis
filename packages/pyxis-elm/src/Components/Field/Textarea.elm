@@ -101,18 +101,21 @@ type alias ModelData ctx =
 -}
 init : (ctx -> String -> Result String String) -> Model ctx
 init validation =
-    Model { value = "", validation = validation }
+    Model
+        { value = ""
+        , validation = validation
+        }
 
 
 {-| The view configuration.
 -}
-type Config msg
-    = Config (ConfigData msg)
+type Config
+    = Config ConfigData
 
 
 {-| Internal.
 -}
-type alias ConfigData msg =
+type alias ConfigData =
     { classList : List ( String, Bool )
     , disabled : Bool
     , hint : Maybe Hint.Config
@@ -121,14 +124,13 @@ type alias ConfigData msg =
     , placeholder : Maybe String
     , size : Size
     , label : Maybe Label.Config
-    , tagger : Msg -> msg
     }
 
 
 {-| Creates a Textarea.
 -}
-config : (Msg -> msg) -> String -> Config msg
-config tagger id =
+config : String -> Config
+config id =
     Config
         { classList = []
         , disabled = False
@@ -138,27 +140,26 @@ config tagger id =
         , placeholder = Nothing
         , size = Size.medium
         , label = Nothing
-        , tagger = tagger
         }
 
 
 {-| Adds a Label to the Textarea.
 -}
-withLabel : Label.Config -> Config msg -> Config msg
+withLabel : Label.Config -> Config -> Config
 withLabel a (Config configuration) =
     Config { configuration | label = Just a }
 
 
 {-| Sets the Textarea as disabled
 -}
-withDisabled : Bool -> Config msg -> Config msg
+withDisabled : Bool -> Config -> Config
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
 {-| Adds the hint to the TextArea.
 -}
-withHint : String -> Config msg -> Config msg
+withHint : String -> Config -> Config
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -171,28 +172,28 @@ withHint hintMessage (Config configuration) =
 
 {-| Sets a Size to the Textarea
 -}
-withSize : Size -> Config msg -> Config msg
+withSize : Size -> Config -> Config
 withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
 {-| Sets a ClassList to the Textarea
 -}
-withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList : List ( String, Bool ) -> Config -> Config
 withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
 {-| Sets a Name to the Textarea
 -}
-withName : String -> Config msg -> Config msg
+withName : String -> Config -> Config
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Sets a Placeholder to the Textarea
 -}
-withPlaceholder : String -> Config msg -> Config msg
+withPlaceholder : String -> Config -> Config
 withPlaceholder placeholder (Config configuration) =
     Config { configuration | placeholder = Just placeholder }
 
@@ -279,7 +280,7 @@ getValue (Model { value }) =
 
 {-| Internal
 -}
-withLabelArgs : ConfigData msg -> Label.Config -> Label.Config
+withLabelArgs : ConfigData -> Label.Config -> Label.Config
 withLabelArgs configData label =
     label
         |> Label.withId (configData.id ++ "-label")
@@ -289,8 +290,8 @@ withLabelArgs configData label =
 
 {-| Renders the Textarea.
 -}
-render : ctx -> Model ctx -> Config msg -> Html msg
-render ctx ((Model modelData) as model) ((Config configData) as configuration) =
+render : (Msg -> msg) -> ctx -> Model ctx -> Config -> Html msg
+render tagger ctx ((Model modelData) as model) ((Config configData) as configuration) =
     Html.div
         [ Attributes.class "form-item" ]
         [ configData.label
@@ -313,11 +314,12 @@ render ctx ((Model modelData) as model) ((Config configData) as configuration) =
                 |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
         ]
+        |> Html.map tagger
 
 
 {-| Internal.
 -}
-renderTextarea : ctx -> Model ctx -> Config msg -> Html msg
+renderTextarea : ctx -> Model ctx -> Config -> Html Msg
 renderTextarea ctx (Model modelData) (Config configData) =
     Html.textarea
         [ Attributes.id configData.id
@@ -337,8 +339,8 @@ renderTextarea ctx (Model modelData) (Config configData) =
             |> Maybe.map (always (Error.toId configData.id))
             |> Commons.Attributes.ariaDescribedByErrorOrHint
                 (Maybe.map (always (Hint.toId configData.id)) configData.hint)
-        , Html.Events.onInput (OnInput >> configData.tagger)
-        , Html.Events.onFocus (configData.tagger OnFocus)
-        , Html.Events.onBlur (configData.tagger OnBlur)
+        , Html.Events.onInput OnInput
+        , Html.Events.onFocus OnFocus
+        , Html.Events.onBlur OnBlur
         ]
         []
