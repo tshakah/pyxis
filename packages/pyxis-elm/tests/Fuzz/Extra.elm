@@ -1,10 +1,18 @@
 module Fuzz.Extra exposing
     ( className
     , date
+    , nonEmptyString
     )
 
 import Date exposing (Date)
 import Fuzz
+
+
+nonEmptyString : Fuzz.Fuzzer String
+nonEmptyString =
+    Fuzz.map2 String.cons
+        Fuzz.char
+        Fuzz.string
 
 
 className : Fuzz.Fuzzer String

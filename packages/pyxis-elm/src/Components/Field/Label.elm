@@ -175,11 +175,10 @@ render : Config -> Html msg
 render (Model { for, classList, id, size, text, subText }) =
     Html.label
         [ Html.Attributes.classList
-            ([ ( "form-label", True )
-             , ( "form-label--small", size == Size.small )
-             ]
-                ++ classList
-            )
+            [ ( "form-label", True )
+            , ( "form-label--small", size == Size.small )
+            ]
+        , Html.Attributes.classList classList
         , Commons.Attributes.maybe Html.Attributes.for for
         , Commons.Attributes.maybe Html.Attributes.id id
         , Commons.Attributes.maybe Commons.Attributes.testId id
