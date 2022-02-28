@@ -1,10 +1,12 @@
 module Stories.Chapters.Fields.RadioGroup exposing (Model, docs, init)
 
+import Commons.Lens as Lens exposing (Lens)
 import Components.Field.RadioGroup as RadioGroup
 import ElmBook
+import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import Stories.Helpers as SH
+import PrimaFunction
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
@@ -91,13 +93,12 @@ type alias SharedState x =
 type Option
     = M
     | F
-    | Default
 
 
 type alias RadioFieldModels =
-    { base : RadioGroup.Model {} Option
-    , vertical : RadioGroup.Model {} Option
-    , disabled : RadioGroup.Model {} Option
+    { base : RadioGroup.Model () Option (Maybe Option)
+    , vertical : RadioGroup.Model () Option Option
+    , disabled : RadioGroup.Model () Option (Maybe Option)
     }
 
 
@@ -105,89 +106,98 @@ type alias Model =
     RadioFieldModels
 
 
-type Msg
-    = RadioFieldChanged (RadioGroup.Msg Option)
-
-
-update : Msg -> RadioGroup.Model {} Option -> RadioGroup.Model {} Option
-update msg =
-    case msg of
-        RadioFieldChanged subMsg ->
-            RadioGroup.update subMsg
-
-
 init : Model
 init =
     { base =
-        RadioGroup.init Default validation
+        RadioGroup.init (always Ok)
     , vertical =
-        RadioGroup.init Default validation
+        RadioGroup.init validationRequired
     , disabled =
-        RadioGroup.init M validation
+        RadioGroup.init (always Ok)
+            |> RadioGroup.setValue M
     }
 
 
-config : String -> String -> RadioGroup.Config Option
-config id name =
-    RadioGroup.config id
-        |> RadioGroup.withOptions
-            [ RadioGroup.option { value = M, label = "Male" }
-            , RadioGroup.option { value = F, label = "Female" }
-            ]
-        |> RadioGroup.withName name
+validationRequired : ctx -> Maybe Option -> Result String Option
+validationRequired _ value =
+    case value of
+        Nothing ->
+            Err "Invalid selection"
 
-
-validation : ctx -> Option -> Result String Option
-validation _ value =
-    if value == Default then
-        Err "Invalid selection"
-
-    else
-        Ok value
+        Just opt ->
+            Ok opt
 
 
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
-    [ ( "RadioGroup"
-      , radioGroupComponent "base" "gender1" .base identity setBase
-      )
-    , ( "RadioGroup vertical"
-      , radioGroupComponent "vertical" "gender2" .vertical (RadioGroup.withLayout RadioGroup.vertical) setVertical
-      )
-    , ( "RadioGroup disabled"
-      , radioGroupComponent "disabled" "gender3" .disabled (RadioGroup.withDisabled True) (always identity)
-      )
+    [ viewSection "RadioGroup"
+        baseLens
+        (RadioGroup.config "base"
+            |> RadioGroup.withName "gender1"
+        )
+    , viewSection "RadioGroup vertical"
+        verticalLens
+        (RadioGroup.config "base"
+            |> RadioGroup.withName "vertical"
+            |> RadioGroup.withLayout RadioGroup.vertical
+        )
+    , viewSection "RadioGroup disabled"
+        disabledLens
+        (RadioGroup.config "disabled"
+            |> RadioGroup.withName "gender3"
+            |> RadioGroup.withDisabled True
+        )
     ]
 
 
-radioGroupComponent :
+viewSection :
     String
-    -> String
-    -> (RadioFieldModels -> RadioGroup.Model {} Option)
-    -> (RadioGroup.Config Option -> RadioGroup.Config Option)
-    -> (RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels)
-    -> { a | radio : RadioFieldModels }
-    -> Html (ElmBook.Msg { b | radio : RadioFieldModels })
-radioGroupComponent id name modelMapper configModifier modelUpdater sharedState =
-    SH.statefulComponent
-        (.radio >> modelMapper)
-        (config id name |> configModifier)
-        (RadioGroup.render RadioFieldChanged {})
-        (\state model -> mapRadioFieldModels (modelUpdater model) state)
-        update
-        (modelMapper sharedState.radio)
+    -> Lens Model (RadioGroup.Model () Option parsed)
+    -> RadioGroup.Config Option
+    -> ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
+viewSection title lens checkbox =
+    let
+        composedLens : Lens { a | radio : Model } (RadioGroup.Model () Option parsed)
+        composedLens =
+            radioLens |> Lens.andCompose lens
+    in
+    ( title
+    , \sharedState ->
+        checkbox
+            |> RadioGroup.withOptions
+                [ RadioGroup.option { value = M, label = "Male" }
+                , RadioGroup.option { value = F, label = "Female" }
+                ]
+            |> RadioGroup.render identity () (composedLens.get sharedState)
+            |> Html.map
+                (ElmBook.Actions.mapUpdate
+                    { toState = PrimaFunction.flip composedLens.set
+                    , fromState = composedLens.get
+                    , update = RadioGroup.update
+                    }
+                )
+    )
 
 
-mapRadioFieldModels : (RadioFieldModels -> RadioFieldModels) -> SharedState x -> SharedState x
-mapRadioFieldModels updater state =
-    { state | radio = updater state.radio }
+
+-- Lenses
 
 
-setBase : RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels
-setBase newModel textFieldModels =
-    { textFieldModels | base = newModel }
+baseLens : Lens { a | base : b } b
+baseLens =
+    Lens .base (\x r -> { r | base = x })
 
 
-setVertical : RadioGroup.Model {} Option -> RadioFieldModels -> RadioFieldModels
-setVertical newModel textFieldModels =
-    { textFieldModels | vertical = newModel }
+verticalLens : Lens { a | vertical : b } b
+verticalLens =
+    Lens .vertical (\x r -> { r | vertical = x })
+
+
+disabledLens : Lens { a | disabled : b } b
+disabledLens =
+    Lens .disabled (\x r -> { r | disabled = x })
+
+
+radioLens : Lens { a | radio : b } b
+radioLens =
+    Lens .radio (\x r -> { r | radio = x })

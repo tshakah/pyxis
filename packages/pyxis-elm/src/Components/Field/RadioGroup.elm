@@ -18,8 +18,10 @@ module Components.Field.RadioGroup exposing
     , Msg
     , isOnCheck
     , update
+    , validate
     , getValue
     , render
+    , setValue
     )
 
 {-|
@@ -92,27 +94,21 @@ import Result.Extra
 
 {-| The RadioGroup model.
 -}
-type Model ctx value
+type Model ctx value parsed
     = Model
-        { selectedValue : value
-        , validation : ctx -> value -> Result String value
+        { selectedValue : Maybe value
+        , validation : ctx -> Maybe value -> Result String parsed
         }
 
 
 {-| Initialize the RadioGroup Model.
 -}
-init : value -> (ctx -> value -> Result String value) -> Model ctx value
-init defaultValue validation =
+init : (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
+init validation =
     Model
-        { selectedValue = defaultValue
+        { selectedValue = Nothing
         , validation = validation
         }
-
-
-{-| The RadioGroup configuration.
--}
-type Config value
-    = Config (ConfigData value)
 
 
 type alias ConfigData value =
@@ -125,6 +121,12 @@ type alias ConfigData value =
     , name : Maybe String
     , options : List (Option value)
     }
+
+
+{-| The RadioGroup configuration.
+-}
+type Config value
+    = Config (ConfigData value)
 
 
 {-| Initialize the RadioGroup Config.
@@ -257,7 +259,7 @@ option =
 
 {-| Render the RadioGroup.
 -}
-render : (Msg value -> msg) -> ctx -> Model ctx value -> Config value -> Html.Html msg
+render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html.Html msg
 render tagger ctx ((Model modelData) as model) ((Config configData) as config_) =
     Html.div
         [ Attributes.class "form-item" ]
@@ -308,7 +310,7 @@ labelId =
 
 {-| Internal.
 -}
-renderRadio : ctx -> Model ctx value -> Config value -> Option value -> Html.Html (Msg value)
+renderRadio : ctx -> Model ctx value parsed -> Config value -> Option value -> Html.Html (Msg value)
 renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
     Html.label
         [ Attributes.classList
@@ -319,7 +321,7 @@ renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisa
         [ Html.input
             [ Attributes.type_ "radio"
             , Attributes.classList [ ( "form-control__radio", True ) ]
-            , Attributes.checked (selectedValue == value)
+            , Attributes.checked (selectedValue == Just value)
             , Attributes.disabled isDisabled
             , Attributes.id (radioId id label)
             , Commons.Attributes.testId (radioId id label)
@@ -341,25 +343,32 @@ radioId id label =
 
 {-| Update the RadioGroup Model.
 -}
-update : Msg value -> Model ctx value -> Model ctx value
+update : Msg value -> Model ctx value parsed -> Model ctx value parsed
 update msg =
     case msg of
         OnCheck value ->
             setValue value
 
 
-{-| Internal.
+{-| Set the radiogroup value
 -}
-setValue : value -> Model ctx value -> Model ctx value
+setValue : value -> Model ctx value parsed -> Model ctx value parsed
 setValue value (Model model) =
-    Model { model | selectedValue = value }
+    Model { model | selectedValue = Just value }
 
 
 {-| Return the selected value.
 -}
-getValue : Model ctx value -> value
+getValue : Model ctx value parsed -> Maybe value
 getValue (Model { selectedValue }) =
     selectedValue
+
+
+{-| Get the (parsed) value
+-}
+validate : ctx -> Model ctx value parsed -> Result String parsed
+validate ctx (Model { selectedValue, validation }) =
+    validation ctx selectedValue
 
 
 

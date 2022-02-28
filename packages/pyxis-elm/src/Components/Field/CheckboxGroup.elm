@@ -98,8 +98,8 @@ init validation =
 
 {-| A type representing the internal component `Msg`
 -}
-type Msg a
-    = Checked a Bool
+type Msg value
+    = Checked value Bool
 
 
 {-| Update the internal state of the CheckboxGroup component

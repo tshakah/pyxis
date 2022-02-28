@@ -17,7 +17,6 @@ import Test.Simulation as Simulation
 type Option
     = M
     | F
-    | Default
 
 
 suite : Test
@@ -93,8 +92,7 @@ suite =
                 \() ->
                     simulationWithValidation
                         |> Simulation.expectModel
-                            (RadioGroup.getValue
-                                >> validation {}
+                            (RadioGroup.validate ()
                                 >> Expect.equal (Err "Required")
                             )
                         |> Simulation.expectHtml (Query.find [ Selector.id "gender-error" ] >> Query.contains [ Html.text "Required" ])
@@ -105,7 +103,7 @@ suite =
                 \() ->
                     simulationWithValidation
                         |> simulateEvents "gender-male-option"
-                        |> Simulation.expectModel (RadioGroup.getValue >> Expect.equal M)
+                        |> Simulation.expectModel (RadioGroup.getValue >> Expect.equal (Just M))
                         |> Simulation.run
             ]
         ]
@@ -130,29 +128,30 @@ radioGroupConfig =
 
 renderRadioGroup : RadioGroup.Config Option -> Query.Single (RadioGroup.Msg Option)
 renderRadioGroup =
-    RadioGroup.render identity {} (RadioGroup.init Default validation)
+    RadioGroup.render identity () (RadioGroup.init validation)
         >> Query.fromHtml
 
 
-simulationWithValidation : Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
+simulationWithValidation : Simulation.Simulation (RadioGroup.Model () Option Option) (RadioGroup.Msg Option)
 simulationWithValidation =
     Simulation.fromSandbox
-        { init = RadioGroup.init Default validation
+        { init = RadioGroup.init validation
         , update = \subMsg model -> RadioGroup.update subMsg model
-        , view = \model -> RadioGroup.render identity {} model radioGroupConfig
+        , view = \model -> RadioGroup.render identity () model radioGroupConfig
         }
 
 
-validation : ctx -> Option -> Result String Option
+validation : ctx -> Maybe Option -> Result String Option
 validation _ value =
-    if value == Default then
-        Err "Required"
+    case value of
+        Nothing ->
+            Err "Required"
 
-    else
-        Ok value
+        Just x ->
+            Ok x
 
 
-simulateEvents : String -> Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option) -> Simulation.Simulation (RadioGroup.Model {} Option) (RadioGroup.Msg Option)
+simulateEvents : String -> Simulation.Simulation (RadioGroup.Model () Option Option) (RadioGroup.Msg Option) -> Simulation.Simulation (RadioGroup.Model () Option Option) (RadioGroup.Msg Option)
 simulateEvents testId simulation =
     simulation
         |> Simulation.simulate ( Event.check True, [ Selector.attribute (CA.testId testId) ] )
