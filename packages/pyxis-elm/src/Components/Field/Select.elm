@@ -3,7 +3,7 @@ module Components.Field.Select exposing
     , init
     , update, Msg
     , getValue, validate
-    , Config
+    , Config, config
     , withClassList
     , withDisabled
     , withHint
@@ -14,7 +14,6 @@ module Components.Field.Select exposing
     , withOptions
     , withSize
     , render
-    , config
     )
 
 {-|
@@ -34,14 +33,13 @@ module Components.Field.Select exposing
 
 ## View
 
-@docs Config, create
+@docs Config, config
 @docs withClassList
 @docs withDisabled
 @docs withHint
 @docs withName
 @docs withLabel
 @docs withPlaceholder
-@docs withId
 
 
 #### Options
@@ -52,7 +50,7 @@ module Components.Field.Select exposing
 
 #### Size
 
-@docs withSize, small, medium
+@docs withSize
 
 
 #### Rendering
@@ -479,6 +477,8 @@ withSize size (Config select) =
     Config { select | size = size }
 
 
+{-| Sets the component label
+-}
 withLabel : Label.Config -> Config -> Config
 withLabel label (Config select) =
     Config { select | label = Just label }

@@ -1,5 +1,5 @@
 module Components.Button exposing
-    ( Variant
+    ( Config, Variant
     , primary
     , secondary
     , tertiary
@@ -25,7 +25,6 @@ module Components.Button exposing
     , withShadow
     , withText
     , render
-    , Config
     )
 
 {-|
@@ -33,7 +32,7 @@ module Components.Button exposing
 
 # Button component
 
-@docs Model, Variant
+@docs Config, Variant
 @docs primary
 @docs secondary
 @docs tertiary
@@ -362,6 +361,8 @@ type Variant
     | Ghost
 
 
+{-| Sets the icon size
+-}
 withSize : Size -> Config msg -> Config msg
 withSize a (Config configuration) =
     Config { configuration | size = a }

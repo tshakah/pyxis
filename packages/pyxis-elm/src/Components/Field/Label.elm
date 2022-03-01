@@ -21,12 +21,6 @@ module Components.Field.Label exposing
 @docs config
 
 
-## Types
-
-@docs Model
-@docs create
-
-
 ## Generics
 
 @docs withFor
@@ -52,7 +46,7 @@ import Html.Attributes
 {-| The Label model.
 -}
 type Config
-    = Model Configuration
+    = Config Configuration
 
 
 {-| Internal. The internal Label configuration.
@@ -73,13 +67,13 @@ type alias Configuration =
 
     myLabel: Html msg
     myLabel =
-        Label.create "My custom label"
+        Label.config "My custom label"
             |> Label.render
 
 -}
 config : String -> Config
 config text =
-    Model
+    Config
         { classList = []
         , for = Nothing
         , id = Nothing
@@ -95,14 +89,14 @@ config text =
 
     myLabel: Html msg
     myLabel =
-        Label.create "My custom label"
+        Label.config "My custom label"
             |> Label.withFor "input-id"
             |> Label.render
 
 -}
 withFor : String -> Config -> Config
-withFor for (Model configuration) =
-    Model { configuration | for = Just for }
+withFor for (Config configuration) =
+    Config { configuration | for = Just for }
 
 
 {-| Add `id` and `data-test-id` attributes to label.
@@ -111,14 +105,14 @@ withFor for (Model configuration) =
 
     myLabel: Html msg
     myLabel =
-        Label.create "My custom label"
+        Label.config "My custom label"
             |> Label.withId "label-id"
             |> Label.render
 
 -}
 withId : String -> Config -> Config
-withId id (Model configuration) =
-    Model { configuration | id = Just id }
+withId id (Config configuration) =
+    Config { configuration | id = Just id }
 
 
 {-| Add a list of conditional classes for label.
@@ -127,14 +121,14 @@ withId id (Model configuration) =
 
     myLabel: Html msg
     myLabel =
-        Label.create "My custom label"
+        Label.config "My custom label"
             |> Label.withClassList [("my-label-class", True), ("another-class", True)]
             |> Label.render
 
 -}
 withClassList : List ( String, Bool ) -> Config -> Config
-withClassList classList (Model configuration) =
-    Model { configuration | classList = classList }
+withClassList classList (Config configuration) =
+    Config { configuration | classList = classList }
 
 
 {-| Set label to small size.
@@ -143,14 +137,14 @@ withClassList classList (Model configuration) =
 
     myLabel: Html msg
     myLabel =
-        Label.create "My custom label"
+        Label.config "My custom label"
             |> Label.withSize Size.small
             |> Label.render
 
 -}
 withSize : Size -> Config -> Config
-withSize a (Model configuration) =
-    Model { configuration | size = a }
+withSize a (Config configuration) =
+    Config { configuration | size = a }
 
 
 {-| Set a sub-level text for label.
@@ -159,20 +153,20 @@ withSize a (Model configuration) =
 
     myLabel: Html msg
     myLabel =
-        Label.create "My custom label"
+        Label.config "My custom label"
             |> Label.withSubText "This is a sub-level text"
             |> Label.render
 
 -}
 withSubText : String -> Config -> Config
-withSubText text (Model configuration) =
-    Model { configuration | subText = Just text }
+withSubText text (Config configuration) =
+    Config { configuration | subText = Just text }
 
 
 {-| Renders the Label.
 -}
 render : Config -> Html msg
-render (Model { for, classList, id, size, text, subText }) =
+render (Config { for, classList, id, size, text, subText }) =
     Html.label
         [ Html.Attributes.classList
             [ ( "form-label", True )
