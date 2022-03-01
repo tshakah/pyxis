@@ -20,10 +20,13 @@ All the properties described below concern the visual implementation of the comp
 
 <component with-label="Number" />
 ```
-textField : (Number.Msg -> msg) -> String -> Html msg
-textField tagger id =
-    Number.config tagger id
-        |> Number.render () (Number.init (always Ok))
+type Msg
+    = NumberFieldMsg Number.Msg
+
+numberFieldModel : Date.Model ()
+
+Number.config "numberfield-id"
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 ## Addon
 
@@ -34,44 +37,36 @@ Number field can have several addons, such as icons or texts. They are used to m
 <component with-label="Number withAddon prepend text" />
 
 ```
-textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Number.config tagger id
-        |> Number.withAddon Placement.prepend (Number.textAddon "mq")
-        |> Number.render () (Number.init (always Ok))
+Number.config "numberfield-id"
+    |> Number.withAddon Placement.prepend (Number.textAddon "mq")
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 
 ### Addon: Append Text
 <component with-label="Number withAddon append text" />
 
 ```
-textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Number.config tagger id
-        |> Number.withAddon Placement.append (Number.textAddon "€")
-        |> Number.render () (Number.init (always Ok))
+Number.config "numberfield-id"
+    |> Number.withAddon Placement.append (Number.textAddon "€")
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 
 ### Addon: Prepend Icon
 <component with-label="Number withAddon prepend icon" />
 
 ```
-textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Number.config tagger id
-        |> Number.withAddon Placement.prepend (Number.iconAddon IconSet.AccessKey)
-        |> Number.render () (Number.init (always Ok))
+Number.config "numberfield-id"
+    |> Number.withAddon Placement.prepend (Number.iconAddon IconSet.AccessKey)
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 
 ### Addon: Append Icon
 <component with-label="Number withAddon append icon" />
 
 ```
-textFieldWithAddon : (Number.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Number.config tagger id
-        |> Number.withAddon Placement.append (Number.iconAddon IconSet.Bell)
-        |> Number.render () (Number.init (always Ok))
+Number.config "numberfield-id"
+    |> Number.withAddon Placement.append (Number.iconAddon IconSet.Bell)
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 
 ## Size
@@ -83,34 +78,25 @@ You can set your TextField with a _size_ of default or small.
 <component with-label="Number withSize small" />
 
 ```
-textFieldWithSize : (Number.Msg -> msg) -> String -> Html msg
-textFieldWithSize tagger id =
-    Number.config tagger id
-        |> Number.withSize Size.small
-        |> Number.render () (Number.init (always Ok))
-
+Number.config "numberfield-id"
+    |> Number.withSize Size.small
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 
 ## Others
 
 <component with-label="Number withPlaceholder" />
 ```
-textFieldWithPlaceholder : (Number.Msg -> msg) -> String -> Html msg
-textFieldWithPlaceholder tagger id =
-    Number.config tagger id
-        |> Number.withPlaceholder "Custom placeholder"
-        |> Number.render () (Number.init (always Ok))
-
+Number.config "numberfield-id"
+    |> Number.withPlaceholder "Custom placeholder"
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 
 <component with-label="Number withDisabled" />
 ```
-textFieldWithClassList : (Number.Msg -> msg) -> String -> Html msg
-textFieldWithClassList tagger id =
-    Number.config tagger id
-        |> Number.withDisabled True
-        |> Number.render () (Number.init (always Ok))
-
+Number.config "numberfield-id"
+    |> Number.withDisabled True
+    |> Number.render NumberFieldMsg () numberFieldModel
 ```
 
 ---
@@ -125,19 +111,13 @@ type alias SharedState x =
 
 
 type alias Model =
-    { state : Number.Model {}
-    , config : Number.Config Msg
+    { state : Number.Model ()
     }
-
-
-type Msg
-    = OnTextFieldMsg Number.Msg
 
 
 init : Model
 init =
     { state = Number.init (always Ok)
-    , config = Number.config OnTextFieldMsg "base"
     }
 
 
@@ -174,15 +154,15 @@ componentsList =
     ]
 
 
-statelessComponent : (Number.Config Msg -> Number.Config Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent : (Number.Config -> Number.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
 statelessComponent modifier { number } =
-    number.config
+    Number.config "base"
         |> modifier
-        |> Number.render {} number.state
+        |> Number.render identity () number.state
         |> Html.map
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | number = model }
                 , fromState = .number
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Number.update msg model.state }
+                , update = \msg model -> { model | state = Number.update msg model.state }
                 }
             )

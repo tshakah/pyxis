@@ -13,10 +13,6 @@ import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes)
 
 
-type Msg
-    = Tagger TextField.Msg
-
-
 suite : Test
 suite =
     Test.describe "The Text component"
@@ -178,11 +174,11 @@ fieldModel =
     TextField.init (always Ok)
 
 
-fieldConfig : TextField.Config Msg
+fieldConfig : TextField.Config
 fieldConfig =
-    TextField.text Tagger "input-id"
+    TextField.text "input-id"
 
 
-fieldRender : ctx -> TextField.Model ctx -> TextField.Config msg -> Query.Single msg
+fieldRender : ctx -> TextField.Model ctx -> TextField.Config -> Query.Single TextField.Msg
 fieldRender ctx model =
-    TextField.render ctx model >> Query.fromHtml
+    TextField.render identity ctx model >> Query.fromHtml

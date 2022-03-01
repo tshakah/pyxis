@@ -77,11 +77,9 @@ module Components.Field.Date exposing
 
 -}
 
-import Commons.Properties.Placement as Placement
 import Commons.Properties.Size exposing (Size)
 import Components.Field.Input as Input
 import Components.Field.Label as Label
-import Components.IconSet as IconSet
 import Date
 import Html exposing (Html)
 
@@ -120,83 +118,59 @@ isRaw id =
 {-| The input date model.
 -}
 type Model ctx
-    = Model
-        { inputModel : Input.Model ctx Date
-        }
+    = Model (Input.Model ctx Date)
+
+
+wrapValidation : (ctx -> Date -> Result String Date) -> (ctx -> String -> Result String Date)
+wrapValidation validation ctx =
+    parseDate >> validation ctx
 
 
 {-| Inits the date model.
 -}
 init : (ctx -> Date -> Result String Date) -> Model ctx
 init validation =
-    Model
-        { inputModel = Input.init parseDate validation
-        }
+    Model (Input.init (wrapValidation validation))
 
 
 {-| The view config.
 -}
-type Config msg
-    = Config (Input.Config msg)
+type Config
+    = Config Input.Config
 
 
 {-| Creates a <input type="date">.
 -}
-config : (Msg -> msg) -> String -> Config msg
-config tagger id =
-    Config
-        (id
-            |> Input.date
-                { onInput = parseDate >> OnInput >> tagger
-                , onFocus = tagger OnFocus
-                , onBlur = tagger OnBlur
-                }
-            |> Input.withAddon Placement.prepend (Input.iconAddon IconSet.Calendar)
-        )
+config : String -> Config
+config =
+    Input.date >> Config
 
 
-{-| Represent the messages which the Input Date can handle.
+{-| Represent the messages the Input Text can handle.
 -}
 type Msg
-    = OnInput Date
-    | OnFocus
-    | OnBlur
+    = InputMsg Input.Msg
 
 
 {-| Returns True if the message is triggered by `Html.Events.onInput`
 -}
 isOnInput : Msg -> Bool
-isOnInput msg =
-    case msg of
-        OnInput _ ->
-            True
-
-        _ ->
-            False
+isOnInput (InputMsg msg) =
+    Input.isOnInput msg
 
 
 {-| Returns True if the message is triggered by `Html.Events.onFocus`
 -}
 isOnFocus : Msg -> Bool
-isOnFocus msg =
-    case msg of
-        OnFocus ->
-            True
-
-        _ ->
-            False
+isOnFocus (InputMsg msg) =
+    Input.isOnFocus msg
 
 
 {-| Returns True if the message is triggered by `Html.Events.onBlur`
 -}
 isOnBlur : Msg -> Bool
-isOnBlur msg =
-    case msg of
-        OnBlur ->
-            True
-
-        _ ->
-            False
+isOnBlur (InputMsg msg) =
+    Input.isOnBlur msg
 
 
 parseDate : String -> Date
@@ -209,117 +183,83 @@ parseDate str =
 
 {-| Internal.
 -}
-mapInputModel : (Input.Model ctx Date -> Input.Model ctx Date) -> Model ctx -> Model ctx
-mapInputModel builder (Model configuration) =
-    Model { configuration | inputModel = builder configuration.inputModel }
-
-
-{-| Internal.
--}
-mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
+mapInputConfig : (Input.Config -> Input.Config) -> Config -> Config
 mapInputConfig builder (Config configuration) =
     Config (builder configuration)
 
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Config -> Config msg -> Config msg
-withLabel label =
-    mapInputConfig (Input.withLabel label)
+withLabel : Label.Config -> Config -> Config
+withLabel =
+    Input.withLabel >> mapInputConfig
 
 
 {-| Sets a ClassList to the Input Date.
 -}
-withClassList : List ( String, Bool ) -> Config msg -> Config msg
-withClassList classes =
-    mapInputConfig (Input.withClassList classes)
+withClassList : List ( String, Bool ) -> Config -> Config
+withClassList =
+    Input.withClassList >> mapInputConfig
 
 
 {-| Adds the hint to the Input.
 -}
-withHint : String -> Config msg -> Config msg
-withHint hint =
-    mapInputConfig (Input.withHint hint)
+withHint : String -> Config -> Config
+withHint =
+    Input.withHint >> mapInputConfig
 
 
 {-| Sets a Name to the Input Date.
 -}
-withName : String -> Config msg -> Config msg
-withName name =
-    mapInputConfig (Input.withName name)
+withName : String -> Config -> Config
+withName =
+    Input.withName >> mapInputConfig
 
 
 {-| Sets a Placeholder to the Input Date.
 -}
-withPlaceholder : String -> Config msg -> Config msg
-withPlaceholder placeholder =
-    mapInputConfig (Input.withPlaceholder placeholder)
+withPlaceholder : String -> Config -> Config
+withPlaceholder =
+    Input.withPlaceholder >> mapInputConfig
 
 
 {-| Sets a Size to the Input Date.
 -}
-withSize : Size -> Config msg -> Config msg
+withSize : Size -> Config -> Config
 withSize =
     Input.withSize >> mapInputConfig
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Config msg -> Config msg
+withDisabled : Bool -> Config -> Config
 withDisabled =
     Input.withDisabled >> mapInputConfig
 
 
 {-| Render the Input Date.
 -}
-render : ctx -> Model ctx -> Config msg -> Html msg
-render ctx (Model state) (Config configuration) =
-    Input.render ctx state.inputModel configuration
+render : (Msg -> msg) -> ctx -> Model ctx -> Config -> Html msg
+render tagger ctx (Model inputModel) (Config inputConfig) =
+    Input.render (InputMsg >> tagger) ctx inputModel inputConfig
 
 
 {-| The update function.
 -}
 update : Msg -> Model ctx -> Model ctx
-update msg model =
-    case msg of
-        OnBlur ->
-            model
-
-        OnFocus ->
-            model
-
-        OnInput value ->
-            setValue value model
-
-
-{-| Internal.
--}
-inputDateToString : Date -> String
-inputDateToString d =
-    case d of
-        Raw str ->
-            str
-
-        Parsed date ->
-            Date.toIsoString date
-
-
-{-| Internal.
--}
-setValue : Date -> Model ctx -> Model ctx
-setValue =
-    inputDateToString >> Input.setValue >> mapInputModel
+update (InputMsg msg) (Model model) =
+    Model (Input.update msg model)
 
 
 {-| Returns the validated value by running the function you gave to the init.
 -}
 validate : ctx -> Model ctx -> Result String Date
-validate ctx (Model { inputModel }) =
+validate ctx (Model inputModel) =
     Input.validate ctx inputModel
 
 
 {-| Returns the current value of the Input Date.
 -}
 getValue : Model ctx -> Date
-getValue (Model { inputModel }) =
+getValue (Model inputModel) =
     parseDate (Input.getValue inputModel)

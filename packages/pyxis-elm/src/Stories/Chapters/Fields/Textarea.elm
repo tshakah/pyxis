@@ -76,14 +76,12 @@ type alias SharedState x =
 
 type alias Model =
     { state : Textarea.Model {}
-    , config : Textarea.Config
     }
 
 
 init : Model
 init =
     { state = Textarea.init (always Ok)
-    , config = Textarea.config "base"
     }
 
 
@@ -106,7 +104,7 @@ componentsList =
 
 statelessComponent : (Textarea.Config -> Textarea.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
 statelessComponent modifier { textarea } =
-    textarea.config
+    Textarea.config "base"
         |> modifier
         |> Textarea.render identity {} textarea.state
         |> Html.map

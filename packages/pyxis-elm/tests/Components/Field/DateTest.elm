@@ -14,10 +14,6 @@ import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes, tag)
 
 
-type Msg
-    = Tagger DateField.Msg
-
-
 suite : Test
 suite =
     Test.describe "The Date component"
@@ -130,7 +126,7 @@ suite =
                         |> fieldRender () fieldModel
                         |> findInput
                         |> Test.triggerMsg (Event.input (Date.toIsoString date))
-                            (\(Tagger msg) ->
+                            (\msg ->
                                 fieldModel
                                     |> DateField.update msg
                                     |> DateField.getValue
@@ -144,7 +140,7 @@ suite =
                         |> fieldRender () fieldModel
                         |> findInput
                         |> Test.triggerMsg (Event.input (Date.toIsoString date))
-                            (\(Tagger msg) ->
+                            (\msg ->
                                 fieldModel
                                     |> DateField.update msg
                                     |> DateField.getValue
@@ -169,11 +165,11 @@ fieldModel =
     DateField.init (always Ok)
 
 
-fieldConfig : DateField.Config Msg
+fieldConfig : DateField.Config
 fieldConfig =
-    DateField.config Tagger "input-id"
+    DateField.config "input-id"
 
 
-fieldRender : ctx -> DateField.Model ctx -> DateField.Config msg -> Query.Single msg
+fieldRender : ctx -> DateField.Model ctx -> DateField.Config -> Query.Single DateField.Msg
 fieldRender ctx model =
-    DateField.render ctx model >> Query.fromHtml
+    DateField.render identity ctx model >> Query.fromHtml

@@ -20,10 +20,13 @@ All the properties described below concern the visual implementation of the comp
 
 <component with-label="Text" />
 ```
-textField : (Text.Msg -> msg) -> String -> Html msg
-textField tagger id =
-    Text.text tagger id
-        |> Text.render () (Text.init (always Ok))
+type Msg
+    = TextFieldMsg Text.Msg
+
+textFieldModel : Text.Model ()
+
+Text.text "textfield-id"
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 ## Addon
 
@@ -34,44 +37,36 @@ Text field can have several addons, such as icons or texts. They are used to mak
 <component with-label="Text withAddon prepend text" />
 
 ```
-textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Text.text tagger id
-        |> Text.withAddon Placement.prepend (Text.textAddon "mq")
-        |> Text.render () (Text.init (always Ok))
+Text.text "textfield-id"
+    |> Text.withAddon Placement.prepend (Text.textAddon "mq")
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 
 ### Addon: Append Text
 <component with-label="Text withAddon append text" />
 
 ```
-textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Text.text tagger id
-        |> Text.withAddon Placement.append (Text.textAddon "€")
-        |> Text.render () (Text.init (always Ok))
+Text.text "textfield-id"
+    |> Text.withAddon Placement.append (Text.textAddon "€")
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 
 ### Addon: Prepend Icon
 <component with-label="Text withAddon prepend icon" />
 
 ```
-textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Text.text tagger id
-        |> Text.withAddon Placement.prepend (Text.iconAddon IconSet.AccessKey)
-        |> Text.render () (Text.init (always Ok))
+Text.text "textfield-id"
+    |> Text.withAddon Placement.prepend (Text.iconAddon IconSet.AccessKey)
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 
 ### Addon: Append Icon
 <component with-label="Text withAddon append icon" />
 
 ```
-textFieldWithAddon : (Text.Msg -> msg) -> String -> Html msg
-textFieldWithAddon tagger id =
-    Text.text tagger id
-        |> Text.withAddon Placement.append (Text.iconAddon IconSet.Bell)
-        |> Text.render () (Text.init (always Ok))
+Text.text "textfield-id"
+    |> Text.withAddon Placement.append (Text.iconAddon IconSet.Bell)
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 
 ## Size
@@ -83,34 +78,25 @@ You can set your TextField with a _size_ of default or small.
 <component with-label="Text withSize small" />
 
 ```
-textFieldWithSize : (Text.Msg -> msg) -> String -> Html msg
-textFieldWithSize tagger id =
-    Text.text tagger id
-        |> Text.withSize Size.small
-        |> Text.render () (Text.init (always Ok))
-
+Text.text "textfield-id"
+    |> Text.withSize Size.small
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 
 ## Others
 
 <component with-label="Text withPlaceholder" />
 ```
-textFieldWithPlaceholder : (Text.Msg -> msg) -> String -> Html msg
-textFieldWithPlaceholder tagger id =
-    Text.text tagger id
-        |> Text.withPlaceholder "Custom placeholder"
-        |> Text.render () (Text.init (always Ok))
-
+Text.text "textfield-id"
+    |> Text.withPlaceholder "Custom placeholder"
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 
 <component with-label="Text withDisabled" />
 ```
-textFieldWithClassList : (Text.Msg -> msg) -> String -> Html msg
-textFieldWithClassList tagger id =
-    Text.text tagger id
-        |> Text.withDisabled True
-        |> Text.render () (Text.init (always Ok))
-
+Text.text "textfield-id"
+    |> Text.withDisabled True
+    |> Text.render TextFieldMsg () textfieldModel
 ```
 
 ---
@@ -125,19 +111,15 @@ type alias SharedState x =
 
 
 type alias Model =
-    { state : Text.Model {}
-    , config : Text.Config Msg
+    { state : Text.Model ()
+    , config : Text.Config
     }
-
-
-type Msg
-    = OnTextFieldMsg Text.Msg
 
 
 init : Model
 init =
     { state = Text.init (always Ok)
-    , config = Text.text OnTextFieldMsg "base"
+    , config = Text.text "base"
     }
 
 
@@ -174,15 +156,15 @@ componentsList =
     ]
 
 
-statelessComponent : (Text.Config Msg -> Text.Config Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent : (Text.Config -> Text.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
 statelessComponent modifier { text } =
     text.config
         |> modifier
-        |> Text.render {} text.state
+        |> Text.render identity () text.state
         |> Html.map
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | text = model }
                 , fromState = .text
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Text.update msg model.state }
+                , update = \msg model -> { model | state = Text.update msg model.state }
                 }
             )

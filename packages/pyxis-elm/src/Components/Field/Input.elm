@@ -7,7 +7,6 @@ module Components.Field.Input exposing
     , number
     , text
     , password
-    , Events
     , Addon
     , AddonType
     , iconAddon
@@ -22,6 +21,11 @@ module Components.Field.Input exposing
     , withPlaceholder
     , setValue
     , getValue
+    , Msg
+    , isOnBlur
+    , isOnFocus
+    , isOnInput
+    , update
     , validate
     , render
     )
@@ -43,11 +47,6 @@ module Components.Field.Input exposing
 @docs number
 @docs text
 @docs password
-
-
-## Events
-
-@docs Events
 
 
 ## Addon
@@ -85,6 +84,16 @@ module Components.Field.Input exposing
 @docs getValue
 
 
+## Update
+
+@docs Msg
+@docs isOnBlur
+@docs isOnFocus
+@docs isOnInput
+@docs update
+@docs validate
+
+
 ## Validation
 
 @docs validate
@@ -116,41 +125,88 @@ import Result.Extra
 -}
 type Model ctx value
     = Model
-        { validation : ctx -> value -> Result String value
-        , valueMapper : String -> value
+        { validation : ctx -> String -> Result String value
         , value : String
         }
 
 
 {-| Inits the Input model.
 -}
-init : (String -> value) -> (ctx -> value -> Result String value) -> Model ctx value
-init valueMapper validation =
+init : (ctx -> String -> Result String value) -> Model ctx value
+init validation =
     Model
         { validation = validation
-        , valueMapper = valueMapper
         , value = ""
         }
 
 
-{-| Events dispatched after messages.
+{-| Represent the messages the Input Text can handle.
 -}
-type alias Events msg =
-    { onBlur : msg
-    , onInput : String -> msg
-    , onFocus : msg
-    }
+type Msg
+    = OnInput String
+    | OnFocus
+    | OnBlur
+
+
+{-| Returns True if the message is triggered by `Html.Events.onInput`
+-}
+isOnInput : Msg -> Bool
+isOnInput msg =
+    case msg of
+        OnInput _ ->
+            True
+
+        _ ->
+            False
+
+
+{-| Returns True if the message is triggered by `Html.Events.onFocus`
+-}
+isOnFocus : Msg -> Bool
+isOnFocus msg =
+    case msg of
+        OnFocus ->
+            True
+
+        _ ->
+            False
+
+
+{-| Returns True if the message is triggered by `Html.Events.onBlur`
+-}
+isOnBlur : Msg -> Bool
+isOnBlur msg =
+    case msg of
+        OnBlur ->
+            True
+
+        _ ->
+            False
+
+
+{-| Update the input internal model
+-}
+update : Msg -> Model ctx value -> Model ctx value
+update msg model =
+    case msg of
+        OnBlur ->
+            model
+
+        OnFocus ->
+            model
+
+        OnInput value ->
+            setValue value model
 
 
 {-| The view config.
 -}
-type Config msg
+type Config
     = Config
         { addon : Maybe Addon
         , classList : List ( String, Bool )
         , hint : Maybe Hint.Config
         , id : String
-        , events : Events msg
         , name : Maybe String
         , placeholder : Maybe String
         , size : Size
@@ -162,13 +218,12 @@ type Config msg
 
 {-| Internal. Creates an Input field.
 -}
-config : Type -> Events msg -> String -> Config msg
-config inputType events id =
+config : Type -> String -> Config
+config inputType id =
     Config
         { classList = []
         , hint = Nothing
         , id = id
-        , events = events
         , name = Nothing
         , placeholder = Nothing
         , size = Size.medium
@@ -191,35 +246,35 @@ type Type
 
 {-| Creates an input with [type="email"].
 -}
-email : Events msg -> String -> Config msg
+email : String -> Config
 email =
     config Email
 
 
 {-| Creates an input with [type="date"].
 -}
-date : Events msg -> String -> Config msg
+date : String -> Config
 date =
     config Date
 
 
 {-| Creates an input with [type="number"].
 -}
-number : Events msg -> String -> Config msg
+number : String -> Config
 number =
     config Number
 
 
 {-| Creates an input with [type="text"].
 -}
-text : Events msg -> String -> Config msg
+text : String -> Config
 text =
     config Text
 
 
 {-| Creates an input with [type="password"].
 -}
-password : Events msg -> String -> Config msg
+password : String -> Config
 password =
     config Password
 
@@ -296,28 +351,28 @@ addonToAttribute { type_, placement } =
 
 {-| Sets an Addon to the Input.
 -}
-withAddon : Placement -> AddonType -> Config msg -> Config msg
+withAddon : Placement -> AddonType -> Config -> Config
 withAddon placement type_ (Config configuration) =
     Config { configuration | addon = Just { placement = placement, type_ = type_ } }
 
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Config -> Config msg -> Config msg
+withLabel : Label.Config -> Config -> Config
 withLabel a (Config configuration) =
     Config { configuration | label = Just a }
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Config msg -> Config msg
+withDisabled : Bool -> Config -> Config
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
 {-| Sets the input hint
 -}
-withHint : String -> Config msg -> Config msg
+withHint : String -> Config -> Config
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -330,28 +385,28 @@ withHint hintMessage (Config configuration) =
 
 {-| Sets a Size to the Input.
 -}
-withSize : Size -> Config msg -> Config msg
+withSize : Size -> Config -> Config
 withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
 {-| Sets a ClassList to the Input.
 -}
-withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList : List ( String, Bool ) -> Config -> Config
 withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
 {-| Sets a Name to the Input.
 -}
-withName : String -> Config msg -> Config msg
+withName : String -> Config -> Config
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Sets a Placeholder to the Input.
 -}
-withPlaceholder : String -> Config msg -> Config msg
+withPlaceholder : String -> Config -> Config
 withPlaceholder placeholder (Config configuration) =
     Config { configuration | placeholder = Just placeholder }
 
@@ -363,10 +418,27 @@ setValue value (Model configuration) =
     Model { configuration | value = value }
 
 
+{-| Internal
+-}
+normalizeConfig : Config -> Config
+normalizeConfig ((Config configData) as config_) =
+    case configData.type_ of
+        Date ->
+            config_
+                |> withAddon Placement.prepend (iconAddon IconSet.Calendar)
+
+        _ ->
+            config_
+
+
 {-| Renders the Input.Stories/Chapters/DateField.elm
 -}
-render : ctx -> Model ctx value -> Config msg -> Html msg
-render ctx ((Model state) as model) ((Config configuration) as config_) =
+render : (Msg -> msg) -> ctx -> Model ctx value -> Config -> Html msg
+render tagger ctx ((Model state) as model) rawConfig =
+    let
+        ((Config configuration) as config_) =
+            normalizeConfig rawConfig
+    in
     Html.div
         [ Attributes.class "form-item" ]
         [ configuration.label
@@ -377,7 +449,7 @@ render ctx ((Model state) as model) ((Config configuration) as config_) =
             [ Html.div
                 [ Attributes.classList
                     [ ( "form-field", True )
-                    , ( "form-field--error", Result.Extra.isErr (state.validation ctx (state.valueMapper state.value)) )
+                    , ( "form-field--error", Result.Extra.isErr (state.validation ctx state.value) )
                     , ( "form-field--disabled", configuration.disabled )
                     ]
                 , Commons.Attributes.maybe addonToAttribute configuration.addon
@@ -387,17 +459,17 @@ render ctx ((Model state) as model) ((Config configuration) as config_) =
                     |> Maybe.withDefault (renderInput ctx model config_)
                 ]
             , state.value
-                |> state.valueMapper
                 |> state.validation ctx
                 |> Error.fromResult
                 |> Commons.Render.renderErrorOrHint configuration.id configuration.hint
             ]
         ]
+        |> Html.map tagger
 
 
 {-| Internal.
 -}
-renderAddon : ctx -> Model ctx value -> Config msg -> Addon -> Html msg
+renderAddon : ctx -> Model ctx value -> Config -> Addon -> Html Msg
 renderAddon ctx model configuration addon =
     Html.label
         [ Attributes.class "form-field__wrapper" ]
@@ -428,36 +500,35 @@ renderAddonByType type_ =
 
 {-| Internal.
 -}
-renderInput : ctx -> Model ctx value -> Config msg -> Html msg
-renderInput ctx (Model state) (Config configuration) =
+renderInput : ctx -> Model ctx value -> Config -> Html Msg
+renderInput ctx (Model modelData) (Config configData) =
     Html.input
-        [ Attributes.id configuration.id
+        [ Attributes.id configData.id
         , Attributes.classList
-            [ ( "form-field__date", configuration.type_ == Date )
-            , ( "form-field__date--filled", configuration.type_ == Date && Result.Extra.isOk (Date.fromIsoString state.value) )
-            , ( "form-field__text", configuration.type_ == Text )
-            , ( "form-field__text", configuration.type_ == Number )
-            , ( "form-field__text", configuration.type_ == Password )
-            , ( "form-field__text", configuration.type_ == Email )
-            , ( "form-field__text--small", Size.isSmall configuration.size )
+            [ ( "form-field__date", configData.type_ == Date )
+            , ( "form-field__date--filled", configData.type_ == Date && Result.Extra.isOk (Date.fromIsoString modelData.value) )
+            , ( "form-field__text", configData.type_ == Text )
+            , ( "form-field__text", configData.type_ == Number )
+            , ( "form-field__text", configData.type_ == Password )
+            , ( "form-field__text", configData.type_ == Email )
+            , ( "form-field__text--small", Size.isSmall configData.size )
             ]
-        , Attributes.classList configuration.classList
-        , Attributes.disabled configuration.disabled
-        , Attributes.value state.value
-        , typeToAttribute configuration.type_
-        , Commons.Attributes.testId configuration.id
-        , Commons.Attributes.maybe Attributes.name configuration.name
-        , Commons.Attributes.maybe Attributes.placeholder configuration.placeholder
-        , state.value
-            |> state.valueMapper
-            |> state.validation ctx
+        , Attributes.classList configData.classList
+        , Attributes.disabled configData.disabled
+        , Attributes.value modelData.value
+        , typeToAttribute configData.type_
+        , Commons.Attributes.testId configData.id
+        , Commons.Attributes.maybe Attributes.name configData.name
+        , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
+        , modelData.value
+            |> modelData.validation ctx
             |> Error.fromResult
-            |> Maybe.map (always (Error.toId configuration.id))
+            |> Maybe.map (always (Error.toId configData.id))
             |> Commons.Attributes.ariaDescribedByErrorOrHint
-                (Maybe.map (always (Hint.toId configuration.id)) configuration.hint)
-        , Html.Events.onInput configuration.events.onInput
-        , Html.Events.onFocus configuration.events.onFocus
-        , Html.Events.onBlur configuration.events.onBlur
+                (Maybe.map (always (Hint.toId configData.id)) configData.hint)
+        , Html.Events.onInput OnInput
+        , Html.Events.onFocus OnFocus
+        , Html.Events.onBlur OnBlur
         ]
         []
 
@@ -472,7 +543,5 @@ getValue (Model { value }) =
 {-| Returns the validated value by running the function you gave to the init.
 -}
 validate : ctx -> Model ctx value -> Result String value
-validate ctx (Model { value, valueMapper, validation }) =
-    value
-        |> valueMapper
-        |> validation ctx
+validate ctx (Model { value, validation }) =
+    validation ctx value

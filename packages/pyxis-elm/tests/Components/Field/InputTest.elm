@@ -10,15 +10,8 @@ import Fuzz
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
-import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector as Selector
-
-
-type Msg
-    = Blur
-    | Focus
-    | Input String
 
 
 suite : Test
@@ -209,50 +202,23 @@ suite =
                             [ Selector.class "form-field__text--small"
                             ]
             ]
-        , Test.describe "Events"
-            [ Test.fuzz Fuzz.string "input event" <|
-                \str ->
-                    fieldConfig
-                        |> fieldRender () fieldModel
-                        |> findInput
-                        |> Event.simulate (Event.input str)
-                        |> Event.expect (Input str)
-            , Test.test "blur event" <|
-                \() ->
-                    fieldConfig
-                        |> fieldRender () fieldModel
-                        |> findInput
-                        |> Event.simulate Event.blur
-                        |> Event.expect Blur
-            , Test.test "focus event" <|
-                \() ->
-                    fieldConfig
-                        |> fieldRender () fieldModel
-                        |> findInput
-                        |> Event.simulate Event.focus
-                        |> Event.expect Focus
-            ]
         ]
 
 
 fieldModel : Input.Model ctx String
 fieldModel =
-    Input.init identity (always Ok)
+    Input.init (always Ok)
 
 
-fieldConfig : Input.Config Msg
+fieldConfig : Input.Config
 fieldConfig =
     Input.text
-        { onBlur = Blur
-        , onFocus = Focus
-        , onInput = Input
-        }
         "input_field"
 
 
-fieldRender : ctx -> Input.Model ctx value -> Input.Config msg -> Query.Single msg
+fieldRender : ctx -> Input.Model ctx value -> Input.Config -> Query.Single Input.Msg
 fieldRender ctx model =
-    Input.render ctx model >> Query.fromHtml
+    Input.render identity ctx model >> Query.fromHtml
 
 
 findInput : Query.Single msg -> Query.Single msg

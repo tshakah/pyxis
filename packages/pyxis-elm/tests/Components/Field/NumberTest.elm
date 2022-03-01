@@ -14,10 +14,6 @@ import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes, tag)
 
 
-type Msg
-    = Tagger NumberField.Msg
-
-
 suite : Test
 suite =
     Test.describe "The Number component"
@@ -178,7 +174,7 @@ suite =
                         |> fieldRender () fieldModel
                         |> findInput
                         |> Test.triggerMsg (Event.input (String.fromInt n))
-                            (\(Tagger msg) ->
+                            (\msg ->
                                 fieldModel
                                     |> NumberField.update msg
                                     |> NumberField.getValue
@@ -203,11 +199,11 @@ fieldModel =
     NumberField.init (always Ok)
 
 
-fieldConfig : NumberField.Config Msg
+fieldConfig : NumberField.Config
 fieldConfig =
-    NumberField.config Tagger "input-id"
+    NumberField.config "input-id"
 
 
-fieldRender : ctx -> NumberField.Model ctx -> NumberField.Config msg -> Query.Single msg
+fieldRender : ctx -> NumberField.Model ctx -> NumberField.Config -> Query.Single NumberField.Msg
 fieldRender ctx model =
-    NumberField.render ctx model >> Query.fromHtml
+    NumberField.render identity ctx model >> Query.fromHtml

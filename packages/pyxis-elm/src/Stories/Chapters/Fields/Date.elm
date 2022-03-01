@@ -18,10 +18,13 @@ All the properties described below concern the visual implementation of the comp
 
 <component with-label="Date" />
 ```
-textField : (Date.Msg -> msg) -> String -> Html msg
-textField tagger id =
-    Date.config tagger id
-        |> Date.render () (Date.init (always Ok))
+type Msg
+    = DateFieldMsg Date.Msg
+
+dateFieldModel : Date.Model ()
+
+Date.config "datefield-id"
+    |> Date.render DateFieldMsg () dateFieldModel
 ```
 
 ## Size
@@ -33,34 +36,25 @@ You can set your TextField with a _size_ of default or small.
 <component with-label="Date withSize small" />
 
 ```
-textFieldWithSize : (Date.Msg -> msg) -> String -> Html msg
-textFieldWithSize tagger id =
-    Date.config tagger id
-        |> Date.withSize Size.small
-        |> Date.render () (Date.init (always Ok))
-
+Date.config "datefield-id"
+    |> Date.withSize Size.small
+    |> Date.render DateFieldMsg () dateFieldModel
 ```
 
 ## Others
 
 <component with-label="Date withPlaceholder" />
 ```
-textFieldWithPlaceholder : (Date.Msg -> msg) -> String -> Html msg
-textFieldWithPlaceholder tagger id =
-    Date.config tagger id
-        |> Date.withPlaceholder "Custom placeholder"
-        |> Date.render () (Date.init (always Ok))
-
+Date.config "datefield-id"
+    |> Date.withPlaceholder "Custom placeholder"
+    |> Date.render DateFieldMsg () dateFieldModel
 ```
 
 <component with-label="Date withDisabled" />
 ```
-textFieldWithClassList : (Date.Msg -> msg) -> String -> Html msg
-textFieldWithClassList tagger id =
-    Date.config tagger id
-        |> Date.withDisabled True
-        |> Date.render () (Date.init (always Ok))
-
+Date.config "datefield-id"
+    |> Date.withDisabled True
+    |> Date.render DateFieldMsg () dateFieldModel
 ```
 
 ---
@@ -75,19 +69,15 @@ type alias SharedState x =
 
 
 type alias Model =
-    { state : Date.Model {}
-    , config : Date.Config Msg
+    { state : Date.Model ()
+    , config : Date.Config
     }
-
-
-type Msg
-    = OnTextFieldMsg Date.Msg
 
 
 init : Model
 init =
     { state = Date.init (always Ok)
-    , config = Date.config OnTextFieldMsg "base"
+    , config = Date.config "base"
     }
 
 
@@ -108,15 +98,15 @@ componentsList =
     ]
 
 
-statelessComponent : (Date.Config Msg -> Date.Config Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent : (Date.Config -> Date.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
 statelessComponent modifier { date } =
     date.config
         |> modifier
-        |> Date.render {} date.state
+        |> Date.render identity () date.state
         |> Html.map
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | date = model }
                 , fromState = .date
-                , update = \(OnTextFieldMsg msg) model -> { model | state = Date.update msg model.state }
+                , update = \msg model -> { model | state = Date.update msg model.state }
                 }
             )
