@@ -24,7 +24,6 @@ type
     Option -- Can be a String or Maybe String alias
     = M
     | F
-    | Default -- Add a Default/None/NoSelection/... option to handle the possibility of no selection.
 
 
 type Msg
@@ -33,27 +32,28 @@ type Msg
 
 radioGroupModel : RadioGroup.Model ctx Option
 radioGroupModel =
-    RadioGroup.init validation Default
+    RadioGroup.init validation
 
 
 radioGroupView : ctx -> Html Msg
 radioGroupView ctx =
-    RadioGroup.config OnRadioFieldMsg "radio-id"
+    RadioGroup.config "radio-id"
         |> RadioGroup.withName "gender"
         |> RadioGroup.withOptions
             [ RadioGroup.option { value = M, label = "Male" }
             , RadioGroup.option { value = F, label = "Female" }
             ]
-        |> RadioGroup.render ctx radioGroupModel
+        |> RadioGroup.render OnRadioFieldMsg ctx radioGroupModel
 
 
-validation : ctx -> Option -> Result String Option
+validation : ctx -> Maybe Option -> Result String Option
 validation _ value =
-    if value == Default then
-        Err "Invalid selection"
+    case value of
+        Nothing ->
+            Err "Invalid selection"
 
-    else
-        Ok value
+        Just opt ->
+            Ok opt
 ```
 
 # Vertical Layout
@@ -64,22 +64,22 @@ Radio group have a horizontal layout as default, but with more then two items a 
 <component with-label="RadioGroup vertical" />
 
 ```
-radioGroupVerticalLayout : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value -> Html msg
+radioGroupVerticalLayout : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value parsed -> Html msg
 radioGroupVerticalLayout id tagger ctx radioModel =
-    RadioGroup.config tagger id
+    RadioGroup.config id
         |> RadioGroup.withLayout RadioGroup.vertical
-        |> RadioGroup.render ctx radioModel
+        |> RadioGroup.render tagger ctx radioModel
 ```
 
 
 # Disabled
 <component with-label="RadioGroup disabled" />
 ```
-radioGroupDisabled : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value -> Html msg
+radioGroupDisabled : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value parsed -> Html msg
 radioGroupDisabled id tagger ctx radioModel =
-    RadioGroup.config tagger id
+    RadioGroup.config id
         |> RadioGroup.withDisabled True
-        |> RadioGroup.render ctx radioModel
+        |> RadioGroup.render tagger ctx radioModel
 ```
 """
 

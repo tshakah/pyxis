@@ -1,10 +1,14 @@
-module Components.Field.RadioGroup exposing
+module Components.Field.RadioCardGroup exposing
     ( Model
     , init
     , Config
     , config
     , Option
     , option
+    , Addon
+    , iconAddon
+    , imgAddon
+    , textAddon
     , Layout
     , horizontal
     , vertical
@@ -15,6 +19,7 @@ module Components.Field.RadioGroup exposing
     , withLabel
     , withName
     , withOptions
+    , withSize
     , setValue
     , Msg
     , isOnCheck
@@ -27,7 +32,7 @@ module Components.Field.RadioGroup exposing
 {-|
 
 
-# Input RadioGroup component
+# Input RadioCardGroup component
 
 
 ## Model
@@ -42,6 +47,14 @@ module Components.Field.RadioGroup exposing
 @docs config
 @docs Option
 @docs option
+
+
+# Addon
+
+@docs Addon
+@docs iconAddon
+@docs imgAddon
+@docs textAddon
 
 
 # Layout
@@ -60,6 +73,7 @@ module Components.Field.RadioGroup exposing
 @docs withLabel
 @docs withName
 @docs withOptions
+@docs withSize
 @docs setValue
 
 
@@ -83,18 +97,22 @@ module Components.Field.RadioGroup exposing
 -}
 
 import Commons.Attributes
+import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Commons.String
 import Components.Field.Error as Error
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
-import Html
+import Components.Icon as Icon
+import Components.IconSet as IconSet
+import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events as Events
+import Maybe.Extra
 import Result.Extra
 
 
-{-| The RadioGroup model.
+{-| The RadioCardGroup model.
 -}
 type Model ctx value parsed
     = Model
@@ -103,7 +121,7 @@ type Model ctx value parsed
         }
 
 
-{-| Initialize the RadioGroup Model.
+{-| Initialize the RadioCardGroup Model.
 -}
 init : (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
 init validation =
@@ -122,16 +140,17 @@ type alias ConfigData value =
     , layout : Layout
     , name : Maybe String
     , options : List (Option value)
+    , size : Size
     }
 
 
-{-| The RadioGroup configuration.
+{-| The RadioCardGroup configuration.
 -}
 type Config value
     = Config (ConfigData value)
 
 
-{-| Initialize the RadioGroup Config.
+{-| Initialize the RadioCardGroup Config.
 -}
 config : String -> Config value
 config id =
@@ -144,24 +163,11 @@ config id =
         , label = Nothing
         , name = Nothing
         , options = []
+        , size = Size.medium
         }
 
 
-{-| Represent the single Radio option.
--}
-type Option value
-    = Option (OptionConfig value)
-
-
-{-| Internal.
--}
-type alias OptionConfig value =
-    { value : value
-    , label : String
-    }
-
-
-{-| Represent the messages which the RadioGroup can handle.
+{-| Represent the messages which the RadioCardGroup can handle.
 -}
 type Msg value
     = OnCheck value
@@ -174,6 +180,58 @@ isOnCheck msg =
     case msg of
         OnCheck _ ->
             True
+
+
+{-| Represent the single Radio option.
+-}
+type Option value
+    = Option (OptionConfig value)
+
+
+{-| Internal.
+-}
+type alias OptionConfig value =
+    { value : value
+    , text : Maybe String
+    , title : Maybe String
+    , addon : Maybe Addon
+    }
+
+
+{-| Generate a RadioCard Option
+-}
+option : OptionConfig value -> Option value
+option =
+    Option
+
+
+{-| Represent the different types of addon
+-}
+type Addon
+    = TextAddon String
+    | IconAddon IconSet.Icon
+    | ImgUrlAddon String
+
+
+{-| TextAddon for option.
+-}
+textAddon : String -> Maybe Addon
+textAddon =
+    TextAddon >> Just
+
+
+{-| IconAddon for option.
+-}
+iconAddon : IconSet.Icon -> Maybe Addon
+iconAddon =
+    IconAddon >> Just
+
+
+{-| ImgAddon for option.
+-}
+imgAddon : String -> Maybe Addon
+imgAddon =
+    ImgUrlAddon >> Just
 
 
 {-| Represent the layout of the group.
@@ -197,7 +255,14 @@ vertical =
     Vertical
 
 
-{-| Add the classes to the group wrapper.
+{-| Change the visual layout. The default one is horizontal.
+-}
+withLayout : Layout -> Config value -> Config value
+withLayout layout (Config configuration) =
+    Config { configuration | layout = layout }
+
+
+{-| Add the classes to the card group wrapper.
 -}
 withClassList : List ( String, Bool ) -> Config value -> Config value
 withClassList classList (Config configuration) =
@@ -211,7 +276,7 @@ withDisabled isDisabled (Config configuration) =
     Config { configuration | isDisabled = isDisabled }
 
 
-{-| Adds the hint to the RadioGroup.
+{-| Adds the hint to the RadioCardGroup.
 -}
 withHint : String -> Config value -> Config value
 withHint hintMessage (Config configuration) =
@@ -231,7 +296,7 @@ withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
-{-| Add a label to the inputs.
+{-| Add a label to the card group.
 -}
 withLabel : Label.Config -> Config value -> Config value
 withLabel label (Config configuration) =
@@ -245,23 +310,16 @@ withOptions options (Config configuration) =
     Config { configuration | options = options }
 
 
-{-| Change the visual layout. The default one is horizontal.
+{-| Define the size of cards.
 -}
-withLayout : Layout -> Config value -> Config value
-withLayout layout (Config configuration) =
-    Config { configuration | layout = layout }
+withSize : Size -> Config value -> Config value
+withSize size (Config configuration) =
+    Config { configuration | size = size }
 
 
-{-| Generate a Radio Option
+{-| Render the RadioCardGroup.
 -}
-option : OptionConfig value -> Option value
-option =
-    Option
-
-
-{-| Render the RadioGroup.
--}
-render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html.Html msg
+render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
 render tagger ctx ((Model modelData) as model) ((Config configData) as config_) =
     Html.div
         [ Attributes.class "form-item" ]
@@ -270,21 +328,18 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as config_) 
             [ Attributes.class "form-item__wrapper" ]
             [ Html.div
                 [ Attributes.classList
-                    [ ( "form-control-group", True )
-                    , ( "form-control-group--column", configData.layout == Vertical )
+                    [ ( "form-card-group", True )
+                    , ( "form-card-group--column", configData.layout == Vertical )
                     ]
                 , Attributes.classList configData.classList
                 , Attributes.id configData.id
                 , Commons.Attributes.role "radiogroup"
                 , Commons.Attributes.ariaLabelledbyBy (labelId configData.id)
-                , modelData.selectedValue
-                    |> modelData.validation ctx
-                    |> Error.fromResult
-                    |> Maybe.map (always (Error.toId configData.id))
-                    |> Commons.Attributes.ariaDescribedByErrorOrHint
-                        (Maybe.map (always (Hint.toId configData.id)) configData.hint)
+                , Commons.Attributes.renderIf
+                    (Result.Extra.isErr (modelData.validation ctx modelData.selectedValue))
+                    (Commons.Attributes.ariaDescribedBy (Error.toId configData.id))
                 ]
-                (List.map (renderRadio ctx model config_) configData.options)
+                (List.indexedMap (renderCard ctx model config_) configData.options)
             , modelData.selectedValue
                 |> modelData.validation ctx
                 |> Error.fromResult
@@ -312,34 +367,109 @@ labelId =
 
 {-| Internal.
 -}
-renderRadio : ctx -> Model ctx value parsed -> Config value -> Option value -> Html.Html (Msg value)
-renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
+renderCard : ctx -> Model ctx value parsed -> Config value -> Int -> Option value -> Html.Html (Msg value)
+renderCard ctx (Model { validation, selectedValue }) (Config { id, isDisabled, name, size }) index (Option { value, addon, text, title }) =
     Html.label
         [ Attributes.classList
-            [ ( "form-control", True )
-            , ( "form-control--error", Result.Extra.isErr (validation ctx selectedValue) )
+            [ ( "form-card", True )
+            , ( "form-card--error", Result.Extra.isErr (validation ctx selectedValue) )
+            , ( "form-card--checked", selectedValue == Just value )
+            , ( "form-card--disabled", isDisabled )
+            , ( "form-card--large", size == Size.large )
             ]
         ]
-        [ Html.input
+        [ addon
+            |> Maybe.map renderPrependAddon
+            |> Commons.Render.renderMaybe
+        , Html.span
+            [ Attributes.class "form-card__content-wrapper" ]
+            [ title
+                |> Maybe.map (renderContent "title")
+                |> Commons.Render.renderMaybe
+            , text
+                |> Maybe.map (renderContent "text")
+                |> Commons.Render.renderMaybe
+            ]
+        , addon
+            |> Maybe.map renderAppendAddon
+            |> Commons.Render.renderMaybe
+        , Html.input
             [ Attributes.type_ "radio"
-            , Attributes.classList [ ( "form-control__radio", True ) ]
+            , Attributes.class "form-control__radio"
             , Attributes.checked (selectedValue == Just value)
             , Attributes.disabled isDisabled
-            , Attributes.id (radioId id label)
-            , Commons.Attributes.testId (radioId id label)
+            , Attributes.id (cardId id text title index)
+            , Commons.Attributes.testId (cardId id text title index)
             , Commons.Attributes.maybe Attributes.name name
             , Events.onCheck (always (OnCheck value))
             ]
             []
-        , Html.text label
         ]
 
 
 {-| Internal.
 -}
-radioId : String -> String -> String
-radioId id label =
-    [ id, label |> Commons.String.toKebabCase, "option" ]
+renderPrependAddon : Addon -> Html (Msg value)
+renderPrependAddon addon =
+    case addon of
+        IconAddon icon ->
+            Html.span
+                [ Attributes.class "form-card__addon form-card__addon--with-icon"
+                , Commons.Attributes.testId (IconSet.toLabel icon)
+                ]
+                [ icon
+                    |> Icon.create
+                    |> Icon.withSize Size.large
+                    |> Icon.render
+                ]
+
+        ImgUrlAddon url ->
+            Html.span
+                [ Attributes.class "form-card__addon" ]
+                [ Html.img
+                    [ Attributes.src url
+                    , Attributes.width 70
+                    , Attributes.height 70
+                    , Attributes.alt ""
+                    , Commons.Attributes.ariaHidden True
+                    ]
+                    []
+                ]
+
+        _ ->
+            Html.text ""
+
+
+{-| Internal.
+-}
+renderAppendAddon : Addon -> Html (Msg value)
+renderAppendAddon addon =
+    case addon of
+        TextAddon str ->
+            Html.span [ Attributes.class "form-card__addon" ] [ Html.text str ]
+
+        _ ->
+            Html.text ""
+
+
+{-| Internal.
+-}
+renderContent : String -> String -> Html (Msg value)
+renderContent identifier str =
+    Html.span [ Attributes.class ("form-card__" ++ identifier) ] [ Html.text str ]
+
+
+{-| Internal.
+-}
+cardId : String -> Maybe String -> Maybe String -> Int -> String
+cardId id text title index =
+    [ id
+    , Maybe.Extra.or title text
+        |> Maybe.withDefault (String.fromInt index)
+        |> String.left 25
+        |> Commons.String.toKebabCase
+    , "option"
+    ]
         |> String.join "-"
 
 
@@ -352,7 +482,7 @@ update msg =
             setValue value
 
 
-{-| Set the radiogroup value
+{-| Internal.
 -}
 setValue : value -> Model ctx value parsed -> Model ctx value parsed
 setValue value (Model model) =

@@ -10,6 +10,7 @@ import Stories.Chapters.Fields.CheckboxGroup as CheckboxChapter
 import Stories.Chapters.Fields.Date as DateFieldChapter
 import Stories.Chapters.Fields.Label as LabelChapter
 import Stories.Chapters.Fields.Number as NumberFieldChapter
+import Stories.Chapters.Fields.RadioCardGroup as RadioCardFieldChapter
 import Stories.Chapters.Fields.RadioGroup as RadioFieldChapter
 import Stories.Chapters.Fields.Select as SelectChapter
 import Stories.Chapters.Fields.Text as TextFieldChapter
@@ -27,6 +28,7 @@ type alias SharedState =
     , select : SelectChapter.Model
     , radio : RadioFieldChapter.Model
     , checkbox : CheckboxChapter.Model
+    , radioCard : RadioCardFieldChapter.Model
     }
 
 
@@ -39,6 +41,7 @@ initialState =
     , select = SelectChapter.init
     , radio = RadioFieldChapter.init
     , checkbox = CheckboxChapter.init
+    , radioCard = RadioCardFieldChapter.init
     }
 
 
@@ -66,6 +69,7 @@ main =
             , LabelChapter.docs
             , TextFieldChapter.docs
             , RadioFieldChapter.docs
+            , RadioCardFieldChapter.docs
             , TextareaChapter.docs
             , NumberFieldChapter.docs
             , DateFieldChapter.docs

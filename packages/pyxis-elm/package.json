@@ -12,7 +12,7 @@
     "elmbook:serve": "elm-book src/Stories/Book.elm --dir=./dist -- --output=dist/index.html",
     "generate:icons": "ts-node --project scripts/tsconfig.json ./scripts/generateIcons.ts && ./node_modules/.bin/elm-format src/Components/IconSet.elm --yes",
     "preelmbook:build": "yarn preelmbook:serve",
-    "preelmbook:serve": "mkdir -p dist && elm make && cp ../pyxis-scss/dist/pyxis.css ./dist/pyxis.css",
+    "preelmbook:serve": "mkdir -p dist && elm make && cp ../pyxis-scss/dist/pyxis.css ./dist/pyxis.css && cp -r ./assets ./dist/assets",
     "review": "./node_modules/.bin/elm-review src",
     "review:fix": "./node_modules/.bin/elm-review src --fix",
     "test": "./node_modules/.bin/elm-test"
