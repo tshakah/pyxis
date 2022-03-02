@@ -1,0 +1,33 @@
+@use "../../foundations";
+@use "../../lib";
+
+$_spinnerSize: lib.rem(60px);
+$_spinnerSizeSmall: lib.rem(20px);
+
+.loader {
+  @include foundations.rowGap(s);
+  display: grid;
+  grid-auto-rows: min-content;
+  height: min-content;
+  justify-items: center;
+  width: fit-content;
+}
+
+.loader--small {
+  @include foundations.rowGap(2xs);
+}
+
+.loader--with-car {
+  grid-auto-rows: lib.rem(80px) min-content;
+  grid-row-gap: 0;
+  row-gap: 0;
+}
+
+.loader__text {
+  @include foundations.text(l, book);
+  color: foundations.color(neutral25);
+
+  .loader--alt & {
+    color: foundations.color(neutralLight);
+  }
+}

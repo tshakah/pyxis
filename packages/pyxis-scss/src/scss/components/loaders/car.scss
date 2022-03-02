@@ -1,0 +1,75 @@
+@use "../../foundations";
+@use "../../lib";
+
+.loader__car {
+  align-items: center;
+  display: grid;
+  transform: translateX(-20px);
+}
+
+.loader__car__items-wrapper {
+  fill-rule: evenodd;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.loader__car__wheel,
+.loader__car__body {
+  fill: foundations.color(brandBase);
+
+  .loader--alt & {
+    fill: foundations.color(neutralLight);
+  }
+}
+
+.loader__car__body {
+  animation: animateShake foundations.duration(fast) ease-in-out infinite alternate;
+}
+
+.loader__car__line {
+  animation: animateLine foundations.duration(slowest) ease-in-out infinite;
+  animation-fill-mode: both;
+  stroke: foundations.color(brandBase);
+  stroke-dasharray: 100;
+  stroke-width: 7;
+  transform-origin: center;
+
+  .loader--alt & {
+    stroke: foundations.color(neutralLight);
+  }
+}
+
+.loader__car__line--top {
+  animation-delay: 0s;
+}
+
+.loader__car__line--middle {
+  animation-delay: 0.2s;
+}
+
+.loader__car__line--bottom {
+  animation-delay: 0.4s;
+}
+
+@keyframes animateShake {
+  0% {
+    transform: translateY(-1%);
+  }
+  100% {
+    transform: translateY(3%);
+  }
+}
+
+@keyframes animateLine {
+  0%, 25% {
+    stroke-dashoffset: -100;
+  }
+
+  50%, 51% {
+    stroke-dashoffset: 0;
+  }
+
+  80%, 100% {
+    stroke-dashoffset: 100;
+  }
+}

@@ -1,0 +1,34 @@
+@use "../../foundations";
+@use "../../lib";
+
+$_spinnerSize: lib.rem(60px);
+$_spinnerSizeSmall: lib.rem(20px);
+
+.loader__spinner {
+  animation: animateSpinner 1s infinite linear;
+  border: lib.rem(6px) solid foundations.color(brandLight);
+  border-radius: 50%;
+  border-top-color: foundations.color(brandBase);
+  height: $_spinnerSize;
+  width: $_spinnerSize;
+
+  .loader--small & {
+    border-width: lib.rem(2px);
+    height: $_spinnerSizeSmall;
+    width: $_spinnerSizeSmall;
+  }
+
+  .loader--alt & {
+    border-color: rgba(foundations.color(neutralLight), 0.4);
+    border-top-color: foundations.color(neutralLight);
+  }
+}
+
+@keyframes animateSpinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

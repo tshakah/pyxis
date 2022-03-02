@@ -1,0 +1,13 @@
+@use "~@pyxis/scss/src/scss/pyxis.scss";
+
+.wrapper {
+  @include pyxis.columnGap(xs);
+  @include pyxis.padding(2xs);
+  @include pyxis.rowGap(xs);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  justify-items: center;
+  margin-bottom: pyxis.spacing(2xs);
+}
+
+
