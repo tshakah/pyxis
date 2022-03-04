@@ -2,6 +2,7 @@ module Stories.Chapters.Fields.Number exposing (Model, docs, init)
 
 import Commons.Properties.Placement as Placement
 import Commons.Properties.Size as Size
+import Components.Field.Label as Label
 import Components.Field.Number as Number
 import Components.IconSet as IconSet
 import ElmBook
@@ -21,12 +22,26 @@ All the properties described below concern the visual implementation of the comp
 <component with-label="Number" />
 ```
 type Msg
-    = NumberFieldMsg Number.Msg
+    = OnNumberFieldMsg Number.Msg
 
-numberFieldModel : Date.Model ()
 
-Number.config "numberfield-id"
-    |> Number.render NumberFieldMsg () numberFieldModel
+validation : formData -> Int -> Result String Int
+validation _ value =
+    if value < 18 then
+        Err "You should be at least 18 years old"
+    else
+        Ok value
+
+
+numberFieldModel : Number.Model formData
+numberFieldModel =
+    Number.init validation
+
+
+numberField : formData -> Html Msg
+numberField formData =
+    Number.config "number-id"
+        |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
 ## Addon
 
@@ -37,36 +52,36 @@ Number field can have several addons, such as icons or texts. They are used to m
 <component with-label="Number withAddon prepend text" />
 
 ```
-Number.config "numberfield-id"
+Number.config "number-id"
     |> Number.withAddon Placement.prepend (Number.textAddon "mq")
-    |> Number.render NumberFieldMsg () numberFieldModel
+    |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
 
 ### Addon: Append Text
 <component with-label="Number withAddon append text" />
 
 ```
-Number.config "numberfield-id"
+Number.config "number-id"
     |> Number.withAddon Placement.append (Number.textAddon "€")
-    |> Number.render NumberFieldMsg () numberFieldModel
+    |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
 
 ### Addon: Prepend Icon
 <component with-label="Number withAddon prepend icon" />
 
 ```
-Number.config "numberfield-id"
+Number.config "number-id"
     |> Number.withAddon Placement.prepend (Number.iconAddon IconSet.AccessKey)
-    |> Number.render NumberFieldMsg () numberFieldModel
+    |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
 
 ### Addon: Append Icon
 <component with-label="Number withAddon append icon" />
 
 ```
-Number.config "numberfield-id"
+Number.config "number-id"
     |> Number.withAddon Placement.append (Number.iconAddon IconSet.Bell)
-    |> Number.render NumberFieldMsg () numberFieldModel
+    |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
 
 ## Size
@@ -78,31 +93,26 @@ You can set your TextField with a _size_ of default or small.
 <component with-label="Number withSize small" />
 
 ```
-Number.config "numberfield-id"
+Number.config "number-id"
     |> Number.withSize Size.small
-    |> Number.render NumberFieldMsg () numberFieldModel
+    |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
 
 ## Others
 
 <component with-label="Number withPlaceholder" />
 ```
-Number.config "numberfield-id"
+Number.config "number-id"
     |> Number.withPlaceholder "Custom placeholder"
-    |> Number.render NumberFieldMsg () numberFieldModel
+    |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
 
 <component with-label="Number withDisabled" />
 ```
-Number.config "numberfield-id"
+Number.config "number-id"
     |> Number.withDisabled True
-    |> Number.render NumberFieldMsg () numberFieldModel
+    |> Number.render OnNumberFieldMsg formData numberFieldModel
 ```
-
----
-## Accessibility
-Whenever possible, please use the label element to associate text with form elements explicitly, with the
-`for` attribute of the label that exactly match the id of the form input.
 """
 
 
@@ -111,58 +121,98 @@ type alias SharedState x =
 
 
 type alias Model =
-    { state : Number.Model ()
+    { base : Number.Model ()
+    , withValidation : Number.Model ()
     }
+
+
+validation : () -> Int -> Result String Int
+validation _ value =
+    if value < 18 then
+        Err "You should be at least 18 years old"
+
+    else
+        Ok value
 
 
 init : Model
 init =
-    { state = Number.init (always Ok)
+    { base = Number.init (always Ok)
+    , withValidation = Number.init validation
     }
 
 
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
     [ ( "Number"
-      , statelessComponent identity
+      , statefulComponent
+            "number"
+            (Number.withLabel (Label.config "Age"))
+            .withValidation
+            updateWithValidation
       )
     , ( "Number withAddon prepend text"
-      , statelessComponent
+      , statelessComponent "with-addon-prepend-text"
             (Number.withAddon Placement.prepend (Number.textAddon "mq"))
       )
     , ( "Number withAddon append text"
-      , statelessComponent
+      , statelessComponent "with-addon-append-text"
             (Number.withAddon Placement.append (Number.textAddon "€"))
       )
     , ( "Number withAddon prepend icon"
-      , statelessComponent
+      , statelessComponent "with-addon-prepend-icon"
             (Number.withAddon Placement.prepend (Number.iconAddon IconSet.AccessKey))
       )
     , ( "Number withAddon append icon"
-      , statelessComponent
+      , statelessComponent "with-addon-append-icon"
             (Number.withAddon Placement.append (Number.iconAddon IconSet.Bell))
       )
     , ( "Number withSize small"
-      , statelessComponent (Number.withSize Size.small)
+      , statelessComponent "small" (Number.withSize Size.small)
       )
     , ( "Number withDisabled"
-      , statelessComponent (Number.withDisabled True)
+      , statelessComponent "disabled" (Number.withDisabled True)
       )
     , ( "Number withPlaceholder"
-      , statelessComponent (Number.withPlaceholder "Custom placeholder")
+      , statelessComponent "placeholder" (Number.withPlaceholder "Custom placeholder")
       )
     ]
 
 
-statelessComponent : (Number.Config -> Number.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
-statelessComponent modifier { number } =
-    Number.config "base"
+statelessComponent : String -> (Number.Config -> Number.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent id modifier { number } =
+    Number.config id
         |> modifier
-        |> Number.render identity () number.state
+        |> Number.render identity () number.base
         |> Html.map
             (ElmBook.Actions.mapUpdate
                 { toState = \state model -> { state | number = model }
                 , fromState = .number
-                , update = \msg model -> { model | state = Number.update msg model.state }
+                , update = \msg model -> { model | base = Number.update msg model.base }
                 }
             )
+
+
+statefulComponent :
+    String
+    -> (Number.Config -> Number.Config)
+    -> (Model -> Number.Model ())
+    -> (Number.Msg -> Model -> Model)
+    -> SharedState x
+    -> Html (ElmBook.Msg (SharedState x))
+statefulComponent id configModifier modelPicker update sharedState =
+    Number.config id
+        |> configModifier
+        |> Number.render identity () (sharedState.number |> modelPicker)
+        |> Html.map
+            (ElmBook.Actions.mapUpdate
+                { toState = \state model -> { state | number = model }
+                , fromState = .number
+                , update = update
+                }
+            )
+
+
+updateWithValidation : Number.Msg -> Model -> Model
+updateWithValidation msg model =
+    { model | withValidation = Number.update msg model.withValidation }

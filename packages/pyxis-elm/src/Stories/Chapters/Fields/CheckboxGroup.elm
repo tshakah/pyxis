@@ -1,13 +1,11 @@
 module Stories.Chapters.Fields.CheckboxGroup exposing (Model, docs, init)
 
-import Commons.Lens as Lens exposing (Lens)
 import Components.Field.CheckboxGroup as CheckboxGroup
 import Components.Field.Label as Label
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import PrimaFunction
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
@@ -20,108 +18,121 @@ Checkbox lets the user make zero or multiple selection from a list of options.
 
 <component with-label="CheckboxGroup" />
 ```
-type Msg
-    = CheckboxGroupMsg (CheckboxGroup.Msg Lang)
-
-CheckboxGroup.config "checkboxgroup-id"
-    |> CheckboxGroup.withOptions
-        [ CheckboxGroup.option { value = Elm, label = "Elm" }
-        , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-        , CheckboxGroup.option { value = Rust, label = "Rust" }
-        , CheckboxGroup.option { value = Elixir, label = "Elixir" }
-        ]
-    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
-```
-
-<component with-label="CheckboxGroup with validation" />
-```
-validation : () -> List Lang -> Result String (Lang, List Lang)
-validation () checkedOptions =
-    case checkedOptions of
-        [] ->
-            Err "You must select at least one option"
-
-        hd :: tl ->
-            Ok (hd, tl)
-
-init : Model
-init =
-    { CheckboxGroup.init validation
-    }
-
-CheckboxGroup.config "checkboxgroup-id"
-    |> CheckboxGroup.withOptions
-        [ CheckboxGroup.option { value = Elm, label = "Elm" }
-        , ...
-        ]
-    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
-```
-
-<component with-label="CheckboxGroup with single Checkbox" />
-```
-CheckboxGroup.single "Accept the policy" "checkbox-id"
-|> CheckboxGroup.render CheckboxGroupMsg ctx model.cookieCheckboxModel
-```
-
-<component with-label="CheckboxGroup with disabled options" />
-```
-CheckboxGroup.config "checkboxgroup-id"
-    |> CheckboxGroup.withOptions
-        [ CheckboxGroup.option { value = Elm, label = "Elm" }
-        , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-        , CheckboxGroup.option { value = Rust, label = "Rust" }
-        , CheckboxGroup.option { value = Elixir, label = "Elixir" }
-            |> CheckboxGroup.withDisabledOption True
-        ]
-    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
-```
-
-<component with-label="CheckboxGroup with vertical layout" />
-```
-CheckboxGroup.config "checkboxgroup-id"
-    |> CheckboxGroup.withOptions
-        [ CheckboxGroup.option { value = Elm, label = "Elm" }
-        , ...
-        ]
-    |> CheckboxGroup.withLayout CheckboxGroup.vertical
-    |> CheckboxGroup.render CheckboxGroupMsg ctx model.langsModel
-```
-
-"""
-
-
-type alias SharedState x =
-    { x
-        | checkbox : Model
-    }
-
-
-type Lang
+type Option
     = Elm
     | Typescript
     | Rust
     | Elixir
 
 
-type alias Model =
-    { base : CheckboxGroup.Model () Lang (List Lang)
-    , validated : CheckboxGroup.Model () Lang (NonemptyList Lang)
+type Msg
+    = OnCheckboxGroupMsg (CheckboxGroup.Msg Option)
+   
+    
+validation : formData -> List Option -> Result String (List Option)
+validation _ selected =
+    case selected of
+        [] ->
+            Err "You must select at least one option"
+
+        _ ->
+            Ok selected
+            
+            
+checkboxGroupModel : CheckboxGroup.Model formData
+checkboxGroupModel =
+    CheckboxGroup.init validation
+
+
+checkboxGroup : formData -> Html Msg
+checkboxGroup formData =
+    CheckboxGroup.config "checkbox-id"
+        |> CheckboxGroup.withOptions
+            [ CheckboxGroup.option { value = Elm, label = "Elm" }
+            , CheckboxGroup.option { value = Typescript, label = "Typescript" }
+            , CheckboxGroup.option { value = Rust, label = "Rust" }
+            , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+            ]
+        |> CheckboxGroup.render OnCheckboxGroupMsg formData checkboxGroupModel
+```
+
+# Vertical Layout
+
+<component with-label="CheckboxGroup with vertical layout" />
+```
+CheckboxGroup.config "checkbox-id"
+    |> CheckboxGroup.withLayout CheckboxGroup.vertical
+    |> CheckboxGroup.render
+        OnCheckboxGroupMsg
+        formData
+        checkboxGroupModel
+```
+# With an option disabled
+
+<component with-label="CheckboxGroup with a disabled option" />
+```
+options : List (CheckboxGroup.Option Option)
+options =
+    [ CheckboxGroup.option { value = Elm, label = "Elm" }
+    , CheckboxGroup.option { value = Typescript, label = "Typescript" }
+    , CheckboxGroup.option { value = Rust, label = "Rust" }
+    , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+        |> CheckboxGroup.withDisabledOption True
+    ]
+
+CheckboxGroup.config "checkbox-id"
+    |> CheckboxGroup.withOptions options
+    |> CheckboxGroup.render
+        OnCheckboxGroupMsg
+        formData
+        checkboxGroupModel
+```
+
+# With a single option
+<component with-label="CheckboxGroup with a single option" />
+```
+CheckboxGroup.single "Accept the policy" "checkbox-id"
+    |> CheckboxGroup.render
+        OnCheckboxGroupMsg
+        formData
+        checkboxGroupModel
+```
+"""
+
+
+type alias SharedState x =
+    { x
+        | checkbox : CheckboxFieldModels
+    }
+
+
+type Option
+    = Elm
+    | Typescript
+    | Rust
+    | Elixir
+
+
+type alias CheckboxFieldModels =
+    { base : CheckboxGroup.Model () Option (List Option)
+    , noValidation : CheckboxGroup.Model () Option (List Option)
+    , disabled : CheckboxGroup.Model () Option (List Option)
     , single : CheckboxGroup.Model () () Bool
     }
 
 
-type alias NonemptyList a =
-    ( a, List a )
+type alias Model =
+    CheckboxFieldModels
 
 
-validation : () -> List Lang -> Result String (NonemptyList Lang)
-validation () langs =
-    case langs of
+validation : () -> List Option -> Result String (List Option)
+validation _ selected =
+    case selected of
         [] ->
             Err "You must select at least one option"
 
-        hd :: tl ->
-            Ok ( hd, tl )
+        _ ->
+            Ok selected
 
 
 singleOptionValidation : () -> List () -> Result error Bool
@@ -129,96 +140,95 @@ singleOptionValidation () =
     List.member () >> Ok
 
 
-init : Model
+init : CheckboxFieldModels
 init =
-    { base = CheckboxGroup.init (always Ok)
-    , validated = CheckboxGroup.init validation
+    { base = CheckboxGroup.init validation
+    , noValidation = CheckboxGroup.init (always Ok)
+    , disabled = CheckboxGroup.init (always Ok)
     , single = CheckboxGroup.init singleOptionValidation
     }
 
 
-langsConfig : CheckboxGroup.Config Lang
-langsConfig =
-    CheckboxGroup.config "checkboxgroup-id"
-        |> CheckboxGroup.withOptions
-            [ CheckboxGroup.option { value = Elm, label = "Elm" }
-            , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-            , CheckboxGroup.option { value = Rust, label = "Rust" }
-            , CheckboxGroup.option { value = Elixir, label = "Elixir" }
-            ]
+options : List (CheckboxGroup.Option Option)
+options =
+    [ CheckboxGroup.option { value = Elm, label = "Elm" }
+    , CheckboxGroup.option { value = Typescript, label = "Typescript" }
+    , CheckboxGroup.option { value = Rust, label = "Rust" }
+    , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+    ]
+
+
+optionsWithDisabled : List (CheckboxGroup.Option Option)
+optionsWithDisabled =
+    [ CheckboxGroup.option { value = Elm, label = "Elm" }
+    , CheckboxGroup.option { value = Typescript, label = "Typescript" }
+    , CheckboxGroup.option { value = Rust, label = "Rust" }
+    , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+        |> CheckboxGroup.withDisabledOption True
+    ]
 
 
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
-    [ viewSection "CheckboxGroup" baseLens langsConfig
-    , viewSection "CheckboxGroup with single Checkbox"
-        singleLens
-        (CheckboxGroup.single "Accept the policy" "checkbox-id")
-    , viewSection "CheckboxGroup with validation" validatedLens langsConfig
-    , viewSection "CheckboxGroup with disabled options"
-        baseLens
-        (CheckboxGroup.config "checkboxgroup-id"
-            |> CheckboxGroup.withOptions
-                [ CheckboxGroup.option { value = Elm, label = "Elm" }
-                , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-                , CheckboxGroup.option { value = Rust, label = "Rust" }
-                , CheckboxGroup.option { value = Elixir, label = "Elixir" }
-                    |> CheckboxGroup.withDisabledOption True
-                ]
-        )
-    , viewSection "CheckboxGroup with vertical layout"
-        baseLens
-        (langsConfig
-            |> CheckboxGroup.withLayout CheckboxGroup.vertical
-        )
+    [ ( "CheckboxGroup"
+      , statefulComponent
+            { id = "checkbox-group"
+            , configModifier = CheckboxGroup.withLabel (Label.config "Choose at least one language")
+            , modelPicker = .base
+            , update = \msg models -> { models | base = CheckboxGroup.update msg models.base }
+            }
+      )
+    , ( "CheckboxGroup with vertical layout"
+      , statefulComponent
+            { id = "checkbox-group-vertical"
+            , configModifier = CheckboxGroup.withLayout CheckboxGroup.vertical
+            , modelPicker = .noValidation
+            , update = \msg models -> { models | noValidation = CheckboxGroup.update msg models.noValidation }
+            }
+      )
+    , ( "CheckboxGroup with a disabled option"
+      , statefulComponent
+            { id = "checkbox-group-disabled"
+            , configModifier = CheckboxGroup.withOptions optionsWithDisabled
+            , modelPicker = .disabled
+            , update = \msg models -> { models | disabled = CheckboxGroup.update msg models.disabled }
+            }
+      )
+    , ( "CheckboxGroup with a single option"
+      , \sharedState ->
+            CheckboxGroup.single "Accept the policy" "checkbox-id"
+                |> CheckboxGroup.withName "checkbox-group-single"
+                |> CheckboxGroup.render identity () sharedState.checkbox.single
+                |> Html.map
+                    (ElmBook.Actions.mapUpdate
+                        { toState = \sharedState_ models -> { sharedState_ | checkbox = models }
+                        , fromState = .checkbox
+                        , update = \msg models -> { models | single = CheckboxGroup.update msg models.single }
+                        }
+                    )
+      )
     ]
 
 
-viewSection :
-    String
-    -> Lens Model (CheckboxGroup.Model () value parsed)
-    -> CheckboxGroup.Config value
-    -> ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
-viewSection title lens checkbox =
-    let
-        composedLens : Lens { a | checkbox : Model } (CheckboxGroup.Model () value parsed)
-        composedLens =
-            checkboxLens |> Lens.andCompose lens
-    in
-    ( title
-    , \sharedState ->
-        checkbox
-            |> CheckboxGroup.withLabel (Label.config "Label")
-            |> CheckboxGroup.render identity () (composedLens.get sharedState)
-            |> Html.map
-                (ElmBook.Actions.mapUpdate
-                    { toState = PrimaFunction.flip composedLens.set
-                    , fromState = composedLens.get
-                    , update = CheckboxGroup.update
-                    }
-                )
-    )
+type alias StatefulConfig =
+    { id : String
+    , configModifier : CheckboxGroup.Config Option -> CheckboxGroup.Config Option
+    , modelPicker : CheckboxFieldModels -> CheckboxGroup.Model () Option (List Option)
+    , update : CheckboxGroup.Msg Option -> CheckboxFieldModels -> CheckboxFieldModels
+    }
 
 
-
--- Lenses
-
-
-baseLens : Lens { a | base : b } b
-baseLens =
-    Lens .base (\x r -> { r | base = x })
-
-
-validatedLens : Lens { a | validated : b } b
-validatedLens =
-    Lens .validated (\x r -> { r | validated = x })
-
-
-singleLens : Lens { a | single : b } b
-singleLens =
-    Lens .single (\x r -> { r | single = x })
-
-
-checkboxLens : Lens { a | checkbox : b } b
-checkboxLens =
-    Lens .checkbox (\x r -> { r | checkbox = x })
+statefulComponent : StatefulConfig -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statefulComponent { id, configModifier, modelPicker, update } sharedState =
+    CheckboxGroup.config id
+        |> CheckboxGroup.withName id
+        |> CheckboxGroup.withOptions options
+        |> configModifier
+        |> CheckboxGroup.render identity () (sharedState.checkbox |> modelPicker)
+        |> Html.map
+            (ElmBook.Actions.mapUpdate
+                { toState = \sharedState_ models -> { sharedState_ | checkbox = models }
+                , fromState = .checkbox
+                , update = update
+                }
+            )

@@ -18,10 +18,8 @@ Label component provides a label to be used within a form. It requires a _text_ 
 
 <component with-label="Label" />
 ```
-import Components.Field.Label as Label
-
-myLabel: Html msg
-myLabel =
+label: Html msg
+label =
     Label.config "Label"
         |> Label.render
 ```
@@ -29,27 +27,19 @@ myLabel =
 ## For
 <component with-label="For" />
 ```
-import Components.Field.Label as Label
-
-myLabel: Html msg
-myLabel =
-    Label.config "Label"
-        |> Label.withFor "input-id"
-        |> Label.render
+Label.config "Label"
+    |> Label.withFor "input-id"
+    |> Label.render
 ```
 ## ID
+
+Note that setting an id to the Label also implies setting a data-test-id attribute with the same value of the id received.
+
 <component with-label="Id" />
 ```
-import Components.Field.Label as Label
-
-{-| Note that setting an id to the Label also implies setting a data-test-id
-attribute with the same value of the id received.
--}
-myLabel: Html msg
-myLabel =
-    Label.config "Label"
-        |> Label.withId "label-id"
-        |> Label.render
+Label.config "Label"
+    |> Label.withId "label-id"
+    |> Label.render
 ```
 ## Variations
 Label can have an additional explanatory text or can be set with a smaller size.
@@ -57,26 +47,17 @@ Label can have an additional explanatory text or can be set with a smaller size.
 ### With an additional text
 <component with-label="Additional text" />
 ```
-import Components.Field.Label as Label
-
-myLabel: Html msg
-myLabel =
-    Label.config "Main label"
-        |> Label.withSubText "This is an additional text"
-        |> Label.render
+Label.config "Main label"
+    |> Label.withSubText "This is an additional text"
+    |> Label.render
 ```
 
 ### Size: small
 <component with-label="Small" />
 ```
-import Components.Field.Label as Label
-import Commons.Properties.Size as Size
-
-myLabel: Html msg
-myLabel =
-    Label.config "Smaller label"
-        |> Label.withSize Size.small
-        |> Label.render
+Label.config "Smaller label"
+    |> Label.withSize Size.small
+    |> Label.render
 ```
 ---
 ## Accessibility

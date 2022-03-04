@@ -1,12 +1,11 @@
 module Stories.Chapters.Fields.RadioGroup exposing (Model, docs, init)
 
-import Commons.Lens as Lens exposing (Lens)
+import Components.Field.Label as Label
 import Components.Field.RadioGroup as RadioGroup
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import PrimaFunction
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
@@ -20,40 +19,40 @@ Radio group have a horizontal layout as default, but with more then two items a 
 
 <component with-label="RadioGroup" />
 ```
-type
-    Option -- Can be a String or Maybe String alias
-    = M
-    | F
+type Option
+    = Home
+    | Motor
 
 
 type Msg
     = OnRadioFieldMsg (RadioGroup.Msg Option)
 
 
-radioGroupModel : RadioGroup.Model ctx Option
-radioGroupModel =
-    RadioGroup.init validation
-
-
-radioGroupView : ctx -> Html Msg
-radioGroupView ctx =
-    RadioGroup.config "radio-id"
-        |> RadioGroup.withName "gender"
-        |> RadioGroup.withOptions
-            [ RadioGroup.option { value = M, label = "Male" }
-            , RadioGroup.option { value = F, label = "Female" }
-            ]
-        |> RadioGroup.render OnRadioFieldMsg ctx radioGroupModel
-
-
-validation : ctx -> Maybe Option -> Result String Option
+validation : formData -> Maybe Option -> Result String Option
 validation _ value =
     case value of
         Nothing ->
             Err "Invalid selection"
 
-        Just opt ->
-            Ok opt
+        Just option ->
+            Ok option
+
+
+radioGroupModel : RadioGroup.Model formData Option Option
+radioGroupModel =
+    RadioGroup.init validation
+
+
+radioGroupView : formData -> Html Msg
+radioGroupView formData =
+    RadioGroup.config "radio-id"
+        |> RadioGroup.withName "insurance-type"
+        |> RadioGroup.withLabel (Label.config "Choose the insurance type")
+        |> RadioGroup.withOptions
+            [ RadioGroup.option { value = Home, label = "Home" }
+            , RadioGroup.option { value = Motor, label = "Motor" }
+            ]
+        |> RadioGroup.render OnRadioFieldMsg formData radioGroupModel
 ```
 
 # Vertical Layout
@@ -64,22 +63,24 @@ Radio group have a horizontal layout as default, but with more then two items a 
 <component with-label="RadioGroup vertical" />
 
 ```
-radioGroupVerticalLayout : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value parsed -> Html msg
-radioGroupVerticalLayout id tagger ctx radioModel =
-    RadioGroup.config id
-        |> RadioGroup.withLayout RadioGroup.vertical
-        |> RadioGroup.render tagger ctx radioModel
+RadioGroup.config id
+    |> RadioGroup.withLayout RadioGroup.vertical
+    |> RadioGroup.render
+        OnRadioFieldMsg
+        formData
+        (radioGroupModel |> RadioGroup.setValue Motor)
 ```
 
 
 # Disabled
 <component with-label="RadioGroup disabled" />
 ```
-radioGroupDisabled : String -> (RadioGroup.Msg value -> msg) -> ctx -> RadioGroup.Model ctx value parsed -> Html msg
-radioGroupDisabled id tagger ctx radioModel =
-    RadioGroup.config id
-        |> RadioGroup.withDisabled True
-        |> RadioGroup.render tagger ctx radioModel
+RadioGroup.config id
+    |> RadioGroup.withDisabled True
+    |> RadioGroup.render
+        OnRadioFieldMsg
+        formData
+        (radioGroupModel |> RadioGroup.setValue Home)
 ```
 """
 
@@ -91,14 +92,14 @@ type alias SharedState x =
 
 
 type Option
-    = M
-    | F
+    = Home
+    | Motor
 
 
 type alias RadioFieldModels =
-    { base : RadioGroup.Model () Option (Maybe Option)
+    { base : RadioGroup.Model () Option Option
     , vertical : RadioGroup.Model () Option Option
-    , disabled : RadioGroup.Model () Option (Maybe Option)
+    , disabled : RadioGroup.Model () Option Option
     }
 
 
@@ -109,95 +110,71 @@ type alias Model =
 init : Model
 init =
     { base =
-        RadioGroup.init (always Ok)
+        RadioGroup.init (always (Result.fromMaybe "Invalid selection"))
     , vertical =
-        RadioGroup.init validationRequired
+        RadioGroup.init (always (Result.fromMaybe "Invalid selection"))
+            |> RadioGroup.setValue Motor
     , disabled =
-        RadioGroup.init (always Ok)
-            |> RadioGroup.setValue M
+        RadioGroup.init (always (Result.fromMaybe "Invalid selection"))
+            |> RadioGroup.setValue Home
     }
-
-
-validationRequired : ctx -> Maybe Option -> Result String Option
-validationRequired _ value =
-    case value of
-        Nothing ->
-            Err "Invalid selection"
-
-        Just opt ->
-            Ok opt
 
 
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
-    [ viewSection "RadioGroup"
-        baseLens
-        (RadioGroup.config "base"
-            |> RadioGroup.withName "gender1"
-        )
-    , viewSection "RadioGroup vertical"
-        verticalLens
-        (RadioGroup.config "base"
-            |> RadioGroup.withName "vertical"
-            |> RadioGroup.withLayout RadioGroup.vertical
-        )
-    , viewSection "RadioGroup disabled"
-        disabledLens
-        (RadioGroup.config "disabled"
-            |> RadioGroup.withName "gender3"
-            |> RadioGroup.withDisabled True
-        )
+    [ ( "RadioGroup"
+      , statefulComponent
+            { id = "radio-group"
+            , configModifier = RadioGroup.withLabel (Label.config "Choose the insurance type")
+            , modelPicker = .base
+            , update = \msg models -> { models | base = RadioGroup.update msg models.base }
+            }
+      )
+    , ( "RadioGroup vertical"
+      , statefulComponent
+            { id = "radio-group-vertical"
+            , configModifier = RadioGroup.withLayout RadioGroup.vertical
+            , modelPicker = .vertical
+            , update = \msg models -> { models | vertical = RadioGroup.update msg models.vertical }
+            }
+      )
+    , ( "RadioGroup disabled"
+      , statefulComponent
+            { id = "radio-group-disabled"
+            , configModifier = RadioGroup.withDisabled True
+            , modelPicker = .disabled
+            , update = always identity
+            }
+      )
     ]
 
 
-viewSection :
-    String
-    -> Lens Model (RadioGroup.Model () Option parsed)
-    -> RadioGroup.Config Option
-    -> ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
-viewSection title lens checkbox =
-    let
-        composedLens : Lens { a | radio : Model } (RadioGroup.Model () Option parsed)
-        composedLens =
-            radioLens |> Lens.andCompose lens
-    in
-    ( title
-    , \sharedState ->
-        checkbox
-            |> RadioGroup.withOptions
-                [ RadioGroup.option { value = M, label = "Male" }
-                , RadioGroup.option { value = F, label = "Female" }
-                ]
-            |> RadioGroup.render identity () (composedLens.get sharedState)
-            |> Html.map
-                (ElmBook.Actions.mapUpdate
-                    { toState = PrimaFunction.flip composedLens.set
-                    , fromState = composedLens.get
-                    , update = RadioGroup.update
-                    }
-                )
-    )
+options : List (RadioGroup.Option Option)
+options =
+    [ RadioGroup.option { value = Home, label = "Home" }
+    , RadioGroup.option { value = Motor, label = "Motor" }
+    ]
 
 
-
--- Lenses
-
-
-baseLens : Lens { a | base : b } b
-baseLens =
-    Lens .base (\x r -> { r | base = x })
-
-
-verticalLens : Lens { a | vertical : b } b
-verticalLens =
-    Lens .vertical (\x r -> { r | vertical = x })
+type alias StatefulConfig =
+    { id : String
+    , configModifier : RadioGroup.Config Option -> RadioGroup.Config Option
+    , modelPicker : Model -> RadioGroup.Model () Option Option
+    , update : RadioGroup.Msg Option -> RadioFieldModels -> RadioFieldModels
+    }
 
 
-disabledLens : Lens { a | disabled : b } b
-disabledLens =
-    Lens .disabled (\x r -> { r | disabled = x })
-
-
-radioLens : Lens { a | radio : b } b
-radioLens =
-    Lens .radio (\x r -> { r | radio = x })
+statefulComponent : StatefulConfig -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statefulComponent { id, configModifier, modelPicker, update } sharedState =
+    RadioGroup.config id
+        |> RadioGroup.withName id
+        |> RadioGroup.withOptions options
+        |> configModifier
+        |> RadioGroup.render identity () (sharedState.radio |> modelPicker)
+        |> Html.map
+            (ElmBook.Actions.mapUpdate
+                { toState = \sharedState_ models -> { sharedState_ | radio = models }
+                , fromState = .radio
+                , update = update
+                }
+            )

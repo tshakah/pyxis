@@ -511,7 +511,8 @@ renderInput ctx (Model modelData) (Config configData) =
             , ( "form-field__text", configData.type_ == Number )
             , ( "form-field__text", configData.type_ == Password )
             , ( "form-field__text", configData.type_ == Email )
-            , ( "form-field__text--small", Size.isSmall configData.size )
+            , ( "form-field__text--small", configData.type_ /= Date && Size.isSmall configData.size )
+            , ( "form-field__date--small", configData.type_ == Date && Size.isSmall configData.size )
             ]
         , Attributes.classList configData.classList
         , Attributes.disabled configData.disabled

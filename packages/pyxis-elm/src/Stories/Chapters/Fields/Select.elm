@@ -1,6 +1,5 @@
 module Stories.Chapters.Fields.Select exposing (Model, docs, init)
 
-import Commons.Lens as Lens exposing (Lens)
 import Commons.Properties.Size as Size
 import Components.Field.Label as Label
 import Components.Field.Select as Select
@@ -8,7 +7,6 @@ import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import PrimaFunction
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
@@ -24,44 +22,75 @@ The select component uses a custom wrapper on desktop:
 
 <component with-label="Select (desktop)" />
 ```
-Select.create False "select-id"
-    |> Select.withPlaceholder "Select your role..."
-    |> Select.withOptions
-          [ Select.option { value = "DEVELOPER", label = "Developer" }
-          , Select.option { value = "DESIGNER", label = "Designer" }
-          , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
-          , Select.option { value = "CEO", label = "Chief executive officer" }
-          , Select.option { value = "CTO", label = "Chief technology officer" }
-          , Select.option { value = "CONSULTANT", label = "Consultant" }
-          ]
-    |> Select.render Tagger ctx model.roleSelectModel
+type Job
+    = Developer
+    | Designer
+    | ProductManager
+    | CEO
+
+
+type Msg
+    = OnSelectMsg (Select.Msg)
+    
+
+validation : formData -> Maybe String -> Result String Job
+validation _ maybeValue =
+    maybeValue
+        |> Maybe.andThen toJob
+        |> Result.fromMaybe "Required field"
+
+
+toJob : String -> Maybe Job
+toJob rawValue =
+    case rawValue of
+        "DEVELOPER" ->
+            Just Developer
+        [...]
+        _ ->
+            Nothing
+
+
+selectModel : Select.Model formData Job
+selectModel =
+    Select.init validation
+
+
+options : List Select.Option
+options =
+    [ Select.option { value = "DEVELOPER", label = "Developer" }
+    , Select.option { value = "DESIGNER", label = "Designer" }
+    , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
+    , Select.option { value = "CEO", label = "Chief executive officer" }
+    ]
+    
+    
+isMobile : Bool
+isMobile = False
+
+
+select : formData -> Html Select.Msg
+select formData =
+    Select.config isMobile "desktop-select"
+        |> Select.withPlaceholder "Select your role..."
+        |> Select.withOptions options
+        |> Select.render OnSelectMsg formData selectModel
 ```
 
 And the native `<select>` on mobile:
 
 <component with-label="Select (mobile)" />
 ```
-Select.create True "select-id"
-    |> Select.withPlaceholder "Select your role..."
-    |> Select.withOptions
-          [ Select.option { value = "DEVELOPER", label = "Developer" }
-          , ...
-          ]
-    |> Select.render Tagger ctx model.roleSelectModel
+Select.config True "select-id"
+    |> Select.render OnSelectMsg formData selectModel
 ```
 
 ### Disabled
 
 <component with-label="Select with disabled=True" />
 ```
-Select.create False "select-id"
-    |> Select.withPlaceholder "Select your role..."
+Select.config False "select-id"
     |> Select.withDisabled True
-    |> Select.withOptions
-          [ Select.option { value = "DEVELOPER", label = "Developer" }
-          , ...
-          ]
-    |> Select.render Tagger ctx model.roleSelectModel
+    |> Select.render OnSelectMsg formData selectModel
 ```
 
 ### Size
@@ -69,42 +98,9 @@ Select can have two size: default or small.
 
 <component with-label="Select with size=Small" />
 ```
-Select.create False "select-id"
-    |> Select.withPlaceholder "Select your role..."
-    |> Select.withDisabled True
-    |> Select.withOptions
-          [ Select.option { value = "DEVELOPER", label = "Developer" }
-          , ...
-          ]
-    |> Select.render Tagger ctx model.roleSelectModel
-```
-
-### Label
-Select can have two size: default or small.
-
-<component with-label="Select with label" />
-```
-Select.create False "select-id"
-    |> Select.withPlaceholder "Select your role..."
-    |> Select.withLabel (Label.config "Label")
-    |> Select.withOptions
-          [ Select.option { value = "DEVELOPER", label = "Developer" }
-          , ...
-          ]
-    |> Select.render Tagger ctx model.roleSelectModel
-```
-
-
-### Validation
-<component with-label="Select with error message" />
-```
-Select.create False "select-id"
-    |> Select.withPlaceholder "Select your role..."
-    |> Select.withOptions
-          [ Select.option { value = "DEVELOPER", label = "Developer" }
-          , ...
-          ]
-    |> Select.render Tagger ctx model.roleSelectModel
+Select.config False "select-id"
+    |> Select.withSize Size.small
+    |> Select.render OnSelectMsg formData selectModel
 ```
 """
 
@@ -116,67 +112,42 @@ type alias SharedState x =
 
 
 type alias Model =
-    { base : Select.Model () (Maybe Job)
+    { base : Select.Model () (Maybe String)
     , withValidation : Select.Model () Job
     }
 
 
-requiredFieldValidation : Maybe a -> Result String a
-requiredFieldValidation m =
-    case m of
-        Nothing ->
-            Err "Required field"
-
-        Just str ->
-            Ok str
+requiredValidation : formData -> Maybe String -> Result String Job
+requiredValidation _ maybeValue =
+    maybeValue
+        |> Maybe.andThen toJob
+        |> Result.fromMaybe "Required field"
 
 
-optionalFieldValidation : (from -> Result String to) -> Maybe from -> Result String (Maybe to)
-optionalFieldValidation validation m =
-    case m of
-        Nothing ->
-            Ok Nothing
-
-        Just x ->
-            Result.map Just (validation x)
-
-
-validateJob : String -> Result String Job
-validateJob job =
-    case job of
+toJob : String -> Maybe Job
+toJob rawValue =
+    case rawValue of
         "DEVELOPER" ->
-            Ok Developer
+            Just Developer
 
         "DESIGNER" ->
-            Ok Designer
+            Just Designer
 
         "PRODUCT_MANAGER" ->
-            Ok ProductManager
+            Just ProductManager
+
+        "CEO" ->
+            Just CEO
 
         _ ->
-            Err "Insert a valid option"
-
-
-validateJobValue : Job -> Result String Job
-validateJobValue j =
-    case j of
-        Developer ->
-            Ok j
-
-        _ ->
-            Err "Select `Developer` to continue"
+            Nothing
 
 
 init : Model
 init =
-    { base = Select.init (\() -> optionalFieldValidation validateJob)
+    { base = Select.init (always Ok)
     , withValidation =
-        Select.init
-            (\() ->
-                requiredFieldValidation
-                    >> Result.andThen validateJob
-                    >> Result.andThen validateJobValue
-            )
+        Select.init requiredValidation
     }
 
 
@@ -184,83 +155,90 @@ type Job
     = Developer
     | Designer
     | ProductManager
+    | CEO
 
 
 componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
 componentsList =
-    [ viewBaseSection "Select (desktop)"
-        (Select.config False "desktop-select")
-    , viewBaseSection "Select (mobile)"
-        (Select.config True "mobile-select")
-    , viewBaseSection "Select with disabled=True"
-        (Select.config False "disabled-select"
-            |> Select.withDisabled True
-        )
-    , viewBaseSection "Select with size=Small"
-        (Select.config False "small-select"
-            |> Select.withSize Size.small
-        )
-    , viewBaseSection "Select with label"
-        (Select.config False "labelled-select"
-            |> Select.withLabel (Label.config "Label")
-        )
-    , viewValidationSection "Select with error message"
-        (Select.config False "validation-select")
+    [ ( "Select (desktop)"
+      , statefulComponent
+            { id = "desktop-select"
+            , isMobile = False
+            , configModifier = Select.withLabel (Label.config "Label")
+            }
+            .withValidation
+            updateWithValidation
+      )
+    , ( "Select (mobile)"
+      , statelessComponent
+            { id = "mobile-select", isMobile = True, configModifier = identity }
+      )
+    , ( "Select with disabled=True"
+      , statelessComponent
+            { id = "disabled-select", isMobile = False, configModifier = Select.withDisabled True }
+      )
+    , ( "Select with size=Small"
+      , statelessComponent
+            { id = "small-select", isMobile = False, configModifier = Select.withSize Size.small }
+      )
     ]
 
 
-viewSection :
-    Lens Model (Select.Model () a)
-    -> String
-    -> Select.Config
-    -> ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
-viewSection lens title select =
+type alias StatelessConfig =
+    { id : String, isMobile : Bool, configModifier : Select.Config -> Select.Config }
+
+
+statelessComponent :
+    StatelessConfig
+    -> SharedState x
+    -> Html (ElmBook.Msg (SharedState x))
+statelessComponent statelessConfig =
+    statefulComponent statelessConfig .base updateBase
+
+
+statefulComponent :
+    StatelessConfig
+    -> (Model -> Select.Model () parsed)
+    -> (Select.Msg -> Model -> ( Model, Cmd Select.Msg ))
+    -> SharedState x
+    -> Html (ElmBook.Msg (SharedState x))
+statefulComponent { id, isMobile, configModifier } modelPicker internalUpdate sharedState =
+    Select.config isMobile id
+        |> Select.withPlaceholder "Select your role..."
+        |> Select.withOptions
+            [ Select.option { value = "DEVELOPER", label = "Developer" }
+            , Select.option { value = "DESIGNER", label = "Designer" }
+            , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
+            , Select.option { value = "CEO", label = "Chief Executive Officer" }
+            ]
+        |> configModifier
+        |> Select.render identity () (sharedState.select |> modelPicker)
+        |> Html.map
+            (ElmBook.Actions.mapUpdateWithCmd
+                { toState = \state model -> { state | select = model }
+                , fromState = .select
+                , update = internalUpdate
+                }
+            )
+
+
+updateBase : Select.Msg -> Model -> ( Model, Cmd Select.Msg )
+updateBase msg model =
     let
-        composedLens : Lens { r | select : Model } (Select.Model () a)
-        composedLens =
-            selectLens |> Lens.andCompose lens
+        ( newModel, newCmd ) =
+            Select.update msg model.base
     in
-    ( title
-    , \sharedState ->
-        select
-            -- Common options
-            |> Select.withPlaceholder "Select your role..."
-            |> Select.withOptions
-                [ Select.option { value = "DEVELOPER", label = "Developer" }
-                , Select.option { value = "DESIGNER", label = "Designer" }
-                , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
-                , Select.option { value = "CEO", label = "Chief executive officer" }
-                , Select.option { value = "CTO", label = "Chief technology officer" }
-                , Select.option { value = "CONSULTANT", label = "Consultant" }
-                ]
-            -- Rendering
-            |> Select.render identity () (composedLens.get sharedState)
-            |> Html.map
-                (ElmBook.Actions.mapUpdateWithCmd
-                    { toState = PrimaFunction.flip composedLens.set
-                    , fromState = composedLens.get
-                    , update = Select.update
-                    }
-                )
+    ( { model | base = newModel }
+    , newCmd
     )
 
 
-viewBaseSection :
-    String
-    -> Select.Config
-    -> ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
-viewBaseSection =
-    viewSection (Lens .base (\x r -> { r | base = x }))
-
-
-viewValidationSection :
-    String
-    -> Select.Config
-    -> ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
-viewValidationSection =
-    viewSection (Lens .withValidation (\x r -> { r | withValidation = x }))
-
-
-selectLens : Lens { a | select : b } b
-selectLens =
-    Lens .select (\x r -> { r | select = x })
+updateWithValidation : Select.Msg -> Model -> ( Model, Cmd Select.Msg )
+updateWithValidation msg model =
+    let
+        ( newModel, newCmd ) =
+            Select.update msg model.withValidation
+    in
+    ( { model | withValidation = newModel }
+    , newCmd
+    )

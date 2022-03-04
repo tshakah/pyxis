@@ -26,49 +26,30 @@ You can set your Icon with a _size_ of large, medium or small.
 ### Size: Large
 <component with-label="Large" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-import Commons.Properties.Size as Size
-
-
 icon: Html msg
 icon =
   IconSet.User
-      |> Icon.create
-      |> Icon.withSize Size.large
-      |> Icon.render
+    |> Icon.create
+    |> Icon.withSize Size.large
+    |> Icon.render
 ```
 
 ### Size: Medium
 <component with-label="Medium" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-import Commons.Properties.Size as Size
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withSize Size.medium
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withSize Size.medium
+    |> Icon.render
 ```
 
 ### Size: Small
 <component with-label="Small" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-import Commons.Properties.Size as Size
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withSize Size.small
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withSize Size.small
+    |> Icon.render
 ```
 
 ## Style
@@ -78,91 +59,55 @@ A boxed icon can have neutral, brand, success, alert or error colors.
 ### Style: Default
 <component with-label="Default Style" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withStyle Icon.default
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withStyle Icon.default
+    |> Icon.render
 ```
 
 ### Style: Boxed Neutral
 <component with-label="Boxed Neutral Style" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withStyle Icon.neutral
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withStyle Icon.neutral
+    |> Icon.render
 ```
 
 ### Style: Boxed Brand
 <component with-label="Boxed Brand Style" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withStyle Icon.brand
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withStyle Icon.brand
+    |> Icon.render
 ```
 
 ### Style: Boxed Success
 <component with-label="Boxed Success Style" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withStyle Icon.success
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withStyle Icon.success
+    |> Icon.render
 ```
 
 ### Style: Boxed Alert
 <component with-label="Boxed Alert Style" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withStyle Icon.alert
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withStyle Icon.alert
+    |> Icon.render
 ```
 
 ### Style: Boxed Error
 <component with-label="Boxed Error Style" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withStyle Icon.error
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withStyle Icon.error
+    |> Icon.render
 ```
 
 ## Theme
@@ -171,34 +116,23 @@ You can set your Boxed Icon with a default _theme_ or alternative. Alt theme is 
 ### Theme: Default
 <component with-label="Default Theme" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-import Commons.Properties.Theme as Theme
-
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withTheme Theme.default
-      |> Icon.render
+IconSet.User
+    |> Icon.create
+    |> Icon.withTheme Theme.default
+    |> Icon.render
 ```
 
 ### Theme: Alternative
-<component with-label="Alternative Theme" />
-```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-import Commons.Properties.Theme as Theme
 
-{-| Note that you can only enable the Alternative theme on a Boxed icon.
--}
-icon: Html msg
-icon =
-  IconSet.User
-      |> Icon.create
-      |> Icon.withStyle Icon.boxed
-      |> Icon.withTheme Theme.alternative
-      |> Icon.render
+Note that you can only enable the Alternative theme on a Boxed icon.
+
+<component with-label="Alternative Theme" with-background="#21283B" />
+```
+IconSet.User
+    |> Icon.create
+    |> Icon.withStyle Icon.default
+    |> Icon.withTheme Theme.alternative
+    |> Icon.render
 ```
 
 ## Accessibility
@@ -209,12 +143,7 @@ Moreover, please pay attention to icon colour as it should meet at least WCAG AA
 
 <component with-label="Accessible Description" />
 ```
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-
-icon: Html msg
-icon =
-  IconSet.User
+IconSet.User
       |> Icon.create
       |> Icon.withDescription "A screen-reader useful description"
       |> Icon.render

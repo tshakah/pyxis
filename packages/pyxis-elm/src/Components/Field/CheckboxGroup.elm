@@ -10,7 +10,7 @@ module Components.Field.CheckboxGroup exposing
     , horizontal
     , vertical
     , withLayout
-    , option
+    , Option, option
     , withOptions
     , render
     , withDisabledOption

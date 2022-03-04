@@ -26,8 +26,6 @@ You can set your Button with a _variant_ of primary, secondary, tertiary, brand,
 ### Variant: Primary
 <component with-label="Primary" />
 ```
-import Components.Button as Button
-
 type Msg =
     OnClick
 
@@ -42,65 +40,37 @@ btn =
 ### Variant: Secondary
 <component with-label="Secondary" />
 ```
-import Components.Button as Button
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.secondary
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.secondary
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Variant: Tertiary
 <component with-label="Tertiary" />
 ```
-import Components.Button as Button
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.tertiary
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.tertiary
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Variant: Brand
 <component with-label="Brand" />
 ```
-import Components.Button as Button
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.brand
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.brand
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Variant: Ghost
 <component with-label="Ghost" />
 ```
-import Components.Button as Button
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.ghost
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.ghost
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Type
@@ -110,56 +80,37 @@ Otherwise you can always create an _anchor_ with the appearance of a _button_ in
 ### Type: Submit.
 <component with-label="Type Submit" />
 ```
-import Components.Button as Button
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withType Button.submit
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withType Button.submit
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Type: Button.
 <component with-label="Type Button" />
 ```
-import Components.Button as Button
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Type: Reset.
 <component with-label="Type Reset" />
 ```
-import Components.Button as Button
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withType Button.reset
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withType Button.reset
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Type: Link.
 <component with-label="Type Link" />
 ```
-import Components.Button as Button
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withType (Button.link "https://www.prima.it")
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withType (Button.link "https://www.prima.it")
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Size
@@ -170,78 +121,47 @@ They can be useful when the actions need to be more prominent or when the space 
 You can set your Button with a _size_ of huge, large, medium, small.
 
 ### Size: Huge.
+
+Note that Huge size is only allowed on a Primary variant.
+Check the documentation in order to be aware of what you can do and what's forbidden on your component.
+
 <component with-label="Huge" />
 ```
-import Components.Button as Button
-import Commons.Properties.Size as Size
-
-type Msg =
-    OnClick
-
-{-| Note that Huge size is only allowed on a Primary variant.
-Check the documentation in order to be aware of what you can do and what's forbidden on your component.
--}
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withSize Size.huge
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withSize Size.huge
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Size: Large.
 <component with-label="Large" />
 ```
-import Components.Button as Button
-import Commons.Properties.Size as Size
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withSize Size.large
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withSize Size.large
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Size: Medium.
 <component with-label="Medium" />
 ```
-import Components.Button as Button
-import Commons.Properties.Size as Size
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withSize Size.medium
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withSize Size.medium
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Size: Small.
 <component with-label="Small" />
 ```
-import Components.Button as Button
-import Commons.Properties.Size as Size
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withSize Size.small
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withSize Size.small
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Icon
@@ -251,138 +171,95 @@ The button can also contain only the icon, in this case it is advisable to add a
 ### Icon: Prepend
 <component with-label="Prepend Icon" />
 ```
-import Components.Button as Button
-import Components.IconSet as IconSet
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withPrependIcon IconSet.Car
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withPrependIcon IconSet.Car
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Icon: Append
 <component with-label="Append Icon" />
 ```
-import Components.Button as Button
-import Components.IconSet as IconSet
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withAppendIcon IconSet.Van
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withAppendIcon IconSet.Van
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 
 ### Icon: Only
 <component with-label="Icon Only" />
 ```
-import Components.Button as Button
-import Components.IconSet as IconSet
-
-type Msg =
-    OnClick
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withIconOnly IconSet.Motorcycle
-        |> Button.withType (Button.button OnClick)
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withIconOnly IconSet.Motorcycle
+    |> Button.withType (Button.button OnClick)
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Loading
 <component with-label="Loading" />
 ```
-import Components.Button as Button
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withLoading True
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withLoading True
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Id
+
+Note that setting an id to the Button also implies setting a data-test-id
+attribute with the same value of the id received.
+
 <component with-label="Id" />
 ```
-import Components.Button as Button
-
-{-| Note that setting an id to the Button also implies setting a data-test-id
-attribute with the same value of the id received.
--}
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withId "jsButton"
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withId "jsButton"
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Disabled
 <component with-label="Disabled" />
 ```
-import Components.Button as Button
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withDisabled True
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withDisabled True
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Content Width
 <component with-label="Content Width" />
 ```
-import Components.Button as Button
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withContentWidth
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withContentWidth
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Shadow
+
+Note that you can use a shadow only on a Primary/Brand variant.
+
 <component with-label="Shadow" />
 ```
-import Components.Button as Button
-
-{-| Note that you can use a shadow only on a Primary/Brand variant.
--}
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withShadow
-        |> Button.withText "Click me!"
-        |> Button.render
+Button.primary
+    |> Button.withShadow
+    |> Button.withText "Click me!"
+    |> Button.render
 ```
 ---
 ## Accessibility
+
+When you use the iconPlacement `only` options remember to add the prop aria-label to component with a meaningful label for users relying on screen readers.
+
 <component with-label="Accessible" />
 ```
-import Components.Button as Button
-
-btn: Html Msg
-btn =
-    Button.primary
-        |> Button.withAriaLabel "Login"
-        |> Button.withText "Login"
-        |> Button.render
+Button.primary
+    |> Button.withIconOnly IconSet.User
+    |> Button.withAriaLabel "Login"
+    |> Button.render
 ```
 """
 
@@ -522,7 +399,7 @@ componentsList =
       )
     , ( "Accessible"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withIconOnly IconSet.User
             |> Button.withAriaLabel "Login"
             |> Button.render
       )
