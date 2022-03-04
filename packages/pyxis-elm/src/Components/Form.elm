@@ -1,7 +1,6 @@
 module Components.Form exposing
     ( Form
     , create
-    , withFieldSet
     , withFieldSets
     , render
     )
@@ -52,18 +51,11 @@ create =
     Form { fieldsets = [] }
 
 
-{-| Adds a FieldSet to the Form.
--}
-withFieldSet : FieldSet msg -> Form msg -> Form msg
-withFieldSet a (Form configuration) =
-    Form { configuration | fieldsets = configuration.fieldsets ++ [ a ] }
-
-
 {-| Adds a FieldSet list to the Form.
 -}
 withFieldSets : List (FieldSet msg) -> Form msg -> Form msg
-withFieldSets a (Form configuration) =
-    Form { configuration | fieldsets = configuration.fieldsets ++ a }
+withFieldSets fieldsets (Form configuration) =
+    Form { configuration | fieldsets = fieldsets }
 
 
 {-| Renders the Form.

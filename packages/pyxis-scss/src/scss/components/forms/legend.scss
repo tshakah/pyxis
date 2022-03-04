@@ -15,8 +15,10 @@
 }
 
 .form-legend--align-left {
-  justify-items: start;
-  text-align: left;
+  @include foundations.mq(xsmall) {
+    justify-items: start;
+    text-align: left;
+  }
 }
 
 .form-legend__addon {

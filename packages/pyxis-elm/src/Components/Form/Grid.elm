@@ -5,7 +5,10 @@ module Components.Form.Grid exposing
     , defaultGap
     , largeGap
     , withGap
+    , ContentType
     , withContent
+    , rows
+    , subgrid
     , render
     )
 
@@ -28,7 +31,10 @@ module Components.Form.Grid exposing
 
 ## Content
 
+@docs ContentType
 @docs withContent
+@docs rows
+@docs subgrid
 
 
 ## Rendering
@@ -37,6 +43,7 @@ module Components.Form.Grid exposing
 
 -}
 
+import Components.Form.Grid.Row as Row exposing (Row)
 import Html exposing (Html)
 import Html.Attributes as Attributes
 
@@ -47,10 +54,25 @@ type Grid msg
     = Grid (Configuration msg)
 
 
+type ContentType msg
+    = Rows (List (Row msg))
+    | SubGrid (Grid msg)
+
+
+rows : List (Row msg) -> ContentType msg
+rows =
+    Rows
+
+
+subgrid : Grid msg -> ContentType msg
+subgrid =
+    SubGrid
+
+
 {-| Internal.
 -}
 type alias Configuration msg =
-    { content : List (Html msg)
+    { content : List (ContentType msg)
     , gap : Gap
     }
 
@@ -67,9 +89,9 @@ create =
 
 {-| Adds a content to the Grid.
 -}
-withContent : List (Html msg) -> Grid msg -> Grid msg
-withContent a (Grid configuration) =
-    Grid { configuration | content = a }
+withContent : List (ContentType msg) -> Grid msg -> Grid msg
+withContent content_ (Grid configuration) =
+    Grid { configuration | content = content_ }
 
 
 {-| Represent a gap for the Grid Row(s).
@@ -107,7 +129,22 @@ render (Grid configuration) =
     Html.div
         [ Attributes.classList
             [ ( "form-grid", True )
-            , ( "form-grid--gap-large", configuration.gap == largeGap )
+            , ( "form-grid--gap-large", configuration.gap == Large )
             ]
         ]
-        configuration.content
+        (configuration.content
+            |> List.map renderContentByType
+            |> List.concat
+        )
+
+
+{-| Internal.
+-}
+renderContentByType : ContentType msg -> List (Html msg)
+renderContentByType type_ =
+    case type_ of
+        Rows rows_ ->
+            List.map Row.render rows_
+
+        SubGrid grid ->
+            [ render grid ]

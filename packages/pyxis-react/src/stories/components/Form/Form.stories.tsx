@@ -64,13 +64,11 @@ export const SubGrid = () => (
   </div>
 );
 const SubGridInner = () => (
-  <div className="form-grid form-grid--gap-large">
-    <div className="form-grid__row" />
-    <div className="form-grid__row">
-      <div className="form-grid">
-        <div className="form-grid__row" />
-        <div className="form-grid__row" />
-      </div>
+  <div className="form-grid">
+    <div className="form-grid__row form-grid__row--spacing-large" />
+    <div className="form-grid">
+      <div className="form-grid__row" />
+      <div className="form-grid__row" />
     </div>
     <div className="form-grid__row" />
   </div>

@@ -1,9 +1,9 @@
 module Components.Form.Grid.Row exposing
     ( Row
-    , create
-    , withColumn
+    , default
+    , large
+    , small
     , withColumns
-    , withSize
     , render
     )
 
@@ -16,15 +16,16 @@ module Components.Form.Grid.Row exposing
 @docs create
 
 
+## Sizes
+
+@docs default
+@docs large
+@docs small
+
+
 ## Columns
 
-@docs withColumn
 @docs withColumns
-
-
-## Generics
-
-@docs withSize
 
 
 ## Rendering
@@ -55,33 +56,40 @@ type alias Configuration msg =
 
 {-| Creates an empty Row.
 -}
-create : Row msg
-create =
+init : Size -> Row msg
+init size =
     Row
-        { size = Size.medium
+        { size = size
         , columns = []
         }
 
 
-{-| Adds a Size to the Row.
+{-| Creates a Row with small size.
 -}
-withSize : Size -> Row msg -> Row msg
-withSize a (Row configuration) =
-    Row { configuration | size = a }
+small : Row msg
+small =
+    init Size.small
 
 
-{-| Adds a Column to the Row.
+{-| Creates a Row with large size.
 -}
-withColumn : Column msg -> Row msg -> Row msg
-withColumn a (Row configuration) =
-    Row { configuration | columns = configuration.columns ++ [ a ] }
+large : Row msg
+large =
+    init Size.large
 
 
-{-| Adds a Column list to the Row.
+{-| Creates a Row with a default size size.
+-}
+default : Row msg
+default =
+    init Size.fullWidth
+
+
+{-| Adds a List of Column inside it.
 -}
 withColumns : List (Column msg) -> Row msg -> Row msg
-withColumns a (Row configuration) =
-    Row { configuration | columns = configuration.columns ++ a }
+withColumns columns (Row configuration) =
+    Row { configuration | columns = columns }
 
 
 {-| Renders the Row.

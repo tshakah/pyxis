@@ -29,7 +29,7 @@ type Data
         , birth : Date.Model Data
         , email : Text.Model Data
         , password : Text.Model Data
-        , gender : RadioGroup.Model Data Gender
+        , gender : RadioGroup.Model Data Gender (Maybe Gender)
         , isFormSubmitted : Bool
         }
 
@@ -44,7 +44,9 @@ initialData =
         , birth = Date.init birthValidation
         , email = Text.init notEmptyStringValidation
         , password = Text.init notEmptyStringValidation
-        , gender = RadioGroup.init Male genderValidation
+        , gender =
+            RadioGroup.init genderValidation
+                |> RadioGroup.setValue Male
         , isFormSubmitted = False
         }
 
@@ -108,10 +110,10 @@ notEmptyStringValidation (Data data) value =
 ageValidation : Data -> Int -> Result String Int
 ageValidation (Data data) value =
     if data.isFormSubmitted && value < 18 then
-        Err "You should be at least 18 yo"
+        Err "You should be at least 18 years old"
 
     else if data.isFormSubmitted && value > 25 then
-        Err "You cannot be older then 50 yo"
+        Err "You cannot be older then 50 years old"
 
     else
         Ok value
@@ -126,6 +128,6 @@ birthValidation (Data data) value =
         Ok value
 
 
-genderValidation : Data -> Gender -> Result String Gender
+genderValidation : Data -> Maybe Gender -> Result String (Maybe Gender)
 genderValidation (Data data) value =
     Ok value

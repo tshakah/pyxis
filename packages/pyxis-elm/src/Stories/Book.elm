@@ -15,6 +15,7 @@ import Stories.Chapters.Fields.RadioGroup as RadioFieldChapter
 import Stories.Chapters.Fields.Select as SelectChapter
 import Stories.Chapters.Fields.Text as TextFieldChapter
 import Stories.Chapters.Fields.Textarea as TextareaChapter
+import Stories.Chapters.FormGrid as FormGrid
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Loader as Loader
@@ -67,6 +68,7 @@ main =
             , IconChapter.docs
             , IconSetChapter.docs
             , Message.docs
+            , FormGrid.docs
             , LabelChapter.docs
             , TextFieldChapter.docs
             , RadioFieldChapter.docs

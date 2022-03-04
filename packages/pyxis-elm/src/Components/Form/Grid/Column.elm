@@ -1,14 +1,10 @@
 module Components.Form.Grid.Column exposing
     ( Column
-    , create
-    , ColumnSpan
-    , oneColumn
-    , twoColumns
-    , threeColumns
-    , fourColumns
-    , fiveColumns
-    , withColumnSpan
-    , withSize
+    , oneSpan
+    , twoSpan
+    , threeSpan
+    , fourSpan
+    , fiveSpan
     , withContent
     , render
     )
@@ -25,17 +21,15 @@ module Components.Form.Grid.Column exposing
 ## Span
 
 @docs ColumnSpan
-@docs oneColumn
-@docs twoColumns
-@docs threeColumns
-@docs fourColumns
-@docs fiveColumns
-@docs withColumnSpan
+@docs oneSpan
+@docs twoSpan
+@docs threeSpan
+@docs fourSpan
+@docs fiveSpan
 
 
 ## Generics
 
-@docs withSize
 @docs withContent
 
 
@@ -45,7 +39,7 @@ module Components.Form.Grid.Column exposing
 
 -}
 
-import Commons.Properties.Size as Size exposing (Size)
+import Commons.Render
 import Html exposing (Html)
 import Html.Attributes as Attributes
 
@@ -59,87 +53,71 @@ type Column msg
 {-| Internal.
 -}
 type alias Configuration msg =
-    { size : Size
-    , span : ColumnSpan
-    , content : List (Html msg)
+    { span : ColumnSpan
+    , content : Html msg
     }
 
 
 {-| Creates an empty Column.
 -}
-create : Column msg
-create =
+init : ColumnSpan -> Column msg
+init span =
     Column
-        { size = Size.medium
-        , span = oneColumn
-        , content = []
+        { span = span
+        , content = Commons.Render.empty
         }
 
 
 {-| Represents the available column span inside a Column.
 -}
 type ColumnSpan
-    = OneColumn
-    | TwoColumns
-    | ThreeColumns
-    | FourColumns
-    | FiveColumns
+    = OneSpan
+    | TwoSpan
+    | ThreeSpan
+    | FourSpan
+    | FiveSpan
 
 
 {-| Creates a Column with no further column span inside it.
 -}
-oneColumn : ColumnSpan
-oneColumn =
-    OneColumn
+oneSpan : Column msg
+oneSpan =
+    init OneSpan
 
 
-{-| Creates a Column with a two-columns column span inside.
+{-| Creates a Column with a two-columns span inside.
 -}
-twoColumns : ColumnSpan
-twoColumns =
-    TwoColumns
+twoSpan : Column msg
+twoSpan =
+    init TwoSpan
 
 
-{-| Creates a Column with a three-columns column span inside it.
+{-| Creates a Column with a three-columns span inside.
 -}
-threeColumns : ColumnSpan
-threeColumns =
-    ThreeColumns
+threeSpan : Column msg
+threeSpan =
+    init ThreeSpan
 
 
-{-| Creates a Column with a four-columns column span inside it.
+{-| Creates a Column with a four-columns span inside.
 -}
-fourColumns : ColumnSpan
-fourColumns =
-    FourColumns
+fourSpan : Column msg
+fourSpan =
+    init FourSpan
 
 
-{-| Creates a Column with a five-columns column span inside it.
+{-| Creates a Column with a five-columns span inside.
 -}
-fiveColumns : ColumnSpan
-fiveColumns =
-    FiveColumns
+fiveSpan : Column msg
+fiveSpan =
+    init FiveSpan
 
 
-{-| Adds a ColumnSpan to the Column.
+{-| Add content to the Column
 -}
-withColumnSpan : ColumnSpan -> Column msg -> Column msg
-withColumnSpan a (Column configuration) =
-    Column { configuration | span = a }
-
-
-{-| Adds a Size to the Column.
--}
-withSize : Size -> Column msg -> Column msg
-withSize a (Column configuration) =
-    Column { configuration | size = a }
-
-
-{-| Adds content to the Column.
--}
-withContent : List (Html msg) -> Column msg -> Column msg
-withContent a (Column configuration) =
-    Column { configuration | content = a }
+withContent : Html msg -> Column msg -> Column msg
+withContent content (Column configuration) =
+    Column { configuration | content = content }
 
 
 {-| Renders the Column.
@@ -149,10 +127,10 @@ render (Column configuration) =
     Html.div
         [ Attributes.classList
             [ ( "form-grid__row__column", True )
-            , ( "form-grid__row__column--span-2", configuration.span == twoColumns )
-            , ( "form-grid__row__column--span-3", configuration.span == threeColumns )
-            , ( "form-grid__row__column--span-4", configuration.span == fourColumns )
-            , ( "form-grid__row__column--span-5", configuration.span == fiveColumns )
+            , ( "form-grid__row__column--span-2", configuration.span == TwoSpan )
+            , ( "form-grid__row__column--span-3", configuration.span == ThreeSpan )
+            , ( "form-grid__row__column--span-4", configuration.span == FourSpan )
+            , ( "form-grid__row__column--span-5", configuration.span == FiveSpan )
             ]
         ]
-        configuration.content
+        [ configuration.content ]

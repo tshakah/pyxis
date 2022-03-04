@@ -1,11 +1,9 @@
 module Components.Form.FieldSet exposing
     ( FieldSet
     , create
-    , withRow
-    , withRows
-    , withTitle
-    , withText
-    , withIcon
+    , withHeader
+    , withContent
+    , withFooter
     , render
     )
 
@@ -18,17 +16,11 @@ module Components.Form.FieldSet exposing
 @docs create
 
 
-## Rows
+## General
 
-@docs withRow
-@docs withRows
-
-
-## Generics
-
-@docs withTitle
-@docs withText
-@docs withIcon
+@docs withHeader
+@docs withContent
+@docs withFooter
 
 
 ## Rendering
@@ -37,12 +29,8 @@ module Components.Form.FieldSet exposing
 
 -}
 
-import Commons.Properties.Size as Size
-import Commons.Render
 import Components.Form.Grid as Grid
-import Components.Form.Grid.Column as Column
-import Components.Form.Grid.Row as Row exposing (Row)
-import Components.Icon as Icon
+import Components.Form.Grid.Row exposing (Row)
 import Html exposing (Html)
 import Html.Attributes as Attributes
 
@@ -56,58 +44,42 @@ type FieldSet msg
 {-| Internal.
 -}
 type alias Configuration msg =
-    { title : String
-    , text : Maybe String
-    , icon : Maybe Icon.Model
-    , rows : List (Row msg)
+    { header : List (Row msg)
+    , content : List (Row msg)
+    , footer : List (Row msg)
     }
 
 
-{-| Creates a FieldSet with an empty legend.
+{-| Creates a FieldSet.
 -}
 create : FieldSet msg
 create =
     FieldSet
-        { title = ""
-        , text = Nothing
-        , icon = Nothing
-        , rows = []
+        { header = []
+        , content = []
+        , footer = []
         }
 
 
-{-| Adds a title to the FieldSet.
+{-| Adds a Header Row to the Fieldset.
 -}
-withTitle : String -> FieldSet msg -> FieldSet msg
-withTitle a (FieldSet configuration) =
-    FieldSet { configuration | title = a }
+withHeader : List (Row msg) -> FieldSet msg -> FieldSet msg
+withHeader headerRows (FieldSet configuration) =
+    FieldSet { configuration | header = headerRows }
 
 
-{-| Adds a text (not a title) to the FieldSet.
+{-| Adds a Content Row to the Fieldset.
 -}
-withText : String -> FieldSet msg -> FieldSet msg
-withText a (FieldSet configuration) =
-    FieldSet { configuration | text = Just a }
+withContent : List (Row msg) -> FieldSet msg -> FieldSet msg
+withContent contentRows (FieldSet configuration) =
+    FieldSet { configuration | content = contentRows }
 
 
-{-| Adds a title to the FieldSet.
+{-| Adds a Footer Row to the Fieldset.
 -}
-withIcon : Icon.Model -> FieldSet msg -> FieldSet msg
-withIcon a (FieldSet configuration) =
-    FieldSet { configuration | icon = Just a }
-
-
-{-| Adds a Row to the FieldSet.
--}
-withRow : Row msg -> FieldSet msg -> FieldSet msg
-withRow a (FieldSet configuration) =
-    FieldSet { configuration | rows = configuration.rows ++ [ a ] }
-
-
-{-| Adds a Row list to the FieldSet.
--}
-withRows : List (Row msg) -> FieldSet msg -> FieldSet msg
-withRows a (FieldSet configuration) =
-    FieldSet { configuration | rows = configuration.rows ++ a }
+withFooter : List (Row msg) -> FieldSet msg -> FieldSet msg
+withFooter footerRows (FieldSet configuration) =
+    FieldSet { configuration | footer = footerRows }
 
 
 {-| Renders the FieldSet.
@@ -115,16 +87,13 @@ withRows a (FieldSet configuration) =
 render : FieldSet msg -> Html msg
 render (FieldSet configuration) =
     Html.fieldset
-        []
+        [ Attributes.class "form-fieldset" ]
         [ Grid.create
             |> Grid.withGap Grid.largeGap
             |> Grid.withContent
-                [ renderRowWithColumn [ renderLegend configuration ]
-                , renderRowWithColumn
-                    [ Grid.create
-                        |> Grid.withContent (List.map Row.render configuration.rows)
-                        |> Grid.render
-                    ]
+                [ Grid.rows configuration.header
+                , renderContent configuration.content
+                , Grid.rows configuration.footer
                 ]
             |> Grid.render
         ]
@@ -132,54 +101,12 @@ render (FieldSet configuration) =
 
 {-| Internal.
 -}
-renderRowWithColumn : List (Html msg) -> Html msg
-renderRowWithColumn content =
-    Row.create
-        |> Row.withColumn (Column.withContent content Column.create)
-        |> Row.render
+renderContent : List (Row msg) -> Grid.ContentType msg
+renderContent content =
+    if List.isEmpty content then
+        Grid.rows []
 
-
-{-| Internal.
--}
-renderLegend : Configuration msg -> Html msg
-renderLegend configuration =
-    Html.legend
-        [ Attributes.class "form-legend" ]
-        [ configuration.icon
-            |> Maybe.map renderIconAddon
-            |> Commons.Render.renderMaybe
-        , renderTitle configuration.title
-        , configuration.text
-            |> Maybe.map renderText
-            |> Commons.Render.renderMaybe
-        ]
-
-
-{-| Internal.
--}
-renderIconAddon : Icon.Model -> Html msg
-renderIconAddon icon =
-    Html.div
-        [ Attributes.class "form-legend__addon" ]
-        [ icon
-            |> Icon.withSize Size.small
-            |> Icon.render
-        ]
-
-
-{-| Internal.
--}
-renderTitle : String -> Html msg
-renderTitle str =
-    Html.span
-        [ Attributes.class "form-legend__title" ]
-        [ Html.text str ]
-
-
-{-| Internal.
--}
-renderText : String -> Html msg
-renderText str =
-    Html.span
-        [ Attributes.class "form-legend__text" ]
-        [ Html.text str ]
+    else
+        Grid.create
+            |> Grid.withContent [ Grid.rows content ]
+            |> Grid.subgrid
