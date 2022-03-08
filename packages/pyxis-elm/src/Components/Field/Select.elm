@@ -85,7 +85,7 @@ import Task exposing (Task)
 type Msg
     = Selected String
     | Blurred String -- The id of the select
-    | ClickedLabel Commons.Events.PointerEvent
+    | ClickedLabel String Commons.Events.PointerEvent
     | ClickedDropdownWrapper
     | HoveredOption String
     | FocusedItem (Result Browser.Dom.Error ())
@@ -97,6 +97,8 @@ type Msg
         , next : ( Int, Option )
         }
         KeyDown.Event
+    | DropdownItemMouseDown
+    | Noop
 
 
 {-| Internal
@@ -161,15 +163,22 @@ focusSelect =
 update : Msg -> Model ctx parsed -> ( Model ctx parsed, Cmd Msg )
 update msg model =
     case msg of
+        Noop ->
+            model
+                |> PrimaUpdate.withoutCmds
+
+        DropdownItemMouseDown ->
+            model
+                |> setIsBlurringInternally True
+                |> PrimaUpdate.withoutCmds
+
         FocusedItem _ ->
             model
                 |> setIsBlurringInternally False
                 |> PrimaUpdate.withoutCmds
 
-        ClickedLabel pointerEvent ->
-            model
-                |> setClickedLabel pointerEvent.pointerType
-                |> PrimaUpdate.withoutCmds
+        ClickedLabel id pointerEvent ->
+            setClickedLabel id pointerEvent model
 
         ClickedDropdownWrapper ->
             model
@@ -179,6 +188,8 @@ update msg model =
         Selected value ->
             model
                 |> setSelectedValue value
+                |> setIsOpen False
+                |> setIsBlurringInternally False
                 |> PrimaUpdate.withoutCmds
 
         Blurred id ->
@@ -199,8 +210,26 @@ update msg model =
             PrimaUpdate.withoutCmds model
 
 
-setClickedLabel : Maybe Commons.Events.PointerType -> Model ctx parsed -> Model ctx parsed
-setClickedLabel pointerType ((Model modelData) as model) =
+{-| Internal.
+-}
+setClickedLabel : String -> Commons.Events.PointerEvent -> Model ctx b -> PrimaUpdate.PrimaUpdate (Model ctx b) Msg
+setClickedLabel id pointerEvent ((Model { dropDownState }) as model) =
+    case dropDownState of
+        Open _ ->
+            model
+                |> setIsOpen False
+                |> PrimaUpdate.withoutCmds
+
+        Closed ->
+            model
+                |> setClickedClosedLabel pointerEvent.pointerType
+                |> PrimaUpdate.withCmds [ focusSelect id ]
+
+
+{-| Internal.
+-}
+setClickedClosedLabel : Maybe Commons.Events.PointerType -> Model ctx parsed -> Model ctx parsed
+setClickedClosedLabel pointerType ((Model modelData) as model) =
     case ( Maybe.withDefault Commons.Events.Mouse pointerType, modelData.dropDownState ) of
         ( Commons.Events.Mouse, Closed ) ->
             model
@@ -210,6 +239,8 @@ setClickedLabel pointerType ((Model modelData) as model) =
             model
 
 
+{-| Internal.
+-}
 setClickedDropdownWrapper : Model ctx parsed -> Model ctx parsed
 setClickedDropdownWrapper ((Model modelData) as model) =
     case modelData.dropDownState of
@@ -221,20 +252,24 @@ setClickedDropdownWrapper ((Model modelData) as model) =
             model
 
 
+{-| Internal.
+-}
 setIsBlurred : String -> Model ctx parsed -> PrimaUpdate.PrimaUpdate (Model ctx parsed) Msg
 setIsBlurred id ((Model modelData) as model) =
     case ( modelData.isBlurringInternally, modelData.dropDownState ) of
         ( False, Open _ ) ->
             model
                 |> setIsOpen False
-                -- |> setBlurredAtLeastOnce
                 |> PrimaUpdate.withCmd (focusSelect id)
 
         _ ->
             model
+                |> setIsBlurringInternally False
                 |> PrimaUpdate.withoutCmds
 
 
+{-| Internal.
+-}
 setDropdownWrapperItemKeydown :
     { id : String
     , previous : ( Int, Option )
@@ -272,6 +307,8 @@ setDropdownWrapperItemKeydown { id, next, previous } keyCode ((Model modelData) 
                 |> PrimaUpdate.withoutCmds
 
 
+{-| Internal.
+-}
 setSelectKeydown : { a | id : String, options : List Option } -> KeyDown.Event -> Model ctx parsed -> PrimaUpdate.PrimaUpdate (Model ctx parsed) Msg
 setSelectKeydown configData keyCode ((Model modelData) as model) =
     case modelData.dropDownState of
@@ -313,6 +350,8 @@ setSelectKeydown configData keyCode ((Model modelData) as model) =
                     |> PrimaUpdate.withoutCmds
 
 
+{-| Internal.
+-}
 getHoveredValueAndIndex : List Option -> String -> Maybe ( Int, String )
 getHoveredValueAndIndex options target =
     options
@@ -321,11 +360,15 @@ getHoveredValueAndIndex options target =
         |> Maybe.map (\( index, Option { value } ) -> ( index, value ))
 
 
+{-| Internal.
+-}
 getSelectedValueAndIndex : List Option -> Maybe String -> Maybe ( Int, String )
 getSelectedValueAndIndex options =
     Maybe.andThen (getHoveredValueAndIndex options)
 
 
+{-| Internal.
+-}
 hoverFirstDropdownItem :
     { options : List Option, id : String, delayed : Bool }
     -> Model ctx value
@@ -552,8 +595,8 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                 ]
                 [ Html.label
                     [ Attributes.class "form-field__wrapper"
-                    , ClickedLabel
-                        |> Commons.Events.onClick
+                    , ClickedLabel configData.id
+                        |> Commons.Events.onClickPreventDefault
                         |> Commons.Attributes.renderIf (not configData.isMobile && not configData.disabled)
                     ]
                     [ Html.select
@@ -581,6 +624,7 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                         , Html.Events.onInput Selected
                         , Html.Events.onBlur (Blurred configData.id)
                         , KeyDown.onKeyDownPreventDefaultOn (handleSelectKeydown configData)
+                        , Commons.Events.alwaysStopPropagationOn "click" Noop
                         ]
                         (Html.option
                             [ Attributes.hidden True
@@ -631,7 +675,6 @@ renderDropdownWrapper (Model model) (Config select) =
                 [ ( "form-field__dropdown-wrapper", True )
                 , ( "form-field__dropdown-wrapper--small", Size.isSmall select.size )
                 ]
-            , Html.Events.onClick ClickedDropdownWrapper
             ]
             [ Html.div [ Attributes.class "form-field__dropdown" ]
                 (select.options
@@ -696,6 +739,7 @@ renderDropdownItem { dropDownState, value } (Config configData) ( previous, ( in
         , Attributes.tabindex -1
         , Attributes.id (getDropDownItemId configData.id index)
         , Html.Events.onClick (Selected option_.value)
+        , Html.Events.onMouseDown DropdownItemMouseDown
         , Html.Events.onMouseOver (HoveredOption option_.value)
         , Commons.Attributes.renderIf isItemSelected (KeyDown.onKeyDownPreventDefaultOn handleKeydown)
         ]
@@ -782,7 +826,12 @@ focusDropDownItem delay value index =
 -}
 setKeyboardHoveredValue : String -> Model ctx parsed -> Model ctx parsed
 setKeyboardHoveredValue value (Model model) =
-    Model { model | dropDownState = Open { hoveredValue = Just value } }
+    case model.dropDownState of
+        Closed ->
+            Model model
+
+        Open _ ->
+            Model { model | dropDownState = Open { hoveredValue = Just value } }
 
 
 {-| Internal
@@ -835,11 +884,3 @@ setSelectedValueWhenJust =
 setSelectedValue : String -> Model ctx parsed -> Model ctx parsed
 setSelectedValue value (Model model) =
     Model { model | value = Just value }
-
-
-
-{-
-   setBlurredAtLeastOnce : Model ctx a -> Model ctx a
-   setBlurredAtLeastOnce (Model model) =
-       Model { model | blurredAtLeastOnce = True }
--}

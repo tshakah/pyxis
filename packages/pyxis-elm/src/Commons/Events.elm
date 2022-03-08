@@ -1,4 +1,17 @@
-module Commons.Events exposing (PointerEvent, PointerType(..), onClick)
+module Commons.Events exposing
+    ( PointerEvent, PointerType(..)
+    , onClickPreventDefault, alwaysStopPropagationOn
+    )
+
+{-|
+
+
+## Events utilities
+
+@docs PointerEvent, PointerType
+@docs onClickPreventDefault, alwaysStopPropagationOn
+
+-}
 
 import Html
 import Html.Events
@@ -14,7 +27,7 @@ type alias PointerEvent =
     }
 
 
-{-| Internal
+{-| The event .pointerType field
 -}
 type PointerType
     = Mouse
@@ -27,38 +40,40 @@ type PointerType
 pointerEventDecoder : Dec.Decoder PointerEvent
 pointerEventDecoder =
     Dec.map PointerEvent
-        (Dec.field "pointerType" pointerTypeFieldDecoder)
+        (Dec.maybe (Dec.field "pointerType" pointerTypeDecoder))
 
 
 {-| Internal
 -}
-pointerTypeFieldDecoder : Dec.Decoder (Maybe PointerType)
-pointerTypeFieldDecoder =
-    Dec.map
-        (Maybe.andThen pointerTypeFromString)
-        (Dec.nullable Dec.string)
+pointerTypeDecoder : Dec.Decoder PointerType
+pointerTypeDecoder =
+    Dec.andThen
+        (\str ->
+            case str of
+                "mouse" ->
+                    Dec.succeed Mouse
+
+                "pen" ->
+                    Dec.succeed Pen
+
+                "touch" ->
+                    Dec.succeed Touch
+
+                _ ->
+                    Dec.fail ""
+        )
+        Dec.string
 
 
-{-| Internal
+{-| A version of onClick that decodes extra data about the PointerEvent.
 -}
-pointerTypeFromString : String -> Maybe PointerType
-pointerTypeFromString str =
-    case str of
-        "mouse" ->
-            Just Mouse
-
-        "pen" ->
-            Just Pen
-
-        "touch" ->
-            Just Touch
-
-        _ ->
-            Nothing
-
-
-{-| A version of onClick that decodes extra data about the PointerEvent
--}
-onClick : (PointerEvent -> value) -> Html.Attribute value
-onClick tagger =
+onClickPreventDefault : (PointerEvent -> value) -> Html.Attribute value
+onClickPreventDefault tagger =
     Html.Events.on "click" (Dec.map tagger pointerEventDecoder)
+
+
+{-| Stops propagation of a provided event.
+-}
+alwaysStopPropagationOn : String -> msg -> Html.Attribute msg
+alwaysStopPropagationOn evt msg =
+    Html.Events.stopPropagationOn evt (Dec.succeed ( msg, True ))
