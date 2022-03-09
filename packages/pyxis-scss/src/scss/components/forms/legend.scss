@@ -6,6 +6,7 @@
   display: grid;
   justify-items: start;
   text-align: left;
+  width: 100%;
 
   @include foundations.mq(xsmall) {
     @include foundations.verticalSpacing(s);
@@ -24,17 +25,31 @@
 .form-legend__addon {
   margin-bottom: foundations.spacing(xs);
 
+  @include lib.onSafari {
+    display: block;
+    width: fit-content;
+  }
+
   @include foundations.mq(xsmall) {
     margin-bottom: foundations.spacing(s);
+
+    @include lib.onSafari {
+      .form-legend:not(.form-legend--align-left) & {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
   }
 }
 
 .form-legend__title {
   @include foundations.title(s, bold);
   color: foundations.color(neutralBase);
+  display: block;
 }
 
 .form-legend__text {
   @include foundations.text(l, book);
   color: foundations.color(neutral25);
+  display: block;
 }

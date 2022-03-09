@@ -1,7 +1,7 @@
 @use "../lib";
 @use "../foundations";
 
-.button-group {
+.button-row {
   align-items: center;
   display: grid;
   gap: foundations.spacing(s);

@@ -4,9 +4,9 @@ module Examples.Form.Model exposing
     , initialModel
     )
 
+import Components.Field.CheckboxGroup as CheckboxGroup
 import Components.Field.Date as Date
-import Components.Field.Number as Number
-import Components.Field.RadioGroup as RadioGroup
+import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.Field.Text as Text
 import Components.Field.Textarea as Textarea
 import Examples.Form.Data as Data exposing (Data(..))
@@ -17,8 +17,10 @@ type Msg
     | TextFieldChanged Data.TextField Text.Msg
     | TextareaFieldChanged Data.TextareaField Textarea.Msg
     | DateFieldChanged Data.DateField Date.Msg
-    | NumberFieldChanged Data.NumberField Number.Msg
-    | GenderFieldChanged (RadioGroup.Msg Data.Gender)
+    | InsuranceTypeChanged (RadioCardGroup.Msg Data.InsuranceType)
+    | PrivacyChanged (CheckboxGroup.Msg ())
+    | ClaimTypeChanged (RadioCardGroup.Msg Data.ClaimType)
+    | PeopleInvolvedChanged (RadioCardGroup.Msg Data.PeopleInvolved)
 
 
 type alias Model =
