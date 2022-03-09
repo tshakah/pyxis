@@ -1,4 +1,4 @@
-module Components.Field.RadioCardGroup exposing
+module Components.Field.CheckboxCardGroup exposing
     ( Model
     , init
     , Config
@@ -14,25 +14,24 @@ module Components.Field.RadioCardGroup exposing
     , vertical
     , withLayout
     , withClassList
-    , withDisabled
     , withHint
     , withLabel
     , withName
     , withOptions
     , withSize
-    , setValue
     , Msg
     , isOnCheck
     , update
     , validate
     , getValue
     , render
+    , withDisabledOption
     )
 
 {-|
 
 
-# Input RadioCardGroup component
+# Input CheckboxCardGroup component
 
 
 ## Model
@@ -74,7 +73,6 @@ module Components.Field.RadioCardGroup exposing
 @docs withName
 @docs withOptions
 @docs withSize
-@docs setValue
 
 
 ## Update
@@ -102,23 +100,27 @@ import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.IconSet as IconSet
 import Html exposing (Html)
+import PrimaFunction
 
 
-{-| The RadioCardGroup model.
+type alias ModelData ctx value parsed =
+    { checkedValues : List value
+    , validation : ctx -> List value -> Result String parsed
+    }
+
+
+{-| The CheckboxCardGroup model.
 -}
 type Model ctx value parsed
-    = Model
-        { selectedValue : Maybe value
-        , validation : ctx -> Maybe value -> Result String parsed
-        }
+    = Model (ModelData ctx value parsed)
 
 
-{-| Initialize the RadioCardGroup Model.
+{-| Initialize the CheckboxCardGroup Model.
 -}
-init : (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
+init : (ctx -> List value -> Result String parsed) -> Model ctx value parsed
 init validation =
     Model
-        { selectedValue = Nothing
+        { checkedValues = []
         , validation = validation
         }
 
@@ -136,13 +138,13 @@ type alias ConfigData value =
     }
 
 
-{-| The RadioCardGroup configuration.
+{-| The CheckboxCardGroup configuration.
 -}
 type Config value
     = Config (ConfigData value)
 
 
-{-| Initialize the RadioCardGroup Config.
+{-| Initialize the CheckboxCardGroup Config.
 -}
 config : String -> Config value
 config id =
@@ -159,10 +161,50 @@ config id =
         }
 
 
-{-| Represent the messages which the RadioCardGroup can handle.
+{-| Represent the messages which the CheckboxCardGroup can handle.
 -}
 type Msg value
-    = OnCheck value
+    = Checked value Bool
+
+
+{-| Update the CheckboxGroup Model.
+-}
+update : Msg value -> Model ctx value parsed -> Model ctx value parsed
+update msg model =
+    case msg of
+        Checked value check ->
+            PrimaFunction.ifThenElseMap (always check)
+                (checkValue value)
+                (uncheckValue value)
+                model
+
+
+{-| Internal
+-}
+checkValue : value -> Model ctx value parsed -> Model ctx value parsed
+checkValue value =
+    mapCheckedValues ((::) value)
+
+
+{-| Internal
+-}
+uncheckValue : value -> Model ctx value parsed -> Model ctx value parsed
+uncheckValue value =
+    mapCheckedValues (List.filter ((/=) value))
+
+
+{-| Return the selected value.
+-}
+getValue : Model ctx value parsed -> List value
+getValue (Model { checkedValues }) =
+    checkedValues
+
+
+{-| Get the (parsed) value
+-}
+validate : ctx -> Model ctx value parsed -> Result String parsed
+validate ctx (Model { checkedValues, validation }) =
+    validation ctx checkedValues
 
 
 {-| Returns True if the message is triggered by `Html.Events.onCheck`
@@ -170,11 +212,11 @@ type Msg value
 isOnCheck : Msg value -> Bool
 isOnCheck msg =
     case msg of
-        OnCheck _ ->
+        Checked _ _ ->
             True
 
 
-{-| Represent the single Radio option.
+{-| Represent the single Checkbox option.
 -}
 type Option value
     = Option (OptionConfig value)
@@ -187,14 +229,32 @@ type alias OptionConfig value =
     , text : Maybe String
     , title : Maybe String
     , addon : Maybe Addon
+    , disabled : Bool
     }
 
 
-{-| Generate a RadioCard Option
+{-| Generate a CheckboxCard Option
 -}
-option : OptionConfig value -> Option value
-option =
+option :
+    { value : value
+    , text : Maybe String
+    , title : Maybe String
+    , addon : Maybe Addon
+    }
+    -> Option value
+option args =
     Option
+        { value = args.value
+        , text = args.text
+        , title = args.title
+        , addon = args.addon
+        , disabled = False
+        }
+
+
+withDisabledOption : Bool -> Option value -> Option value
+withDisabledOption disabled (Option option_) =
+    Option { option_ | disabled = disabled }
 
 
 {-| Represent the different types of addon
@@ -258,14 +318,7 @@ withClassList classList (Config configuration) =
     Config { configuration | classList = classList }
 
 
-{-| Define if the group is disabled or not.
--}
-withDisabled : Bool -> Config value -> Config value
-withDisabled isDisabled (Config configuration) =
-    Config { configuration | isDisabled = isDisabled }
-
-
-{-| Adds the hint to the RadioCardGroup.
+{-| Adds the hint to the CheckboxCardGroup.
 -}
 withHint : String -> Config value -> Config value
 withHint hintMessage (Config configuration) =
@@ -292,7 +345,7 @@ withLabel label (Config configuration) =
     Config { configuration | label = Just label }
 
 
-{-| Define the visible options in the radio group.
+{-| Define the visible options in the checkbox group.
 -}
 withOptions : List (Option value) -> Config value -> Config value
 withOptions options (Config configuration) =
@@ -306,50 +359,36 @@ withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
+{-| Render the checkboxCardGroup
+-}
 render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
 render tagger ctx ((Model modelData) as model) (Config configData) =
-    CardGroup.renderCheckbox (validate ctx model)
+    CardGroup.renderCheckbox
+        (validate ctx model)
         configData
-        (List.map (mapOption configData modelData.selectedValue) configData.options)
+        (List.map (mapOption modelData.checkedValues) configData.options)
         |> Html.map tagger
 
 
-mapOption : { config | isDisabled : Bool } -> Maybe value -> Option value -> CardGroup.Option (Msg value)
-mapOption { isDisabled } checkedValue (Option { value, text, title, addon }) =
-    { onCheck = always (OnCheck value)
+{-| Internal
+-}
+mapOption : List value -> Option value -> CardGroup.Option (Msg value)
+mapOption checkedValues (Option { value, text, title, addon, disabled }) =
+    { onCheck = Checked value
     , addon = Maybe.map (\(Addon a) -> a) addon
     , text = text
     , title = title
-    , isChecked = checkedValue == Just value
-    , isDisabled = isDisabled
+    , isChecked = List.member value checkedValues
+    , isDisabled = disabled
     }
 
 
-{-| Update the RadioGroup Model.
+
+-- Getters/Setters boilerplate
+
+
+{-| Internal
 -}
-update : Msg value -> Model ctx value parsed -> Model ctx value parsed
-update msg =
-    case msg of
-        OnCheck value ->
-            setValue value
-
-
-{-| Internal.
--}
-setValue : value -> Model ctx value parsed -> Model ctx value parsed
-setValue value (Model model) =
-    Model { model | selectedValue = Just value }
-
-
-{-| Return the selected value.
--}
-getValue : Model ctx value parsed -> Maybe value
-getValue (Model { selectedValue }) =
-    selectedValue
-
-
-{-| Get the (parsed) value
--}
-validate : ctx -> Model ctx value parsed -> Result String parsed
-validate ctx (Model { selectedValue, validation }) =
-    validation ctx selectedValue
+mapCheckedValues : (List value -> List value) -> Model ctx value parsed -> Model ctx value parsed
+mapCheckedValues f (Model r) =
+    Model { r | checkedValues = f r.checkedValues }

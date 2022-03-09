@@ -6,6 +6,7 @@ import ElmBook.ThemeOptions
 import Html
 import Html.Attributes
 import Stories.Chapters.Buttons as ButtonChapter
+import Stories.Chapters.Fields.CheckboxCardGroup as CheckboxCardGroupChapter
 import Stories.Chapters.Fields.CheckboxGroup as CheckboxChapter
 import Stories.Chapters.Fields.Date as DateFieldChapter
 import Stories.Chapters.Fields.Label as LabelChapter
@@ -31,6 +32,7 @@ type alias SharedState =
     , radio : RadioFieldChapter.Model
     , checkbox : CheckboxChapter.Model
     , radioCard : RadioCardFieldChapter.Model
+    , checkboxCard : CheckboxCardGroupChapter.Model
     }
 
 
@@ -44,6 +46,7 @@ initialState =
     , radio = RadioFieldChapter.init
     , checkbox = CheckboxChapter.init
     , radioCard = RadioCardFieldChapter.init
+    , checkboxCard = CheckboxCardGroupChapter.init
     }
 
 
@@ -79,4 +82,5 @@ main =
             , SelectChapter.docs
             , CheckboxChapter.docs
             , Loader.docs
+            , CheckboxCardGroupChapter.docs
             ]

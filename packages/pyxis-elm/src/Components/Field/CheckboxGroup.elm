@@ -13,7 +13,7 @@ module Components.Field.CheckboxGroup exposing
     , Option, option
     , withOptions
     , render
-    , withDisabledOption
+    , isOnCheck, withDisabledOption
     )
 
 {-|
@@ -71,8 +71,6 @@ import PrimaFunction
 import Result.Extra
 
 
-{-| Internal
--}
 type alias ModelData ctx value parsed =
     { checkedValues : List value
     , validation : ctx -> List value -> Result String parsed
@@ -100,6 +98,13 @@ init validation =
 -}
 type Msg value
     = Checked value Bool
+
+
+isOnCheck : Msg value -> Bool
+isOnCheck msg =
+    case msg of
+        Checked _ _ ->
+            True
 
 
 {-| Update the internal state of the CheckboxGroup component
