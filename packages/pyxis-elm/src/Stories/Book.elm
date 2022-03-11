@@ -19,6 +19,7 @@ import Stories.Chapters.Fields.Textarea as TextareaChapter
 import Stories.Chapters.Form as Form
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
+import Stories.Chapters.Introduction as Introduction
 import Stories.Chapters.Loader as Loader
 import Stories.Chapters.Message as Message
 
@@ -67,7 +68,11 @@ main =
             , ElmBook.ThemeOptions.header (Html.h1 [] [ Html.text "Pyxis" ])
             ]
         |> ElmBook.withChapterGroups
-            [ ( "Generic components"
+            [ ( "Pyxis Design System"
+              , [ Introduction.docs
+                ]
+              )
+            , ( "Generic components"
               , [ ButtonChapter.docs
                 , Loader.docs
                 , Message.docs
