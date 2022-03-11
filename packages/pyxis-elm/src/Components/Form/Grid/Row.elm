@@ -1,106 +1,70 @@
 module Components.Form.Grid.Row exposing
-    ( Row
-    , default
-    , large
-    , small
-    , withColumns
-    , render
+    ( Option
+    , largeSize
+    , mediumSize
+    , smallSize
+    , buildConfiguration
     )
 
 {-|
 
 
-# Row
+## Options
 
-@docs Row
-@docs create
-
-
-## Sizes
-
-@docs default
-@docs large
-@docs small
+@docs Option
 
 
-## Columns
+## Size options
 
-@docs withColumns
+@docs largeSize
+@docs mediumSize
+@docs smallSize
 
 
-## Rendering
+## Methods
 
-@docs render
+@docs buildConfiguration
 
 -}
 
 import Commons.Properties.Size as Size exposing (Size)
-import Components.Form.Grid.Column as Column exposing (Column)
-import Html exposing (Html)
-import Html.Attributes as Attributes
 
 
-{-| Represents a Row and its contents.
+{-| Internal. Convenient type to work with a partial Grid.Row configuration.
 -}
-type Row msg
-    = Row (Configuration msg)
+type alias ConfigData a =
+    { a | size : Size }
 
 
-{-| Internal.
+{-| Represent the available Row options.
 -}
-type alias Configuration msg =
-    { size : Size
-    , columns : List (Column msg)
-    }
+type Option config
+    = Option (ConfigData config -> ConfigData config)
 
 
-{-| Creates an empty Row.
+{-| A utility to obtain a Configuration from a list of Option(s).
 -}
-init : Size -> Row msg
-init size =
-    Row
-        { size = size
-        , columns = []
-        }
+buildConfiguration : List (Option config) -> ConfigData config -> ConfigData config
+buildConfiguration options config =
+    List.foldl (\(Option mapper) c -> mapper c) config options
 
 
-{-| Creates a Row with small size.
+{-| Creates a small size Row option.
 -}
-small : Row msg
-small =
-    init Size.small
+smallSize : Option config
+smallSize =
+    Option (\config -> { config | size = Size.small })
 
 
-{-| Creates a Row with large size.
+{-| Creates a medium size Row option.
 -}
-large : Row msg
-large =
-    init Size.large
+mediumSize : Option config
+mediumSize =
+    Option (\config -> { config | size = Size.medium })
 
 
-{-| Creates a Row with a default size size.
+{-| Creates a large size Row option.
 -}
-default : Row msg
-default =
-    init Size.fullWidth
-
-
-{-| Adds a List of Column inside it.
--}
-withColumns : List (Column msg) -> Row msg -> Row msg
-withColumns columns (Row configuration) =
-    Row { configuration | columns = columns }
-
-
-{-| Renders the Row.
--}
-render : Row msg -> Html msg
-render (Row configuration) =
-    Html.div
-        [ Attributes.classList
-            [ ( "form-grid__row", True )
-            , ( "form-grid__row--large", configuration.size == Size.large )
-            , ( "form-grid__row--small", configuration.size == Size.small )
-            ]
-        ]
-        (List.map Column.render configuration.columns)
+largeSize : Option config
+largeSize =
+    Option (\config -> { config | size = Size.large })

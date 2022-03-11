@@ -11,7 +11,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Fields/Date"
+    "Date"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """

@@ -10,7 +10,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Field/RadioGroup"
+    "RadioGroup"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """

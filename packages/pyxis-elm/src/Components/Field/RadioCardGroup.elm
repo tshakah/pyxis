@@ -308,7 +308,7 @@ withSize size (Config configuration) =
 
 render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
 render tagger ctx ((Model modelData) as model) (Config configData) =
-    CardGroup.renderCheckbox (validate ctx model)
+    CardGroup.renderRadio (validate ctx model)
         configData
         (List.map (mapOption configData modelData.selectedValue) configData.options)
         |> Html.map tagger

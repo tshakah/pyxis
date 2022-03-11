@@ -1,6 +1,6 @@
 module Components.Form.FieldSet exposing
-    ( FieldSet
-    , create
+    ( Config
+    , config
     , withHeader
     , withContent
     , withFooter
@@ -12,8 +12,8 @@ module Components.Form.FieldSet exposing
 
 # FieldSet
 
-@docs FieldSet
-@docs create
+@docs Config
+@docs config
 
 
 ## General
@@ -30,83 +30,76 @@ module Components.Form.FieldSet exposing
 -}
 
 import Components.Form.Grid as Grid
-import Components.Form.Grid.Row exposing (Row)
 import Html exposing (Html)
 import Html.Attributes as Attributes
 
 
 {-| Represents a FieldSet and its contents.
 -}
-type FieldSet msg
-    = FieldSet (Configuration msg)
+type Config msg
+    = Config (ConfigData msg)
 
 
 {-| Internal.
 -}
-type alias Configuration msg =
-    { header : List (Row msg)
-    , content : List (Row msg)
-    , footer : List (Row msg)
+type alias ConfigData msg =
+    { header : List (Grid.Row msg)
+    , content : List (Grid.Row msg)
+    , footer : List (Grid.Row msg)
     }
 
 
 {-| Creates a FieldSet.
 -}
-create : FieldSet msg
-create =
-    FieldSet
+config : Config msg
+config =
+    Config
         { header = []
         , content = []
         , footer = []
         }
 
 
-{-| Adds a Header Row to the Fieldset.
+{-| Adds a Grid to the FieldSet's header.
 -}
-withHeader : List (Row msg) -> FieldSet msg -> FieldSet msg
-withHeader headerRows (FieldSet configuration) =
-    FieldSet { configuration | header = headerRows }
+withHeader : List (Grid.Row msg) -> Config msg -> Config msg
+withHeader rows (Config configuration) =
+    Config { configuration | header = rows }
 
 
-{-| Adds a Content Row to the Fieldset.
+{-| Adds a Grid to the FieldSet's content.
 -}
-withContent : List (Row msg) -> FieldSet msg -> FieldSet msg
-withContent contentRows (FieldSet configuration) =
-    FieldSet { configuration | content = contentRows }
+withContent : List (Grid.Row msg) -> Config msg -> Config msg
+withContent grid (Config configuration) =
+    Config { configuration | content = grid }
 
 
-{-| Adds a Footer Row to the Fieldset.
+{-| Adds a Grid to the FieldSet's footer.
 -}
-withFooter : List (Row msg) -> FieldSet msg -> FieldSet msg
-withFooter footerRows (FieldSet configuration) =
-    FieldSet { configuration | footer = footerRows }
+withFooter : List (Grid.Row msg) -> Config msg -> Config msg
+withFooter rows (Config configuration) =
+    Config { configuration | footer = rows }
 
 
 {-| Renders the FieldSet.
 -}
-render : FieldSet msg -> Html msg
-render (FieldSet configuration) =
+render : Config msg -> Html msg
+render (Config configuration) =
     Html.fieldset
         [ Attributes.class "form-fieldset" ]
-        [ Grid.create
-            |> Grid.withGap Grid.largeGap
-            |> Grid.withContent
-                [ Grid.rows configuration.header
-                , renderContent configuration.content
-                , Grid.rows configuration.footer
-                ]
-            |> Grid.render
+        [ Grid.render
+            [ Grid.largeGap ]
+            (configuration.header ++ renderContent configuration ++ configuration.footer)
         ]
 
 
 {-| Internal.
 -}
-renderContent : List (Row msg) -> Grid.ContentType msg
-renderContent content =
-    if List.isEmpty content then
-        Grid.rows []
-
-    else
-        Grid.create
-            |> Grid.withContent [ Grid.rows content ]
-            |> Grid.subgrid
+renderContent : ConfigData msg -> List (Grid.Row msg)
+renderContent configuration =
+    [ Grid.simpleOneColRow
+        [ Grid.render
+            [ Grid.smallGap ]
+            configuration.content
+        ]
+    ]

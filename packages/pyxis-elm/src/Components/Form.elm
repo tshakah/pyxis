@@ -1,8 +1,8 @@
 module Components.Form exposing
-    ( Form
-    , create
+    ( config
     , withFieldSets
     , render
+    , Config
     )
 
 {-|
@@ -11,7 +11,7 @@ module Components.Form exposing
 # Form
 
 @docs Form
-@docs create
+@docs config
 
 
 ## FieldSets
@@ -26,42 +26,42 @@ module Components.Form exposing
 
 -}
 
-import Components.Form.FieldSet as FieldSet exposing (FieldSet)
+import Components.Form.FieldSet as FieldSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
 
 
 {-| Represents a Form and its contents.
 -}
-type Form msg
-    = Form (Configuration msg)
+type Config msg
+    = Config (ConfigData msg)
 
 
 {-| Internal.
 -}
-type alias Configuration msg =
-    { fieldsets : List (FieldSet msg)
+type alias ConfigData msg =
+    { fieldSets : List (FieldSet.Config msg)
     }
 
 
 {-| Creates a Form without contents.
 -}
-create : Form msg
-create =
-    Form { fieldsets = [] }
+config : Config msg
+config =
+    Config { fieldSets = [] }
 
 
 {-| Adds a FieldSet list to the Form.
 -}
-withFieldSets : List (FieldSet msg) -> Form msg -> Form msg
-withFieldSets fieldsets (Form configuration) =
-    Form { configuration | fieldsets = fieldsets }
+withFieldSets : List (FieldSet.Config msg) -> Config msg -> Config msg
+withFieldSets fieldSets (Config configuration) =
+    Config { configuration | fieldSets = fieldSets }
 
 
 {-| Renders the Form.
 -}
-render : Form msg -> Html msg
-render (Form configuration) =
+render : Config msg -> Html msg
+render (Config configuration) =
     Html.form
         [ Attributes.class "form" ]
-        (List.map FieldSet.render configuration.fieldsets)
+        (List.map FieldSet.render configuration.fieldSets)

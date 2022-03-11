@@ -16,7 +16,7 @@ import Stories.Chapters.Fields.RadioGroup as RadioFieldChapter
 import Stories.Chapters.Fields.Select as SelectChapter
 import Stories.Chapters.Fields.Text as TextFieldChapter
 import Stories.Chapters.Fields.Textarea as TextareaChapter
-import Stories.Chapters.FormGrid as FormGrid
+import Stories.Chapters.Form as Form
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Loader as Loader
@@ -58,29 +58,38 @@ main =
             ]
         |> ElmBook.withThemeOptions
             [ ElmBook.ThemeOptions.globals
-                [ Html.node "link" [ Html.Attributes.href "pyxis.css", Html.Attributes.rel "stylesheet" ] []
+                [ Html.node "link" [ Html.Attributes.href "/pyxis.css", Html.Attributes.rel "stylesheet" ] []
                 ]
-            , ElmBook.ThemeOptions.backgroundGradient "#8334c2" "#f2eaf8"
-            , ElmBook.ThemeOptions.navBackground "#5b2488"
-            , ElmBook.ThemeOptions.navAccent "#ffffff"
-            , ElmBook.ThemeOptions.navAccentHighlight "#ffffff"
+            , ElmBook.ThemeOptions.backgroundGradient "#21283b" "#595d6a"
+            , ElmBook.ThemeOptions.accent "#f2eaf8"
+            , ElmBook.ThemeOptions.navAccent "#dddee1"
+            , ElmBook.ThemeOptions.navAccentHighlight "#f3f4f4"
             , ElmBook.ThemeOptions.header (Html.h1 [] [ Html.text "Pyxis" ])
             ]
-        |> ElmBook.withChapters
-            [ ButtonChapter.docs
-            , IconChapter.docs
-            , IconSetChapter.docs
-            , Message.docs
-            , FormGrid.docs
-            , LabelChapter.docs
-            , TextFieldChapter.docs
-            , RadioFieldChapter.docs
-            , RadioCardFieldChapter.docs
-            , TextareaChapter.docs
-            , NumberFieldChapter.docs
-            , DateFieldChapter.docs
-            , SelectChapter.docs
-            , CheckboxChapter.docs
-            , Loader.docs
-            , CheckboxCardGroupChapter.docs
+        |> ElmBook.withChapterGroups
+            [ ( "Generic components"
+              , [ ButtonChapter.docs
+                , Loader.docs
+                , Message.docs
+                ]
+              )
+            , ( "Form"
+              , [ Form.docs
+                , DateFieldChapter.docs
+                , LabelChapter.docs
+                , NumberFieldChapter.docs
+                , CheckboxChapter.docs
+                , CheckboxCardGroupChapter.docs
+                , RadioFieldChapter.docs
+                , RadioCardFieldChapter.docs
+                , SelectChapter.docs
+                , TextareaChapter.docs
+                , TextFieldChapter.docs
+                ]
+              )
+            , ( "Icons"
+              , [ IconChapter.docs
+                , IconSetChapter.docs
+                ]
+              )
             ]

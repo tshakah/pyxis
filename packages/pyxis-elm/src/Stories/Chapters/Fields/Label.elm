@@ -9,7 +9,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter sharedState
 docs =
-    "Fields/Label"
+    "Label"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withComponentList componentsList
         |> ElmBook.Chapter.render """

@@ -12,7 +12,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Field/CheckboxCardGroup"
+    "CheckboxCardGroup"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """

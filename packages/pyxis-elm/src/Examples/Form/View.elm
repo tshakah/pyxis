@@ -38,7 +38,7 @@ view model =
 
 viewForm : Data -> Html Model.Msg
 viewForm data =
-    Form.create
+    Form.config
         |> Form.withFieldSets
             [ InsuranceType.view data
             , BaseInformation.view data

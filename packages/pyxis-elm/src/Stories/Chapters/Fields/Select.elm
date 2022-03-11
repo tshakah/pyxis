@@ -11,7 +11,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Fields/Select"
+    "Select"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
@@ -31,7 +31,7 @@ type Job
 
 type Msg
     = OnSelectMsg (Select.Msg)
-    
+
 
 validation : formData -> Maybe String -> Result String Job
 validation _ maybeValue =
@@ -62,8 +62,8 @@ options =
     , Select.option { value = "PRODUCT_MANAGER", label = "Product Manager" }
     , Select.option { value = "CEO", label = "Chief executive officer" }
     ]
-    
-    
+
+
 isMobile : Bool
 isMobile = False
 

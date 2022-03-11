@@ -1,14 +1,14 @@
 module Commons.Properties.Size exposing
     ( Size
-    , fullWidth, huge, large, medium, small
-    , isFullWidth, isHuge, isLarge, isMedium, isSmall
+    , huge, large, medium, small
+    , isHuge, isLarge, isMedium, isSmall
     )
 
 {-|
 
 @docs Size
-@docs fullWidth, huge, large, medium, small
-@docs isFullWidth, isHuge, isLarge, isMedium, isSmall
+@docs huge, large, medium, small
+@docs isHuge, isLarge, isMedium, isSmall
 
 -}
 
@@ -16,18 +16,10 @@ module Commons.Properties.Size exposing
 {-| A type representing a component size
 -}
 type Size
-    = FullWidth
-    | Huge
+    = Huge
     | Large
     | Medium
     | Small
-
-
-{-| A fullWidth size
--}
-fullWidth : Size
-fullWidth =
-    FullWidth
 
 
 {-| A huge size
@@ -56,13 +48,6 @@ medium =
 small : Size
 small =
     Small
-
-
-{-| Returns True whether the size is fullWidth
--}
-isFullWidth : Size -> Bool
-isFullWidth =
-    (==) FullWidth
 
 
 {-| Returns True whether the size is huge

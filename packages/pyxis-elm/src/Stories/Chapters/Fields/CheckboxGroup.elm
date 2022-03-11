@@ -10,7 +10,7 @@ import Html exposing (Html)
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
 docs =
-    "Fields/CheckboxGroup"
+    "CheckboxGroup"
         |> ElmBook.Chapter.chapter
         |> ElmBook.Chapter.withStatefulComponentList componentsList
         |> ElmBook.Chapter.render """
@@ -27,8 +27,8 @@ type Option
 
 type Msg
     = OnCheckboxGroupMsg (CheckboxGroup.Msg Option)
-   
-    
+
+
 validation : formData -> List Option -> Result String (List Option)
 validation _ selected =
     case selected of
@@ -37,8 +37,8 @@ validation _ selected =
 
         _ ->
             Ok selected
-            
-            
+
+
 checkboxGroupModel : CheckboxGroup.Model formData
 checkboxGroupModel =
     CheckboxGroup.init validation

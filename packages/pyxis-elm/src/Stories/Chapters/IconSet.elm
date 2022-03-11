@@ -1,30 +1,63 @@
 module Stories.Chapters.IconSet exposing (docs)
 
 import Commons.Properties.Size as Size
+import Components.Form.Grid as Grid
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Chapter
-import Html exposing (Html)
+import Html
+import Html.Attributes
 
 
 docs : ElmBook.Chapter.Chapter sharedState
 docs =
     "IconSet"
         |> ElmBook.Chapter.chapter
-        |> ElmBook.Chapter.renderComponentList componentsList
+        |> ElmBook.Chapter.renderComponent
+            (IconSet.allIcons
+                |> group 3
+                |> List.map toComponent
+                |> Grid.render []
+            )
 
 
-componentsList : List ( String, Html (ElmBook.Msg state) )
-componentsList =
-    List.map toComponent IconSet.allIcons
+toComponent : List IconSet.Icon -> Grid.Row (ElmBook.Msg state)
+toComponent icons =
+    icons
+        |> List.map
+            (\icon ->
+                Grid.col
+                    []
+                    [ Html.div
+                        [ Html.Attributes.style "align-items" "center"
+                        , Html.Attributes.style "display" "flex"
+                        , Html.Attributes.style "flex-direction" "column"
+                        , Html.Attributes.classList
+                            [ ( "bg-neutral-95", True )
+                            , ( "padding-s", True )
+                            , ( "radius-s", True )
+                            , ( "text-s-book", True )
+                            ]
+                        ]
+                        [ Html.text (IconSet.toLabel icon)
+                        , Html.br [] []
+                        , Html.br [] []
+                        , icon
+                            |> Icon.create
+                            |> Icon.withSize Size.large
+                            |> Icon.render
+                        ]
+                    ]
+            )
+        |> Grid.row []
 
 
-toComponent : IconSet.Icon -> ( String, Html (ElmBook.Msg state) )
-toComponent icon =
-    ( IconSet.toLabel icon
-    , icon
-        |> Icon.create
-        |> Icon.withSize Size.large
-        |> Icon.render
-    )
+group : Int -> List IconSet.Icon -> List (List IconSet.Icon)
+group i icons =
+    case List.take i icons of
+        [] ->
+            []
+
+        head ->
+            head :: group i (List.drop i icons)

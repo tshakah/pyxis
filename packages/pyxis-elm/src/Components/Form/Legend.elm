@@ -1,9 +1,9 @@
 module Components.Form.Legend exposing
-    ( Legend
-    , create
-    , withAddon
+    ( Config
+    , config
     , iconAddon
     , imageAddon
+    , withAddon
     , withTitle
     , withDescription
     , withAlignmentLeft
@@ -15,15 +15,15 @@ module Components.Form.Legend exposing
 
 # Legend
 
-@docs Legend
-@docs create
+@docs Config
+@docs config
 
 
 ## Addons
 
-@docs withAddon
 @docs iconAddon
 @docs imageAddon
+@docs withAddon
 
 
 ## Generics
@@ -48,8 +48,8 @@ import Html.Attributes as Attributes
 
 {-| Represents a Legend and its contents.
 -}
-type Legend msg
-    = Legend Configuration
+type Config msg
+    = Config ConfigData
 
 
 {-| Represents the Addon type
@@ -95,7 +95,7 @@ imageAddon =
 
 {-| Internal.
 -}
-type alias Configuration =
+type alias ConfigData =
     { addon : Maybe AddonType
     , title : String
     , alignment : Alignment
@@ -107,9 +107,9 @@ type alias Configuration =
 
 {-| Creates a FieldSet with an empty legend.
 -}
-create : Legend msg
-create =
-    Legend
+config : Config msg
+config =
+    Config
         { addon = Nothing
         , title = ""
         , alignment = Center
@@ -121,36 +121,36 @@ create =
 
 {-| Adds a title to the Legend.
 -}
-withTitle : String -> Legend msg -> Legend msg
-withTitle a (Legend configuration) =
-    Legend { configuration | title = a }
+withTitle : String -> Config msg -> Config msg
+withTitle a (Config configuration) =
+    Config { configuration | title = a }
 
 
 {-| Adds a description to the Legend.
 -}
-withDescription : String -> Legend msg -> Legend msg
-withDescription a (Legend configuration) =
-    Legend { configuration | description = Just a }
+withDescription : String -> Config msg -> Config msg
+withDescription a (Config configuration) =
+    Config { configuration | description = Just a }
 
 
 {-| Adds a left alignment to the Legend.
 -}
-withAlignmentLeft : Legend msg -> Legend msg
-withAlignmentLeft (Legend configuration) =
-    Legend { configuration | alignment = Left }
+withAlignmentLeft : Config msg -> Config msg
+withAlignmentLeft (Config configuration) =
+    Config { configuration | alignment = Left }
 
 
 {-| Sets an Addon by type to the Legend.
 -}
-withAddon : AddonType -> Legend msg -> Legend msg
-withAddon type_ (Legend configuration) =
-    Legend { configuration | addon = Just type_ }
+withAddon : AddonType -> Config msg -> Config msg
+withAddon type_ (Config configuration) =
+    Config { configuration | addon = Just type_ }
 
 
 {-| Internal.
 -}
-render : Legend msg -> Html msg
-render (Legend configuration) =
+render : Config msg -> Html msg
+render (Config configuration) =
     Html.legend
         [ Attributes.classList
             [ ( "form-legend", True )

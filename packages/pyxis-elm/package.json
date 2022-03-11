@@ -10,7 +10,7 @@
   "scripts": {
     "build" : "yarn example:build",
     "example:build" : "./node_modules/.bin/elm make src/Examples/Form/Main.elm",
-    "example:serve" : "./node_modules/.bin/elm reactor src/Examples/Form/Main.elm",
+    "example:serve" : "./node_modules/.bin/elm reactor",
     "preexample:serve" : "yarn reset-dist",
     "elmbook:build": "elm make src/Stories/Book.elm --output=dist/index.html",
     "elmbook:serve": "elm-book src/Stories/Book.elm --dir=./dist -- --output=dist/index.html --debug",
