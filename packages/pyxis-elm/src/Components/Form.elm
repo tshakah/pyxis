@@ -1,8 +1,8 @@
 module Components.Form exposing
-    ( config
+    ( Config
+    , config
     , withFieldSets
     , render
-    , Config
     )
 
 {-|
@@ -10,13 +10,13 @@ module Components.Form exposing
 
 # Form
 
-@docs Form
+@docs Config
+
 @docs config
 
 
 ## FieldSets
 
-@docs withFieldSet
 @docs withFieldSets
 
 

@@ -13,6 +13,8 @@ module Components.Field.Number exposing
     , withHint
     , withName
     , withPlaceholder
+    , withStrategy
+    , withIsSubmitted
     , Msg
     , isOnBlur
     , isOnFocus
@@ -58,6 +60,8 @@ module Components.Field.Number exposing
 @docs withHint
 @docs withName
 @docs withPlaceholder
+@docs withStrategy
+@docs withIsSubmitted
 
 
 ## Update
@@ -83,6 +87,7 @@ module Components.Field.Number exposing
 
 import Commons.Properties.Placement exposing (Placement)
 import Commons.Properties.Size exposing (Size)
+import Components.Field.Error.Strategy exposing (Strategy)
 import Components.Field.Input as Input
 import Components.Field.Label as Label
 import Components.IconSet as IconSet
@@ -210,6 +215,20 @@ withPlaceholder placeholder =
 withSize : Size -> Config -> Config
 withSize =
     Input.withSize >> mapInputConfig
+
+
+{-| Sets the validation strategy (when to show the error, if present)
+-}
+withStrategy : Strategy -> Config -> Config
+withStrategy strategy =
+    mapInputConfig (Input.withStrategy strategy)
+
+
+{-| Sets whether the form was submitted
+-}
+withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted b =
+    mapInputConfig (Input.withIsSubmitted b)
 
 
 {-| Sets the input as disabled

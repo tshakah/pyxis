@@ -7,6 +7,8 @@ module Components.Field.CheckboxGroup exposing
     , withClassList
     , withName
     , withLabel
+    , withIsSubmitted
+    , withStrategy
     , horizontal
     , vertical
     , withLayout
@@ -38,6 +40,8 @@ module Components.Field.CheckboxGroup exposing
 @docs withDisabled
 @docs withName
 @docs withLabel
+@docs withIsSubmitted
+@docs withStrategy
 
 
 ### Layout
@@ -63,7 +67,10 @@ module Components.Field.CheckboxGroup exposing
 import Commons.Attributes
 import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Error.Strategy as Strategy exposing (Strategy)
+import Components.Field.Error.Strategy.Internal as InternalStrategy
 import Components.Field.Label as Label
+import Components.Field.State as FieldState
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
@@ -74,6 +81,7 @@ import Result.Extra
 type alias ModelData ctx value parsed =
     { checkedValues : List value
     , validation : ctx -> List value -> Result String parsed
+    , fieldState : FieldState.State
     }
 
 
@@ -91,6 +99,7 @@ init validation =
     Model
         { checkedValues = []
         , validation = validation
+        , fieldState = FieldState.Untouched
         }
 
 
@@ -98,6 +107,8 @@ init validation =
 -}
 type Msg value
     = Checked value Bool
+    | Focused value
+    | Blurred value
 
 
 isOnCheck : Msg value -> Bool
@@ -106,6 +117,9 @@ isOnCheck msg =
         Checked _ _ ->
             True
 
+        _ ->
+            False
+
 
 {-| Update the internal state of the CheckboxGroup component
 -}
@@ -113,10 +127,19 @@ update : Msg value -> Model ctx value parsed -> Model ctx value parsed
 update msg model =
     case msg of
         Checked value check ->
-            PrimaFunction.ifThenElseMap (always check)
-                (checkValue value)
-                (uncheckValue value)
-                model
+            model
+                |> PrimaFunction.ifThenElseMap (always check)
+                    (checkValue value)
+                    (uncheckValue value)
+                |> mapFieldState FieldState.onChange
+
+        Focused _ ->
+            model
+                |> mapFieldState FieldState.onFocus
+
+        Blurred _ ->
+            model
+                |> mapFieldState FieldState.onBlur
 
 
 {-| Internal
@@ -191,6 +214,20 @@ withName name (Config configData) =
     Config { configData | name = Just name }
 
 
+{-| Sets the validation strategy (when to show the error, if present)
+-}
+withStrategy : Strategy -> Config value -> Config value
+withStrategy strategy (Config configuration) =
+    Config { configuration | strategy = strategy }
+
+
+{-| Sets whether the form was submitted
+-}
+withIsSubmitted : Bool -> Config value -> Config value
+withIsSubmitted isSubmitted (Config configuration) =
+    Config { configuration | isSubmitted = isSubmitted }
+
+
 {-| Represent the layout of the group.
 -}
 type Layout
@@ -229,6 +266,8 @@ type alias ConfigData a =
     , id : String
     , classList : List ( String, Bool )
     , layout : Layout
+    , strategy : Strategy
+    , isSubmitted : Bool
     }
 
 
@@ -251,6 +290,8 @@ config id =
         , id = id
         , classList = []
         , layout = Horizontal
+        , strategy = Strategy.onBlur
+        , isSubmitted = False
         }
 
 
@@ -278,14 +319,18 @@ single label id =
 render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
 render tagger ctx ((Model modelData) as model) (Config configData) =
     let
-        validationResult : Result String parsed
-        validationResult =
-            validate ctx model
+        shownValidation : Result String ()
+        shownValidation =
+            InternalStrategy.getShownValidation
+                modelData.fieldState
+                (\() -> modelData.validation ctx modelData.checkedValues)
+                configData.isSubmitted
+                configData.strategy
 
         renderCheckbox_ : Option value -> Html (Msg value)
         renderCheckbox_ =
             renderCheckbox
-                { hasError = Result.Extra.isErr validationResult
+                { hasError = Result.Extra.isErr shownValidation
                 , checkedValues = modelData.checkedValues
                 }
                 configData
@@ -304,7 +349,7 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                 |> List.map renderCheckbox_
                 |> renderControlGroup configData
             )
-        , validationResult
+        , shownValidation
             |> Error.fromResult
             |> Maybe.map (renderErrorConfig configData)
             |> Commons.Render.renderMaybe
@@ -378,6 +423,8 @@ renderCheckbox { hasError, checkedValues } configData (Option optionData) =
             , Html.Attributes.disabled optionData.disabled
             , Commons.Attributes.maybe Html.Attributes.name configData.name
             , Html.Events.onCheck (Checked optionData.value)
+            , Html.Events.onFocus (Focused optionData.value)
+            , Html.Events.onBlur (Blurred optionData.value)
             ]
             []
         , Html.text optionData.label
@@ -391,3 +438,10 @@ renderCheckbox { hasError, checkedValues } configData (Option optionData) =
 mapCheckedValues : (List value -> List value) -> Model ctx value parsed -> Model ctx value parsed
 mapCheckedValues f (Model r) =
     Model { r | checkedValues = f r.checkedValues }
+
+
+{-| Internal
+-}
+mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx value parsed -> Model ctx value parsed
+mapFieldState f (Model model) =
+    Model { model | fieldState = f model.fieldState }

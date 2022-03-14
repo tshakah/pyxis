@@ -57,6 +57,8 @@ type alias Config r =
 
 type alias Option msg =
     { onCheck : Bool -> msg
+    , onFocus : msg
+    , onBlur : msg
     , addon : Maybe Addon
     , text : Maybe String
     , title : Maybe String
@@ -179,6 +181,8 @@ renderCard type_ validationResult config index option =
             , Commons.Attributes.testId id_
             , Commons.Attributes.maybe Attributes.name config.name
             , Events.onCheck option.onCheck
+            , Events.onFocus option.onFocus
+            , Events.onBlur option.onBlur
             ]
             []
         ]

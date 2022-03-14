@@ -10,6 +10,8 @@ module Components.Field.Select exposing
     , withName
     , withLabel
     , withPlaceholder
+    , withIsSubmitted
+    , withStrategy
     , Option, option
     , withOptions
     , withSize
@@ -40,6 +42,8 @@ module Components.Field.Select exposing
 @docs withName
 @docs withLabel
 @docs withPlaceholder
+@docs withIsSubmitted
+@docs withStrategy
 
 
 #### Options
@@ -67,8 +71,11 @@ import Commons.List
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Error.Strategy as Strategy exposing (Strategy)
+import Components.Field.Error.Strategy.Internal as StrategyInternal
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
+import Components.Field.State as FieldState
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -115,6 +122,7 @@ type alias ModelData ctx parsed =
     , dropDownState : DropDownState
     , validation : ctx -> Maybe String -> Result String parsed
     , value : Maybe String
+    , fieldState : FieldState.State
     }
 
 
@@ -134,6 +142,7 @@ init validation =
         , validation = validation
         , value = Nothing
         , isBlurringInternally = False
+        , fieldState = FieldState.Untouched
         }
 
 
@@ -190,10 +199,13 @@ update msg model =
                 |> setSelectedValue value
                 |> setIsOpen False
                 |> setIsBlurringInternally False
+                |> mapFieldState FieldState.onInput
                 |> PrimaUpdate.withoutCmds
 
         Blurred id ->
-            setIsBlurred id model
+            model
+                |> mapFieldState FieldState.onBlur
+                |> setIsBlurred id
 
         HoveredOption optionValue ->
             model
@@ -207,7 +219,9 @@ update msg model =
             setSelectKeydown configData keyCode model
 
         FocusedSelect ->
-            PrimaUpdate.withoutCmds model
+            model
+                |> mapFieldState FieldState.onFocus
+                |> PrimaUpdate.withoutCmds
 
 
 {-| Internal.
@@ -418,6 +432,8 @@ type alias ConfigData =
     , placeholder : Maybe String
     , size : Size
     , label : Maybe Label.Config
+    , strategy : Strategy
+    , isSubmitted : Bool
     }
 
 
@@ -444,6 +460,8 @@ config isMobile id =
         , placeholder = Nothing
         , size = Size.medium
         , label = Nothing
+        , strategy = Strategy.onBlur
+        , isSubmitted = False
         }
 
 
@@ -461,6 +479,20 @@ type Option
 option : { value : String, label : String } -> Option
 option =
     Option
+
+
+{-| Sets the validation strategy (when to show the error, if present)
+-}
+withStrategy : Strategy -> Config -> Config
+withStrategy strategy (Config configuration) =
+    Config { configuration | strategy = strategy }
+
+
+{-| Sets whether the form was submitted
+-}
+withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted isSubmitted (Config configuration) =
+    Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Set the select options
@@ -579,6 +611,15 @@ withLabelArgs configData label =
 -}
 render : (Msg -> msg) -> ctx -> Model ctx parsed -> Config -> Html msg
 render tagger ctx ((Model modelData) as model) (Config configData) =
+    let
+        shownValidation : Result String ()
+        shownValidation =
+            StrategyInternal.getShownValidation
+                modelData.fieldState
+                (\() -> modelData.validation ctx modelData.value)
+                configData.isSubmitted
+                configData.strategy
+    in
     Html.div [ Attributes.class "form-item" ]
         [ configData.label
             |> Maybe.map (withLabelArgs configData >> Label.render)
@@ -589,7 +630,7 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                     [ ( "form-field", True )
                     , ( "form-field--with-dropdown", not configData.isMobile )
                     , ( "form-field--with-opened-dropdown", not configData.isMobile && isDropDownOpen model )
-                    , ( "form-field--error", getUiError ctx model /= Nothing )
+                    , ( "form-field--error", Result.Extra.isErr shownValidation )
                     , ( "form-field--disabled", configData.disabled )
                     ]
                 ]
@@ -609,8 +650,7 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                         , Commons.Attributes.testId configData.id
                         , Attributes.classList configData.classList
                         , Attributes.disabled configData.disabled
-                        , modelData.value
-                            |> modelData.validation ctx
+                        , shownValidation
                             |> Error.fromResult
                             |> Maybe.map (always (Error.toId configData.id))
                             |> Commons.Attributes.ariaDescribedByErrorOrHint
@@ -645,20 +685,12 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                     ]
                 , renderDropdownWrapper model (Config configData)
                 ]
-            , modelData.value
-                |> modelData.validation ctx
+            , shownValidation
                 |> Error.fromResult
                 |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
         ]
         |> Html.map tagger
-
-
-{-| Internal.
--}
-getUiError : ctx -> Model ctx parsed -> Maybe String
-getUiError ctx (Model { value, validation }) =
-    Result.Extra.error (validation ctx value)
 
 
 {-| Internal.
@@ -884,3 +916,10 @@ setSelectedValueWhenJust =
 setSelectedValue : String -> Model ctx parsed -> Model ctx parsed
 setSelectedValue value (Model model) =
     Model { model | value = Just value }
+
+
+{-| Internal.
+-}
+mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx parsed -> Model ctx parsed
+mapFieldState f (Model model) =
+    Model { model | fieldState = f model.fieldState }

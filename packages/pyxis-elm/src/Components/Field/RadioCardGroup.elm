@@ -75,6 +75,8 @@ module Components.Field.RadioCardGroup exposing
 @docs withOptions
 @docs withSize
 @docs setValue
+@docs withIsSubmitted
+@docs withStrategy
 
 
 ## Update
@@ -98,8 +100,11 @@ module Components.Field.RadioCardGroup exposing
 
 import Commons.Properties.Size as Size exposing (Size)
 import Components.CardGroup as CardGroup
+import Components.Field.Error.Strategy as Strategy exposing (Strategy)
+import Components.Field.Error.Strategy.Internal as InternalStrategy
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
+import Components.Field.State as FieldState
 import Components.IconSet as IconSet
 import Html exposing (Html)
 
@@ -110,6 +115,7 @@ type Model ctx value parsed
     = Model
         { selectedValue : Maybe value
         , validation : ctx -> Maybe value -> Result String parsed
+        , fieldState : FieldState.State
         }
 
 
@@ -120,6 +126,7 @@ init validation =
     Model
         { selectedValue = Nothing
         , validation = validation
+        , fieldState = FieldState.Untouched
         }
 
 
@@ -133,6 +140,8 @@ type alias ConfigData value =
     , name : Maybe String
     , options : List (Option value)
     , size : Size
+    , strategy : Strategy
+    , isSubmitted : Bool
     }
 
 
@@ -156,6 +165,8 @@ config id =
         , name = Nothing
         , options = []
         , size = Size.medium
+        , strategy = Strategy.onBlur
+        , isSubmitted = False
         }
 
 
@@ -163,6 +174,8 @@ config id =
 -}
 type Msg value
     = OnCheck value
+    | Focused value
+    | Blurred value
 
 
 {-| Returns True if the message is triggered by `Html.Events.onCheck`
@@ -172,6 +185,9 @@ isOnCheck msg =
     case msg of
         OnCheck _ ->
             True
+
+        _ ->
+            False
 
 
 {-| Represent the single Radio option.
@@ -306,9 +322,20 @@ withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
+{-| Render the RadioCardGroup.
+-}
 render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
 render tagger ctx ((Model modelData) as model) (Config configData) =
-    CardGroup.renderRadio (validate ctx model)
+    let
+        shownValidation : Result String ()
+        shownValidation =
+            InternalStrategy.getShownValidation
+                modelData.fieldState
+                (\() -> modelData.validation ctx modelData.selectedValue)
+                configData.isSubmitted
+                configData.strategy
+    in
+    CardGroup.renderCheckbox shownValidation
         configData
         (List.map (mapOption configData modelData.selectedValue) configData.options)
         |> Html.map tagger
@@ -317,6 +344,8 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
 mapOption : { config | isDisabled : Bool } -> Maybe value -> Option value -> CardGroup.Option (Msg value)
 mapOption { isDisabled } checkedValue (Option { value, text, title, addon }) =
     { onCheck = always (OnCheck value)
+    , onFocus = Focused value
+    , onBlur = Blurred value
     , addon = Maybe.map (\(Addon a) -> a) addon
     , text = text
     , title = title
@@ -328,10 +357,20 @@ mapOption { isDisabled } checkedValue (Option { value, text, title, addon }) =
 {-| Update the RadioGroup Model.
 -}
 update : Msg value -> Model ctx value parsed -> Model ctx value parsed
-update msg =
+update msg model =
     case msg of
         OnCheck value ->
-            setValue value
+            model
+                |> setValue value
+                |> mapFieldState FieldState.onChange
+
+        Blurred _ ->
+            model
+                |> mapFieldState FieldState.onBlur
+
+        Focused _ ->
+            model
+                |> mapFieldState FieldState.onFocus
 
 
 {-| Internal.
@@ -353,3 +392,10 @@ getValue (Model { selectedValue }) =
 validate : ctx -> Model ctx value parsed -> Result String parsed
 validate ctx (Model { selectedValue, validation }) =
     validation ctx selectedValue
+
+
+{-| Internal
+-}
+mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx value parsed -> Model ctx value parsed
+mapFieldState f (Model model) =
+    Model { model | fieldState = f model.fieldState }

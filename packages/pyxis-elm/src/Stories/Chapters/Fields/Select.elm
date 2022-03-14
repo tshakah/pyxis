@@ -122,6 +122,14 @@ requiredValidation _ maybeValue =
     maybeValue
         |> Maybe.andThen toJob
         |> Result.fromMaybe "Required field"
+        |> Result.andThen
+            (\j ->
+                if j == ProductManager then
+                    Err "This option is not selectable"
+
+                else
+                    Ok j
+            )
 
 
 toJob : String -> Maybe Job

@@ -149,6 +149,8 @@ suite =
             [ Test.test "should not pass if the input is not compliant with the validation function" <|
                 \() ->
                     simulationWithValidation
+                        |> Simulation.simulate ( Event.focus, [ Selector.attribute (CommonsAttributes.testId "area-home---title-option") ] )
+                        |> Simulation.simulate ( Event.blur, [ Selector.attribute (CommonsAttributes.testId "area-home---title-option") ] )
                         |> Simulation.expectModel
                             (RadioCardGroup.getValue
                                 >> validation {}

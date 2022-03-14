@@ -15,6 +15,8 @@ module Components.Field.Text exposing
     , withHint
     , withName
     , withPlaceholder
+    , withIsSubmitted
+    , withStrategy
     , Msg
     , isOnBlur
     , isOnFocus
@@ -62,6 +64,8 @@ module Components.Field.Text exposing
 @docs withHint
 @docs withName
 @docs withPlaceholder
+@docs withIsSubmitted
+@docs withStrategy
 
 
 ## Update
@@ -87,6 +91,7 @@ module Components.Field.Text exposing
 
 import Commons.Properties.Placement exposing (Placement)
 import Commons.Properties.Size exposing (Size)
+import Components.Field.Error.Strategy exposing (Strategy)
 import Components.Field.Input as Input
 import Components.Field.Label as Label
 import Components.IconSet as IconSet
@@ -237,6 +242,20 @@ withDisabled =
 withHint : String -> Config -> Config
 withHint hint =
     mapInputConfig (Input.withHint hint)
+
+
+{-| Sets the validation strategy (when to show the error, if present)
+-}
+withStrategy : Strategy -> Config -> Config
+withStrategy strategy =
+    mapInputConfig (Input.withStrategy strategy)
+
+
+{-| Sets whether the form was submitted
+-}
+withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted b =
+    mapInputConfig (Input.withIsSubmitted b)
 
 
 {-| Render the Input Text.

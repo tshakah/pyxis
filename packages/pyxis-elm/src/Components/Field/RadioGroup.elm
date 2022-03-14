@@ -9,6 +9,8 @@ module Components.Field.RadioGroup exposing
     , horizontal
     , vertical
     , withLayout
+    , withIsSubmitted
+    , withStrategy
     , withClassList
     , withDisabled
     , withHint
@@ -50,6 +52,8 @@ module Components.Field.RadioGroup exposing
 @docs horizontal
 @docs vertical
 @docs withLayout
+@docs withIsSubmitted
+@docs withStrategy
 
 
 ## Generics
@@ -86,8 +90,11 @@ import Commons.Attributes
 import Commons.Render
 import Commons.String
 import Components.Field.Error as Error
+import Components.Field.Error.Strategy as Strategy exposing (Strategy)
+import Components.Field.Error.Strategy.Internal as InternalStrategy
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
+import Components.Field.State as FieldState
 import Html
 import Html.Attributes as Attributes
 import Html.Events as Events
@@ -100,6 +107,7 @@ type Model ctx value parsed
     = Model
         { selectedValue : Maybe value
         , validation : ctx -> Maybe value -> Result String parsed
+        , fieldState : FieldState.State
         }
 
 
@@ -110,6 +118,7 @@ init validation =
     Model
         { selectedValue = Nothing
         , validation = validation
+        , fieldState = FieldState.Untouched
         }
 
 
@@ -122,6 +131,8 @@ type alias ConfigData value =
     , layout : Layout
     , name : Maybe String
     , options : List (Option value)
+    , strategy : Strategy
+    , isSubmitted : Bool
     }
 
 
@@ -144,6 +155,8 @@ config id =
         , label = Nothing
         , name = Nothing
         , options = []
+        , strategy = Strategy.onBlur
+        , isSubmitted = False
         }
 
 
@@ -165,6 +178,8 @@ type alias OptionConfig value =
 -}
 type Msg value
     = OnCheck value
+    | Focused value
+    | Blurred value
 
 
 {-| Returns True if the message is triggered by `Html.Events.onCheck`
@@ -174,6 +189,9 @@ isOnCheck msg =
     case msg of
         OnCheck _ ->
             True
+
+        _ ->
+            False
 
 
 {-| Represent the layout of the group.
@@ -224,6 +242,20 @@ withHint hintMessage (Config configuration) =
         }
 
 
+{-| Sets the validation strategy (when to show the error, if present)
+-}
+withStrategy : Strategy -> Config value -> Config value
+withStrategy strategy (Config configuration) =
+    Config { configuration | strategy = strategy }
+
+
+{-| Sets whether the form was submitted
+-}
+withIsSubmitted : Bool -> Config value -> Config value
+withIsSubmitted isSubmitted (Config configuration) =
+    Config { configuration | isSubmitted = isSubmitted }
+
+
 {-| Add a name to the inputs.
 -}
 withName : String -> Config value -> Config value
@@ -263,6 +295,15 @@ option =
 -}
 render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html.Html msg
 render tagger ctx ((Model modelData) as model) ((Config configData) as config_) =
+    let
+        shownValidation : Result String ()
+        shownValidation =
+            InternalStrategy.getShownValidation
+                modelData.fieldState
+                (\() -> modelData.validation ctx modelData.selectedValue)
+                configData.isSubmitted
+                configData.strategy
+    in
     Html.div
         [ Attributes.class "form-item" ]
         [ renderLabel configData.label configData.id
@@ -284,9 +325,8 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as config_) 
                     |> Commons.Attributes.ariaDescribedByErrorOrHint
                         (Maybe.map (always (Hint.toId configData.id)) configData.hint)
                 ]
-                (List.map (renderRadio ctx model config_) configData.options)
-            , modelData.selectedValue
-                |> modelData.validation ctx
+                (List.map (renderRadio shownValidation model config_) configData.options)
+            , shownValidation
                 |> Error.fromResult
                 |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
@@ -312,12 +352,12 @@ labelId =
 
 {-| Internal.
 -}
-renderRadio : ctx -> Model ctx value parsed -> Config value -> Option value -> Html.Html (Msg value)
-renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
+renderRadio : Result String x -> Model ctx value parsed -> Config value -> Option value -> Html.Html (Msg value)
+renderRadio validationResult (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
     Html.label
         [ Attributes.classList
             [ ( "form-control", True )
-            , ( "form-control--error", Result.Extra.isErr (validation ctx selectedValue) )
+            , ( "form-control--error", Result.Extra.isErr validationResult )
             ]
         ]
         [ Html.input
@@ -329,6 +369,8 @@ renderRadio ctx (Model { validation, selectedValue }) (Config { id, name, isDisa
             , Commons.Attributes.testId (radioId id label)
             , Commons.Attributes.maybe Attributes.name name
             , Events.onCheck (always (OnCheck value))
+            , Events.onFocus (Focused value)
+            , Events.onBlur (Blurred value)
             ]
             []
         , Html.text label
@@ -346,10 +388,20 @@ radioId id label =
 {-| Update the RadioGroup Model.
 -}
 update : Msg value -> Model ctx value parsed -> Model ctx value parsed
-update msg =
+update msg model =
     case msg of
         OnCheck value ->
-            setValue value
+            model
+                |> setValue value
+                |> mapFieldState FieldState.onChange
+
+        Blurred _ ->
+            model
+                |> mapFieldState FieldState.onBlur
+
+        Focused _ ->
+            model
+                |> mapFieldState FieldState.onFocus
 
 
 {-| Set the radiogroup value
@@ -357,6 +409,13 @@ update msg =
 setValue : value -> Model ctx value parsed -> Model ctx value parsed
 setValue value (Model model) =
     Model { model | selectedValue = Just value }
+
+
+{-| Internal
+-}
+mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx value parsed -> Model ctx value parsed
+mapFieldState f (Model model) =
+    Model { model | fieldState = f model.fieldState }
 
 
 {-| Return the selected value.

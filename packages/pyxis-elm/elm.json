@@ -10,6 +10,7 @@
         "Components.Field.Label",
         "Components.Field.Number",
         "Components.Field.Select",
+        "Components.Field.Error.Strategy",
         "Components.Field.Text",
         "Components.Form",
         "Components.Form.FieldSet",

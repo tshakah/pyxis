@@ -1,6 +1,7 @@
 module Components.Field.Input exposing
     ( Model
     , init
+    , setValue
     , Config
     , date
     , email
@@ -19,7 +20,8 @@ module Components.Field.Input exposing
     , withHint
     , withName
     , withPlaceholder
-    , setValue
+    , withIsSubmitted
+    , withStrategy
     , getValue
     , Msg
     , isOnBlur
@@ -37,6 +39,7 @@ module Components.Field.Input exposing
 
 @docs Model
 @docs init
+@docs setValue
 
 
 ## Config
@@ -71,7 +74,8 @@ module Components.Field.Input exposing
 @docs withHint
 @docs withName
 @docs withPlaceholder
-@docs setValue
+@docs withIsSubmitted
+@docs withStrategy
 
 
 ## Setters
@@ -110,8 +114,11 @@ import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Error.Strategy as Strategy exposing (Strategy)
+import Components.Field.Error.Strategy.Internal as StrategyInternal
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
+import Components.Field.State as FieldState
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Date
@@ -127,6 +134,7 @@ type Model ctx value
     = Model
         { validation : ctx -> String -> Result String value
         , value : String
+        , fieldState : FieldState.State
         }
 
 
@@ -137,6 +145,7 @@ init validation =
     Model
         { validation = validation
         , value = ""
+        , fieldState = FieldState.Untouched
         }
 
 
@@ -191,12 +200,16 @@ update msg model =
     case msg of
         OnBlur ->
             model
+                |> mapFieldState FieldState.onBlur
 
         OnFocus ->
             model
+                |> mapFieldState FieldState.onFocus
 
         OnInput value ->
-            setValue value model
+            model
+                |> setValue value
+                |> mapFieldState FieldState.onInput
 
 
 {-| The view config.
@@ -213,6 +226,8 @@ type Config
         , type_ : Type
         , disabled : Bool
         , label : Maybe Label.Config
+        , strategy : Strategy
+        , isSubmitted : Bool
         }
 
 
@@ -231,6 +246,8 @@ config inputType id =
         , addon = Nothing
         , disabled = False
         , label = Nothing
+        , strategy = Strategy.onBlur
+        , isSubmitted = False
         }
 
 
@@ -349,6 +366,20 @@ addonToAttribute { type_, placement } =
         |> Attributes.class
 
 
+{-| Sets the validation strategy (when to show the error, if present)
+-}
+withStrategy : Strategy -> Config -> Config
+withStrategy strategy (Config configuration) =
+    Config { configuration | strategy = strategy }
+
+
+{-| Sets whether the form was submitted
+-}
+withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted isSubmitted (Config configuration) =
+    Config { configuration | isSubmitted = isSubmitted }
+
+
 {-| Sets an Addon to the Input.
 -}
 withAddon : Placement -> AddonType -> Config -> Config
@@ -434,14 +465,22 @@ normalizeConfig ((Config configData) as config_) =
 {-| Renders the Input.Stories/Chapters/DateField.elm
 -}
 render : (Msg -> msg) -> ctx -> Model ctx value -> Config -> Html msg
-render tagger ctx ((Model state) as model) rawConfig =
+render tagger ctx ((Model modelData) as model) rawConfig =
     let
-        ((Config configuration) as config_) =
+        ((Config configData) as config_) =
             normalizeConfig rawConfig
+
+        shownValidation : Result String ()
+        shownValidation =
+            StrategyInternal.getShownValidation
+                modelData.fieldState
+                (\_ -> modelData.validation ctx modelData.value)
+                configData.isSubmitted
+                configData.strategy
     in
     Html.div
         [ Attributes.class "form-item" ]
-        [ configuration.label
+        [ configData.label
             |> Maybe.map Label.render
             |> Commons.Render.renderMaybe
         , Html.div
@@ -449,19 +488,18 @@ render tagger ctx ((Model state) as model) rawConfig =
             [ Html.div
                 [ Attributes.classList
                     [ ( "form-field", True )
-                    , ( "form-field--error", Result.Extra.isErr (state.validation ctx state.value) )
-                    , ( "form-field--disabled", configuration.disabled )
+                    , ( "form-field--error", Result.Extra.isErr shownValidation )
+                    , ( "form-field--disabled", configData.disabled )
                     ]
-                , Commons.Attributes.maybe addonToAttribute configuration.addon
+                , Commons.Attributes.maybe addonToAttribute configData.addon
                 ]
-                [ configuration.addon
-                    |> Maybe.map (renderAddon ctx model config_)
-                    |> Maybe.withDefault (renderInput ctx model config_)
+                [ configData.addon
+                    |> Maybe.map (renderAddon shownValidation model config_)
+                    |> Maybe.withDefault (renderInput shownValidation model config_)
                 ]
-            , state.value
-                |> state.validation ctx
+            , shownValidation
                 |> Error.fromResult
-                |> Commons.Render.renderErrorOrHint configuration.id configuration.hint
+                |> Commons.Render.renderErrorOrHint configData.id configData.hint
             ]
         ]
         |> Html.map tagger
@@ -469,12 +507,12 @@ render tagger ctx ((Model state) as model) rawConfig =
 
 {-| Internal.
 -}
-renderAddon : ctx -> Model ctx value -> Config -> Addon -> Html Msg
-renderAddon ctx model configuration addon =
+renderAddon : Result String () -> Model ctx value -> Config -> Addon -> Html Msg
+renderAddon validationResult model configuration addon =
     Html.label
         [ Attributes.class "form-field__wrapper" ]
         [ Commons.Render.renderIf (Placement.isPrepend addon.placement) (renderAddonByType addon.type_)
-        , renderInput ctx model configuration
+        , renderInput validationResult model configuration
         , Commons.Render.renderIf (Placement.isAppend addon.placement) (renderAddonByType addon.type_)
         ]
 
@@ -500,8 +538,8 @@ renderAddonByType type_ =
 
 {-| Internal.
 -}
-renderInput : ctx -> Model ctx value -> Config -> Html Msg
-renderInput ctx (Model modelData) (Config configData) =
+renderInput : Result String () -> Model ctx value -> Config -> Html Msg
+renderInput validationResult (Model modelData) (Config configData) =
     Html.input
         [ Attributes.id configData.id
         , Attributes.classList
@@ -521,8 +559,7 @@ renderInput ctx (Model modelData) (Config configData) =
         , Commons.Attributes.testId configData.id
         , Commons.Attributes.maybe Attributes.name configData.name
         , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
-        , modelData.value
-            |> modelData.validation ctx
+        , validationResult
             |> Error.fromResult
             |> Maybe.map (always (Error.toId configData.id))
             |> Commons.Attributes.ariaDescribedByErrorOrHint
@@ -546,3 +583,10 @@ getValue (Model { value }) =
 validate : ctx -> Model ctx value -> Result String value
 validate ctx (Model { value, validation }) =
     validation ctx value
+
+
+{-| Internal
+-}
+mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx value -> Model ctx value
+mapFieldState f (Model model) =
+    Model { model | fieldState = f model.fieldState }

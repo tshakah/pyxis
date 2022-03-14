@@ -10,6 +10,8 @@ module Components.Field.Textarea exposing
     , withHint
     , withName
     , withPlaceholder
+    , withStrategy
+    , withIsSubmitted
     , Msg
     , isOnBlur
     , isOnFocus
@@ -48,6 +50,8 @@ module Components.Field.Textarea exposing
 @docs withHint
 @docs withName
 @docs withPlaceholder
+@docs withStrategy
+@docs withIsSubmitted
 
 
 ## Update
@@ -75,8 +79,10 @@ import Commons.Attributes
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Field.Error as Error
+import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
+import Components.Field.State as FieldState
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
@@ -94,6 +100,7 @@ type Model ctx
 type alias ModelData ctx =
     { value : String
     , validation : ctx -> String -> Result String String
+    , fieldState : FieldState.State
     }
 
 
@@ -104,6 +111,7 @@ init validation =
     Model
         { value = ""
         , validation = validation
+        , fieldState = FieldState.Untouched
         }
 
 
@@ -124,6 +132,8 @@ type alias ConfigData =
     , placeholder : Maybe String
     , size : Size
     , label : Maybe Label.Config
+    , strategy : Strategy
+    , isSubmitted : Bool
     }
 
 
@@ -140,6 +150,8 @@ config id =
         , placeholder = Nothing
         , size = Size.medium
         , label = Nothing
+        , strategy = Strategy.onBlur
+        , isSubmitted = False
         }
 
 
@@ -168,6 +180,20 @@ withHint hintMessage (Config configuration) =
                     |> Hint.withFieldId configuration.id
                     |> Just
         }
+
+
+{-| Sets the validation strategy (when to show the error, if present)
+-}
+withStrategy : Strategy -> Config -> Config
+withStrategy strategy (Config configuration) =
+    Config { configuration | strategy = strategy }
+
+
+{-| Sets whether the form was submitted
+-}
+withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted isSubmitted (Config configuration) =
+    Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Sets a Size to the Textarea
@@ -249,12 +275,16 @@ update msg model =
     case msg of
         OnBlur ->
             model
+                |> mapFieldState FieldState.onBlur
 
         OnFocus ->
             model
+                |> mapFieldState FieldState.onFocus
 
         OnInput value ->
-            setValue value model
+            model
+                |> setValue value
+                |> mapFieldState FieldState.onInput
 
 
 {-| Internal.
@@ -344,3 +374,10 @@ renderTextarea ctx (Model modelData) (Config configData) =
         , Html.Events.onBlur OnBlur
         ]
         []
+
+
+{-| Internal
+-}
+mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx -> Model ctx
+mapFieldState f (Model model) =
+    Model { model | fieldState = f model.fieldState }
