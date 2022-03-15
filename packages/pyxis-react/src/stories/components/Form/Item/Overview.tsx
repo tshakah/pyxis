@@ -37,13 +37,6 @@ const variantBody: string[] = [
   'With HTML'
 ];
 
-const wrapperGapDescription = (
-  <p>
-    Wrapper contained in the Form Item can have two different spacing: default and large.
-    These can be useful when we use visual components such as CheckboxCards or RadioCards.
-  </p>
-);
-
 const classDescription = (
   <p>
     Form item is based upon this list of CSS classes.
@@ -59,11 +52,6 @@ const tableClassBody: TableRow[] = [
   [
     <CopyableCode text="form-item__wrapper" key={shortid.generate()} />,
     'Wrapper Element',
-    <code>div</code>
-  ],
-  [
-    <CopyableCode text="form-item__wrapper--gap-large" key={shortid.generate()} />,
-    'Wrapper Modifier',
     <code>div</code>
   ],
   [
@@ -97,11 +85,6 @@ const Overview: FC = () => (
           </Canvas>
         </>
       ))}
-    </OverviewTemplate>
-    <OverviewTemplate title="Wrapper Gap" description={wrapperGapDescription}>
-      <Canvas className="full-width">
-        <Story id={`components-form-🚧-all-stories--item-wrapper-gap`} />
-      </Canvas>
     </OverviewTemplate>
     <OverviewTemplate title="Overview of CSS classes" description={classDescription}>
       <Table

@@ -70,7 +70,7 @@ export const CheckboxCardGroup: FC<CheckboxGroupProps> =
   }) => (
   <div className="form-item">
     <label className="form-label" id="my-label-id">Label</label>
-    <div className="form-item__wrapper form-item__wrapper--gap-large">
+    <div className="form-item__wrapper">
       <div
         className={getGroupClasses(layout)}
         role="group"

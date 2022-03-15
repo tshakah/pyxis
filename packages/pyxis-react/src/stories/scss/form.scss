@@ -164,11 +164,3 @@ $gapBackground: #FDEEC0;
     }
   }
 }
-
-.form-item__wrapper--gap-large .form-item__hint {
-  @include _visualGap {
-    &:after {
-      @include _heightFromGap(2xs);
-    }
-  }
-}

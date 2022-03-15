@@ -13,10 +13,6 @@
   display: grid;
 }
 
-.form-item__wrapper--gap-large {
-  @include foundations.rowGap(2xs);
-}
-
 .form-item__error-message {
   @include foundations.text(s, book);
   color: foundations.color(errorBase);

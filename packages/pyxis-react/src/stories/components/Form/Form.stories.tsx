@@ -214,7 +214,7 @@ export const ItemWithHTML = () => (
     <label className="form-label" htmlFor="form-item-name">
       Name
     </label>
-    <div className="form-item__wrapper form-item__wrapper--gap-large">
+    <div className="form-item__wrapper">
       <div className="form-field">
         <label className="form-field__wrapper">
           <input
@@ -230,41 +230,6 @@ export const ItemWithHTML = () => (
   </div>
 )
 ItemWithHTML.parameters = renderSourceAsHTML(ItemWithHTML());
-
-export const ItemWrapperGap = () => (
-  <div className="form-item-show-gap">
-    <div className="form-grid">
-      <div className="form-grid__row">
-        <div className="form-grid__row__column">
-          <div className="form-item">
-            <label className="form-label" htmlFor="form-item-name">
-              Name
-            </label>
-            <div className="form-item__wrapper">
-              <div className="form-field">
-                <label className="form-field__wrapper">
-                  <input
-                    type="text"
-                    className="form-field__text"
-                    id="form-item-name"
-                    placeholder="John"
-                  />
-                </label>
-              </div>
-              <div className="form-item__hint">Hint Message</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="form-grid__row">
-        <div className="form-grid__row__column">
-          <CheckboxCardGroup hint/>
-        </div>
-      </div>
-    </div>
-  </div>
-)
-ItemWrapperGap.parameters = renderSourceAsHTML(ItemWrapperGap());
 
 export const LegendDefault = () => (
   <Legend />

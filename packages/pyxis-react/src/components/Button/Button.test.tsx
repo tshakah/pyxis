@@ -5,7 +5,7 @@ import Button from './Button';
 describe('Button component', () => {
   describe('with default options', () => {
     test('should render a primary variant with type submit and textual content', () => {
-      render(<Button variant="primary" id="child-test">Primary</Button>);
+      render(<Button id="child-test" variant="primary">Primary</Button>);
       const button = screen.getByTestId('child-test');
       expect(button).toBeInTheDocument();
       expect(button).toHaveTextContent('Primary');
@@ -16,56 +16,56 @@ describe('Button component', () => {
 
   describe('has a variant option', () => {
     test('should be primary', () => {
-      render(<Button variant="primary" id="variant-primary">Button</Button>);
+      render(<Button id="variant-primary" variant="primary">Button</Button>);
       expect(screen.getByTestId('variant-primary')).toHaveClass('button--primary');
     });
 
     test('should be secondary', () => {
-      render(<Button variant="secondary" id="variant-secondary">Button</Button>);
+      render(<Button id="variant-secondary" variant="secondary">Button</Button>);
       expect(screen.getByTestId('variant-secondary')).toHaveClass('button--secondary');
     });
 
     test('should be tertiary', () => {
-      render(<Button variant="tertiary" id="variant-tertiary">Button</Button>);
+      render(<Button id="variant-tertiary" variant="tertiary">Button</Button>);
       expect(screen.getByTestId('variant-tertiary')).toHaveClass('button--tertiary');
     });
 
     test('should be brand', () => {
-      render(<Button variant="brand" id="variant-brand">Button</Button>);
+      render(<Button id="variant-brand" variant="brand">Button</Button>);
       expect(screen.getByTestId('variant-brand')).toHaveClass('button--brand');
     });
 
     test('should be ghost', () => {
-      render(<Button variant="ghost" id="variant-ghost">Button</Button>);
+      render(<Button id="variant-ghost" variant="ghost">Button</Button>);
       expect(screen.getByTestId('variant-ghost')).toHaveClass('button--ghost');
     });
   });
 
   describe('has a size option', () => {
     test('should be huge', () => {
-      render(<Button variant="primary" size="huge" id="size-huge">Button</Button>);
+      render(<Button id="size-huge" size="huge" variant="primary">Button</Button>);
       expect(screen.getByTestId('size-huge')).toHaveClass('button--huge');
     });
 
     test('should be large', () => {
-      render(<Button variant="primary" size="large" id="size-large">Button</Button>);
+      render(<Button id="size-large" size="large" variant="primary">Button</Button>);
       expect(screen.getByTestId('size-large')).toHaveClass('button--large');
     });
 
     test('should be medium', () => {
-      render(<Button variant="primary" size="medium" id="size-medium">Button</Button>);
+      render(<Button id="size-medium" size="medium" variant="primary">Button</Button>);
       expect(screen.getByTestId('size-medium')).toHaveClass('button--medium');
     });
 
     test('should be small', () => {
-      render(<Button variant="primary" size="small" id="size-small">Button</Button>);
+      render(<Button id="size-small" size="small" variant="primary">Button</Button>);
       expect(screen.getByTestId('size-small')).toHaveClass('button--small');
     });
   });
 
   describe('icon options', () => {
     test('should render the icon', () => {
-      render(<Button variant="primary" icon={IconPen} id="icon-button">Button</Button>);
+      render(<Button icon={IconPen} id="icon-button" variant="primary">Button</Button>);
       const button = screen.getByTestId('icon-button');
       const icon = button.querySelector('svg');
       expect(button).toHaveClass('button--prepend-icon');
@@ -74,7 +74,7 @@ describe('Button component', () => {
 
     test('should be a prepend icon', () => {
       render(
-        <Button variant="primary" icon={IconPen} iconPlacement="prepend" id="icon-prepend-button">Button</Button>,
+        <Button icon={IconPen} iconPlacement="prepend" id="icon-prepend-button" variant="primary">Button</Button>,
       );
       const prepend = screen.getByTestId('icon-prepend-button');
       const prependIcon = prepend.querySelector('svg');
@@ -84,7 +84,7 @@ describe('Button component', () => {
 
     test('should be a append icon', () => {
       render(
-        <Button variant="primary" icon={IconPen} iconPlacement="append" id="icon-append-button">Button</Button>,
+        <Button icon={IconPen} iconPlacement="append" id="icon-append-button" variant="primary">Button</Button>,
       );
       const append = screen.getByTestId('icon-append-button');
       const appendIcon = append.querySelector('svg');
@@ -94,7 +94,7 @@ describe('Button component', () => {
 
     test('should be only icon', () => {
       render(
-        <Button variant="primary" icon={IconPen} iconPlacement="only" id="icon-only-button">Button</Button>,
+        <Button icon={IconPen} iconPlacement="only" id="icon-only-button" variant="primary">Button</Button>,
       );
       const only = screen.getByTestId('icon-only-button');
       const onlyIcon = only.querySelector('svg');
@@ -105,22 +105,22 @@ describe('Button component', () => {
 
   describe('generic options', () => {
     test('should have an alternative color', () => {
-      render(<Button variant="primary" id="alt-button" alt>Button</Button>);
+      render(<Button alt id="alt-button" variant="primary">Button</Button>);
       expect(screen.getByTestId('alt-button')).toHaveClass('button--alt');
     });
 
     test('should have a shadow', () => {
-      render(<Button variant="primary" id="shadow-button" shadow>Button</Button>);
+      render(<Button id="shadow-button" shadow variant="primary">Button</Button>);
       expect(screen.getByTestId('shadow-button')).toHaveClass('button--shadow');
     });
 
     test('should be loading', () => {
-      render(<Button variant="primary" id="loading-button" loading>Button</Button>);
+      render(<Button id="loading-button" loading variant="primary">Button</Button>);
       expect(screen.getByTestId('loading-button')).toHaveClass('button--loading');
     });
 
     test('should be content-width', () => {
-      render(<Button variant="primary" id="content-width-button" contentWidth>Button</Button>);
+      render(<Button contentWidth id="content-width-button" variant="primary">Button</Button>);
       expect(screen.getByTestId('content-width-button')).toHaveClass('button--content-width');
     });
   });

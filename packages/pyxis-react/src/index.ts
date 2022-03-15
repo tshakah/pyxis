@@ -1,2 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export { default as Button } from './components/Button';
+export { default as Form } from './components/Form';
+export { default as Icon } from './components/Icon';

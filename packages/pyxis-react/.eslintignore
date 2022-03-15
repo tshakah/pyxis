@@ -1,5 +1,6 @@
 dist
 node_modules
-src/stories
 src/components/Icon/Icons.tsx
+src/stories
+templates
 tokens
