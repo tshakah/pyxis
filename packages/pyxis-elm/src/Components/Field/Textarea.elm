@@ -12,6 +12,7 @@ module Components.Field.Textarea exposing
     , withName
     , withPlaceholder
     , withStrategy
+    , withValueMapper
     , Msg
     , isOnBlur
     , isOnFocus
@@ -52,6 +53,8 @@ module Components.Field.Textarea exposing
 @docs withName
 @docs withPlaceholder
 @docs withStrategy
+@docs withIsSubmitted
+@docs withValueMapper
 
 
 ## Update
@@ -134,6 +137,7 @@ type alias ConfigData =
     , label : Maybe Label.Config
     , strategy : Strategy
     , isSubmitted : Bool
+    , valueMapper : String -> String
     }
 
 
@@ -152,6 +156,7 @@ config id =
         , label = Nothing
         , strategy = Strategy.onBlur
         , isSubmitted = False
+        , valueMapper = identity
         }
 
 
@@ -187,6 +192,21 @@ withHint hintMessage (Config configuration) =
 withStrategy : Strategy -> Config -> Config
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
+
+
+{-| Maps the inputted string before the update
+
+    Textarea.config "id"
+        |> Textarea.withValueMapper String.toUppercase
+        |> Textarea.render Tagger formData model.textareaModel
+
+In this example, if the user inputs "abc", the actual inputted text is "ABC".
+This applies to both the user UI and the `getValue`/`validate` functions
+
+-}
+withValueMapper : (String -> String) -> Config -> Config
+withValueMapper mapper (Config configData) =
+    Config { configData | valueMapper = mapper }
 
 
 {-| Sets whether the form was submitted

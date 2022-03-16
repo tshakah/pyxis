@@ -183,6 +183,16 @@ withAddon placement addon =
         |> mapInputConfig
 
 
+{-| Maps the inputted string before the update
+
+    Text.config "id"
+        |> Text.withValueMapper String.toUppercase
+        |> Text.render Tagger formData model.textModel
+
+In this example, if the user inputs "abc", the actual inputted text is "ABC".
+This applies to both the user UI and the `getValue`/`validate` functions
+
+-}
 withValueMapper : (String -> String) -> Config -> Config
 withValueMapper mapper =
     mapInputConfig (Input.withValueMapper mapper)

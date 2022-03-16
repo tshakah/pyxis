@@ -372,6 +372,8 @@ withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
 
+{-| Maps the inputted string before the update
+-}
 withValueMapper : (String -> String) -> Config -> Config
 withValueMapper mapper (Config configData) =
     Config { configData | valueMapper = mapper }
