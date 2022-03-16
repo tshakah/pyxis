@@ -1,9 +1,17 @@
 ## @pyxis/elm
 
-Pyxis-elm aims to be the library which is used by Prima to build UI components in Elm language.
+Here you can find the documentation for the Pyxis Elm UI kit.
 
 _Disclaimer: we're aware that Elm doesn't have components but only modules.
 We will refer to components in order to keep consistency with pyxis-react._
+
+**Table of contents**
+
+1. [Get started](#get-started)
+2. [Requiring a component](#requiring-a-component)
+3. [Naming convention](#naming-convention)
+4. [Using components](#using-components)
+5. [Docs](#docs)
 
 ### Get started
 
@@ -40,11 +48,27 @@ To reflect this we talk about:
 
 - `config`: the method which instantiate a component's `Config`. _Note that not every component has a generic config method for the sake of clarity._
 
-#### Using a component
+#### Using components
 
 As seen above you can use stateful or stateless components.
 
 Example of **stateless** component usage:
+
+```elm
+import Components.Field.Label
+
+-- Your application model
+type alias Model {}
+
+-- Your application view
+view : Model -> Html msg
+view model =
+    Label.config "Your email address"
+        |> Label.withSubText "You will receive a confirmation email"
+        |> Label.render
+
+
+```
 
 Example of **stateful** component usage:
 
@@ -53,7 +77,7 @@ import Html exposing (Html)
 import Components.Field.Text as Text
 import Components.Field.Label as Label
 
--- Your application model
+-- Your application model which should contain the component's model.
 type alias Model = {
     email : Text.Model ()
 }
@@ -77,7 +101,7 @@ update msg model =
 -- Your view function
 view : Model -> Html Msg
 view model =
-    {--  Note that the Text module doesn't have a "config" method.
+    {--  Note that the Text module doesn't have a "config" method like others components.
     This because it's much more expressive to write Text.email or Text.password than passing an extra argument to the "config" function.
     --}
     Text.email "email"
@@ -87,3 +111,10 @@ view model =
 
 
 ```
+
+#### Docs
+
+You can find the documentation for each single component and also a preview of its appeareance and usage by following these links:
+
+- [Elmbook documentation](https://elm-staging.prima.design)
+- ~~[Elm packages documentation](https://to-be-defined)~~
