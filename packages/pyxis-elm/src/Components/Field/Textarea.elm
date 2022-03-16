@@ -389,7 +389,7 @@ renderTextarea ctx (Model modelData) (Config configData) =
             |> Maybe.map (always (Error.toId configData.id))
             |> Commons.Attributes.ariaDescribedByErrorOrHint
                 (Maybe.map (always (Hint.toId configData.id)) configData.hint)
-        , Html.Events.onInput OnInput
+        , Html.Events.onInput (configData.valueMapper >> OnInput)
         , Html.Events.onFocus OnFocus
         , Html.Events.onBlur OnBlur
         ]
