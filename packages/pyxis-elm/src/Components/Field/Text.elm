@@ -25,6 +25,7 @@ module Components.Field.Text exposing
     , validate
     , getValue
     , render
+    , withValueMapper
     )
 
 {-|
@@ -179,6 +180,11 @@ withAddon placement addon =
     addon
         |> Input.withAddon placement
         |> mapInputConfig
+
+
+withValueMapper : (String -> String) -> Config -> Config
+withValueMapper mapper =
+    mapInputConfig (Input.withValueMapper mapper)
 
 
 {-| Creates an Addon with an Icon from our IconSet.
