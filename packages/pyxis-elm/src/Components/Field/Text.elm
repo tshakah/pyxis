@@ -17,6 +17,7 @@ module Components.Field.Text exposing
     , withName
     , withPlaceholder
     , withStrategy
+    , withValueMapper
     , Msg
     , isOnBlur
     , isOnFocus
@@ -25,7 +26,6 @@ module Components.Field.Text exposing
     , validate
     , getValue
     , render
-    , withValueMapper
     )
 
 {-|
@@ -67,6 +67,7 @@ module Components.Field.Text exposing
 @docs withName
 @docs withPlaceholder
 @docs withStrategy
+@docs withValueMapper
 
 
 ## Update

@@ -22,15 +22,15 @@ module Components.Field.Input exposing
     , withPlaceholder
     , withIsSubmitted
     , withStrategy
+    , withValueMapper
     , Msg
     , isOnBlur
     , isOnFocus
     , isOnInput
     , update
-    , validate
     , getValue
+    , validate
     , render
-    , withValueMapper
     )
 
 {-|
@@ -77,6 +77,7 @@ module Components.Field.Input exposing
 @docs withPlaceholder
 @docs withIsSubmitted
 @docs withStrategy
+@docs withValueMapper
 
 
 ## Setters
@@ -91,7 +92,6 @@ module Components.Field.Input exposing
 @docs isOnFocus
 @docs isOnInput
 @docs update
-@docs validate
 
 
 ## Readers
