@@ -129,6 +129,22 @@ type Model ctx
 
 
 {-| Inits the date model.
+If you wish to set an initial date for the Date component you should provide one in ISO format.
+
+    initialParsedDateComponent : Date.Model ()
+    initialParsedDateComponent =
+        -- This will result in a Date.Parsed
+        Date.init "2020-05-28" (always Ok)
+
+    initialUnparsedDateComponent : Date.Model ()
+    initialUnparsedDateComponent =
+        -- This will result in a Date.Raw "28-05-2020"
+        Date.init "28-05-2020" (always Ok)
+            -- Also these date formats will fail parsing
+            - "05-28-2020"
+            - "28/05/2020"
+            - "05/28/2020"
+
 -}
 init : String -> (ctx -> Date -> Result String Date) -> Model ctx
 init initialValue validation =
