@@ -2,6 +2,7 @@ module Examples.Form.Model exposing
     ( Model
     , Msg(..)
     , initialModel
+    , updateResponse
     )
 
 import Components.Field.CheckboxGroup as CheckboxGroup
@@ -25,10 +26,45 @@ type Msg
 
 type alias Model =
     { data : Data
+    , response : Maybe (Result String Response)
+    }
+
+
+type alias Response =
+    { birth : Date.Date
+    , claimDate : Date.Date
+    , claimType : Data.ClaimType
+    , dynamic : String
+    , insuranceType : Data.InsuranceType
+    , peopleInvolved : Data.PeopleInvolved
+    , plate : String
     }
 
 
 initialModel : Model
 initialModel =
     { data = Data.initialData
+    , response = Nothing
     }
+
+
+updateResponse : Model -> Model
+updateResponse model =
+    { model | response = Just (validate model.data) }
+
+
+validate : Data -> Result String Response
+validate ((Data config) as data) =
+    Ok Response
+        |> parseAndThen (Date.validate data config.birth)
+        |> parseAndThen (Date.validate data config.claimDate)
+        |> parseAndThen (RadioCardGroup.validate data config.claimType)
+        |> parseAndThen (Textarea.validate data config.dynamic)
+        |> parseAndThen (RadioCardGroup.validate data config.insuranceType)
+        |> parseAndThen (RadioCardGroup.validate data config.peopleInvolved)
+        |> parseAndThen (Text.validate data config.plate)
+
+
+parseAndThen : Result x a -> Result x (a -> b) -> Result x b
+parseAndThen result =
+    Result.andThen (\partial -> Result.map partial result)

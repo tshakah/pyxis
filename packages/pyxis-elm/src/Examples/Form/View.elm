@@ -1,5 +1,6 @@
 module Examples.Form.View exposing (view)
 
+import Commons.Render
 import Components.Form as Form
 import Examples.Form.Data exposing (Data(..))
 import Examples.Form.Model as Model exposing (Model)
@@ -10,6 +11,7 @@ import Examples.Form.Views.InsuranceType as InsuranceType
 import Examples.Form.Views.ThankYouPage as ThankYouPage
 import Html exposing (Html)
 import Html.Attributes
+import Result.Extra
 
 
 view : Model -> Html Model.Msg
@@ -33,6 +35,11 @@ view model =
             []
         , viewForm model.data
         , ThankYouPage.view
+            |> Commons.Render.renderIf
+                (model.response
+                    |> Maybe.map Result.Extra.isOk
+                    |> Maybe.withDefault False
+                )
         ]
 
 

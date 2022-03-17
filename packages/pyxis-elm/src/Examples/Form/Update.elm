@@ -13,8 +13,11 @@ update : Model.Msg -> Model -> Model
 update msg model =
     case msg of
         Model.Submit ->
-            mapData (\(Data d) -> Data { d | isFormSubmitted = True }) model
+            model
+                |> mapData (\(Data d) -> Data { d | isFormSubmitted = True })
+                |> Model.updateResponse
 
+        --setSuccessResponse
         Model.DateFieldChanged Data.Birth subMsg ->
             mapData (\(Data d) -> Data { d | birth = Date.update subMsg d.birth }) model
 
