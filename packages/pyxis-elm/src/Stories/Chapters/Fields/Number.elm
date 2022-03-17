@@ -35,7 +35,7 @@ validation _ value =
 
 numberFieldModel : Number.Model formData
 numberFieldModel =
-    Number.init validation
+    Number.init "" validation
 
 
 numberField : formData -> Html Msg
@@ -137,8 +137,8 @@ validation _ value =
 
 init : Model
 init =
-    { base = Number.init (always Ok)
-    , withValidation = Number.init validation
+    { base = Number.init "" (always Ok)
+    , withValidation = Number.init "" validation
     }
 
 

@@ -4,14 +4,14 @@ module Components.Field.Date exposing
     , Config
     , config
     , withSize
-    , withLabel
     , withClassList
     , withDisabled
     , withHint
+    , withIsSubmitted
+    , withLabel
     , withName
     , withPlaceholder
     , withStrategy
-    , withIsSubmitted
     , Msg
     , isOnBlur
     , isOnFocus
@@ -22,6 +22,7 @@ module Components.Field.Date exposing
     , isParsed
     , isRaw
     , getValue
+    , getParsedDateValue
     , render
     )
 
@@ -47,14 +48,14 @@ module Components.Field.Date exposing
 
 ## Generics
 
-@docs withLabel
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withIsSubmitted
+@docs withLabel
 @docs withName
 @docs withPlaceholder
 @docs withStrategy
-@docs withIsSubmitted
 
 
 ## Update
@@ -73,6 +74,7 @@ module Components.Field.Date exposing
 @docs isParsed
 @docs isRaw
 @docs getValue
+@docs getParsedDateValue
 
 
 ## Rendering
@@ -126,16 +128,18 @@ type Model ctx
     = Model (Input.Model ctx Date)
 
 
-wrapValidation : (ctx -> Date -> Result String Date) -> (ctx -> String -> Result String Date)
-wrapValidation validation ctx =
-    parseDate >> validation ctx
-
-
 {-| Inits the date model.
 -}
-init : (ctx -> Date -> Result String Date) -> Model ctx
-init validation =
-    Model (Input.init (wrapValidation validation))
+init : String -> (ctx -> Date -> Result String Date) -> Model ctx
+init initialValue validation =
+    Model (Input.init initialValue (mapValidation validation))
+
+
+{-| Internal.
+-}
+mapValidation : (ctx -> Date -> Result String Date) -> (ctx -> String -> Result String Date)
+mapValidation validation ctx =
+    parseDate >> validation ctx
 
 
 {-| The view config.
@@ -282,3 +286,15 @@ validate ctx (Model inputModel) =
 getValue : Model ctx -> Date
 getValue (Model inputModel) =
     parseDate (Input.getValue inputModel)
+
+
+{-| Returns a parsed Date from the input[type="date"] value if possible.
+-}
+getParsedDateValue : Model ctx -> Maybe Date.Date
+getParsedDateValue model =
+    case getValue model of
+        Parsed date ->
+            Just date
+
+        Raw _ ->
+            Nothing

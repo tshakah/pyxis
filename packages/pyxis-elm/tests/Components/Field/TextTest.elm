@@ -171,7 +171,7 @@ findLabel =
 
 fieldModel : TextField.Model ctx
 fieldModel =
-    TextField.init (always Ok)
+    TextField.init "" (always Ok)
 
 
 fieldConfig : TextField.Config

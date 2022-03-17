@@ -41,7 +41,7 @@ validation _ value =
 
 checkboxCardGroupModel : Model formData value parsed
 checkboxCardGroupModel =
-    CheckboxCardGroup.init validation
+    CheckboxCardGroup.init [] validation
 
 
 checkboxCardGroupView : formData -> Html Msg
@@ -174,17 +174,17 @@ type alias Model =
 init : Model
 init =
     { base =
-        CheckboxCardGroup.init validationRequired
+        CheckboxCardGroup.init [] validationRequired
     , vertical =
-        CheckboxCardGroup.init (always Ok)
+        CheckboxCardGroup.init [] (always Ok)
     , disabled =
-        CheckboxCardGroup.init (always Ok)
+        CheckboxCardGroup.init [] (always Ok)
     , large =
-        CheckboxCardGroup.init (always Ok)
+        CheckboxCardGroup.init [] (always Ok)
     , icon =
-        CheckboxCardGroup.init (always Ok)
+        CheckboxCardGroup.init [] (always Ok)
     , text =
-        CheckboxCardGroup.init (always Ok)
+        CheckboxCardGroup.init [] (always Ok)
     }
 
 

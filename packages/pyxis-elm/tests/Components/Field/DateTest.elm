@@ -162,7 +162,7 @@ findLabel =
 
 fieldModel : DateField.Model ctx
 fieldModel =
-    DateField.init (always Ok)
+    DateField.init "" (always Ok)
 
 
 fieldConfig : DateField.Config

@@ -130,14 +130,14 @@ radioGroupConfig =
 
 renderRadioGroup : RadioGroup.Config Option -> Query.Single (RadioGroup.Msg Option)
 renderRadioGroup =
-    RadioGroup.render identity () (RadioGroup.init validation)
+    RadioGroup.render identity () (RadioGroup.init Nothing validation)
         >> Query.fromHtml
 
 
 simulationWithValidation : Simulation.Simulation (RadioGroup.Model () Option Option) (RadioGroup.Msg Option)
 simulationWithValidation =
     Simulation.fromSandbox
-        { init = RadioGroup.init validation
+        { init = RadioGroup.init Nothing validation
         , update = \subMsg model -> RadioGroup.update subMsg model
         , view = \model -> RadioGroup.render identity () model radioGroupConfig
         }

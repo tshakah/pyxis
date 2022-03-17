@@ -3,8 +3,6 @@ module Components.Field.RadioCardGroup exposing
     , init
     , Config
     , config
-    , Option
-    , option
     , Addon
     , iconAddon
     , imgAddon
@@ -18,24 +16,22 @@ module Components.Field.RadioCardGroup exposing
     , withHint
     , withLabel
     , withName
-    , withOptions
     , withSize
-    , setValue
     , Msg
     , isOnCheck
     , update
     , validate
     , getValue
+    , Option
+    , option
+    , withOptions
     , render
     )
 
 {-|
 
 
-# Input RadioCardGroup component
-
-
-## Model
+# RadioCardGroup component
 
 @docs Model
 @docs init
@@ -45,8 +41,6 @@ module Components.Field.RadioCardGroup exposing
 
 @docs Config
 @docs config
-@docs Option
-@docs option
 
 
 # Addon
@@ -70,12 +64,11 @@ module Components.Field.RadioCardGroup exposing
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withIsSubmitted
 @docs withLabel
 @docs withName
-@docs withOptions
+
 @docs withSize
-@docs setValue
-@docs withIsSubmitted
 @docs withStrategy
 
 
@@ -90,6 +83,13 @@ module Components.Field.RadioCardGroup exposing
 ## Readers
 
 @docs getValue
+
+
+## Options
+
+@docs Option
+@docs option
+@docs withOptions
 
 
 ## Rendering
@@ -121,10 +121,10 @@ type Model ctx value parsed
 
 {-| Initialize the RadioCardGroup Model.
 -}
-init : (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
-init validation =
+init : Maybe value -> (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
+init initialValue validation =
     Model
-        { selectedValue = Nothing
+        { selectedValue = initialValue
         , validation = validation
         , fieldState = FieldState.Untouched
         }

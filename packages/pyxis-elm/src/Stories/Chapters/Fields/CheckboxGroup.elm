@@ -41,7 +41,7 @@ validation _ selected =
 
 checkboxGroupModel : CheckboxGroup.Model formData
 checkboxGroupModel =
-    CheckboxGroup.init validation
+    CheckboxGroup.init [] validation
 
 
 checkboxGroup : formData -> Html Msg
@@ -142,10 +142,10 @@ singleOptionValidation () =
 
 init : CheckboxFieldModels
 init =
-    { base = CheckboxGroup.init validation
-    , noValidation = CheckboxGroup.init (always Ok)
-    , disabled = CheckboxGroup.init (always Ok)
-    , single = CheckboxGroup.init singleOptionValidation
+    { base = CheckboxGroup.init [] validation
+    , noValidation = CheckboxGroup.init [] (always Ok)
+    , disabled = CheckboxGroup.init [] (always Ok)
+    , single = CheckboxGroup.init [] singleOptionValidation
     }
 
 

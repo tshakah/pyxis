@@ -42,7 +42,7 @@ validation _ value =
 
 textFieldModel : Text.Model FormData
 textFieldModel =
-    Text.init validation
+    Text.init "" validation
 
 
 textField : FormData -> Html Msg
@@ -136,8 +136,8 @@ type alias Model =
 
 init : Model
 init =
-    { base = Text.init (always Ok)
-    , withValidation = Text.init validation
+    { base = Text.init "" (always Ok)
+    , withValidation = Text.init "" validation
     }
 
 

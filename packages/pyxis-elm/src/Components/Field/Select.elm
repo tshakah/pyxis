@@ -1,20 +1,24 @@
 module Components.Field.Select exposing
     ( Model
     , init
-    , update, Msg
-    , getValue, validate
-    , Config, config
+    , Config
+    , config
+    , withSize
     , withClassList
     , withDisabled
     , withHint
-    , withName
-    , withLabel
-    , withPlaceholder
     , withIsSubmitted
+    , withLabel
+    , withName
+    , withPlaceholder
     , withStrategy
-    , Option, option
+    , Msg
+    , update
+    , validate
+    , getValue
+    , Option
+    , option
     , withOptions
-    , withSize
     , render
     )
 
@@ -25,39 +29,51 @@ module Components.Field.Select exposing
 
 @docs Model
 @docs init
-@docs update, Msg
 
 
-## Readers
+## Config
 
-@docs getValue, validate
-
-
-## View
-
-@docs Config, config
-@docs withClassList
-@docs withDisabled
-@docs withHint
-@docs withName
-@docs withLabel
-@docs withPlaceholder
-@docs withIsSubmitted
-@docs withStrategy
+@docs Config
+@docs config
 
 
-#### Options
-
-@docs Option, option
-@docs withOptions
-
-
-#### Size
+## Size
 
 @docs withSize
 
 
-#### Rendering
+## Generics
+
+@docs withClassList
+@docs withDisabled
+@docs withHint
+@docs withIsSubmitted
+@docs withLabel
+@docs withName
+@docs withPlaceholder
+@docs withStrategy
+
+
+## Update
+
+@docs Msg
+@docs update
+@docs validate
+
+
+## Readers
+
+@docs getValue
+
+
+## Options
+
+@docs Option
+@docs option
+@docs withOptions
+
+
+## Rendering
 
 @docs render
 
@@ -135,12 +151,12 @@ type Model ctx parsed
 {-| Initialize the select internal state. This belongs to your app's `Model`
 Takes a validation function as argument
 -}
-init : (ctx -> Maybe String -> Result String parsed) -> Model ctx parsed
-init validation =
+init : Maybe String -> (ctx -> Maybe String -> Result String parsed) -> Model ctx parsed
+init initialValue validation =
     Model
         { dropDownState = Closed
         , validation = validation
-        , value = Nothing
+        , value = initialValue
         , isBlurringInternally = False
         , fieldState = FieldState.Untouched
         }
@@ -246,8 +262,7 @@ setClickedClosedLabel : Maybe Commons.Events.PointerType -> Model ctx parsed -> 
 setClickedClosedLabel pointerType ((Model modelData) as model) =
     case ( Maybe.withDefault Commons.Events.Mouse pointerType, modelData.dropDownState ) of
         ( Commons.Events.Mouse, Closed ) ->
-            model
-                |> setIsOpen True
+            setIsOpen True model
 
         _ ->
             model
@@ -259,8 +274,7 @@ setClickedDropdownWrapper : Model ctx parsed -> Model ctx parsed
 setClickedDropdownWrapper ((Model modelData) as model) =
     case modelData.dropDownState of
         Open _ ->
-            model
-                |> setIsOpen False
+            setIsOpen False model
 
         _ ->
             model

@@ -123,7 +123,7 @@ findLabel =
 
 fieldModel : TextareaField.Model ctx
 fieldModel =
-    TextareaField.init (always Ok)
+    TextareaField.init "" (always Ok)
 
 
 fieldConfig : TextareaField.Config

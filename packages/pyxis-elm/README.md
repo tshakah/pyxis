@@ -84,7 +84,7 @@ type alias Model = {
 
 initialModel : Model
 initialModel =
-    { email = Text.init (always Ok) }
+    { email = Text.init "" (always Ok) }
 
 -- Your application Msg
 type Msg =

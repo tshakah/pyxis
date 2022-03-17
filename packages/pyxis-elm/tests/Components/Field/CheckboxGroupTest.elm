@@ -139,7 +139,7 @@ suite =
         , Test.describe "Validation"
             [ Test.test "should be applied initially" <|
                 \() ->
-                    CheckboxGroup.init nonEmptyLangValidation
+                    CheckboxGroup.init [] nonEmptyLangValidation
                         |> CheckboxGroup.validate ()
                         |> Expect.err
             , Test.test "should update when selecting items" <|
@@ -215,7 +215,7 @@ findInput label =
 
 renderCheckboxGroup : CheckboxGroup.Config value -> Query.Single (CheckboxGroup.Msg value)
 renderCheckboxGroup =
-    CheckboxGroup.render identity () (CheckboxGroup.init (always Ok)) >> Query.fromHtml
+    CheckboxGroup.render identity () (CheckboxGroup.init [] (always Ok)) >> Query.fromHtml
 
 
 type alias NonemptyList a =
@@ -238,10 +238,7 @@ simulation :
         (CheckboxGroup.Msg Lang)
 simulation =
     Simulation.fromSandbox
-        { init = CheckboxGroup.init nonEmptyLangValidation
+        { init = CheckboxGroup.init [] nonEmptyLangValidation
         , update = CheckboxGroup.update
-        , view =
-            \model ->
-                langsConfig
-                    |> CheckboxGroup.render identity () model
+        , view = \model -> CheckboxGroup.render identity () model langsConfig
         }

@@ -3,8 +3,6 @@ module Components.Field.RadioGroup exposing
     , init
     , Config
     , config
-    , Option
-    , option
     , Layout
     , horizontal
     , vertical
@@ -16,13 +14,14 @@ module Components.Field.RadioGroup exposing
     , withHint
     , withLabel
     , withName
-    , withOptions
-    , setValue
     , Msg
     , isOnCheck
     , update
     , validate
     , getValue
+    , Option
+    , option
+    , withOptions
     , render
     )
 
@@ -42,8 +41,6 @@ module Components.Field.RadioGroup exposing
 
 @docs Config
 @docs config
-@docs Option
-@docs option
 
 
 # Layout
@@ -63,8 +60,6 @@ module Components.Field.RadioGroup exposing
 @docs withHint
 @docs withLabel
 @docs withName
-@docs withOptions
-@docs setValue
 
 
 ## Update
@@ -78,6 +73,13 @@ module Components.Field.RadioGroup exposing
 ## Readers
 
 @docs getValue
+
+
+## Options
+
+@docs Option
+@docs option
+@docs withOptions
 
 
 ## Rendering
@@ -113,10 +115,10 @@ type Model ctx value parsed
 
 {-| Initialize the RadioGroup Model.
 -}
-init : (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
-init validation =
+init : Maybe value -> (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
+init initialValue validation =
     Model
-        { selectedValue = Nothing
+        { selectedValue = initialValue
         , validation = validation
         , fieldState = FieldState.Untouched
         }
