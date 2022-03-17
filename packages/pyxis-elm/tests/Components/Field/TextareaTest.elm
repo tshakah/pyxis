@@ -149,7 +149,7 @@ fieldRender ctx model =
 simulation : TextareaField.Config -> Simulation.Simulation (TextareaField.Model ()) TextareaField.Msg
 simulation config =
     Simulation.fromSandbox
-        { init = TextareaField.init (always Ok)
+        { init = TextareaField.init "" (always Ok)
         , update = TextareaField.update
         , view = \model -> TextareaField.render identity () model config
         }

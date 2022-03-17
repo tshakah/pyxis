@@ -197,7 +197,7 @@ fieldRender ctx model =
 simulation : TextField.Config -> Simulation.Simulation (TextField.Model ()) TextField.Msg
 simulation config =
     Simulation.fromSandbox
-        { init = TextField.init (always Ok)
+        { init = TextField.init "" (always Ok)
         , update = TextField.update
         , view = \model -> TextField.render identity () model config
         }
