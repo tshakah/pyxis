@@ -35,7 +35,7 @@ validation _ value =
 
 dateFieldModel : Date.Model formData
 dateFieldModel =
-    Date.init validation
+    Date.init "" validation
 
 
 dateField : formData -> Html Msg
@@ -89,8 +89,8 @@ type alias Model =
 
 init : Model
 init =
-    { base = Date.init (always Ok)
-    , withValidation = Date.init validation
+    { base = Date.init "" (always Ok)
+    , withValidation = Date.init "" validation
     }
 
 

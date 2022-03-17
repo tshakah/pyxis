@@ -128,7 +128,7 @@ findSelect =
 
 renderSelect : Select.Config -> Query.Single Select.Msg
 renderSelect =
-    Select.render identity () (Select.init (always Ok)) >> Query.fromHtml
+    Select.render identity () (Select.init Nothing (always Ok)) >> Query.fromHtml
 
 
 requiredFieldValidation : Maybe a -> Result String a
@@ -161,7 +161,7 @@ simulationDesktop : Simulation (Select.Model () Job) Select.Msg
 simulationDesktop =
     Simulation.fromElement
         { init =
-            ( Select.init (\() -> requiredFieldValidation >> Result.andThen validateJob)
+            ( Select.init Nothing (always (requiredFieldValidation >> Result.andThen validateJob))
             , Cmd.none
             )
         , update = Select.update

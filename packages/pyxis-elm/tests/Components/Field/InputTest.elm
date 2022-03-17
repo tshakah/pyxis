@@ -207,7 +207,7 @@ suite =
 
 fieldModel : Input.Model ctx String
 fieldModel =
-    Input.init (always Ok)
+    Input.init "" (always Ok)
 
 
 fieldConfig : Input.Config

@@ -37,7 +37,7 @@ validation _ value =
 
 radioCardGroupModel : RadioCardGroup.Model formData Option Option
 radioCardGroupModel =
-    RadioCardGroup.init validation
+    RadioCardGroup.init (Just Motor) validation
 
 
 radioCardGroupView : formData -> Html Msg
@@ -70,7 +70,7 @@ RadioCardGroup.config id
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
         formData
-        (radioCardModel |> RadioCardGroup.setValue Motor)
+        (radioCardModel )
 ```
 ## Large Size
 Please note that with large layout you need to configure an image addon.
@@ -98,7 +98,7 @@ RadioCardGroup.config id
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
         formData
-        (radioCardModel |> RadioCardGroup.setValue Motor)
+        (radioCardModel )
 ```
 ## Icon addon
 <component with-label="RadioCardGroup with icon" />
@@ -125,7 +125,7 @@ RadioCardGroup.config id
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
         formData
-        (radioCardModel |> RadioCardGroup.setValue Motor)
+        (radioCardModel )
 ```
 ## Text addon
 <component with-label="RadioCardGroup with text" />
@@ -152,7 +152,7 @@ RadioCardGroup.config id
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
         formData
-        (radioCardModel |> RadioCardGroup.setValue Motor)
+        (radioCardModel )
 ```
 """
 
@@ -185,22 +185,17 @@ type alias Model =
 init : Model
 init =
     { base =
-        RadioCardGroup.init (always (Result.fromMaybe "Invalid selection"))
+        RadioCardGroup.init (Just Motor) (always (Result.fromMaybe "Invalid selection"))
     , vertical =
-        RadioCardGroup.init (always (Result.fromMaybe "Invalid selection"))
-            |> RadioCardGroup.setValue Motor
+        RadioCardGroup.init (Just Motor) (always (Result.fromMaybe "Invalid selection"))
     , disabled =
-        RadioCardGroup.init (always (Result.fromMaybe "Invalid selection"))
-            |> RadioCardGroup.setValue Motor
+        RadioCardGroup.init (Just Motor) (always (Result.fromMaybe "Invalid selection"))
     , large =
-        RadioCardGroup.init (always (Result.fromMaybe "Invalid selection"))
-            |> RadioCardGroup.setValue Motor
+        RadioCardGroup.init (Just Motor) (always (Result.fromMaybe "Invalid selection"))
     , icon =
-        RadioCardGroup.init (always (Result.fromMaybe "Invalid selection"))
-            |> RadioCardGroup.setValue Motor
+        RadioCardGroup.init (Just Motor) (always (Result.fromMaybe "Invalid selection"))
     , text =
-        RadioCardGroup.init (always (Result.fromMaybe "Invalid selection"))
-            |> RadioCardGroup.setValue Motor
+        RadioCardGroup.init (Just Motor) (always (Result.fromMaybe "Invalid selection"))
     }
 
 

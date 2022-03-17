@@ -3,8 +3,6 @@ module Components.Field.CheckboxCardGroup exposing
     , init
     , Config
     , config
-    , Option
-    , option
     , Addon
     , iconAddon
     , imgAddon
@@ -14,29 +12,28 @@ module Components.Field.CheckboxCardGroup exposing
     , vertical
     , withLayout
     , withClassList
+    , withDisabledOption
     , withHint
+    , withIsSubmitted
     , withLabel
     , withName
-    , withOptions
     , withSize
-    , withDisabledOption
-    , withIsSubmitted
     , withStrategy
     , Msg
     , isOnCheck
     , update
     , validate
     , getValue
+    , Option
+    , option
+    , withOptions
     , render
     )
 
 {-|
 
 
-# Input CheckboxCardGroup component
-
-
-## Model
+# CheckboxCardGroup component
 
 @docs Model
 @docs init
@@ -46,8 +43,6 @@ module Components.Field.CheckboxCardGroup exposing
 
 @docs Config
 @docs config
-@docs Option
-@docs option
 
 
 # Addon
@@ -70,13 +65,12 @@ module Components.Field.CheckboxCardGroup exposing
 
 @docs withClassList
 @docs withDisabled
+@docs withDisabledOption
 @docs withHint
+@docs withIsSubmitted
 @docs withLabel
 @docs withName
-@docs withOptions
 @docs withSize
-@docs withDisabledOption
-@docs withIsSubmitted
 @docs withStrategy
 
 
@@ -91,6 +85,13 @@ module Components.Field.CheckboxCardGroup exposing
 ## Readers
 
 @docs getValue
+
+
+## Options
+
+@docs Option
+@docs option
+@docs withOptions
 
 
 ## Rendering
@@ -126,10 +127,10 @@ type Model ctx value parsed
 
 {-| Initialize the CheckboxCardGroup Model.
 -}
-init : (ctx -> List value -> Result String parsed) -> Model ctx value parsed
-init validation =
+init : List value -> (ctx -> List value -> Result String parsed) -> Model ctx value parsed
+init initialValues validation =
     Model
-        { checkedValues = []
+        { checkedValues = initialValues
         , validation = validation
         , fieldState = FieldState.Untouched
         }

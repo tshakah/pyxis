@@ -52,7 +52,7 @@ toJob rawValue =
 
 selectModel : Select.Model formData Job
 selectModel =
-    Select.init validation
+    Select.init Nothing validation
 
 
 options : List Select.Option
@@ -153,9 +153,8 @@ toJob rawValue =
 
 init : Model
 init =
-    { base = Select.init (always Ok)
-    , withValidation =
-        Select.init requiredValidation
+    { base = Select.init Nothing (always Ok)
+    , withValidation = Select.init Nothing requiredValidation
     }
 
 

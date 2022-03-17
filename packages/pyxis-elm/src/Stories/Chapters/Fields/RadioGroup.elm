@@ -40,7 +40,7 @@ validation _ value =
 
 radioGroupModel : RadioGroup.Model formData Option Option
 radioGroupModel =
-    RadioGroup.init validation
+    RadioGroup.init (Just Home) validation
 
 
 radioGroupView : formData -> Html Msg
@@ -110,13 +110,11 @@ type alias Model =
 init : Model
 init =
     { base =
-        RadioGroup.init (always (Result.fromMaybe "Invalid selection"))
+        RadioGroup.init Nothing (always (Result.fromMaybe "Invalid selection"))
     , vertical =
-        RadioGroup.init (always (Result.fromMaybe "Invalid selection"))
-            |> RadioGroup.setValue Motor
+        RadioGroup.init (Just Motor) (always (Result.fromMaybe "Invalid selection"))
     , disabled =
-        RadioGroup.init (always (Result.fromMaybe "Invalid selection"))
-            |> RadioGroup.setValue Home
+        RadioGroup.init (Just Home) (always (Result.fromMaybe "Invalid selection"))
     }
 
 

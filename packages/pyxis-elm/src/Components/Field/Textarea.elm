@@ -4,14 +4,14 @@ module Components.Field.Textarea exposing
     , Config
     , config
     , withSize
-    , withLabel
     , withClassList
     , withDisabled
     , withHint
+    , withIsSubmitted
+    , withLabel
     , withName
     , withPlaceholder
     , withStrategy
-    , withIsSubmitted
     , Msg
     , isOnBlur
     , isOnFocus
@@ -44,14 +44,14 @@ module Components.Field.Textarea exposing
 
 ## Generics
 
-@docs withLabel
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withIsSubmitted
+@docs withLabel
 @docs withName
 @docs withPlaceholder
 @docs withStrategy
-@docs withIsSubmitted
 
 
 ## Update
@@ -106,10 +106,10 @@ type alias ModelData ctx =
 
 {-| Initializes the Textarea model.
 -}
-init : (ctx -> String -> Result String String) -> Model ctx
-init validation =
+init : String -> (ctx -> String -> Result String String) -> Model ctx
+init initialValue validation =
     Model
-        { value = ""
+        { value = initialValue
         , validation = validation
         , fieldState = FieldState.Untouched
         }

@@ -22,13 +22,13 @@ module Components.Field.Input exposing
     , withPlaceholder
     , withIsSubmitted
     , withStrategy
-    , getValue
     , Msg
     , isOnBlur
     , isOnFocus
     , isOnInput
     , update
     , validate
+    , getValue
     , render
     )
 
@@ -83,11 +83,6 @@ module Components.Field.Input exposing
 @docs setValue
 
 
-## Getters
-
-@docs getValue
-
-
 ## Update
 
 @docs Msg
@@ -98,8 +93,9 @@ module Components.Field.Input exposing
 @docs validate
 
 
-## Validation
+## Readers
 
+@docs getValue
 @docs validate
 
 
@@ -140,11 +136,11 @@ type Model ctx value
 
 {-| Inits the Input model.
 -}
-init : (ctx -> String -> Result String value) -> Model ctx value
-init validation =
+init : String -> (ctx -> String -> Result String value) -> Model ctx value
+init initialValue validation =
     Model
         { validation = validation
-        , value = ""
+        , value = initialValue
         , fieldState = FieldState.Untouched
         }
 

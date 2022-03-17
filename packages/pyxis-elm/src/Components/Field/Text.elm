@@ -9,13 +9,13 @@ module Components.Field.Text exposing
     , textAddon
     , withAddon
     , withSize
-    , withLabel
     , withClassList
     , withDisabled
     , withHint
+    , withIsSubmitted
+    , withLabel
     , withName
     , withPlaceholder
-    , withIsSubmitted
     , withStrategy
     , Msg
     , isOnBlur
@@ -58,13 +58,13 @@ module Components.Field.Text exposing
 
 ## Generics
 
-@docs withLabel
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withIsSubmitted
+@docs withLabel
 @docs withName
 @docs withPlaceholder
-@docs withIsSubmitted
 @docs withStrategy
 
 
@@ -106,9 +106,9 @@ type Model ctx
 
 {-| Internal.
 -}
-init : (ctx -> String -> Result String String) -> Model ctx
-init validation =
-    Model (Input.init validation)
+init : String -> (ctx -> String -> Result String String) -> Model ctx
+init initialValue validation =
+    Model (Input.init initialValue validation)
 
 
 {-| The view configuration.

@@ -36,16 +36,14 @@ initialData : Data
 initialData =
     Data
         { isFormSubmitted = False
-        , birth = Date.init birthValidation
-        , claimDate = Date.init birthValidation
-        , claimType =
-            RadioCardGroup.init (always (Result.fromMaybe ""))
-                |> RadioCardGroup.setValue CarAccident
-        , dynamic = Textarea.init notEmptyStringValidation
-        , insuranceType = RadioCardGroup.init (cardValidation Motor)
-        , peopleInvolved = RadioCardGroup.init (cardValidation NotInvolved)
-        , plate = Text.init notEmptyStringValidation
-        , privacyCheck = CheckboxGroup.init privacyValidation
+        , birth = Date.init "" birthValidation
+        , claimDate = Date.init "" birthValidation
+        , claimType = RadioCardGroup.init (Just CarAccident) (always (Result.fromMaybe ""))
+        , dynamic = Textarea.init "" notEmptyStringValidation
+        , insuranceType = RadioCardGroup.init Nothing (cardValidation Motor)
+        , peopleInvolved = RadioCardGroup.init Nothing (cardValidation NotInvolved)
+        , plate = Text.init "" notEmptyStringValidation
+        , privacyCheck = CheckboxGroup.init [] privacyValidation
         }
 
 

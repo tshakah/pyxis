@@ -1,21 +1,27 @@
 module Components.Field.CheckboxGroup exposing
     ( Model
     , init
-    , update, Msg
-    , getValue, validate
-    , Config, config, single
-    , withClassList
-    , withName
-    , withLabel
-    , withIsSubmitted
-    , withStrategy
+    , Config
+    , config
     , horizontal
     , vertical
     , withLayout
-    , Option, option
+    , withClassList
+    , withIsSubmitted
+    , withLabel
+    , withName
+    , withStrategy
+    , withDisabledOption
+    , Msg
+    , isOnCheck
+    , update
+    , validate
+    , getValue
+    , Option
+    , option
     , withOptions
     , render
-    , isOnCheck, withDisabledOption
+    , single
     )
 
 {-|
@@ -25,26 +31,15 @@ module Components.Field.CheckboxGroup exposing
 
 @docs Model
 @docs init
-@docs update, Msg
 
 
-## Readers
+## Config
 
-@docs getValue, validate
-
-
-## View
-
-@docs Config, config, single
-@docs withClassList
-@docs withDisabled
-@docs withName
-@docs withLabel
-@docs withIsSubmitted
-@docs withStrategy
+@docs Config
+@docs config
 
 
-### Layout
+## Layout
 
 @docs Layout
 @docs horizontal
@@ -52,13 +47,38 @@ module Components.Field.CheckboxGroup exposing
 @docs withLayout
 
 
-#### Options
+## Generics
 
-@docs Option, option
+@docs withClassList
+@docs withDisabled
+@docs withIsSubmitted
+@docs withLabel
+@docs withName
+@docs withStrategy
+@docs withDisabledOption
+
+
+## Update
+
+@docs Msg
+@docs isOnCheck
+@docs update
+@docs validate
+
+
+## Readers
+
+@docs getValue
+
+
+## Options
+
+@docs Option
+@docs option
 @docs withOptions
 
 
-#### Rendering
+## Rendering
 
 @docs render
 
@@ -94,10 +114,10 @@ type Model ctx value parsed
 {-| Initialize the CheckboxGroup internal state.
 Takes a validation function as argument
 -}
-init : (ctx -> List value -> Result String parsed) -> Model ctx value parsed
-init validation =
+init : List value -> (ctx -> List value -> Result String parsed) -> Model ctx value parsed
+init initialValues validation =
     Model
-        { checkedValues = []
+        { checkedValues = initialValues
         , validation = validation
         , fieldState = FieldState.Untouched
         }

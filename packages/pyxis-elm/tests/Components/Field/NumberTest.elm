@@ -196,7 +196,7 @@ findLabel =
 
 fieldModel : NumberField.Model ctx
 fieldModel =
-    NumberField.init (always Ok)
+    NumberField.init "" (always Ok)
 
 
 fieldConfig : NumberField.Config

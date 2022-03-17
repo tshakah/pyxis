@@ -100,16 +100,18 @@ type Model ctx
     = Model (Input.Model ctx Int)
 
 
-wrapValidation : (ctx -> Int -> Result String Int) -> (ctx -> String -> Result String Int)
-wrapValidation validation ctx =
-    String.toInt >> Maybe.withDefault 0 >> validation ctx
-
-
 {-| Inits the model.
 -}
-init : (ctx -> Int -> Result String Int) -> Model ctx
-init validation =
-    Model (Input.init (wrapValidation validation))
+init : String -> (ctx -> Int -> Result String Int) -> Model ctx
+init initialValue validation =
+    Model (Input.init initialValue (mapValidation validation))
+
+
+{-| Internal.
+-}
+mapValidation : (ctx -> Int -> Result String Int) -> (ctx -> String -> Result String Int)
+mapValidation validation ctx =
+    String.toInt >> Maybe.withDefault 0 >> validation ctx
 
 
 {-| The view configuration.
