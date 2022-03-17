@@ -6,7 +6,7 @@ module Components.Field.Error.Strategy exposing
 {-| Strategy
 
 @docs Strategy
-@docs blur, input, submit
+@docs onBlur, onInput, onSubmit
 
 -}
 
