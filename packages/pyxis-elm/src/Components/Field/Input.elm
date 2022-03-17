@@ -22,13 +22,14 @@ module Components.Field.Input exposing
     , withPlaceholder
     , withIsSubmitted
     , withStrategy
+    , withValueMapper
     , Msg
     , isOnBlur
     , isOnFocus
     , isOnInput
     , update
-    , validate
     , getValue
+    , validate
     , render
     )
 
@@ -76,6 +77,7 @@ module Components.Field.Input exposing
 @docs withPlaceholder
 @docs withIsSubmitted
 @docs withStrategy
+@docs withValueMapper
 
 
 ## Setters
@@ -90,7 +92,6 @@ module Components.Field.Input exposing
 @docs isOnFocus
 @docs isOnInput
 @docs update
-@docs validate
 
 
 ## Readers
@@ -224,6 +225,7 @@ type Config
         , label : Maybe Label.Config
         , strategy : Strategy
         , isSubmitted : Bool
+        , valueMapper : String -> String
         }
 
 
@@ -244,6 +246,7 @@ config inputType id =
         , label = Nothing
         , strategy = Strategy.onBlur
         , isSubmitted = False
+        , valueMapper = identity
         }
 
 
@@ -367,6 +370,13 @@ addonToAttribute { type_, placement } =
 withStrategy : Strategy -> Config -> Config
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
+
+
+{-| Maps the inputted string before the update
+-}
+withValueMapper : (String -> String) -> Config -> Config
+withValueMapper mapper (Config configData) =
+    Config { configData | valueMapper = mapper }
 
 
 {-| Sets whether the form was submitted
@@ -560,7 +570,7 @@ renderInput validationResult (Model modelData) (Config configData) =
             |> Maybe.map (always (Error.toId configData.id))
             |> Commons.Attributes.ariaDescribedByErrorOrHint
                 (Maybe.map (always (Hint.toId configData.id)) configData.hint)
-        , Html.Events.onInput OnInput
+        , Html.Events.onInput (configData.valueMapper >> OnInput)
         , Html.Events.onFocus OnFocus
         , Html.Events.onBlur OnBlur
         ]

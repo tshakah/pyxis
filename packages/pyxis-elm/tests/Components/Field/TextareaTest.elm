@@ -7,8 +7,10 @@ import Fuzz
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
+import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes)
+import Test.Simulation as Simulation
 
 
 suite : Test
@@ -108,6 +110,14 @@ suite =
                         |> TextareaField.getValue
                         |> Expect.equal ""
             ]
+        , Test.describe "Value mapper"
+            [ Test.fuzz Fuzz.string "maps the inputted string" <|
+                \str ->
+                    simulation (TextareaField.config "" |> TextareaField.withValueMapper String.toUpper)
+                        |> Simulation.simulate ( Event.input str, [ Selector.tag "textarea" ] )
+                        |> Simulation.expectModel (TextareaField.getValue >> Expect.equal (String.toUpper str))
+                        |> Simulation.run
+            ]
         ]
 
 
@@ -134,3 +144,12 @@ fieldConfig =
 fieldRender : ctx -> TextareaField.Model ctx -> TextareaField.Config -> Query.Single TextareaField.Msg
 fieldRender ctx model =
     TextareaField.render identity ctx model >> Query.fromHtml
+
+
+simulation : TextareaField.Config -> Simulation.Simulation (TextareaField.Model ()) TextareaField.Msg
+simulation config =
+    Simulation.fromSandbox
+        { init = TextareaField.init "" (always Ok)
+        , update = TextareaField.update
+        , view = \model -> TextareaField.render identity () model config
+        }

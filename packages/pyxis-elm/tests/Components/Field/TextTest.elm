@@ -9,8 +9,10 @@ import Fuzz
 import Html.Attributes
 import Test exposing (Test)
 import Test.Extra as Test
+import Test.Html.Event as Event
 import Test.Html.Query as Query
 import Test.Html.Selector as Selector exposing (attribute, classes)
+import Test.Simulation as Simulation
 
 
 suite : Test
@@ -156,6 +158,14 @@ suite =
                         |> TextField.getValue
                         |> Expect.equal ""
             ]
+        , Test.describe "Value mapper"
+            [ Test.fuzz Fuzz.string "maps the inputted string" <|
+                \str ->
+                    simulation (TextField.text "" |> TextField.withValueMapper String.toUpper)
+                        |> Simulation.simulate ( Event.input str, [ Selector.tag "input" ] )
+                        |> Simulation.expectModel (TextField.getValue >> Expect.equal (String.toUpper str))
+                        |> Simulation.run
+            ]
         ]
 
 
@@ -182,3 +192,12 @@ fieldConfig =
 fieldRender : ctx -> TextField.Model ctx -> TextField.Config -> Query.Single TextField.Msg
 fieldRender ctx model =
     TextField.render identity ctx model >> Query.fromHtml
+
+
+simulation : TextField.Config -> Simulation.Simulation (TextField.Model ()) TextField.Msg
+simulation config =
+    Simulation.fromSandbox
+        { init = TextField.init "" (always Ok)
+        , update = TextField.update
+        , view = \model -> TextField.render identity () model config
+        }
