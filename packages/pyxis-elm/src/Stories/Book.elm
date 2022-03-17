@@ -5,6 +5,7 @@ import ElmBook.StatefulOptions
 import ElmBook.ThemeOptions
 import Html
 import Html.Attributes
+import Stories.Chapters.Badge as Badge
 import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.Fields.CheckboxCardGroup as CheckboxCardGroupChapter
 import Stories.Chapters.Fields.CheckboxGroup as CheckboxChapter
@@ -76,6 +77,7 @@ main =
               , [ ButtonChapter.docs
                 , Loader.docs
                 , Message.docs
+                , Badge.docs
                 ]
               )
             , ( "Form"
