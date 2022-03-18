@@ -1,5 +1,5 @@
 module Components.Button exposing
-    ( Config, Variant
+    ( Config
     , primary
     , secondary
     , tertiary
@@ -13,15 +13,15 @@ module Components.Button exposing
     , withType
     , withTheme
     , withSize
-    , withIconPrepend
     , withIconAppend
     , withIconOnly
+    , withIconPrepend
     , withAriaLabel
-    , withId
     , withClassList
-    , withDisabled
-    , withLoading
     , withContentWidth
+    , withDisabled
+    , withId
+    , withLoading
     , withShadow
     , withText
     , render
@@ -32,7 +32,7 @@ module Components.Button exposing
 
 # Button component
 
-@docs Config, Variant
+@docs Config
 @docs primary
 @docs secondary
 @docs tertiary
@@ -62,19 +62,19 @@ module Components.Button exposing
 
 ## Icon
 
-@docs withIconPrepend
 @docs withIconAppend
 @docs withIconOnly
+@docs withIconPrepend
 
 
 ## Generics
 
 @docs withAriaLabel
-@docs withId
 @docs withClassList
-@docs withDisabled
-@docs withLoading
 @docs withContentWidth
+@docs withDisabled
+@docs withId
+@docs withLoading
 @docs withShadow
 @docs withText
 
@@ -448,50 +448,57 @@ withClassList a (Config configuration) =
 {-| Renders the Button.
 -}
 render : Config msg -> Html msg
-render (Config configuration) =
-    (if isLinkType configuration.type_ then
-        Html.a
-
-     else
-        Html.button
-    )
+render ((Config configData) as configuration) =
+    renderTag
+        configuration
         [ Attributes.classList
             ([ ( "button", True )
-             , ( "button--prepend-icon", isPrepend configuration.icon )
-             , ( "button--append-icon", isAppend configuration.icon )
-             , ( "button--icon-only", isStandalone configuration.icon )
-             , ( "button--alt", Theme.isAlternative configuration.theme )
-             , ( "button--primary", configuration.variant == Primary )
-             , ( "button--secondary", configuration.variant == Secondary )
-             , ( "button--tertiary", configuration.variant == Tertiary )
-             , ( "button--brand", configuration.variant == Brand )
-             , ( "button--ghost", configuration.variant == Ghost )
-             , ( "button--huge", Size.isHuge configuration.size )
-             , ( "button--large", Size.isLarge configuration.size )
-             , ( "button--medium", Size.isMedium configuration.size )
-             , ( "button--small", Size.isSmall configuration.size )
-             , ( "button--loading", configuration.loading )
-             , ( "button--content-width", configuration.contentWidth )
-             , ( "button--shadow", configuration.shadow )
+             , ( "button--prepend-icon", isPrepend configData.icon )
+             , ( "button--append-icon", isAppend configData.icon )
+             , ( "button--icon-only", isStandalone configData.icon )
+             , ( "button--alt", Theme.isAlternative configData.theme )
+             , ( "button--primary", configData.variant == Primary )
+             , ( "button--secondary", configData.variant == Secondary )
+             , ( "button--tertiary", configData.variant == Tertiary )
+             , ( "button--brand", configData.variant == Brand )
+             , ( "button--ghost", configData.variant == Ghost )
+             , ( "button--huge", Size.isHuge configData.size )
+             , ( "button--large", Size.isLarge configData.size )
+             , ( "button--medium", Size.isMedium configData.size )
+             , ( "button--small", Size.isSmall configData.size )
+             , ( "button--loading", configData.loading )
+             , ( "button--content-width", configData.contentWidth )
+             , ( "button--shadow", configData.shadow )
              ]
-                ++ configuration.classList
+                ++ configData.classList
             )
-        , Attributes.disabled configuration.disabled
-        , typeToAttribute configuration.type_
-        , typeToEventAttribute configuration.type_
-        , Commons.Attributes.maybe Attributes.id configuration.id
-        , Commons.Attributes.maybe Commons.Attributes.testId configuration.id
-        , Commons.Attributes.maybe Commons.Attributes.ariaLabel configuration.ariaLabel
+        , Attributes.disabled configData.disabled
+        , typeToAttribute configData.type_
+        , typeToEventAttribute configData.type_
+        , Commons.Attributes.maybe Attributes.id configData.id
+        , Commons.Attributes.maybe Commons.Attributes.testId configData.id
+        , Commons.Attributes.maybe Commons.Attributes.ariaLabel configData.ariaLabel
         ]
-        [ configuration.icon
-            |> renderIcon configuration.size
-            |> CR.renderIf (isPrepend configuration.icon || isStandalone configuration.icon)
-        , Html.text configuration.text
-            |> CR.renderUnless (isStandalone configuration.icon)
-        , configuration.icon
-            |> renderIcon configuration.size
-            |> CR.renderIf (isAppend configuration.icon)
+        [ configData.icon
+            |> renderIcon configData.size
+            |> CR.renderIf (isPrepend configData.icon || isStandalone configData.icon)
+        , Html.text configData.text
+            |> CR.renderUnless (isStandalone configData.icon)
+        , configData.icon
+            |> renderIcon configData.size
+            |> CR.renderIf (isAppend configData.icon)
         ]
+
+
+{-| Internal.
+-}
+renderTag : Config msg -> (List (Html.Attribute msg) -> List (Html msg) -> Html msg)
+renderTag (Config configData) =
+    if isLinkType configData.type_ then
+        Html.a
+
+    else
+        Html.button
 
 
 {-| Internal.

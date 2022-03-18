@@ -2,7 +2,7 @@ module Examples.Form.View exposing (view)
 
 import Commons.Render
 import Components.Form as Form
-import Examples.Form.Data exposing (Data(..))
+import Examples.Form.Data exposing (Data)
 import Examples.Form.Model as Model exposing (Model)
 import Examples.Form.Views.BaseInformation as BaseInformation
 import Examples.Form.Views.ClaimDetail as ClaimDetail

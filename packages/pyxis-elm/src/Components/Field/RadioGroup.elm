@@ -355,7 +355,7 @@ labelId =
 {-| Internal.
 -}
 renderRadio : Result String x -> Model ctx value parsed -> Config value msg -> Option value -> Html.Html (Msg value)
-renderRadio validationResult (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
+renderRadio validationResult (Model { selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
     Html.label
         [ Attributes.classList
             [ ( "form-control", True )

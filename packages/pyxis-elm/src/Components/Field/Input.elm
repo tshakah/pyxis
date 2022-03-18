@@ -507,7 +507,7 @@ render tagger ctx ((Model modelData) as model) rawConfig =
 {-| Internal.
 -}
 renderField : Result String () -> Config msg -> Model ctx value -> Html Msg
-renderField shownValidation ((Config { disabled, addon }) as configuration) ((Model { validation, value }) as model) =
+renderField shownValidation ((Config { disabled, addon }) as configuration) model =
     Html.div
         [ Attributes.classList
             [ ( "form-field", True )

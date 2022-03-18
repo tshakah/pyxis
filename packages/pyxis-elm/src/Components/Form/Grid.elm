@@ -1,6 +1,5 @@
 module Components.Form.Grid exposing
-    ( Config
-    , Option
+    ( Option
     , smallGap
     , mediumGap
     , largeGap
@@ -18,8 +17,6 @@ module Components.Form.Grid exposing
 
 
 # Grid
-
-@docs Config
 
 
 ## Options
@@ -60,12 +57,6 @@ import Html.Attributes as Attributes
 
 
 {-| Represents a Grid.
--}
-type Config msg
-    = Config (ConfigData msg)
-
-
-{-| Internal.
 -}
 type alias ConfigData msg =
     { gap : Gap

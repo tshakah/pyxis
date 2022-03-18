@@ -112,7 +112,6 @@ type Msg
     = Selected String
     | Blurred String -- The id of the select
     | ClickedLabel String Commons.Events.PointerEvent
-    | ClickedDropdownWrapper
     | HoveredOption String
     | FocusedItem (Result Browser.Dom.Error ())
     | FocusedSelect
@@ -208,11 +207,6 @@ update msg model =
         ClickedLabel id pointerEvent ->
             setClickedLabel id pointerEvent model
 
-        ClickedDropdownWrapper ->
-            model
-                |> setClickedDropdownWrapper
-                |> PrimaUpdate.withoutCmds
-
         Selected value ->
             model
                 |> setSelectedValue value
@@ -266,18 +260,6 @@ setClickedClosedLabel pointerType ((Model modelData) as model) =
     case ( Maybe.withDefault Commons.Events.Mouse pointerType, modelData.dropDownState ) of
         ( Commons.Events.Mouse, Closed ) ->
             setIsOpen True model
-
-        _ ->
-            model
-
-
-{-| Internal.
--}
-setClickedDropdownWrapper : Model ctx parsed -> Model ctx parsed
-setClickedDropdownWrapper ((Model modelData) as model) =
-    case modelData.dropDownState of
-        Open _ ->
-            setIsOpen False model
 
         _ ->
             model

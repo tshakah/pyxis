@@ -3,6 +3,7 @@ module Components.Field.CheckboxGroup exposing
     , init
     , Config
     , config
+    , Layout(..)
     , horizontal
     , vertical
     , withLayout
@@ -331,6 +332,7 @@ config id =
 {-| Creates a config with only one one [`CheckboxGroup.Option`](CheckboxGroup#Option) applied
 
     single "I accept the cookie policy"
+
 
     -- Is equivalent to
     config

@@ -49,3 +49,5 @@ repl-temp-*
 ### Pyxis elm
 packages/pyxis-elm/pyxis.css
 packages/pyxis-elm/index.html
+packages/pyxis-elm/dist
+packages/pyxis-elm/docs.json
