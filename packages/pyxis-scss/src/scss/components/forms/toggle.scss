@@ -1,0 +1,82 @@
+@use "sass:math";
+@use "mixins";
+@use "../../lib";
+@use "../../foundations";
+
+$_height: lib.rem(26px);
+$_width: lib.rem(48px);
+$_sliderOffset: lib.rem(2px);
+$_sliderSize: $_height - $_sliderOffset * 2;
+
+@mixin toggleSlider {
+
+  &:after {
+    background-color: foundations.color(neutralLight);
+    border-radius: 50%;
+    content: "";
+    height: $_sliderSize;
+    left: $_sliderOffset;
+    position: absolute;
+    top: $_sliderOffset;
+    transition: left foundations.duration(fast) foundations.timing(base);
+    width: $_sliderSize;
+  }
+
+  &:checked:after {
+    left: $_width - $_sliderOffset - $_sliderSize;
+  }
+
+  &:disabled:after,
+  &[disabled]:after {
+    background-color: foundations.color(neutral95);
+  }
+}
+
+.toggle {
+  @include foundations.columnGap(s);
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  width: fit-content;
+}
+
+.toggle--disabled {
+  cursor: not-allowed;
+}
+
+.toggle__input {
+  @include mixins.fieldStateDefault;
+  @include toggleSlider;
+  background-color: foundations.color(neutral75);
+  border-radius: math.div($_height, 2);
+  cursor: pointer;
+  flex-shrink: 0;
+  height: $_height;
+  position: relative;
+  transition: background-color foundations.duration(fast) foundations.timing(base);
+  width: $_width;
+
+  &:hover, &:focus {
+    background-color: foundations.color(neutral50);
+  }
+
+  &:active {
+    background-color: foundations.color(neutral25);
+  }
+
+  &:checked,
+  &:checked:hover,
+  &:checked:focus {
+    background-color: foundations.color(actionBase);
+  }
+
+  &:checked:active {
+    background-color: foundations.color(actionDark);
+  }
+
+  &:disabled,
+  &[disabled] {
+    background-color: foundations.color(neutral85);
+    cursor: not-allowed;
+  }
+}

@@ -8,6 +8,7 @@
 @forward "item";
 @forward "label";
 @forward "legend";
+@forward "toggle";
 
 .form {
   @include foundations.rowGap(2xl);

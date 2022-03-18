@@ -7,6 +7,7 @@
 /// @access private
 @mixin fieldStateDefault {
   outline: transparent solid variables.$outlineWidth;
+  outline-offset: 0;
   transition-duration: foundations.duration(fast);
   transition-property: border-color, outline-color;
   transition-timing-function: foundations.timing(base);
