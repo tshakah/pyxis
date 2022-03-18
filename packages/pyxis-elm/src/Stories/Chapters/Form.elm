@@ -1,11 +1,13 @@
 module Stories.Chapters.Form exposing (docs)
 
+import Components.Button as Button
 import Components.Form as Form
 import Components.Form.FieldSet as FieldSet
 import Components.Form.Grid as Grid
 import Components.Form.Grid.Col as Col
 import Components.Form.Grid.Row as Row
 import ElmBook
+import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
 import Html.Attributes
@@ -203,6 +205,18 @@ Grid.render
         ]
     ]
 ```
+
+## Form With Submit
+Add a onSubmit event to form component.
+
+<component with-label="Form With submit" />
+```
+Form.config
+    |> Form.withOnSubmit OnSubmit
+    |> Form.withFieldSets
+        [ ... ]
+    |> Form.render
+```
 """
 
 
@@ -313,6 +327,27 @@ componentsList =
                     ]
                 ]
             ]
+      )
+    , ( "Form With submit"
+      , Form.config
+            |> Form.withOnSubmit (ElmBook.Actions.logAction "Form submitted")
+            |> Form.withFieldSets
+                [ FieldSet.config
+                    |> FieldSet.withContent
+                        [ Grid.simpleOneColRow
+                            [ columnContent "Form content"
+                            ]
+                        ]
+                    |> FieldSet.withFooter
+                        [ Grid.simpleOneColRow
+                            [ Button.primary
+                                |> Button.withType Button.submit
+                                |> Button.withText "Submit"
+                                |> Button.render
+                            ]
+                        ]
+                ]
+            |> Form.render
       )
     ]
 

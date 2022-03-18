@@ -2,6 +2,7 @@ module Components.Form exposing
     ( Config
     , config
     , withFieldSets
+    , withOnSubmit
     , render
     )
 
@@ -15,9 +16,10 @@ module Components.Form exposing
 @docs config
 
 
-## FieldSets
+## General
 
 @docs withFieldSets
+@docs withOnSubmit
 
 
 ## Rendering
@@ -26,9 +28,11 @@ module Components.Form exposing
 
 -}
 
+import Commons.Attributes
 import Components.Form.FieldSet as FieldSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
+import Html.Events
 
 
 {-| Represents a Form and its contents.
@@ -41,6 +45,7 @@ type Config msg
 -}
 type alias ConfigData msg =
     { fieldSets : List (FieldSet.Config msg)
+    , onSubmit : Maybe msg
     }
 
 
@@ -48,7 +53,10 @@ type alias ConfigData msg =
 -}
 config : Config msg
 config =
-    Config { fieldSets = [] }
+    Config
+        { fieldSets = []
+        , onSubmit = Nothing
+        }
 
 
 {-| Adds a FieldSet list to the Form.
@@ -58,10 +66,19 @@ withFieldSets fieldSets (Config configuration) =
     Config { configuration | fieldSets = fieldSets }
 
 
+{-| Add a onSubmit event to the Form.
+-}
+withOnSubmit : msg -> Config msg -> Config msg
+withOnSubmit onSubmit (Config configuration) =
+    Config { configuration | onSubmit = Just onSubmit }
+
+
 {-| Renders the Form.
 -}
 render : Config msg -> Html msg
-render (Config configuration) =
+render (Config { onSubmit, fieldSets }) =
     Html.form
-        [ Attributes.class "form" ]
-        (List.map FieldSet.render configuration.fieldSets)
+        [ Attributes.class "form"
+        , Commons.Attributes.maybe Html.Events.onSubmit onSubmit
+        ]
+        (List.map FieldSet.render fieldSets)
