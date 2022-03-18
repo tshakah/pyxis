@@ -5,7 +5,7 @@
 
 $_wrapperAnimationOffset: lib.rem(10px);
 
-.form-field__dropdown-wrapper {
+.form-dropdown-wrapper {
   @include foundations.elevation(s, action15);
   @include foundations.radius(xs);
   border: variables.$borderWidth solid foundations.color(actionBase);
@@ -49,7 +49,7 @@ $_wrapperAnimationOffset: lib.rem(10px);
   }
 }
 
-.form-field__dropdown-wrapper--small {
+.form-dropdown-wrapper--small {
   padding-top: variables.$fieldHeightSmall - $_wrapperAnimationOffset;
 
   .form-field--with-opened-dropdown & {
@@ -57,7 +57,7 @@ $_wrapperAnimationOffset: lib.rem(10px);
   }
 }
 
-.form-field__dropdown {
+.form-dropdown {
   $maxHeight: lib.rem(155px);
   $maxHeightSmall: lib.rem(120px);
   $radius: 0 0 lib.rem(6px) lib.rem(6px);
@@ -74,21 +74,27 @@ $_wrapperAnimationOffset: lib.rem(10px);
   -ms-overflow-style: none;
   overflow-x: hidden;
   overflow-y: scroll;
+  position: relative;
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
-  .form-field__dropdown-wrapper--small & {
+  .form-dropdown-wrapper--small & {
     @include foundations.horizontalPadding(3xs);
     max-height: $maxHeightSmall;
   }
 }
 
-.form-field__dropdown__item {
-  $height: lib.rem(40px);
-  $heightSmall: lib.rem(30px);
+.form-dropdown--with-header {
+  padding-top: 0;
+}
+
+.form-dropdown__item,
+.form-dropdown__no-results {
+  $minHeight: lib.rem(40px);
+  $minHeightSmall: lib.rem(30px);
 
   @include foundations.horizontalPadding(2xs);
   @include foundations.radius(2xs);
@@ -96,24 +102,107 @@ $_wrapperAnimationOffset: lib.rem(10px);
   color: foundations.color(neutral25);
   cursor: pointer;
   display: grid;
-  height: $height;
+  min-height: $minHeight;
+  outline: none;
   transition-duration: foundations.duration(fast);
   transition-property: background-color, color;
   transition-timing-function: foundations.timing(base);
   user-select: none;
   will-change: background-color, color;
 
-  .form-field__dropdown-wrapper--small & {
-    height: $heightSmall;
+  .form-dropdown-wrapper--small & {
+    min-height: $minHeightSmall;
   }
 }
 
-.form-field__dropdown__item:hover,
-.form-field__dropdown__item--hover {
+.form-dropdown__item:hover,
+.form-dropdown__item--hover {
   background-color: foundations.color(neutral95);
 }
 
-.form-field__dropdown__item--active {
+.form-dropdown__item--active {
   background-color: foundations.color(actionLight);
   color: foundations.color(actionBase);
+}
+
+.form-dropdown__no-results {
+  $height: lib.rem(48px);
+  $heightSmall: lib.rem(38px);
+
+  cursor: default;
+  grid-auto-rows: $height;
+
+  .form-dropdown-wrapper--small & {
+    grid-auto-rows: $heightSmall;
+  }
+}
+
+.form-dropdown__no-results__action {
+  align-items: center;
+  border-top: lib.rem(1px) solid foundations.color(neutral85);
+  display: grid;
+  height: 100%;
+  justify-items: start;
+  position: relative;
+}
+
+.form-dropdown__suggestion {
+  @include foundations.columnGap(s);
+  @include foundations.horizontalPadding(2xs);
+  @include foundations.verticalPadding(3xs);
+  align-items: center;
+  display: grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+
+  .form-dropdown-wrapper--small & {
+    @include foundations.columnGap(2xs);
+  }
+}
+
+.form-dropdown__suggestion__wrapper {
+  @include foundations.rowGap(4xs);
+  color: foundations.color(neutralBase);
+  display: grid;
+
+  .form-dropdown-wrapper--small & {
+    row-gap: unset;
+  }
+}
+
+.form-dropdown__suggestion__title {
+  @include foundations.text(l, bold);
+
+  .form-dropdown-wrapper--small & {
+    @include foundations.text(m, bold);
+  }
+}
+
+.form-dropdown__suggestion__subtitle {
+  @include foundations.text(m, book);
+  color: foundations.color(neutral25);
+
+  .form-dropdown-wrapper--small & {
+    @include foundations.text(s, book);
+  }
+}
+
+.form-dropdown__header {
+  @include foundations.horizontalPadding(2xs);
+  @include foundations.text(s, book);
+  @include foundations.verticalPadding(3xs);
+  background-color: foundations.color(neutralLight);
+  color: foundations.color(neutral25);
+  position: sticky;
+  top: 0;
+
+  &:after {
+    background-color: foundations.color(neutral85);
+    bottom: 0;
+    content: "";
+    height: lib.rem(1px);
+    left: foundations.spacing(2xs);
+    position: absolute;
+    right: foundations.spacing(2xs);
+  }
 }

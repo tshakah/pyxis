@@ -90,7 +90,7 @@
   width: 100%;
 }
 
-.form-field--with-dropdown {
+.form-field--with-select-dropdown {
   cursor: pointer;
 }
 
@@ -110,13 +110,19 @@
   cursor: inherit;
   display: flex;
   height: 100%;
+
+  .form-field--with-opened-dropdown & {
+    position: relative;
+    z-index: 2;
+  }
 }
 
 .form-field__addon {
+  align-items: center;
   color: foundations.color(neutral25);
-  display: grid;
+  display: flex;
   flex: 1;
-  place-items: center;
+  justify-content: center;
   pointer-events: none;
   transition: transform foundations.duration(fast) foundations.timing(base);
   user-select: none;
@@ -143,8 +149,12 @@
     border-left: lib.rem(1px) solid foundations.color(neutral85);
   }
 
-  .form-field--with-opened-dropdown & {
+  .form-field--with-select-dropdown.form-field--with-opened-dropdown & {
     transform: rotate(180deg);
+  }
+
+  .form-field__autocomplete--filled ~ & {
+    pointer-events: all;
   }
 
   .form-field:focus-within &,
@@ -171,4 +181,35 @@
   .form-field__select--native.form-field__select--small + & {
     width: variables.$fieldHeightSmall;
   }
+}
+
+.form-field__addon__reset {
+  $size: lib.rem(28px);
+
+  @include foundations.radius(xl);
+  background-color: foundations.color(neutral95);
+  color: foundations.color(neutralBase);
+  cursor: pointer;
+  display: grid;
+  height: $size;
+  place-items: center;
+  position: absolute;
+  transition: background-color foundations.duration(fast) foundations.timing(base);
+  width: $size;
+
+  &:hover {
+    background-color: foundations.color(neutral85);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 variables.$borderWidth rgba(foundations.color(actionBase), 0.8);
+    outline: none;
+  }
+}
+
+.form-field__addon__reset--small {
+  $size: lib.rem(24px);
+
+  height: $size;
+  width: $size;
 }

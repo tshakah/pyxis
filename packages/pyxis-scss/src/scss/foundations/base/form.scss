@@ -48,6 +48,20 @@ input[type="password"]::-ms-reveal,
   display: none;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: none;
+  border-radius: lib.rem(6px) 0 0 lib.rem(6px);
+  -webkit-text-fill-color: colors.color(neutralBase);
+}
+
 ::placeholder {
   color: colors.color(neutral50);
   opacity: 1;

@@ -10,7 +10,7 @@ const getClasses = (disabled: boolean, error: boolean, native: boolean, opened: 
   {
     ["form-field--disabled"]: disabled,
     ["form-field--error"]: error,
-    ["form-field--with-dropdown"]: !native,
+    ["form-field--with-select-dropdown"]: !native,
     ["form-field--with-opened-dropdown"]: opened && !disabled && !native,
   },
 );
@@ -25,9 +25,9 @@ const getSelectClasses = (size: "large" | "small", active: boolean, native:boole
 );
 
 const getDropdownClasses = (size: "large" | "small"): string => classNames(
-  "form-field__dropdown-wrapper",
+  "form-dropdown-wrapper",
   {
-    ["form-field__dropdown-wrapper--small"]: size === "small",
+    ["form-dropdown-wrapper--small"]: size === "small",
   },
 );
 
@@ -104,11 +104,11 @@ const Select: FC<SelectProps> = ({
             </div>
           </label>
           {!native && <div className={getDropdownClasses(size)} onClick={clickOnItem}>
-            <div className="form-field__dropdown">
-              <div className="form-field__dropdown__item">Good vibes 1</div>
-              <div className={`form-field__dropdown__item ${isActive ? "form-field__dropdown__item--active": ""}`} onClick={clickOnItem}>Good vibes 2</div>
-              <div className="form-field__dropdown__item">Good vibes 3</div>
-              <div className="form-field__dropdown__item">Good vibes 4</div>
+            <div className="form-dropdown">
+              <div className="form-dropdown__item">Good vibes 1</div>
+              <div className={`form-dropdown__item ${isActive ? "form-dropdown__item--active": ""}`} onClick={clickOnItem}>Good vibes 2</div>
+              <div className="form-dropdown__item">Good vibes 3</div>
+              <div className="form-dropdown__item">Good vibes 4</div>
             </div>
           </div>}
         </div>

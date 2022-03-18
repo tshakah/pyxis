@@ -634,7 +634,7 @@ renderField shownValidation ((Model modelData) as model) (Config configData) =
     Html.div
         [ Attributes.classList
             [ ( "form-field", True )
-            , ( "form-field--with-dropdown", not configData.isMobile )
+            , ( "form-field--with-select-dropdown", not configData.isMobile )
             , ( "form-field--with-opened-dropdown", not configData.isMobile && isDropDownOpen model )
             , ( "form-field--error", Result.Extra.error shownValidation /= Nothing )
             , ( "form-field--disabled", configData.disabled )
@@ -704,11 +704,11 @@ renderDropdownWrapper (Model model) (Config select) =
     else
         Html.div
             [ Attributes.classList
-                [ ( "form-field__dropdown-wrapper", True )
-                , ( "form-field__dropdown-wrapper--small", Size.isSmall select.size )
+                [ ( "form-dropdown-wrapper", True )
+                , ( "form-dropdown-wrapper--small", Size.isSmall select.size )
                 ]
             ]
-            [ Html.div [ Attributes.class "form-field__dropdown" ]
+            [ Html.div [ Attributes.class "form-dropdown" ]
                 (select.options
                     |> List.indexedMap Tuple.pair
                     |> Commons.List.withPreviousAndNext
@@ -762,9 +762,9 @@ renderDropdownItem { dropDownState, value } (Config configData) ( previous, ( in
     in
     Html.div
         [ Attributes.classList
-            [ ( "form-field__dropdown__item", True )
-            , ( "form-field__dropdown__item--hover", isItemSelected )
-            , ( "form-field__dropdown__item--active", value == Just option_.value )
+            [ ( "form-dropdown__item", True )
+            , ( "form-dropdown__item--hover", isItemSelected )
+            , ( "form-dropdown__item--active", value == Just option_.value )
             ]
         , Html.Events.onBlur (Blurred configData.id)
         , Attributes.attribute "role" "button"
