@@ -14,13 +14,14 @@ module Components.Field.Input exposing
     , textAddon
     , withAddon
     , withSize
-    , withLabel
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
+    , withIsSubmitted
+    , withLabel
     , withName
     , withPlaceholder
-    , withIsSubmitted
     , withStrategy
     , withValueMapper
     , Msg
@@ -69,13 +70,14 @@ module Components.Field.Input exposing
 
 ## Generics
 
-@docs withLabel
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withIsSubmitted
+@docs withLabel
 @docs withName
 @docs withPlaceholder
-@docs withIsSubmitted
 @docs withStrategy
 @docs withValueMapper
 
@@ -113,6 +115,7 @@ import Commons.Render
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as StrategyInternal
+import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.State as FieldState
@@ -211,41 +214,43 @@ update msg model =
 
 {-| The view config.
 -}
-type Config
+type Config msg
     = Config
-        { addon : Maybe Addon
+        { additionalContent : Maybe (Html msg)
+        , addon : Maybe Addon
         , classList : List ( String, Bool )
+        , disabled : Bool
         , hint : Maybe Hint.Config
         , id : String
+        , isSubmitted : Bool
+        , label : Maybe Label.Config
         , name : Maybe String
         , placeholder : Maybe String
         , size : Size
-        , type_ : Type
-        , disabled : Bool
-        , label : Maybe Label.Config
         , strategy : Strategy
-        , isSubmitted : Bool
+        , type_ : Type
         , valueMapper : String -> String
         }
 
 
 {-| Internal. Creates an Input field.
 -}
-config : Type -> String -> Config
+config : Type -> String -> Config msg
 config inputType id =
     Config
-        { classList = []
+        { additionalContent = Nothing
+        , addon = Nothing
+        , classList = []
+        , disabled = False
         , hint = Nothing
         , id = id
+        , isSubmitted = False
+        , label = Nothing
         , name = Nothing
         , placeholder = Nothing
         , size = Size.medium
-        , type_ = inputType
-        , addon = Nothing
-        , disabled = False
-        , label = Nothing
         , strategy = Strategy.onBlur
-        , isSubmitted = False
+        , type_ = inputType
         , valueMapper = identity
         }
 
@@ -262,35 +267,35 @@ type Type
 
 {-| Creates an input with [type="email"].
 -}
-email : String -> Config
+email : String -> Config msg
 email =
     config Email
 
 
 {-| Creates an input with [type="date"].
 -}
-date : String -> Config
+date : String -> Config msg
 date =
     config Date
 
 
 {-| Creates an input with [type="number"].
 -}
-number : String -> Config
+number : String -> Config msg
 number =
     config Number
 
 
 {-| Creates an input with [type="text"].
 -}
-text : String -> Config
+text : String -> Config msg
 text =
     config Text
 
 
 {-| Creates an input with [type="password"].
 -}
-password : String -> Config
+password : String -> Config msg
 password =
     config Password
 
@@ -367,49 +372,49 @@ addonToAttribute { type_, placement } =
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config -> Config
+withStrategy : Strategy -> Config msg -> Config msg
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
 
 {-| Maps the inputted string before the update
 -}
-withValueMapper : (String -> String) -> Config -> Config
+withValueMapper : (String -> String) -> Config msg -> Config msg
 withValueMapper mapper (Config configData) =
     Config { configData | valueMapper = mapper }
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted : Bool -> Config msg -> Config msg
 withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Sets an Addon to the Input.
 -}
-withAddon : Placement -> AddonType -> Config -> Config
+withAddon : Placement -> AddonType -> Config msg -> Config msg
 withAddon placement type_ (Config configuration) =
     Config { configuration | addon = Just { placement = placement, type_ = type_ } }
 
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Config -> Config -> Config
+withLabel : Label.Config -> Config msg -> Config msg
 withLabel a (Config configuration) =
     Config { configuration | label = Just a }
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Config -> Config
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
 {-| Sets the input hint
 -}
-withHint : String -> Config -> Config
+withHint : String -> Config msg -> Config msg
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -422,30 +427,37 @@ withHint hintMessage (Config configuration) =
 
 {-| Sets a Size to the Input.
 -}
-withSize : Size -> Config -> Config
+withSize : Size -> Config msg -> Config msg
 withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
 {-| Sets a ClassList to the Input.
 -}
-withClassList : List ( String, Bool ) -> Config -> Config
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
 {-| Sets a Name to the Input.
 -}
-withName : String -> Config -> Config
+withName : String -> Config msg -> Config msg
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Sets a Placeholder to the Input.
 -}
-withPlaceholder : String -> Config -> Config
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder placeholder (Config configuration) =
     Config { configuration | placeholder = Just placeholder }
+
+
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent additionalContent (Config configuration) =
+    Config { configuration | additionalContent = Just additionalContent }
 
 
 {-| Sets the input value attribute
@@ -457,7 +469,7 @@ setValue value (Model configuration) =
 
 {-| Internal
 -}
-normalizeConfig : Config -> Config
+normalizeConfig : Config msg -> Config msg
 normalizeConfig ((Config configData) as config_) =
     case configData.type_ of
         Date ->
@@ -470,7 +482,7 @@ normalizeConfig ((Config configData) as config_) =
 
 {-| Renders the Input.Stories/Chapters/DateField.elm
 -}
-render : (Msg -> msg) -> ctx -> Model ctx value -> Config -> Html msg
+render : (Msg -> msg) -> ctx -> Model ctx value -> Config msg -> Html msg
 render tagger ctx ((Model modelData) as model) rawConfig =
     let
         ((Config configData) as config_) =
@@ -480,40 +492,39 @@ render tagger ctx ((Model modelData) as model) rawConfig =
         shownValidation =
             StrategyInternal.getShownValidation
                 modelData.fieldState
-                (\_ -> modelData.validation ctx modelData.value)
+                (modelData.validation ctx modelData.value)
                 configData.isSubmitted
                 configData.strategy
     in
-    Html.div
-        [ Attributes.class "form-item" ]
-        [ configData.label
-            |> Maybe.map Label.render
-            |> Commons.Render.renderMaybe
-        , Html.div
-            [ Attributes.class "form-item__wrapper" ]
-            [ Html.div
-                [ Attributes.classList
-                    [ ( "form-field", True )
-                    , ( "form-field--error", Result.Extra.isErr shownValidation )
-                    , ( "form-field--disabled", configData.disabled )
-                    ]
-                , Commons.Attributes.maybe addonToAttribute configData.addon
-                ]
-                [ configData.addon
-                    |> Maybe.map (renderAddon shownValidation model config_)
-                    |> Maybe.withDefault (renderInput shownValidation model config_)
-                ]
-            , shownValidation
-                |> Error.fromResult
-                |> Commons.Render.renderErrorOrHint configData.id configData.hint
-            ]
-        ]
+    renderField shownValidation config_ model
         |> Html.map tagger
+        |> FormItem.config configData
+        |> FormItem.withLabel configData.label
+        |> FormItem.withAdditionalContent configData.additionalContent
+        |> FormItem.render shownValidation
 
 
 {-| Internal.
 -}
-renderAddon : Result String () -> Model ctx value -> Config -> Addon -> Html Msg
+renderField : Result String () -> Config msg -> Model ctx value -> Html Msg
+renderField shownValidation ((Config { disabled, addon }) as configuration) ((Model { validation, value }) as model) =
+    Html.div
+        [ Attributes.classList
+            [ ( "form-field", True )
+            , ( "form-field--error", Result.Extra.isErr shownValidation )
+            , ( "form-field--disabled", disabled )
+            ]
+        , Commons.Attributes.maybe addonToAttribute addon
+        ]
+        [ addon
+            |> Maybe.map (renderAddon shownValidation model configuration)
+            |> Maybe.withDefault (renderInput shownValidation model configuration)
+        ]
+
+
+{-| Internal.
+-}
+renderAddon : Result String () -> Model ctx value -> Config msg -> Addon -> Html Msg
 renderAddon validationResult model configuration addon =
     Html.label
         [ Attributes.class "form-field__wrapper" ]
@@ -544,7 +555,7 @@ renderAddonByType type_ =
 
 {-| Internal.
 -}
-renderInput : Result String () -> Model ctx value -> Config -> Html Msg
+renderInput : Result String () -> Model ctx value -> Config msg -> Html Msg
 renderInput validationResult (Model modelData) (Config configData) =
     Html.input
         [ Attributes.id configData.id

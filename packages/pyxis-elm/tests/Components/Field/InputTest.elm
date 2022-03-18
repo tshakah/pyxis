@@ -210,13 +210,13 @@ fieldModel =
     Input.init "" (always Ok)
 
 
-fieldConfig : Input.Config
+fieldConfig : Input.Config msg
 fieldConfig =
     Input.text
         "input_field"
 
 
-fieldRender : ctx -> Input.Model ctx value -> Input.Config -> Query.Single Input.Msg
+fieldRender : ctx -> Input.Model ctx value -> Input.Config Input.Msg -> Query.Single Input.Msg
 fieldRender ctx model =
     Input.render identity ctx model >> Query.fromHtml
 

@@ -23,10 +23,10 @@ type
 
 {-| Helper used to determine whether the error should be shown in the UI or not
 -}
-getShownValidation : FieldState.State -> (() -> Result error value) -> Bool -> Strategy -> Result error ()
+getShownValidation : FieldState.State -> Result error value -> Bool -> Strategy -> Result error ()
 getShownValidation fieldState getValidationResult isSubmitted (ShowError showError) =
     if isSubmitted || showError fieldState then
-        Result.map (always ()) (getValidationResult ())
+        Result.map (always ()) getValidationResult
 
     else
         Ok ()

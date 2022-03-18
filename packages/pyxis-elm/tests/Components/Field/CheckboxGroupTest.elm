@@ -4,6 +4,7 @@ import Components.Field.CheckboxGroup as CheckboxGroup
 import Expect
 import Fuzz
 import Fuzz.Extra
+import Html
 import Html.Attributes
 import Json.Encode exposing (Value)
 import Test exposing (Test)
@@ -25,10 +26,10 @@ langsConfig : CheckboxGroup.Config Lang
 langsConfig =
     CheckboxGroup.config "checkbox-id"
         |> CheckboxGroup.withOptions
-            [ CheckboxGroup.option { value = Elm, label = "Elm" }
-            , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-            , CheckboxGroup.option { value = Rust, label = "Rust" }
-            , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+            [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
+            , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
+            , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
+            , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
             ]
 
 
@@ -56,10 +57,10 @@ suite =
                 \b ->
                     CheckboxGroup.config "checkbox-id"
                         |> CheckboxGroup.withOptions
-                            [ CheckboxGroup.option { value = Elm, label = "Elm" }
-                            , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-                            , CheckboxGroup.option { value = Rust, label = "Rust" }
-                            , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+                            [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
+                            , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
+                            , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
+                            , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
                                 |> CheckboxGroup.withDisabledOption b
                             ]
                         |> renderCheckboxGroup

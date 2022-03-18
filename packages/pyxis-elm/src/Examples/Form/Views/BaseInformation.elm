@@ -10,6 +10,8 @@ import Components.Form.Grid.Row as Row
 import Components.Form.Legend as Legend
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model
+import Html
+import Html.Attributes as Attributes
 
 
 view : Data -> FieldSet.Config Model.Msg
@@ -60,7 +62,15 @@ view ((Data config) as data) =
                 [ Grid.simpleCol
                     [ "checkbox-id"
                         |> CheckboxGroup.single
-                            "Dichiaro di aver letto l’Informativa Privacy, disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "
+                            (Html.div []
+                                [ Html.text
+                                    "Dichiaro di aver letto l’"
+                                , Html.a [ Attributes.href "https://www.prima.it/app/privacy-policy" ]
+                                    [ Html.text "Informativa Privacy" ]
+                                , Html.text
+                                    ", disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "
+                                ]
+                            )
                         |> CheckboxGroup.withName "checkbox-group-single"
                         |> CheckboxGroup.render Model.PrivacyChanged data config.privacyCheck
                     ]

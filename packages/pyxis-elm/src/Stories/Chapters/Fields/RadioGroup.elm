@@ -156,7 +156,7 @@ options =
 
 type alias StatefulConfig =
     { id : String
-    , configModifier : RadioGroup.Config Option -> RadioGroup.Config Option
+    , configModifier : RadioGroup.Config Option (RadioGroup.Msg Option) -> RadioGroup.Config Option (RadioGroup.Msg Option)
     , modelPicker : Model -> RadioGroup.Model () Option Option
     , update : RadioGroup.Msg Option -> RadioFieldModels -> RadioFieldModels
     }

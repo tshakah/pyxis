@@ -11,6 +11,7 @@ module Components.Field.RadioCardGroup exposing
     , horizontal
     , vertical
     , withLayout
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
@@ -61,6 +62,7 @@ module Components.Field.RadioCardGroup exposing
 
 ## Generics
 
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
@@ -131,7 +133,8 @@ init initialValue validation =
 
 
 type alias ConfigData value =
-    { classList : List ( String, Bool )
+    { additionalContent : Maybe (Html (Msg value))
+    , classList : List ( String, Bool )
     , hint : Maybe Hint.Config
     , id : String
     , isDisabled : Bool
@@ -156,7 +159,8 @@ type Config value
 config : String -> Config value
 config id =
     Config
-        { classList = []
+        { additionalContent = Nothing
+        , classList = []
         , hint = Nothing
         , id = id
         , isDisabled = False
@@ -322,20 +326,27 @@ withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html (Msg value) -> Config value -> Config value
+withAdditionalContent additionalContent (Config configuration) =
+    Config { configuration | additionalContent = Just additionalContent }
+
+
 {-| Render the RadioCardGroup.
 -}
 render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
-render tagger ctx ((Model modelData) as model) (Config configData) =
+render tagger ctx (Model modelData) (Config configData) =
     let
         shownValidation : Result String ()
         shownValidation =
             InternalStrategy.getShownValidation
                 modelData.fieldState
-                (\() -> modelData.validation ctx modelData.selectedValue)
+                (modelData.validation ctx modelData.selectedValue)
                 configData.isSubmitted
                 configData.strategy
     in
-    CardGroup.renderCheckbox shownValidation
+    CardGroup.renderRadio shownValidation
         configData
         (List.map (mapOption configData modelData.selectedValue) configData.options)
         |> Html.map tagger

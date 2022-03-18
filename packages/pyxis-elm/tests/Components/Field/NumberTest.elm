@@ -199,11 +199,11 @@ fieldModel =
     NumberField.init "" (always Ok)
 
 
-fieldConfig : NumberField.Config
+fieldConfig : NumberField.Config msg
 fieldConfig =
     NumberField.config "input-id"
 
 
-fieldRender : ctx -> NumberField.Model ctx -> NumberField.Config -> Query.Single NumberField.Msg
+fieldRender : ctx -> NumberField.Model ctx -> NumberField.Config NumberField.Msg -> Query.Single NumberField.Msg
 fieldRender ctx model =
     NumberField.render identity ctx model >> Query.fromHtml

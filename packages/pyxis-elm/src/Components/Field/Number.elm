@@ -7,14 +7,15 @@ module Components.Field.Number exposing
     , textAddon
     , withAddon
     , withSize
-    , withLabel
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
+    , withIsSubmitted
+    , withLabel
     , withName
     , withPlaceholder
     , withStrategy
-    , withIsSubmitted
     , Msg
     , isOnBlur
     , isOnFocus
@@ -54,14 +55,15 @@ module Components.Field.Number exposing
 
 ## Generics
 
-@docs withLabel
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withIsSubmitted
+@docs withLabel
 @docs withName
 @docs withPlaceholder
 @docs withStrategy
-@docs withIsSubmitted
 
 
 ## Update
@@ -116,13 +118,13 @@ mapValidation validation ctx =
 
 {-| The view configuration.
 -}
-type Config
-    = Config Input.Config
+type Config msg
+    = Config (Input.Config msg)
 
 
 {-| Creates the Model of an Input of type="number"
 -}
-config : String -> Config
+config : String -> Config msg
 config =
     Input.number >> Config
 
@@ -156,14 +158,14 @@ isOnBlur (InputMsg msg) =
 
 {-| Internal.
 -}
-mapInputConfig : (Input.Config -> Input.Config) -> Config -> Config
+mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
 mapInputConfig builder (Config configuration) =
     Config (builder configuration)
 
 
 {-| Sets an Addon to the Input Number
 -}
-withAddon : Placement -> Input.AddonType -> Config -> Config
+withAddon : Placement -> Input.AddonType -> Config msg -> Config msg
 withAddon placement addon =
     addon
         |> Input.withAddon placement
@@ -186,70 +188,77 @@ textAddon =
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Config -> Config -> Config
+withLabel : Label.Config -> Config msg -> Config msg
 withLabel label =
     mapInputConfig (Input.withLabel label)
 
 
 {-| Sets a ClassList to the Input Number.
 -}
-withClassList : List ( String, Bool ) -> Config -> Config
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList classes =
     mapInputConfig (Input.withClassList classes)
 
 
 {-| Sets a Name to the Input Number.
 -}
-withName : String -> Config -> Config
+withName : String -> Config msg -> Config msg
 withName name =
     mapInputConfig (Input.withName name)
 
 
 {-| Sets a Placeholder to the Input Number.
 -}
-withPlaceholder : String -> Config -> Config
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder placeholder =
     mapInputConfig (Input.withPlaceholder placeholder)
 
 
 {-| Sets a Size to the Input Number.
 -}
-withSize : Size -> Config -> Config
+withSize : Size -> Config msg -> Config msg
 withSize =
     Input.withSize >> mapInputConfig
 
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config -> Config
+withStrategy : Strategy -> Config msg -> Config msg
 withStrategy strategy =
     mapInputConfig (Input.withStrategy strategy)
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted : Bool -> Config msg -> Config msg
 withIsSubmitted b =
     mapInputConfig (Input.withIsSubmitted b)
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Config -> Config
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled =
     Input.withDisabled >> mapInputConfig
 
 
 {-| Adds the hint to the Input.
 -}
-withHint : String -> Config -> Config
+withHint : String -> Config msg -> Config msg
 withHint hint =
     mapInputConfig (Input.withHint hint)
 
 
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent =
+    Input.withAdditionalContent >> mapInputConfig
+
+
 {-| Render the Input Number.
 -}
-render : (Msg -> msg) -> ctx -> Model ctx -> Config -> Html msg
+render : (Msg -> msg) -> ctx -> Model ctx -> Config msg -> Html msg
 render tagger ctx (Model inputModel) (Config configuration) =
     Input.render (InputMsg >> tagger) ctx inputModel configuration
 

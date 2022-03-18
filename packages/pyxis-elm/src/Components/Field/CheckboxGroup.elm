@@ -6,12 +6,12 @@ module Components.Field.CheckboxGroup exposing
     , horizontal
     , vertical
     , withLayout
+    , withAdditionalContent
     , withClassList
     , withIsSubmitted
     , withLabel
     , withName
     , withStrategy
-    , withDisabledOption
     , Msg
     , isOnCheck
     , update
@@ -20,6 +20,7 @@ module Components.Field.CheckboxGroup exposing
     , Option
     , option
     , withOptions
+    , withDisabledOption
     , render
     , single
     )
@@ -49,13 +50,13 @@ module Components.Field.CheckboxGroup exposing
 
 ## Generics
 
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withIsSubmitted
 @docs withLabel
 @docs withName
 @docs withStrategy
-@docs withDisabledOption
 
 
 ## Update
@@ -76,6 +77,7 @@ module Components.Field.CheckboxGroup exposing
 @docs Option
 @docs option
 @docs withOptions
+@docs withDisabledOption
 
 
 ## Rendering
@@ -85,10 +87,10 @@ module Components.Field.CheckboxGroup exposing
 -}
 
 import Commons.Attributes
-import Commons.Render
-import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as InternalStrategy
+import Components.Field.FormItem as FormItem
+import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.State as FieldState
 import Html exposing (Html)
@@ -184,7 +186,7 @@ uncheckValue value =
 -}
 type Option value
     = Option
-        { label : String
+        { label : Html (Msg value)
         , value : value
         , disabled : Bool
         }
@@ -192,13 +194,20 @@ type Option value
 
 {-| Create a single Checkbox
 -}
-option : { label : String, value : value } -> Option value
+option : { label : Html (Msg value), value : value } -> Option value
 option { label, value } =
     Option
         { label = label
         , value = value
         , disabled = False
         }
+
+
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html (Msg value) -> Config value -> Config value
+withAdditionalContent additionalContent (Config configData) =
+    Config { configData | additionalContent = Just additionalContent }
 
 
 withDisabledOption : Bool -> Option value -> Option value
@@ -278,14 +287,16 @@ vertical =
 
 {-| Internal
 -}
-type alias ConfigData a =
-    { options : List (Option a)
-    , label : Maybe Label.Config
-    , name : Maybe String
+type alias ConfigData value =
+    { additionalContent : Maybe (Html (Msg value))
     , ariaLabelledBy : Maybe String
-    , id : String
     , classList : List ( String, Bool )
+    , hint : Maybe Hint.Config
+    , id : String
+    , label : Maybe Label.Config
     , layout : Layout
+    , name : Maybe String
+    , options : List (Option value)
     , strategy : Strategy
     , isSubmitted : Bool
     }
@@ -303,13 +314,15 @@ type Config value
 config : String -> Config value
 config id =
     Config
-        { options = []
-        , label = Nothing
-        , name = Nothing
+        { additionalContent = Nothing
         , ariaLabelledBy = Nothing
-        , id = id
         , classList = []
+        , hint = Nothing
+        , id = id
+        , label = Nothing
         , layout = Horizontal
+        , name = Nothing
+        , options = []
         , strategy = Strategy.onBlur
         , isSubmitted = False
         }
@@ -326,7 +339,7 @@ config id =
             ]
 
 -}
-single : String -> String -> Config ()
+single : Html (Msg ()) -> String -> Config ()
 single label id =
     config id
         |> withOptions
@@ -337,13 +350,13 @@ single label id =
 {-| Render the CheckboxGroup
 -}
 render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
-render tagger ctx ((Model modelData) as model) (Config configData) =
+render tagger ctx (Model modelData) (Config configData) =
     let
         shownValidation : Result String ()
         shownValidation =
             InternalStrategy.getShownValidation
                 modelData.fieldState
-                (\() -> modelData.validation ctx modelData.checkedValues)
+                (modelData.validation ctx modelData.checkedValues)
                 configData.isSubmitted
                 configData.strategy
 
@@ -355,48 +368,38 @@ render tagger ctx ((Model modelData) as model) (Config configData) =
                 }
                 configData
     in
-    Html.div
-        [ Html.Attributes.class "form-item"
-        , Html.Attributes.classList configData.classList
-        , Html.Attributes.id configData.id
-        , Commons.Attributes.testId configData.id
-        ]
-        [ configData.label
-            |> Maybe.map Label.render
-            |> Commons.Render.renderMaybe
-        , Html.div [ Html.Attributes.class "form-item__wrapper" ]
-            (configData.options
-                |> List.map renderCheckbox_
-                |> renderControlGroup configData
-            )
-        , shownValidation
-            |> Error.fromResult
-            |> Maybe.map (renderErrorConfig configData)
-            |> Commons.Render.renderMaybe
-        ]
+    configData.options
+        |> List.map renderCheckbox_
+        |> renderControlGroup configData
+        |> FormItem.config configData
+        |> FormItem.withLabel configData.label
+        |> FormItem.withAdditionalContent configData.additionalContent
+        |> FormItem.render shownValidation
         |> Html.map tagger
 
 
 {-| Internal
 Handles the single input / input group markup difference
 -}
-renderControlGroup : { r | ariaLabelledBy : Maybe String, layout : Layout } -> List (Html msg) -> List (Html msg)
+renderControlGroup : ConfigData value -> List (Html msg) -> Html msg
 renderControlGroup configData children =
     case children of
-        [ _ ] ->
-            children
+        [ child ] ->
+            child
 
         _ ->
-            [ Html.div
+            Html.div
                 [ Html.Attributes.classList
                     [ ( "form-control-group", True )
                     , ( "form-control-group--column", configData.layout == Vertical )
                     ]
+                , Html.Attributes.classList configData.classList
+                , Html.Attributes.id configData.id
+                , Commons.Attributes.testId configData.id
                 , Html.Attributes.attribute "role" "group"
                 , Commons.Attributes.maybe Commons.Attributes.ariaLabelledbyBy configData.ariaLabelledBy
                 ]
                 children
-            ]
 
 
 {-| Get the (parsed) value
@@ -411,15 +414,6 @@ validate ctx (Model modelData) =
 getValue : Model ctx value parsed -> List value
 getValue (Model modelData) =
     modelData.checkedValues
-
-
-{-| Internal
--}
-renderErrorConfig : ConfigData value -> Error.Config -> Html msg
-renderErrorConfig configData errorConfig =
-    errorConfig
-        |> Error.withFieldId configData.id
-        |> Error.render
 
 
 {-| Internal
@@ -447,7 +441,7 @@ renderCheckbox { hasError, checkedValues } configData (Option optionData) =
             , Html.Events.onBlur (Blurred optionData.value)
             ]
             []
-        , Html.text optionData.label
+        , optionData.label
         ]
 
 
@@ -456,8 +450,8 @@ renderCheckbox { hasError, checkedValues } configData (Option optionData) =
 
 
 mapCheckedValues : (List value -> List value) -> Model ctx value parsed -> Model ctx value parsed
-mapCheckedValues f (Model r) =
-    Model { r | checkedValues = f r.checkedValues }
+mapCheckedValues f (Model modelData) =
+    Model { modelData | checkedValues = f modelData.checkedValues }
 
 
 {-| Internal

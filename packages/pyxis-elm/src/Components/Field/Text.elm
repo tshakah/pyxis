@@ -9,6 +9,7 @@ module Components.Field.Text exposing
     , textAddon
     , withAddon
     , withSize
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
@@ -59,6 +60,7 @@ module Components.Field.Text exposing
 
 ## Generics
 
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
@@ -115,27 +117,27 @@ init initialValue validation =
 
 {-| The view configuration.
 -}
-type Config
-    = Config Input.Config
+type Config msg
+    = Config (Input.Config msg)
 
 
 {-| Creates a <input type="text">.
 -}
-text : String -> Config
+text : String -> Config msg
 text =
     Input.text >> Config
 
 
 {-| Creates a <input type="email">.
 -}
-email : String -> Config
+email : String -> Config msg
 email =
     Input.email >> Config
 
 
 {-| Creates a <input type="password">.
 -}
-password : String -> Config
+password : String -> Config msg
 password =
     Input.password >> Config
 
@@ -169,14 +171,14 @@ isOnBlur (InputMsg msg) =
 
 {-| Internal.
 -}
-mapInputConfig : (Input.Config -> Input.Config) -> Config -> Config
+mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
 mapInputConfig builder (Config configuration) =
     Config (builder configuration)
 
 
 {-| Sets an Addon to the Input Text
 -}
-withAddon : Placement -> Input.AddonType -> Config -> Config
+withAddon : Placement -> Input.AddonType -> Config msg -> Config msg
 withAddon placement addon =
     addon
         |> Input.withAddon placement
@@ -193,7 +195,7 @@ In this example, if the user inputs "abc", the actual inputted text is "ABC".
 This applies to both the user UI and the `getValue`/`validate` functions
 
 -}
-withValueMapper : (String -> String) -> Config -> Config
+withValueMapper : (String -> String) -> Config msg -> Config msg
 withValueMapper mapper =
     mapInputConfig (Input.withValueMapper mapper)
 
@@ -214,70 +216,77 @@ textAddon =
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Config -> Config -> Config
-withLabel label =
-    mapInputConfig (Input.withLabel label)
+withLabel : Label.Config -> Config msg -> Config msg
+withLabel =
+    Input.withLabel >> mapInputConfig
 
 
 {-| Sets a ClassList to the Input Text.
 -}
-withClassList : List ( String, Bool ) -> Config -> Config
-withClassList classes =
-    mapInputConfig (Input.withClassList classes)
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList =
+    Input.withClassList >> mapInputConfig
 
 
 {-| Sets a Name to the Input Text.
 -}
-withName : String -> Config -> Config
-withName name =
-    mapInputConfig (Input.withName name)
+withName : String -> Config msg -> Config msg
+withName =
+    Input.withName >> mapInputConfig
 
 
 {-| Sets a Placeholder to the Input Text.
 -}
-withPlaceholder : String -> Config -> Config
-withPlaceholder placeholder =
-    mapInputConfig (Input.withPlaceholder placeholder)
+withPlaceholder : String -> Config msg -> Config msg
+withPlaceholder =
+    Input.withPlaceholder >> mapInputConfig
 
 
 {-| Sets a Size to the Input Text.
 -}
-withSize : Size -> Config -> Config
+withSize : Size -> Config msg -> Config msg
 withSize =
     Input.withSize >> mapInputConfig
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Config -> Config
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled =
     Input.withDisabled >> mapInputConfig
 
 
 {-| Adds the hint to the Input.
 -}
-withHint : String -> Config -> Config
-withHint hint =
-    mapInputConfig (Input.withHint hint)
+withHint : String -> Config msg -> Config msg
+withHint =
+    Input.withHint >> mapInputConfig
 
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config -> Config
-withStrategy strategy =
-    mapInputConfig (Input.withStrategy strategy)
+withStrategy : Strategy -> Config msg -> Config msg
+withStrategy =
+    Input.withStrategy >> mapInputConfig
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config -> Config
-withIsSubmitted b =
-    mapInputConfig (Input.withIsSubmitted b)
+withIsSubmitted : Bool -> Config msg -> Config msg
+withIsSubmitted =
+    Input.withIsSubmitted >> mapInputConfig
+
+
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent =
+    Input.withAdditionalContent >> mapInputConfig
 
 
 {-| Render the Input Text.
 -}
-render : (Msg -> msg) -> ctx -> Model ctx -> Config -> Html msg
+render : (Msg -> msg) -> ctx -> Model ctx -> Config msg -> Html msg
 render tagger ctx (Model inputModel) (Config configuration) =
     Input.render (InputMsg >> tagger) ctx inputModel configuration
 

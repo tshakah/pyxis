@@ -4,6 +4,7 @@ module Components.Field.Textarea exposing
     , Config
     , config
     , withSize
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
@@ -45,6 +46,7 @@ module Components.Field.Textarea exposing
 
 ## Generics
 
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
@@ -80,9 +82,10 @@ module Components.Field.Textarea exposing
 
 import Commons.Attributes
 import Commons.Properties.Size as Size exposing (Size)
-import Commons.Render
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
+import Components.Field.Error.Strategy.Internal as StrategyInternal
+import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.State as FieldState
@@ -120,14 +123,15 @@ init initialValue validation =
 
 {-| The view configuration.
 -}
-type Config
-    = Config ConfigData
+type Config msg
+    = Config (ConfigData msg)
 
 
 {-| Internal.
 -}
-type alias ConfigData =
-    { classList : List ( String, Bool )
+type alias ConfigData msg =
+    { additionalContent : Maybe (Html msg)
+    , classList : List ( String, Bool )
     , disabled : Bool
     , hint : Maybe Hint.Config
     , id : String
@@ -143,10 +147,11 @@ type alias ConfigData =
 
 {-| Creates a Textarea.
 -}
-config : String -> Config
+config : String -> Config msg
 config id =
     Config
-        { classList = []
+        { additionalContent = Nothing
+        , classList = []
         , disabled = False
         , hint = Nothing
         , id = id
@@ -162,21 +167,21 @@ config id =
 
 {-| Adds a Label to the Textarea.
 -}
-withLabel : Label.Config -> Config -> Config
-withLabel a (Config configuration) =
-    Config { configuration | label = Just a }
+withLabel : Label.Config -> Config msg -> Config msg
+withLabel label (Config configuration) =
+    Config { configuration | label = Just label }
 
 
 {-| Sets the Textarea as disabled
 -}
-withDisabled : Bool -> Config -> Config
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
 {-| Adds the hint to the TextArea.
 -}
-withHint : String -> Config -> Config
+withHint : String -> Config msg -> Config msg
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -189,7 +194,7 @@ withHint hintMessage (Config configuration) =
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config -> Config
+withStrategy : Strategy -> Config msg -> Config msg
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
@@ -204,44 +209,51 @@ In this example, if the user inputs "abc", the actual inputted text is "ABC".
 This applies to both the user UI and the `getValue`/`validate` functions
 
 -}
-withValueMapper : (String -> String) -> Config -> Config
+withValueMapper : (String -> String) -> Config msg -> Config msg
 withValueMapper mapper (Config configData) =
     Config { configData | valueMapper = mapper }
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted : Bool -> Config msg -> Config msg
 withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Sets a Size to the Textarea
 -}
-withSize : Size -> Config -> Config
+withSize : Size -> Config msg -> Config msg
 withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
 {-| Sets a ClassList to the Textarea
 -}
-withClassList : List ( String, Bool ) -> Config -> Config
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
 {-| Sets a Name to the Textarea
 -}
-withName : String -> Config -> Config
+withName : String -> Config msg -> Config msg
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Sets a Placeholder to the Textarea
 -}
-withPlaceholder : String -> Config -> Config
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder placeholder (Config configuration) =
     Config { configuration | placeholder = Just placeholder }
+
+
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent additionalContent (Config configuration) =
+    Config { configuration | additionalContent = Just additionalContent }
 
 
 {-| Represent the messages which the Textarea can handle.
@@ -328,72 +340,66 @@ getValue (Model { value }) =
     value
 
 
-{-| Internal
--}
-withLabelArgs : ConfigData -> Label.Config -> Label.Config
-withLabelArgs configData label =
-    label
-        |> Label.withId (configData.id ++ "-label")
-        |> Label.withFor configData.id
-        |> Label.withSize configData.size
-
-
 {-| Renders the Textarea.
 -}
-render : (Msg -> msg) -> ctx -> Model ctx -> Config -> Html msg
+render : (Msg -> msg) -> ctx -> Model ctx -> Config msg -> Html msg
 render tagger ctx ((Model modelData) as model) ((Config configData) as configuration) =
-    Html.div
-        [ Attributes.class "form-item" ]
-        [ configData.label
-            |> Maybe.map (withLabelArgs configData >> Label.render)
-            |> Commons.Render.renderMaybe
-        , Html.div
-            [ Attributes.class "form-item__wrapper" ]
-            [ Html.div
-                [ Attributes.classList
-                    [ ( "form-field", True )
-                    , ( "form-field--error", Result.Extra.isErr (modelData.validation ctx modelData.value) )
-                    , ( "form-field--disabled", configData.disabled )
-                    ]
-                ]
-                [ renderTextarea ctx model configuration
-                ]
-            , modelData.value
-                |> modelData.validation ctx
-                |> Error.fromResult
-                |> Commons.Render.renderErrorOrHint configData.id configData.hint
-            ]
-        ]
+    let
+        customizedLabel : Maybe Label.Config
+        customizedLabel =
+            Maybe.map (Label.withSize configData.size) configData.label
+
+        shownValidation : Result String ()
+        shownValidation =
+            StrategyInternal.getShownValidation
+                modelData.fieldState
+                (modelData.validation ctx modelData.value)
+                configData.isSubmitted
+                configData.strategy
+    in
+    configuration
+        |> renderTextarea shownValidation model
         |> Html.map tagger
+        |> FormItem.config configData
+        |> FormItem.withLabel customizedLabel
+        |> FormItem.withAdditionalContent configData.additionalContent
+        |> FormItem.render shownValidation
 
 
 {-| Internal.
 -}
-renderTextarea : ctx -> Model ctx -> Config -> Html Msg
-renderTextarea ctx (Model modelData) (Config configData) =
-    Html.textarea
-        [ Attributes.id configData.id
-        , Attributes.classList
-            [ ( "form-field__textarea", True )
-            , ( "form-field__textarea--small", Size.isSmall configData.size )
+renderTextarea : Result String value -> Model ctx -> Config msg -> Html Msg
+renderTextarea validationResult (Model modelData) (Config configData) =
+    Html.div
+        [ Attributes.classList
+            [ ( "form-field", True )
+            , ( "form-field--error", Result.Extra.isErr validationResult )
+            , ( "form-field--disabled", configData.disabled )
             ]
-        , Attributes.classList configData.classList
-        , Attributes.disabled configData.disabled
-        , Attributes.value modelData.value
-        , Commons.Attributes.testId configData.id
-        , Commons.Attributes.maybe Attributes.name configData.name
-        , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
-        , modelData.value
-            |> modelData.validation ctx
-            |> Error.fromResult
-            |> Maybe.map (always (Error.toId configData.id))
-            |> Commons.Attributes.ariaDescribedByErrorOrHint
-                (Maybe.map (always (Hint.toId configData.id)) configData.hint)
-        , Html.Events.onInput (configData.valueMapper >> OnInput)
-        , Html.Events.onFocus OnFocus
-        , Html.Events.onBlur OnBlur
         ]
-        []
+        [ Html.textarea
+            [ Attributes.id configData.id
+            , Attributes.classList
+                [ ( "form-field__textarea", True )
+                , ( "form-field__textarea--small", Size.isSmall configData.size )
+                ]
+            , Attributes.classList configData.classList
+            , Attributes.disabled configData.disabled
+            , Attributes.value modelData.value
+            , Commons.Attributes.testId configData.id
+            , Commons.Attributes.maybe Attributes.name configData.name
+            , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
+            , validationResult
+                |> Error.fromResult
+                |> Maybe.map (always (Error.toId configData.id))
+                |> Commons.Attributes.ariaDescribedByErrorOrHint
+                    (Maybe.map (always (Hint.toId configData.id)) configData.hint)
+            , Html.Events.onInput (configData.valueMapper >> OnInput)
+            , Html.Events.onFocus OnFocus
+            , Html.Events.onBlur OnBlur
+            ]
+            []
+        ]
 
 
 {-| Internal

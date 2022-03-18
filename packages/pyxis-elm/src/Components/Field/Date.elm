@@ -4,6 +4,7 @@ module Components.Field.Date exposing
     , Config
     , config
     , withSize
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
@@ -48,6 +49,7 @@ module Components.Field.Date exposing
 
 ## Generics
 
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
@@ -160,13 +162,13 @@ mapValidation validation ctx =
 
 {-| The view config.
 -}
-type Config
-    = Config Input.Config
+type Config msg
+    = Config (Input.Config msg)
 
 
 {-| Creates a <input type="date">.
 -}
-config : String -> Config
+config : String -> Config msg
 config =
     Input.date >> Config
 
@@ -208,77 +210,84 @@ parseDate str =
 
 {-| Internal.
 -}
-mapInputConfig : (Input.Config -> Input.Config) -> Config -> Config
+mapInputConfig : (Input.Config msg -> Input.Config msg) -> Config msg -> Config msg
 mapInputConfig builder (Config configuration) =
     Config (builder configuration)
 
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Config -> Config -> Config
+withLabel : Label.Config -> Config msg -> Config msg
 withLabel =
     Input.withLabel >> mapInputConfig
 
 
 {-| Sets a ClassList to the Input Date.
 -}
-withClassList : List ( String, Bool ) -> Config -> Config
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList =
     Input.withClassList >> mapInputConfig
 
 
 {-| Adds the hint to the Input.
 -}
-withHint : String -> Config -> Config
+withHint : String -> Config msg -> Config msg
 withHint =
     Input.withHint >> mapInputConfig
 
 
 {-| Sets a Name to the Input Date.
 -}
-withName : String -> Config -> Config
+withName : String -> Config msg -> Config msg
 withName =
     Input.withName >> mapInputConfig
 
 
 {-| Sets a Placeholder to the Input Date.
 -}
-withPlaceholder : String -> Config -> Config
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder =
     Input.withPlaceholder >> mapInputConfig
 
 
 {-| Sets a Size to the Input Date.
 -}
-withSize : Size -> Config -> Config
+withSize : Size -> Config msg -> Config msg
 withSize =
     Input.withSize >> mapInputConfig
 
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config -> Config
+withStrategy : Strategy -> Config msg -> Config msg
 withStrategy strategy =
     mapInputConfig (Input.withStrategy strategy)
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config -> Config
-withIsSubmitted b =
-    mapInputConfig (Input.withIsSubmitted b)
+withIsSubmitted : Bool -> Config msg -> Config msg
+withIsSubmitted isSubmitted =
+    mapInputConfig (Input.withIsSubmitted isSubmitted)
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Config -> Config
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled =
     Input.withDisabled >> mapInputConfig
 
 
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent =
+    Input.withAdditionalContent >> mapInputConfig
+
+
 {-| Render the Input Date.
 -}
-render : (Msg -> msg) -> ctx -> Model ctx -> Config -> Html msg
+render : (Msg -> msg) -> ctx -> Model ctx -> Config msg -> Html msg
 render tagger ctx (Model inputModel) (Config inputConfig) =
     Input.render (InputMsg >> tagger) ctx inputModel inputConfig
 

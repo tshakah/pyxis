@@ -152,6 +152,10 @@ type alias SharedState x =
     }
 
 
+type alias Msg x =
+    ElmBook.Msg (SharedState x)
+
+
 type Option
     = M
     | F
@@ -253,7 +257,7 @@ optionsWithTextAddon =
     ]
 
 
-componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
+componentsList : List ( String, SharedState x -> Html (Msg x) )
 componentsList =
     [ ( "CheckboxCardGroup"
       , statefulComponent
@@ -300,13 +304,13 @@ componentsList =
 
 type alias StatefulConfig parsed =
     { id : String
-    , configModifier : CheckboxCardGroup.Config Option -> CheckboxCardGroup.Config Option
+    , configModifier : CheckboxCardGroup.Config Option (CheckboxCardGroup.Msg Option) -> CheckboxCardGroup.Config Option (CheckboxCardGroup.Msg Option)
     , modelPicker : Model -> CheckboxCardGroup.Model () Option parsed
     , update : CheckboxCardGroup.Msg Option -> CheckboxCardFieldModels -> CheckboxCardFieldModels
     }
 
 
-statefulComponent : StatefulConfig parsed -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statefulComponent : StatefulConfig parsed -> SharedState x -> Html (Msg x)
 statefulComponent { id, configModifier, modelPicker, update } sharedState =
     CheckboxCardGroup.config id
         |> CheckboxCardGroup.withOptions

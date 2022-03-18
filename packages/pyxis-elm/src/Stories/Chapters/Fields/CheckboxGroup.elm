@@ -6,6 +6,7 @@ import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Html.Attributes as Attributes
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
@@ -48,10 +49,10 @@ checkboxGroup : formData -> Html Msg
 checkboxGroup formData =
     CheckboxGroup.config "checkbox-id"
         |> CheckboxGroup.withOptions
-            [ CheckboxGroup.option { value = Elm, label = "Elm" }
-            , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-            , CheckboxGroup.option { value = Rust, label = "Rust" }
-            , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+            [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
+            , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
+            , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
+            , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
             ]
         |> CheckboxGroup.render OnCheckboxGroupMsg formData checkboxGroupModel
 ```
@@ -73,10 +74,10 @@ CheckboxGroup.config "checkbox-id"
 ```
 options : List (CheckboxGroup.Option Option)
 options =
-    [ CheckboxGroup.option { value = Elm, label = "Elm" }
-    , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-    , CheckboxGroup.option { value = Rust, label = "Rust" }
-    , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+    [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
+    , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
+    , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
+    , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
         |> CheckboxGroup.withDisabledOption True
     ]
 
@@ -91,7 +92,20 @@ CheckboxGroup.config "checkbox-id"
 # With a single option
 <component with-label="CheckboxGroup with a single option" />
 ```
-CheckboxGroup.single "Accept the policy" "checkbox-id"
+CheckboxGroup.single
+    (Html.div []
+     [ Html.text
+         "Dichiaro di aver letto l’"
+     , Html.a
+         [ Attributes.href "https://www.prima.it/app/privacy-policy"
+         , Attributes.target "blank"
+         ]
+         [ Html.text "Informativa Privacy" ]
+     , Html.text
+         ", disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "
+     ]
+    )
+    "checkbox-id"
     |> CheckboxGroup.render
         OnCheckboxGroupMsg
         formData
@@ -151,19 +165,19 @@ init =
 
 options : List (CheckboxGroup.Option Option)
 options =
-    [ CheckboxGroup.option { value = Elm, label = "Elm" }
-    , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-    , CheckboxGroup.option { value = Rust, label = "Rust" }
-    , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+    [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
+    , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
+    , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
+    , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
     ]
 
 
 optionsWithDisabled : List (CheckboxGroup.Option Option)
 optionsWithDisabled =
-    [ CheckboxGroup.option { value = Elm, label = "Elm" }
-    , CheckboxGroup.option { value = Typescript, label = "Typescript" }
-    , CheckboxGroup.option { value = Rust, label = "Rust" }
-    , CheckboxGroup.option { value = Elixir, label = "Elixir" }
+    [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
+    , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
+    , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
+    , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
         |> CheckboxGroup.withDisabledOption True
     ]
 
@@ -196,7 +210,20 @@ componentsList =
       )
     , ( "CheckboxGroup with a single option"
       , \sharedState ->
-            CheckboxGroup.single "Accept the policy" "checkbox-id"
+            CheckboxGroup.single
+                (Html.div []
+                    [ Html.text
+                        "Dichiaro di aver letto l’"
+                    , Html.a
+                        [ Attributes.href "https://www.prima.it/app/privacy-policy"
+                        , Attributes.target "blank"
+                        ]
+                        [ Html.text "Informativa Privacy" ]
+                    , Html.text
+                        ", disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "
+                    ]
+                )
+                "checkbox-id"
                 |> CheckboxGroup.withName "checkbox-group-single"
                 |> CheckboxGroup.render identity () sharedState.checkbox.single
                 |> Html.map

@@ -183,7 +183,7 @@ componentsList =
     ]
 
 
-statelessComponent : String -> (Text.Config -> Text.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent : String -> (Text.Config Text.Msg -> Text.Config Text.Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
 statelessComponent id modifier { text } =
     Text.text id
         |> modifier
@@ -199,7 +199,7 @@ statelessComponent id modifier { text } =
 
 statefulComponent :
     String
-    -> (Text.Config -> Text.Config)
+    -> (Text.Config Text.Msg -> Text.Config Text.Msg)
     -> (Text.Model () -> Text.Model ())
     -> (Model -> Text.Model ())
     -> (Text.Msg -> Model -> Model)

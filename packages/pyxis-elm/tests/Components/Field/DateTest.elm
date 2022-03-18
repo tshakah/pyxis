@@ -165,11 +165,11 @@ fieldModel =
     DateField.init "" (always Ok)
 
 
-fieldConfig : DateField.Config
+fieldConfig : DateField.Config msg
 fieldConfig =
     DateField.config "input-id"
 
 
-fieldRender : ctx -> DateField.Model ctx -> DateField.Config -> Query.Single DateField.Msg
+fieldRender : ctx -> DateField.Model ctx -> DateField.Config DateField.Msg -> Query.Single DateField.Msg
 fieldRender ctx model =
     DateField.render identity ctx model >> Query.fromHtml

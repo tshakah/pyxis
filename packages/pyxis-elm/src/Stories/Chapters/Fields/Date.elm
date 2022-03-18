@@ -87,6 +87,10 @@ type alias Model =
     }
 
 
+type alias Msg x =
+    ElmBook.Msg (SharedState x)
+
+
 init : Model
 init =
     { base = Date.init "" (always Ok)
@@ -104,7 +108,7 @@ validation _ value =
             Err "You should select a valid date"
 
 
-componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState x)) )
+componentsList : List ( String, SharedState x -> Html (Msg x) )
 componentsList =
     [ ( "Date"
       , statefulComponent
@@ -125,7 +129,7 @@ componentsList =
     ]
 
 
-statelessComponent : String -> (Date.Config -> Date.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent : String -> (Date.Config Date.Msg -> Date.Config Date.Msg) -> SharedState x -> Html (Msg x)
 statelessComponent id modifier { date } =
     Date.config id
         |> modifier
@@ -141,7 +145,7 @@ statelessComponent id modifier { date } =
 
 statefulComponent :
     String
-    -> (Date.Config -> Date.Config)
+    -> (Date.Config Date.Msg -> Date.Config Date.Msg)
     -> (Model -> Date.Model ())
     -> (Date.Msg -> Model -> Model)
     -> SharedState x

@@ -126,7 +126,7 @@ componentsList =
     ]
 
 
-statelessComponent : String -> (Textarea.Config -> Textarea.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
+statelessComponent : String -> (Textarea.Config Textarea.Msg -> Textarea.Config Textarea.Msg) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
 statelessComponent id configModifier { textarea } =
     Textarea.config id
         |> configModifier

@@ -18,6 +18,7 @@ import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Commons.String
 import Components.Field.Error as Error
+import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Icon as Icon
@@ -43,7 +44,7 @@ type Type
 
 {-| This is non opaque by design
 -}
-type alias Config r =
+type alias Config r msg =
     { r
         | size : Size
         , name : Maybe String
@@ -52,6 +53,7 @@ type alias Config r =
         , classList : List ( String, Bool )
         , layout : Layout
         , hint : Maybe Hint.Config
+        , additionalContent : Maybe (Html msg)
     }
 
 
@@ -87,51 +89,36 @@ getRole type_ =
             "group"
 
 
-renderCheckbox : Result String value -> Config r -> List (Option msg) -> Html msg
+renderCheckbox : Result String value -> Config r msg -> List (Option msg) -> Html msg
 renderCheckbox =
     render Checkbox
 
 
-renderRadio : Result String value -> Config r -> List (Option msg) -> Html msg
+renderRadio : Result String value -> Config r msg -> List (Option msg) -> Html msg
 renderRadio =
     render Radio
 
 
-render : Type -> Result String value -> Config r -> List (Option msg) -> Html msg
+render : Type -> Result String value -> Config r msg -> List (Option msg) -> Html msg
 render type_ validationResult configData options =
     Html.div
-        [ Attributes.class "form-item" ]
-        [ renderLabel configData
-        , Html.div
-            [ Attributes.class "form-item__wrapper" ]
-            [ Html.div
-                [ Attributes.classList
-                    [ ( "form-card-group", True )
-                    , ( "form-card-group--column", configData.layout == Vertical )
-                    ]
-                , Attributes.classList configData.classList
-                , Attributes.id configData.id
-                , Commons.Attributes.testId configData.id
-                , Commons.Attributes.role (getRole type_)
-                , Commons.Attributes.ariaLabelledbyBy (labelId configData.id)
-                , Commons.Attributes.renderIf (Result.Extra.isErr validationResult)
-                    (Commons.Attributes.ariaDescribedBy (Error.toId configData.id))
-                ]
-                (List.indexedMap (renderCard type_ validationResult configData) options)
-            , validationResult
-                |> Error.fromResult
-                |> Commons.Render.renderErrorOrHint configData.id configData.hint
+        [ Attributes.classList
+            [ ( "form-card-group", True )
+            , ( "form-card-group--column", configData.layout == Vertical )
             ]
+        , Attributes.classList configData.classList
+        , Attributes.id configData.id
+        , Commons.Attributes.testId configData.id
+        , Commons.Attributes.role (getRole type_)
+        , Commons.Attributes.ariaLabelledbyBy (labelId configData.id)
+        , Commons.Attributes.renderIf (Result.Extra.isErr validationResult)
+            (Commons.Attributes.ariaDescribedBy (Error.toId configData.id))
         ]
-
-
-{-| Internal.
--}
-renderLabel : { r | label : Maybe Label.Config, id : String } -> Html msg
-renderLabel { label, id } =
-    label
-        |> Maybe.map (Label.withId (labelId id) >> Label.render)
-        |> Commons.Render.renderMaybe
+        (List.indexedMap (renderCard type_ validationResult configData) options)
+        |> FormItem.config configData
+        |> FormItem.withLabel configData.label
+        |> FormItem.withAdditionalContent configData.additionalContent
+        |> FormItem.render validationResult
 
 
 {-| Internal.
@@ -141,7 +128,7 @@ labelId =
     (++) "label-"
 
 
-renderCard : Type -> Result String value -> Config r -> Int -> Option msg -> Html msg
+renderCard : Type -> Result String value -> Config r msg -> Int -> Option msg -> Html msg
 renderCard type_ validationResult config index option =
     let
         id_ : String

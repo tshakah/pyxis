@@ -9,6 +9,7 @@ module Components.Field.RadioGroup exposing
     , withLayout
     , withIsSubmitted
     , withStrategy
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
@@ -55,6 +56,7 @@ module Components.Field.RadioGroup exposing
 
 ## Generics
 
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
@@ -89,15 +91,15 @@ module Components.Field.RadioGroup exposing
 -}
 
 import Commons.Attributes
-import Commons.Render
 import Commons.String
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as InternalStrategy
+import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.State as FieldState
-import Html
+import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events as Events
 import Result.Extra
@@ -124,41 +126,43 @@ init initialValue validation =
         }
 
 
-type alias ConfigData value =
-    { classList : List ( String, Bool )
+type alias ConfigData value msg =
+    { additionalContent : Maybe (Html msg)
+    , classList : List ( String, Bool )
     , hint : Maybe Hint.Config
     , id : String
     , isDisabled : Bool
+    , isSubmitted : Bool
     , label : Maybe Label.Config
     , layout : Layout
     , name : Maybe String
     , options : List (Option value)
     , strategy : Strategy
-    , isSubmitted : Bool
     }
 
 
 {-| The RadioGroup configuration.
 -}
-type Config value
-    = Config (ConfigData value)
+type Config value msg
+    = Config (ConfigData value msg)
 
 
 {-| Initialize the RadioGroup Config.
 -}
-config : String -> Config value
+config : String -> Config value msg
 config id =
     Config
-        { classList = []
+        { additionalContent = Nothing
+        , classList = []
         , hint = Nothing
         , id = id
         , isDisabled = False
-        , layout = Horizontal
+        , isSubmitted = False
         , label = Nothing
+        , layout = Horizontal
         , name = Nothing
         , options = []
         , strategy = Strategy.onBlur
-        , isSubmitted = False
         }
 
 
@@ -219,21 +223,21 @@ vertical =
 
 {-| Add the classes to the group wrapper.
 -}
-withClassList : List ( String, Bool ) -> Config value -> Config value
+withClassList : List ( String, Bool ) -> Config value msg -> Config value msg
 withClassList classList (Config configuration) =
     Config { configuration | classList = classList }
 
 
 {-| Define if the group is disabled or not.
 -}
-withDisabled : Bool -> Config value -> Config value
+withDisabled : Bool -> Config value msg -> Config value msg
 withDisabled isDisabled (Config configuration) =
     Config { configuration | isDisabled = isDisabled }
 
 
 {-| Adds the hint to the RadioGroup.
 -}
-withHint : String -> Config value -> Config value
+withHint : String -> Config value msg -> Config value msg
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -246,44 +250,51 @@ withHint hintMessage (Config configuration) =
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config value -> Config value
+withStrategy : Strategy -> Config value msg -> Config value msg
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config value -> Config value
+withIsSubmitted : Bool -> Config value msg -> Config value msg
 withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Add a name to the inputs.
 -}
-withName : String -> Config value -> Config value
+withName : String -> Config value msg -> Config value msg
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Add a label to the inputs.
 -}
-withLabel : Label.Config -> Config value -> Config value
+withLabel : Label.Config -> Config value msg -> Config value msg
 withLabel label (Config configuration) =
     Config { configuration | label = Just label }
 
 
 {-| Define the visible options in the radio group.
 -}
-withOptions : List (Option value) -> Config value -> Config value
+withOptions : List (Option value) -> Config value msg -> Config value msg
 withOptions options (Config configuration) =
     Config { configuration | options = options }
 
 
 {-| Change the visual layout. The default one is horizontal.
 -}
-withLayout : Layout -> Config value -> Config value
+withLayout : Layout -> Config value msg -> Config value msg
 withLayout layout (Config configuration) =
     Config { configuration | layout = layout }
+
+
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html msg -> Config value msg -> Config value msg
+withAdditionalContent additionalContent (Config configuration) =
+    Config { configuration | additionalContent = Just additionalContent }
 
 
 {-| Generate a Radio Option
@@ -295,54 +306,43 @@ option =
 
 {-| Render the RadioGroup.
 -}
-render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html.Html msg
-render tagger ctx ((Model modelData) as model) ((Config configData) as config_) =
+render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value msg -> Html.Html msg
+render tagger ctx ((Model modelData) as model) ((Config configData) as configuration) =
     let
         shownValidation : Result String ()
         shownValidation =
             InternalStrategy.getShownValidation
                 modelData.fieldState
-                (\() -> modelData.validation ctx modelData.selectedValue)
+                (modelData.validation ctx modelData.selectedValue)
                 configData.isSubmitted
                 configData.strategy
     in
-    Html.div
-        [ Attributes.class "form-item" ]
-        [ renderLabel configData.label configData.id
-        , Html.div
-            [ Attributes.class "form-item__wrapper" ]
-            [ Html.div
-                [ Attributes.classList
-                    [ ( "form-control-group", True )
-                    , ( "form-control-group--column", configData.layout == Vertical )
-                    ]
-                , Attributes.classList configData.classList
-                , Attributes.id configData.id
-                , Commons.Attributes.role "radiogroup"
-                , Commons.Attributes.ariaLabelledbyBy (labelId configData.id)
-                , modelData.selectedValue
-                    |> modelData.validation ctx
-                    |> Error.fromResult
-                    |> Maybe.map (always (Error.toId configData.id))
-                    |> Commons.Attributes.ariaDescribedByErrorOrHint
-                        (Maybe.map (always (Hint.toId configData.id)) configData.hint)
-                ]
-                (List.map (renderRadio shownValidation model config_) configData.options)
-            , shownValidation
-                |> Error.fromResult
-                |> Commons.Render.renderErrorOrHint configData.id configData.hint
-            ]
-        ]
+    renderField shownValidation model configuration
         |> Html.map tagger
+        |> FormItem.config configData
+        |> FormItem.withLabel configData.label
+        |> FormItem.withAdditionalContent configData.additionalContent
+        |> FormItem.render shownValidation
 
 
-{-| Internal.
--}
-renderLabel : Maybe Label.Config -> String -> Html.Html msg
-renderLabel label id =
-    label
-        |> Maybe.map (Label.withId (labelId id) >> Label.render)
-        |> Commons.Render.renderMaybe
+renderField : Result String () -> Model ctx value parsed -> Config value msg -> Html.Html (Msg value)
+renderField shownValidation model ((Config configData) as configuration) =
+    Html.div
+        [ Attributes.classList
+            [ ( "form-control-group", True )
+            , ( "form-control-group--column", configData.layout == Vertical )
+            ]
+        , Attributes.classList configData.classList
+        , Attributes.id configData.id
+        , Commons.Attributes.role "radiogroup"
+        , Commons.Attributes.ariaLabelledbyBy (labelId configData.id)
+        , shownValidation
+            |> Error.fromResult
+            |> Maybe.map (always (Error.toId configData.id))
+            |> Commons.Attributes.ariaDescribedByErrorOrHint
+                (Maybe.map (always (Hint.toId configData.id)) configData.hint)
+        ]
+        (List.map (renderRadio shownValidation model configuration) configData.options)
 
 
 {-| Internal.
@@ -354,7 +354,7 @@ labelId =
 
 {-| Internal.
 -}
-renderRadio : Result String x -> Model ctx value parsed -> Config value -> Option value -> Html.Html (Msg value)
+renderRadio : Result String x -> Model ctx value parsed -> Config value msg -> Option value -> Html.Html (Msg value)
 renderRadio validationResult (Model { validation, selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
     Html.label
         [ Attributes.classList

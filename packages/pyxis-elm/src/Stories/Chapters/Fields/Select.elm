@@ -192,7 +192,7 @@ componentsList =
 
 
 type alias StatelessConfig =
-    { id : String, isMobile : Bool, configModifier : Select.Config -> Select.Config }
+    { id : String, isMobile : Bool, configModifier : Select.Config Select.Msg -> Select.Config Select.Msg }
 
 
 statelessComponent :

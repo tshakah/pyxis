@@ -4,6 +4,7 @@ module Components.Field.Select exposing
     , Config
     , config
     , withSize
+    , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
@@ -44,6 +45,7 @@ module Components.Field.Select exposing
 
 ## Generics
 
+@docs withAdditionalContent
 @docs withClassList
 @docs withDisabled
 @docs withHint
@@ -89,6 +91,7 @@ import Commons.Render
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as StrategyInternal
+import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.State as FieldState
@@ -435,8 +438,9 @@ hoverFirstDropdownItem { options, id, delayed } ((Model modelData) as model) =
 
 {-| Internal.
 -}
-type alias ConfigData =
-    { classList : List ( String, Bool )
+type alias ConfigData msg =
+    { additionalContent : Maybe (Html msg)
+    , classList : List ( String, Bool )
     , disabled : Bool
     , hint : Maybe Hint.Config
     , id : String
@@ -454,17 +458,18 @@ type alias ConfigData =
 {-| A type representing the select rendering options.
 This should not belong to the app `Model`
 -}
-type Config
-    = Config ConfigData
+type Config msg
+    = Config (ConfigData msg)
 
 
 {-| Create a [`Select.Config`](Select#Config) with the default options applied.
 You can apply different options with the `withX` modifiers
 -}
-config : Bool -> String -> Config
+config : Bool -> String -> Config msg
 config isMobile id =
     Config
-        { classList = []
+        { additionalContent = Nothing
+        , classList = []
         , disabled = False
         , hint = Nothing
         , id = id
@@ -497,21 +502,21 @@ option =
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config -> Config
+withStrategy : Strategy -> Config msg -> Config msg
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config -> Config
+withIsSubmitted : Bool -> Config msg -> Config msg
 withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Set the select options
 -}
-withOptions : List Option -> Config -> Config
+withOptions : List Option -> Config msg -> Config msg
 withOptions options (Config select) =
     Config { select | options = options }
 
@@ -519,21 +524,21 @@ withOptions options (Config select) =
 {-| Set the text visible when no option is selected
 Note: this is not a native placeholder attribute
 -}
-withPlaceholder : String -> Config -> Config
+withPlaceholder : String -> Config msg -> Config msg
 withPlaceholder placeholder (Config select) =
     Config { select | placeholder = Just placeholder }
 
 
 {-| Set the disabled attribute
 -}
-withDisabled : Bool -> Config -> Config
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled disabled (Config select) =
     Config { select | disabled = disabled }
 
 
 {-| Adds the hint to the Select.
 -}
-withHint : String -> Config -> Config
+withHint : String -> Config msg -> Config msg
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -546,21 +551,21 @@ withHint hintMessage (Config configuration) =
 
 {-| Set the name attribute
 -}
-withName : String -> Config -> Config
+withName : String -> Config msg -> Config msg
 withName name (Config select) =
     Config { select | name = Just name }
 
 
 {-| Set the select size
 -}
-withSize : Size -> Config -> Config
+withSize : Size -> Config msg -> Config msg
 withSize size (Config select) =
     Config { select | size = size }
 
 
 {-| Sets the component label
 -}
-withLabel : Label.Config -> Config -> Config
+withLabel : Label.Config -> Config msg -> Config msg
 withLabel label (Config select) =
     Config { select | label = Just label }
 
@@ -577,9 +582,16 @@ Only has the "b" class
 _WARNING_: this function is considered unstable and should be used only as an emergency escape hatch
 
 -}
-withClassList : List ( String, Bool ) -> Config -> Config
+withClassList : List ( String, Bool ) -> Config msg -> Config msg
 withClassList classList (Config select) =
     Config { select | classList = classList }
+
+
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent additionalContent (Config configuration) =
+    Config { configuration | additionalContent = Just additionalContent }
 
 
 
@@ -604,112 +616,104 @@ shouldKeydownPreventDefault keydownEvent =
 
 {-| Internal
 -}
-handleSelectKeydown : ConfigData -> KeyDown.Event -> ( Msg, Bool )
+handleSelectKeydown : ConfigData msg -> KeyDown.Event -> ( Msg, Bool )
 handleSelectKeydown configData key =
     ( SelectKeyDown { id = configData.id, options = configData.options } key
     , shouldKeydownPreventDefault key && not configData.isMobile
     )
 
 
-{-| Internal
--}
-withLabelArgs : ConfigData -> Label.Config -> Label.Config
-withLabelArgs configData label =
-    label
-        |> Label.withId (configData.id ++ "-label")
-        |> Label.withFor configData.id
-        |> Label.withSize configData.size
-
-
 {-| Render the html
 -}
-render : (Msg -> msg) -> ctx -> Model ctx parsed -> Config -> Html msg
-render tagger ctx ((Model modelData) as model) (Config configData) =
+render : (Msg -> msg) -> ctx -> Model ctx parsed -> Config msg -> Html msg
+render tagger ctx ((Model modelData) as model) ((Config configData) as configuration) =
     let
         shownValidation : Result String ()
         shownValidation =
             StrategyInternal.getShownValidation
                 modelData.fieldState
-                (\() -> modelData.validation ctx modelData.value)
+                (modelData.validation ctx modelData.value)
                 configData.isSubmitted
                 configData.strategy
+
+        customizedLabel : Maybe Label.Config
+        customizedLabel =
+            Maybe.map (Label.withSize configData.size) configData.label
     in
-    Html.div [ Attributes.class "form-item" ]
-        [ configData.label
-            |> Maybe.map (withLabelArgs configData >> Label.render)
-            |> Commons.Render.renderMaybe
-        , Html.div [ Attributes.class "form-item__wrapper" ]
-            [ Html.div
-                [ Attributes.classList
-                    [ ( "form-field", True )
-                    , ( "form-field--with-dropdown", not configData.isMobile )
-                    , ( "form-field--with-opened-dropdown", not configData.isMobile && isDropDownOpen model )
-                    , ( "form-field--error", Result.Extra.isErr shownValidation )
-                    , ( "form-field--disabled", configData.disabled )
-                    ]
-                ]
-                [ Html.label
-                    [ Attributes.class "form-field__wrapper"
-                    , ClickedLabel configData.id
-                        |> Commons.Events.onClickPreventDefault
-                        |> Commons.Attributes.renderIf (not configData.isMobile && not configData.disabled)
-                    ]
-                    [ Html.select
-                        [ Attributes.classList
-                            [ ( "form-field__select", True )
-                            , ( "form-field__select--filled", modelData.value /= Nothing )
-                            , ( "form-field__select--small", Size.isSmall configData.size )
-                            ]
-                        , Attributes.id configData.id
-                        , Commons.Attributes.testId configData.id
-                        , Attributes.classList configData.classList
-                        , Attributes.disabled configData.disabled
-                        , shownValidation
-                            |> Error.fromResult
-                            |> Maybe.map (always (Error.toId configData.id))
-                            |> Commons.Attributes.ariaDescribedByErrorOrHint
-                                (Maybe.map (always (Hint.toId configData.id)) configData.hint)
+    renderField shownValidation model configuration
+        |> FormItem.config configData
+        |> FormItem.withLabel customizedLabel
+        |> FormItem.render shownValidation
+        |> Html.map tagger
 
-                        -- Conditional attributes
-                        , Commons.Attributes.maybe Attributes.value modelData.value
-                        , Commons.Attributes.maybe Attributes.name configData.name
 
-                        -- Events
-                        , Html.Events.onInput Selected
-                        , Html.Events.onBlur (Blurred configData.id)
-                        , KeyDown.onKeyDownPreventDefaultOn (handleSelectKeydown configData)
-                        , Commons.Events.alwaysStopPropagationOn "click" Noop
-                        ]
-                        (Html.option
-                            [ Attributes.hidden True
-                            , Attributes.disabled True
-                            , Attributes.selected True
-                            ]
-                            [ configData.placeholder
-                                |> Maybe.map Html.text
-                                |> Commons.Render.renderMaybe
-                            ]
-                            :: List.map renderNativeOption configData.options
-                        )
-                    , Html.div [ Attributes.class "form-field__addon" ]
-                        [ IconSet.ChevronDown
-                            |> Icon.create
-                            |> Icon.render
-                        ]
-                    ]
-                , renderDropdownWrapper model (Config configData)
-                ]
-            , shownValidation
-                |> Error.fromResult
-                |> Commons.Render.renderErrorOrHint configData.id configData.hint
+renderField : Result String () -> Model ctx value -> Config msg -> Html Msg
+renderField shownValidation ((Model modelData) as model) (Config configData) =
+    Html.div
+        [ Attributes.classList
+            [ ( "form-field", True )
+            , ( "form-field--with-dropdown", not configData.isMobile )
+            , ( "form-field--with-opened-dropdown", not configData.isMobile && isDropDownOpen model )
+            , ( "form-field--error", Result.Extra.error shownValidation /= Nothing )
+            , ( "form-field--disabled", configData.disabled )
             ]
         ]
-        |> Html.map tagger
+        [ Html.label
+            [ Attributes.class "form-field__wrapper"
+            , ClickedLabel configData.id
+                |> Commons.Events.onClickPreventDefault
+                |> Commons.Attributes.renderIf (not configData.isMobile && not configData.disabled)
+            ]
+            [ Html.select
+                [ Attributes.classList
+                    [ ( "form-field__select", True )
+                    , ( "form-field__select--filled", modelData.value /= Nothing )
+                    , ( "form-field__select--small", Size.isSmall configData.size )
+                    ]
+                , Attributes.id configData.id
+                , Commons.Attributes.testId configData.id
+                , Attributes.classList configData.classList
+                , Attributes.disabled configData.disabled
+                , shownValidation
+                    |> Error.fromResult
+                    |> Maybe.map (always (Error.toId configData.id))
+                    |> Commons.Attributes.ariaDescribedByErrorOrHint
+                        (Maybe.map (always (Hint.toId configData.id)) configData.hint)
+
+                -- Conditional attributes
+                , Commons.Attributes.maybe Attributes.value modelData.value
+                , Commons.Attributes.maybe Attributes.name configData.name
+
+                -- Events
+                , Html.Events.onInput Selected
+                , Html.Events.onBlur (Blurred configData.id)
+                , KeyDown.onKeyDownPreventDefaultOn (handleSelectKeydown configData)
+                , Commons.Events.alwaysStopPropagationOn "click" Noop
+                ]
+                (Html.option
+                    [ Attributes.hidden True
+                    , Attributes.disabled True
+                    , Attributes.selected True
+                    ]
+                    [ configData.placeholder
+                        |> Maybe.map Html.text
+                        |> Commons.Render.renderMaybe
+                    ]
+                    :: List.map renderNativeOption configData.options
+                )
+            , Html.div [ Attributes.class "form-field__addon" ]
+                [ IconSet.ChevronDown
+                    |> Icon.create
+                    |> Icon.render
+                ]
+            ]
+        , renderDropdownWrapper model (Config configData)
+        ]
 
 
 {-| Internal.
 -}
-renderDropdownWrapper : Model ctx parsed -> Config -> Html Msg
+renderDropdownWrapper : Model ctx parsed -> Config msg -> Html Msg
 renderDropdownWrapper (Model model) (Config select) =
     -- Currently not using renderIf for performance reasons
     if select.isMobile then
@@ -754,7 +758,7 @@ getDropDownItemId id index =
 -}
 renderDropdownItem :
     ModelData ctx parsed
-    -> Config
+    -> Config msg
     -> ( ( Int, Option ), ( Int, Option ), ( Int, Option ) )
     -> Html Msg
 renderDropdownItem { dropDownState, value } (Config configData) ( previous, ( index, Option option_ ), next ) =

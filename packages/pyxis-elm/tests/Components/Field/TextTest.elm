@@ -184,17 +184,17 @@ fieldModel =
     TextField.init "" (always Ok)
 
 
-fieldConfig : TextField.Config
+fieldConfig : TextField.Config msg
 fieldConfig =
     TextField.text "input-id"
 
 
-fieldRender : ctx -> TextField.Model ctx -> TextField.Config -> Query.Single TextField.Msg
+fieldRender : ctx -> TextField.Model ctx -> TextField.Config TextField.Msg -> Query.Single TextField.Msg
 fieldRender ctx model =
     TextField.render identity ctx model >> Query.fromHtml
 
 
-simulation : TextField.Config -> Simulation.Simulation (TextField.Model ()) TextField.Msg
+simulation : TextField.Config TextField.Msg -> Simulation.Simulation (TextField.Model ()) TextField.Msg
 simulation config =
     Simulation.fromSandbox
         { init = TextField.init "" (always Ok)

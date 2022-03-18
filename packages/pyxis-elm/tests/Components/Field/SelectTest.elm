@@ -126,7 +126,7 @@ findSelect =
     Query.find [ Selector.tag "select" ]
 
 
-renderSelect : Select.Config -> Query.Single Select.Msg
+renderSelect : Select.Config Select.Msg -> Query.Single Select.Msg
 renderSelect =
     Select.render identity () (Select.init Nothing (always Ok)) >> Query.fromHtml
 
