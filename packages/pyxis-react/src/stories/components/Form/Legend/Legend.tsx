@@ -15,7 +15,7 @@ const Legend:FC<LegendProps> =
       {(withIcon || withImage) &&
         <span className="form-legend__addon">
         {withIcon && <IconCar boxedVariant="brand"/>}
-          {withImage && <img src={placeholder} width={56} height={56} alt=""/>}
+          {withImage && <img src={placeholder} width={80} height={80} alt=""/>}
       </span>
       }
       <span className="form-legend__title">Legend title</span>

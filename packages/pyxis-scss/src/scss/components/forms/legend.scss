@@ -43,7 +43,7 @@
 }
 
 .form-legend__title {
-  @include foundations.title(s, bold);
+  @include foundations.title(m, bold);
   color: foundations.color(neutralBase);
   display: block;
 }

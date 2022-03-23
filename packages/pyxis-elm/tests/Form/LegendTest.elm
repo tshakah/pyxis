@@ -58,7 +58,12 @@ suite =
                     |> Query.contains
                         [ Html.span
                             [ Html.Attributes.class "form-legend__addon" ]
-                            [ Html.img [ Html.Attributes.src s ] [] ]
+                            [ Html.img
+                                [ Html.Attributes.src s
+                                , Html.Attributes.height 80
+                                ]
+                                []
+                            ]
                         ]
         , Test.test "contains icon addon" <|
             \_ ->

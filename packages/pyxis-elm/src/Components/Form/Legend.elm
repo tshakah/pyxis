@@ -184,7 +184,12 @@ renderAddonByType type_ =
         ImageAddon url ->
             Html.span
                 [ Attributes.class "form-legend__addon" ]
-                [ Html.img [ Attributes.src url ] [] ]
+                [ Html.img
+                    [ Attributes.src url
+                    , Attributes.height 80
+                    ]
+                    []
+                ]
 
 
 {-| Internal.
