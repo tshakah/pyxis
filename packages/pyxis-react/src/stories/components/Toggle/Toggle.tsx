@@ -5,20 +5,13 @@ import styles from "./Toggle.module.scss"
 // TODO: remove this implementation when Toggle will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.
 
-const Toggles = () =>
-  <div className={styles.wrapper}>
-    <Toggle label={false} />
-    <Toggle checked />
-    <Toggle disabled />
-  </div>;
-
 const getClasses = (disabled:boolean) => classNames(
   'toggle',
   {
     'toggle--disabled': disabled
   });
 
-const Toggle:FC<ToggleProps> = ({disabled = false, checked = false, label=true}) => (
+const Toggle:FC<ToggleProps> = ({disabled = false, checked = false, label=false}) => (
   <label className={getClasses(disabled)}>
     {label && "Label"}
     <input
@@ -38,4 +31,4 @@ interface ToggleProps {
   label?:boolean;
 }
 
-export default Toggles;
+export default Toggle;
