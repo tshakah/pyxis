@@ -251,7 +251,7 @@ withHint hint =
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent : Html Never -> Config msg -> Config msg
 withAdditionalContent =
     Input.withAdditionalContent >> mapInputConfig
 

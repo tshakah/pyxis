@@ -133,7 +133,7 @@ init initialValue validation =
 
 
 type alias ConfigData value =
-    { additionalContent : Maybe (Html (Msg value))
+    { additionalContent : Maybe (Html Never)
     , classList : List ( String, Bool )
     , hint : Maybe Hint.Config
     , id : String
@@ -328,7 +328,7 @@ withSize size (Config configuration) =
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html (Msg value) -> Config value -> Config value
+withAdditionalContent : Html Never -> Config value -> Config value
 withAdditionalContent additionalContent (Config configuration) =
     Config { configuration | additionalContent = Just additionalContent }
 

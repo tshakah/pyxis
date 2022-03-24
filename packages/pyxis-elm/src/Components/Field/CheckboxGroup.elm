@@ -206,7 +206,7 @@ option { label, value } =
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html (Msg value) -> Config value -> Config value
+withAdditionalContent : Html Never -> Config value -> Config value
 withAdditionalContent additionalContent (Config configData) =
     Config { configData | additionalContent = Just additionalContent }
 
@@ -289,7 +289,7 @@ vertical =
 {-| Internal
 -}
 type alias ConfigData value =
-    { additionalContent : Maybe (Html (Msg value))
+    { additionalContent : Maybe (Html Never)
     , ariaLabelledBy : Maybe String
     , classList : List ( String, Bool )
     , hint : Maybe Hint.Config
@@ -332,7 +332,6 @@ config id =
 {-| Creates a config with only one one [`CheckboxGroup.Option`](CheckboxGroup#Option) applied
 
     single "I accept the cookie policy"
-
 
     -- Is equivalent to
     config

@@ -123,14 +123,14 @@ init initialValue validation =
 
 {-| The view configuration.
 -}
-type Config msg
-    = Config (ConfigData msg)
+type Config
+    = Config ConfigData
 
 
 {-| Internal.
 -}
-type alias ConfigData msg =
-    { additionalContent : Maybe (Html msg)
+type alias ConfigData =
+    { additionalContent : Maybe (Html Never)
     , classList : List ( String, Bool )
     , disabled : Bool
     , hint : Maybe Hint.Config
@@ -147,7 +147,7 @@ type alias ConfigData msg =
 
 {-| Creates a Textarea.
 -}
-config : String -> Config msg
+config : String -> Config
 config id =
     Config
         { additionalContent = Nothing
@@ -167,21 +167,21 @@ config id =
 
 {-| Adds a Label to the Textarea.
 -}
-withLabel : Label.Config -> Config msg -> Config msg
+withLabel : Label.Config -> Config -> Config
 withLabel label (Config configuration) =
     Config { configuration | label = Just label }
 
 
 {-| Sets the Textarea as disabled
 -}
-withDisabled : Bool -> Config msg -> Config msg
+withDisabled : Bool -> Config -> Config
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
 {-| Adds the hint to the TextArea.
 -}
-withHint : String -> Config msg -> Config msg
+withHint : String -> Config -> Config
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -194,7 +194,7 @@ withHint hintMessage (Config configuration) =
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config msg -> Config msg
+withStrategy : Strategy -> Config -> Config
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
@@ -209,49 +209,49 @@ In this example, if the user inputs "abc", the actual inputted text is "ABC".
 This applies to both the user UI and the `getValue`/`validate` functions
 
 -}
-withValueMapper : (String -> String) -> Config msg -> Config msg
+withValueMapper : (String -> String) -> Config -> Config
 withValueMapper mapper (Config configData) =
     Config { configData | valueMapper = mapper }
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config msg -> Config msg
+withIsSubmitted : Bool -> Config -> Config
 withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Sets a Size to the Textarea
 -}
-withSize : Size -> Config msg -> Config msg
+withSize : Size -> Config -> Config
 withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
 {-| Sets a ClassList to the Textarea
 -}
-withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList : List ( String, Bool ) -> Config -> Config
 withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
 {-| Sets a Name to the Textarea
 -}
-withName : String -> Config msg -> Config msg
+withName : String -> Config -> Config
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Sets a Placeholder to the Textarea
 -}
-withPlaceholder : String -> Config msg -> Config msg
+withPlaceholder : String -> Config -> Config
 withPlaceholder placeholder (Config configuration) =
     Config { configuration | placeholder = Just placeholder }
 
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent : Html Never -> Config -> Config
 withAdditionalContent additionalContent (Config configuration) =
     Config { configuration | additionalContent = Just additionalContent }
 
@@ -342,7 +342,7 @@ getValue (Model { value }) =
 
 {-| Renders the Textarea.
 -}
-render : (Msg -> msg) -> ctx -> Model ctx -> Config msg -> Html msg
+render : (Msg -> msg) -> ctx -> Model ctx -> Config -> Html msg
 render tagger ctx ((Model modelData) as model) ((Config configData) as configuration) =
     let
         customizedLabel : Maybe Label.Config
@@ -368,7 +368,7 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as configura
 
 {-| Internal.
 -}
-renderTextarea : Result String value -> Model ctx -> Config msg -> Html Msg
+renderTextarea : Result String value -> Model ctx -> Config -> Html Msg
 renderTextarea validationResult (Model modelData) (Config configData) =
     Html.div
         [ Attributes.classList

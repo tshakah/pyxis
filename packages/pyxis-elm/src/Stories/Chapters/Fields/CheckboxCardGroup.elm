@@ -304,7 +304,7 @@ componentsList =
 
 type alias StatefulConfig parsed =
     { id : String
-    , configModifier : CheckboxCardGroup.Config Option (CheckboxCardGroup.Msg Option) -> CheckboxCardGroup.Config Option (CheckboxCardGroup.Msg Option)
+    , configModifier : CheckboxCardGroup.Config Option -> CheckboxCardGroup.Config Option
     , modelPicker : Model -> CheckboxCardGroup.Model () Option parsed
     , update : CheckboxCardGroup.Msg Option -> CheckboxCardFieldModels -> CheckboxCardFieldModels
     }

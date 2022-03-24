@@ -21,7 +21,7 @@ type Lang
     | Elixir
 
 
-langsConfig : CheckboxCardGroup.Config Lang msg
+langsConfig : CheckboxCardGroup.Config Lang
 langsConfig =
     CheckboxCardGroup.config "checkbox-id"
         |> CheckboxCardGroup.withOptions
@@ -214,7 +214,7 @@ findInput label =
     Query.find (inputSelectors label)
 
 
-renderCheckboxGroup : CheckboxCardGroup.Config value (CheckboxCardGroup.Msg value) -> Query.Single (CheckboxCardGroup.Msg value)
+renderCheckboxGroup : CheckboxCardGroup.Config value -> Query.Single (CheckboxCardGroup.Msg value)
 renderCheckboxGroup =
     CheckboxCardGroup.render identity () (CheckboxCardGroup.init [] (always Ok)) >> Query.fromHtml
 

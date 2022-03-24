@@ -420,8 +420,8 @@ hoverFirstDropdownItem { options, id, delayed } ((Model modelData) as model) =
 
 {-| Internal.
 -}
-type alias ConfigData msg =
-    { additionalContent : Maybe (Html msg)
+type alias ConfigData =
+    { additionalContent : Maybe (Html Never)
     , classList : List ( String, Bool )
     , disabled : Bool
     , hint : Maybe Hint.Config
@@ -441,7 +441,7 @@ type alias ConfigData msg =
 This should not belong to the app `Model`
 -}
 type Config msg
-    = Config (ConfigData msg)
+    = Config ConfigData
 
 
 {-| Create a [`Select.Config`](Select#Config) with the default options applied.
@@ -571,7 +571,7 @@ withClassList classList (Config select) =
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent : Html Never -> Config msg -> Config msg
 withAdditionalContent additionalContent (Config configuration) =
     Config { configuration | additionalContent = Just additionalContent }
 
@@ -598,7 +598,7 @@ shouldKeydownPreventDefault keydownEvent =
 
 {-| Internal
 -}
-handleSelectKeydown : ConfigData msg -> KeyDown.Event -> ( Msg, Bool )
+handleSelectKeydown : ConfigData -> KeyDown.Event -> ( Msg, Bool )
 handleSelectKeydown configData key =
     ( SelectKeyDown { id = configData.id, options = configData.options } key
     , shouldKeydownPreventDefault key && not configData.isMobile

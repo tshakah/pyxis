@@ -138,8 +138,8 @@ init initialValues validation =
         }
 
 
-type alias ConfigData value msg =
-    { additionalContent : Maybe (Html msg)
+type alias ConfigData value =
+    { additionalContent : Maybe (Html Never)
     , classList : List ( String, Bool )
     , hint : Maybe Hint.Config
     , id : String
@@ -156,13 +156,13 @@ type alias ConfigData value msg =
 
 {-| The CheckboxCardGroup configuration.
 -}
-type Config value msg
-    = Config (ConfigData value msg)
+type Config value
+    = Config (ConfigData value)
 
 
 {-| Initialize the CheckboxCardGroup Config.
 -}
-config : String -> Config value msg
+config : String -> Config value
 config id =
     Config
         { additionalContent = Nothing
@@ -339,21 +339,21 @@ vertical =
 
 {-| Change the visual layout. The default one is horizontal.
 -}
-withLayout : Layout -> Config value msg -> Config value msg
+withLayout : Layout -> Config value -> Config value
 withLayout (Layout layout) (Config configuration) =
     Config { configuration | layout = layout }
 
 
 {-| Add the classes to the card group wrapper.
 -}
-withClassList : List ( String, Bool ) -> Config value msg -> Config value msg
+withClassList : List ( String, Bool ) -> Config value -> Config value
 withClassList classList (Config configuration) =
     Config { configuration | classList = classList }
 
 
 {-| Adds the hint to the CheckboxCardGroup.
 -}
-withHint : String -> Config value msg -> Config value msg
+withHint : String -> Config value -> Config value
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -366,56 +366,56 @@ withHint hintMessage (Config configuration) =
 
 {-| Add a name to the inputs.
 -}
-withName : String -> Config value msg -> Config value msg
+withName : String -> Config value -> Config value
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config value msg -> Config value msg
+withStrategy : Strategy -> Config value -> Config value
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config value msg -> Config value msg
+withIsSubmitted : Bool -> Config value -> Config value
 withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Add a label to the card group.
 -}
-withLabel : Label.Config -> Config value msg -> Config value msg
+withLabel : Label.Config -> Config value -> Config value
 withLabel label (Config configuration) =
     Config { configuration | label = Just label }
 
 
 {-| Define the visible options in the checkbox group.
 -}
-withOptions : List (Option value) -> Config value msg -> Config value msg
+withOptions : List (Option value) -> Config value -> Config value
 withOptions options (Config configuration) =
     Config { configuration | options = options }
 
 
 {-| Define the size of cards.
 -}
-withSize : Size -> Config value msg -> Config value msg
+withSize : Size -> Config value -> Config value
 withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html msg -> Config value msg -> Config value msg
+withAdditionalContent : Html Never -> Config value -> Config value
 withAdditionalContent additionalContent (Config configuration) =
     Config { configuration | additionalContent = Just additionalContent }
 
 
 {-| Render the checkboxCardGroup
 -}
-render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value msg -> Html msg
+render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html msg
 render tagger ctx (Model modelData) (Config configData) =
     let
         shownValidation : Result String ()

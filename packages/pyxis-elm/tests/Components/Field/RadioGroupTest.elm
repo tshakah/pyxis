@@ -123,12 +123,12 @@ radioOptions =
     ]
 
 
-radioGroupConfig : RadioGroup.Config Option msg
+radioGroupConfig : RadioGroup.Config Option
 radioGroupConfig =
     RadioGroup.config "gender" |> RadioGroup.withOptions radioOptions
 
 
-renderRadioGroup : RadioGroup.Config Option (RadioGroup.Msg Option) -> Query.Single (RadioGroup.Msg Option)
+renderRadioGroup : RadioGroup.Config Option -> Query.Single (RadioGroup.Msg Option)
 renderRadioGroup =
     RadioGroup.render identity () (RadioGroup.init Nothing validation)
         >> Query.fromHtml

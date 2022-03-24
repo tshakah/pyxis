@@ -51,7 +51,7 @@ type alias PartialFieldConfig a =
 -}
 type Config a msg
     = Config
-        { additionalContent : Maybe (Html msg)
+        { additionalContent : Maybe (Html Never)
         , field : Html msg
         , fieldConfig : PartialFieldConfig a
         , label : Maybe Label.Config
@@ -87,7 +87,7 @@ withLabel label (Config configuration) =
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Maybe (Html msg) -> Config a msg -> Config a msg
+withAdditionalContent : Maybe (Html Never) -> Config a msg -> Config a msg
 withAdditionalContent additionalContent (Config configuration) =
     Config { configuration | additionalContent = additionalContent }
 
@@ -108,5 +108,5 @@ render validationResult (Config { label, field, fieldConfig, additionalContent }
                 |> Error.fromResult
                 |> Commons.Render.renderErrorOrHint fieldConfig.id fieldConfig.hint
             ]
-        , Commons.Render.renderMaybe additionalContent
+        , Commons.Render.renderMaybe (Maybe.map (Html.map never) additionalContent)
         ]

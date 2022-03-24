@@ -216,7 +216,7 @@ update msg model =
 -}
 type Config msg
     = Config
-        { additionalContent : Maybe (Html msg)
+        { additionalContent : Maybe (Html Never)
         , addon : Maybe Addon
         , classList : List ( String, Bool )
         , disabled : Bool
@@ -455,7 +455,7 @@ withPlaceholder placeholder (Config configuration) =
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html msg -> Config msg -> Config msg
+withAdditionalContent : Html Never -> Config msg -> Config msg
 withAdditionalContent additionalContent (Config configuration) =
     Config { configuration | additionalContent = Just additionalContent }
 

@@ -136,17 +136,17 @@ fieldModel =
     TextareaField.init "" (always Ok)
 
 
-fieldConfig : TextareaField.Config msg
+fieldConfig : TextareaField.Config
 fieldConfig =
     TextareaField.config "input-id"
 
 
-fieldRender : ctx -> TextareaField.Model ctx -> TextareaField.Config TextareaField.Msg -> Query.Single TextareaField.Msg
+fieldRender : ctx -> TextareaField.Model ctx -> TextareaField.Config -> Query.Single TextareaField.Msg
 fieldRender ctx model =
     TextareaField.render identity ctx model >> Query.fromHtml
 
 
-simulation : TextareaField.Config TextareaField.Msg -> Simulation.Simulation (TextareaField.Model ()) TextareaField.Msg
+simulation : TextareaField.Config -> Simulation.Simulation (TextareaField.Model ()) TextareaField.Msg
 simulation config =
     Simulation.fromSandbox
         { init = TextareaField.init "" (always Ok)

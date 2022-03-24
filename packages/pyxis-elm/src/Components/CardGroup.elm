@@ -44,7 +44,7 @@ type Type
 
 {-| This is non opaque by design
 -}
-type alias Config r msg =
+type alias Config r =
     { r
         | size : Size
         , name : Maybe String
@@ -53,7 +53,7 @@ type alias Config r msg =
         , classList : List ( String, Bool )
         , layout : Layout
         , hint : Maybe Hint.Config
-        , additionalContent : Maybe (Html msg)
+        , additionalContent : Maybe (Html Never)
     }
 
 
@@ -89,17 +89,17 @@ getRole type_ =
             "group"
 
 
-renderCheckbox : Result String value -> Config r msg -> List (Option msg) -> Html msg
+renderCheckbox : Result String value -> Config r -> List (Option msg) -> Html msg
 renderCheckbox =
     render Checkbox
 
 
-renderRadio : Result String value -> Config r msg -> List (Option msg) -> Html msg
+renderRadio : Result String value -> Config r -> List (Option msg) -> Html msg
 renderRadio =
     render Radio
 
 
-render : Type -> Result String value -> Config r msg -> List (Option msg) -> Html msg
+render : Type -> Result String value -> Config r -> List (Option msg) -> Html msg
 render type_ validationResult configData options =
     Html.div
         [ Attributes.classList
@@ -128,7 +128,7 @@ labelId =
     (++) "label-"
 
 
-renderCard : Type -> Result String value -> Config r msg -> Int -> Option msg -> Html msg
+renderCard : Type -> Result String value -> Config r -> Int -> Option msg -> Html msg
 renderCard type_ validationResult config index option =
     let
         id_ : String
