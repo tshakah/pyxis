@@ -1,6 +1,5 @@
 module Components.ButtonTest exposing (suite)
 
-import Commons.Properties.Size as Size
 import Commons.Properties.Theme as Theme
 import Components.Button as Button
 import Components.IconSet as IconSet
@@ -88,28 +87,28 @@ suite =
             [ Test.test "is huge" <|
                 \() ->
                     Button.primary
-                        |> Button.withSize Size.huge
+                        |> Button.withSize Button.huge
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--huge" ] ]
             , Test.test "is large" <|
                 \() ->
                     Button.primary
-                        |> Button.withSize Size.large
+                        |> Button.withSize Button.large
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--large" ] ]
             , Test.test "is medium" <|
                 \() ->
                     Button.primary
-                        |> Button.withSize Size.medium
+                        |> Button.withSize Button.medium
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--medium" ] ]
             , Test.test "is small" <|
                 \() ->
                     Button.secondary
-                        |> Button.withSize Size.small
+                        |> Button.withSize Button.small
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--small" ] ]
@@ -175,7 +174,7 @@ suite =
             , Test.test "is icon only" <|
                 \() ->
                     Button.primary
-                        |> Button.withSize Size.large
+                        |> Button.withSize Button.large
                         |> Button.withIconOnly IconSet.Van
                         |> Button.render
                         |> Query.fromHtml
@@ -257,5 +256,12 @@ suite =
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (Html.Attributes.attribute "aria-label" "Login button") ]
+            , Test.test "has alternative theme" <|
+                \() ->
+                    Button.brand
+                        |> Button.withTheme Theme.alternative
+                        |> Button.render
+                        |> Query.fromHtml
+                        |> Query.has [ classes [ "button", "button--alt" ] ]
             ]
         ]

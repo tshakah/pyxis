@@ -1,12 +1,13 @@
 module Stories.Chapters.Buttons exposing (docs)
 
-import Commons.Properties.Size as Size
+import Commons.Properties.Theme as Theme
 import Components.Button as Button
 import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Html.Attributes as Attribute
 
 
 docs : ElmBook.Chapter.Chapter sharedState
@@ -32,8 +33,8 @@ type Msg =
 btn: Html Msg
 btn =
     Button.primary
-        |> Button.withType (Button.button OnClick)
         |> Button.withText "Click me!"
+        |> Button.withType (Button.button OnClick)
         |> Button.render
 ```
 
@@ -41,7 +42,6 @@ btn =
 <component with-label="Secondary" />
 ```
 Button.secondary
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
     |> Button.render
 ```
@@ -50,7 +50,6 @@ Button.secondary
 <component with-label="Tertiary" />
 ```
 Button.tertiary
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
     |> Button.render
 ```
@@ -59,7 +58,6 @@ Button.tertiary
 <component with-label="Brand" />
 ```
 Button.brand
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
     |> Button.render
 ```
@@ -68,7 +66,6 @@ Button.brand
 <component with-label="Ghost" />
 ```
 Button.ghost
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
     |> Button.render
 ```
@@ -81,8 +78,8 @@ Otherwise you can always create an _anchor_ with the appearance of a _button_ in
 <component with-label="Type Submit" />
 ```
 Button.primary
-    |> Button.withType Button.submit
     |> Button.withText "Click me!"
+    |> Button.withType Button.submit
     |> Button.render
 ```
 
@@ -90,8 +87,8 @@ Button.primary
 <component with-label="Type Button" />
 ```
 Button.primary
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
+    |> Button.withType (Button.button OnClick)
     |> Button.render
 ```
 
@@ -99,8 +96,8 @@ Button.primary
 <component with-label="Type Reset" />
 ```
 Button.primary
-    |> Button.withType Button.reset
     |> Button.withText "Click me!"
+    |> Button.withType Button.reset
     |> Button.render
 ```
 
@@ -108,8 +105,8 @@ Button.primary
 <component with-label="Type Link" />
 ```
 Button.primary
-    |> Button.withType (Button.link "https://www.prima.it")
     |> Button.withText "Click me!"
+    |> Button.withType (Button.link "https://www.prima.it")
     |> Button.render
 ```
 ---
@@ -128,9 +125,8 @@ Check the documentation in order to be aware of what you can do and what's forbi
 <component with-label="Huge" />
 ```
 Button.primary
-    |> Button.withSize Size.huge
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
+    |> Button.withSize Button.huge
     |> Button.render
 ```
 
@@ -138,9 +134,8 @@ Button.primary
 <component with-label="Large" />
 ```
 Button.primary
-    |> Button.withSize Size.large
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
+    |> Button.withSize Button.large
     |> Button.render
 ```
 
@@ -148,9 +143,8 @@ Button.primary
 <component with-label="Medium" />
 ```
 Button.primary
-    |> Button.withSize Size.medium
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
+    |> Button.withSize Button.medium
     |> Button.render
 ```
 
@@ -158,9 +152,8 @@ Button.primary
 <component with-label="Small" />
 ```
 Button.primary
-    |> Button.withSize Size.small
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
+    |> Button.withSize Button.small
     |> Button.render
 ```
 ---
@@ -172,9 +165,8 @@ The button can also contain only the icon, in this case it is advisable to add a
 <component with-label="Prepend Icon" />
 ```
 Button.primary
-    |> Button.withPrependIcon IconSet.Car
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
+    |> Button.withPrependIcon IconSet.Car
     |> Button.render
 ```
 
@@ -182,9 +174,8 @@ Button.primary
 <component with-label="Append Icon" />
 ```
 Button.primary
-    |> Button.withAppendIcon IconSet.Van
-    |> Button.withType (Button.button OnClick)
     |> Button.withText "Click me!"
+    |> Button.withAppendIcon IconSet.Van
     |> Button.render
 ```
 
@@ -192,9 +183,8 @@ Button.primary
 <component with-label="Icon Only" />
 ```
 Button.primary
+    |> Button.withAriaLabel "Login"
     |> Button.withIconOnly IconSet.Motorcycle
-    |> Button.withType (Button.button OnClick)
-    |> Button.withText "Click me!"
     |> Button.render
 ```
 ---
@@ -202,8 +192,8 @@ Button.primary
 <component with-label="Loading" />
 ```
 Button.primary
-    |> Button.withLoading True
     |> Button.withText "Click me!"
+    |> Button.withLoading True
     |> Button.render
 ```
 ---
@@ -215,8 +205,8 @@ attribute with the same value of the id received.
 <component with-label="Id" />
 ```
 Button.primary
-    |> Button.withId "jsButton"
     |> Button.withText "Click me!"
+    |> Button.withId "jsButton"
     |> Button.render
 ```
 ---
@@ -224,8 +214,8 @@ Button.primary
 <component with-label="Disabled" />
 ```
 Button.primary
-    |> Button.withDisabled True
     |> Button.withText "Click me!"
+    |> Button.withDisabled True
     |> Button.render
 ```
 ---
@@ -233,8 +223,8 @@ Button.primary
 <component with-label="Content Width" />
 ```
 Button.primary
-    |> Button.withContentWidth
     |> Button.withText "Click me!"
+    |> Button.withContentWidth
     |> Button.render
 ```
 ---
@@ -245,8 +235,20 @@ Note that you can use a shadow only on a Primary/Brand variant.
 <component with-label="Shadow" />
 ```
 Button.primary
-    |> Button.withShadow
     |> Button.withText "Click me!"
+    |> Button.withShadow
+    |> Button.render
+```
+---
+## Alternative
+
+Use on dark background.
+
+<component with-label="Alternative" />
+```
+Button.primary
+    |> Button.withText "Click me!"
+    |> Button.withTheme Theme.alternative
     |> Button.render
 ```
 ---
@@ -257,145 +259,142 @@ When you use the iconPlacement `only` options remember to add the prop aria-labe
 <component with-label="Accessible" />
 ```
 Button.primary
-    |> Button.withIconOnly IconSet.User
     |> Button.withAriaLabel "Login"
+    |> Button.withIconOnly IconSet.User
     |> Button.render
 ```
 """
-
-
-withCommonOptions : Button.Config (ElmBook.Msg state) -> Button.Config (ElmBook.Msg state)
-withCommonOptions =
-    Button.withText "Click me!"
-        >> Button.withType (Button.button (ElmBook.Actions.logAction "Button clicked"))
 
 
 componentsList : List ( String, Html (ElmBook.Msg state) )
 componentsList =
     [ ( "Primary"
       , Button.primary
-            |> withCommonOptions
-            |> Button.withSize Size.large
+            |> Button.withType (Button.button (ElmBook.Actions.logAction "Button clicked"))
+            |> Button.withText "Click me!"
             |> Button.render
       )
     , ( "Secondary"
       , Button.secondary
-            |> withCommonOptions
-            |> Button.withSize Size.large
+            |> Button.withText "Click me!"
             |> Button.render
       )
     , ( "Tertiary"
       , Button.tertiary
-            |> withCommonOptions
-            |> Button.withSize Size.large
+            |> Button.withText "Click me!"
             |> Button.render
       )
     , ( "Brand"
       , Button.brand
-            |> withCommonOptions
-            |> Button.withSize Size.large
+            |> Button.withText "Click me!"
             |> Button.render
       )
     , ( "Ghost"
       , Button.ghost
-            |> withCommonOptions
-            |> Button.withSize Size.large
+            |> Button.withText "Click me!"
             |> Button.render
       )
     , ( "Type Button"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.render
       )
     , ( "Type Submit"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withType Button.submit
             |> Button.render
       )
     , ( "Type Reset"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withType Button.reset
             |> Button.render
       )
     , ( "Type Link"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withType (Button.link "https://www.prima.it")
             |> Button.render
       )
     , ( "Huge"
       , Button.primary
-            |> withCommonOptions
-            |> Button.withSize Size.huge
+            |> Button.withText "Click me!"
+            |> Button.withSize Button.huge
             |> Button.render
       )
     , ( "Large"
       , Button.primary
-            |> withCommonOptions
-            |> Button.withSize Size.large
+            |> Button.withText "Click me!"
             |> Button.render
       )
     , ( "Medium"
       , Button.primary
-            |> withCommonOptions
-            |> Button.withSize Size.medium
+            |> Button.withText "Click me!"
+            |> Button.withSize Button.medium
             |> Button.render
       )
     , ( "Small"
       , Button.primary
-            |> withCommonOptions
-            |> Button.withSize Size.small
+            |> Button.withText "Click me!"
+            |> Button.withSize Button.small
             |> Button.render
       )
     , ( "Prepend Icon"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withIconPrepend IconSet.Car
             |> Button.render
       )
     , ( "Append Icon"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withIconAppend IconSet.Van
             |> Button.render
       )
     , ( "Icon Only"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withIconOnly IconSet.Car
             |> Button.render
       )
     , ( "Loading"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withLoading True
             |> Button.render
       )
     , ( "Id"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withId "jsButton"
             |> Button.render
       )
     , ( "Disabled"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withDisabled True
             |> Button.render
       )
     , ( "Content Width"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withContentWidth
             |> Button.render
       )
     , ( "Shadow"
       , Button.primary
-            |> withCommonOptions
+            |> Button.withText "Click me!"
             |> Button.withShadow
             |> Button.render
+      )
+    , ( "Alternative"
+      , Html.div [ Attribute.class "bg-neutral-base padding-s" ]
+            [ Button.primary
+                |> Button.withText "Click me!"
+                |> Button.withTheme Theme.alternative
+                |> Button.render
+            ]
       )
     , ( "Accessible"
       , Button.primary
