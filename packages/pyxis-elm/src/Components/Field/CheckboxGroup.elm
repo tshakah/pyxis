@@ -93,7 +93,7 @@ import Components.Field.Error.Strategy.Internal as InternalStrategy
 import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
-import Components.Field.State as FieldState
+import Components.Field.Status as FieldStatus
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
@@ -104,7 +104,7 @@ import Result.Extra
 type alias ModelData ctx value parsed =
     { checkedValues : List value
     , validation : ctx -> List value -> Result String parsed
-    , fieldState : FieldState.State
+    , fieldStatus : FieldStatus.Status
     }
 
 
@@ -122,7 +122,7 @@ init initialValues validation =
     Model
         { checkedValues = initialValues
         , validation = validation
-        , fieldState = FieldState.Untouched
+        , fieldStatus = FieldStatus.Untouched
         }
 
 
@@ -154,15 +154,15 @@ update msg model =
                 |> PrimaFunction.ifThenElseMap (always check)
                     (checkValue value)
                     (uncheckValue value)
-                |> mapFieldState FieldState.onChange
+                |> mapFieldStatus FieldStatus.onChange
 
         Focused _ ->
             model
-                |> mapFieldState FieldState.onFocus
+                |> mapFieldStatus FieldStatus.onFocus
 
         Blurred _ ->
             model
-                |> mapFieldState FieldState.onBlur
+                |> mapFieldStatus FieldStatus.onBlur
 
 
 {-| Internal
@@ -356,7 +356,7 @@ render tagger ctx (Model modelData) (Config configData) =
         shownValidation : Result String ()
         shownValidation =
             InternalStrategy.getShownValidation
-                modelData.fieldState
+                modelData.fieldStatus
                 (modelData.validation ctx modelData.checkedValues)
                 configData.isSubmitted
                 configData.strategy
@@ -457,6 +457,6 @@ mapCheckedValues f (Model modelData) =
 
 {-| Internal
 -}
-mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx value parsed -> Model ctx value parsed
-mapFieldState f (Model model) =
-    Model { model | fieldState = f model.fieldState }
+mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx value parsed -> Model ctx value parsed
+mapFieldStatus f (Model model) =
+    Model { model | fieldStatus = f model.fieldStatus }

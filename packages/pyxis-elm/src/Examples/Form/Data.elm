@@ -12,22 +12,22 @@ module Examples.Form.Data exposing
     )
 
 import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Date as Date
+import Components.Field.Input as Input
 import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.Field.Text as Text
 import Components.Field.Textarea as Textarea
+import Date exposing (Date)
 
 
 type Data
     = Data
         { isFormSubmitted : Bool
-        , birth : Date.Model Data
-        , claimDate : Date.Model Data
+        , birth : Input.Model Data Date
+        , claimDate : Input.Model Data Date
         , claimType : RadioCardGroup.Model Data ClaimType ClaimType
         , dynamic : Textarea.Model Data
         , insuranceType : RadioCardGroup.Model Data InsuranceType InsuranceType
         , peopleInvolved : RadioCardGroup.Model Data PeopleInvolved PeopleInvolved
-        , plate : Text.Model Data
+        , plate : Input.Model Data String
         , privacyCheck : CheckboxGroup.Model Data () Bool
         }
 
@@ -36,13 +36,13 @@ initialData : Data
 initialData =
     Data
         { isFormSubmitted = False
-        , birth = Date.init "" birthValidation
-        , claimDate = Date.init "" birthValidation
+        , birth = Input.init "" birthValidation
+        , claimDate = Input.init "" birthValidation
         , claimType = RadioCardGroup.init (Just CarAccident) (always (Result.fromMaybe ""))
         , dynamic = Textarea.init "" notEmptyStringValidation
         , insuranceType = RadioCardGroup.init Nothing (cardValidation Motor)
         , peopleInvolved = RadioCardGroup.init Nothing (cardValidation NotInvolved)
-        , plate = Text.init "" notEmptyStringValidation
+        , plate = Input.init "" notEmptyStringValidation
         , privacyCheck = CheckboxGroup.init [] privacyValidation
         }
 
@@ -98,13 +98,14 @@ cardValidation default (Data data) value =
             Ok value_
 
 
-birthValidation : Data -> Date.Date -> Result String Date.Date
+birthValidation : Data -> String -> Result String Date.Date
 birthValidation (Data data) value =
-    if data.isFormSubmitted && Date.isRaw value then
-        Err "Enter a valid date."
+    case ( data.isFormSubmitted, Date.fromIsoString value ) of
+        ( True, Ok validDate ) ->
+            Ok validDate
 
-    else
-        Ok value
+        _ ->
+            Err "Enter a valid date."
 
 
 privacyValidation : Data -> List () -> Result String Bool

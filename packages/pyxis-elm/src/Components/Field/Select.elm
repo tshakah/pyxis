@@ -94,7 +94,7 @@ import Components.Field.Error.Strategy.Internal as StrategyInternal
 import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
-import Components.Field.State as FieldState
+import Components.Field.Status as FieldStatus
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -140,7 +140,7 @@ type alias ModelData ctx parsed =
     , dropDownState : DropDownState
     , validation : ctx -> Maybe String -> Result String parsed
     , value : Maybe String
-    , fieldState : FieldState.State
+    , fieldStatus : FieldStatus.Status
     }
 
 
@@ -160,7 +160,7 @@ init initialValue validation =
         , validation = validation
         , value = initialValue
         , isBlurringInternally = False
-        , fieldState = FieldState.Untouched
+        , fieldStatus = FieldStatus.Untouched
         }
 
 
@@ -212,12 +212,12 @@ update msg model =
                 |> setSelectedValue value
                 |> setIsOpen False
                 |> setIsBlurringInternally False
-                |> mapFieldState FieldState.onInput
+                |> mapFieldStatus FieldStatus.onInput
                 |> PrimaUpdate.withoutCmds
 
         Blurred id ->
             model
-                |> mapFieldState FieldState.onBlur
+                |> mapFieldStatus FieldStatus.onBlur
                 |> setIsBlurred id
 
         HoveredOption optionValue ->
@@ -233,7 +233,7 @@ update msg model =
 
         FocusedSelect ->
             model
-                |> mapFieldState FieldState.onFocus
+                |> mapFieldStatus FieldStatus.onFocus
                 |> PrimaUpdate.withoutCmds
 
 
@@ -613,7 +613,7 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as configura
         shownValidation : Result String ()
         shownValidation =
             StrategyInternal.getShownValidation
-                modelData.fieldState
+                modelData.fieldStatus
                 (modelData.validation ctx modelData.value)
                 configData.isSubmitted
                 configData.strategy
@@ -920,6 +920,6 @@ setSelectedValue value (Model model) =
 
 {-| Internal.
 -}
-mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx parsed -> Model ctx parsed
-mapFieldState f (Model model) =
-    Model { model | fieldState = f model.fieldState }
+mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx parsed -> Model ctx parsed
+mapFieldStatus f (Model model) =
+    Model { model | fieldStatus = f model.fieldStatus }

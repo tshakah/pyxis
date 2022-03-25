@@ -88,7 +88,7 @@ import Components.Field.Error.Strategy.Internal as StrategyInternal
 import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
-import Components.Field.State as FieldState
+import Components.Field.Status as FieldStatus
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
@@ -106,7 +106,7 @@ type Model ctx
 type alias ModelData ctx =
     { value : String
     , validation : ctx -> String -> Result String String
-    , fieldState : FieldState.State
+    , fieldStatus : FieldStatus.Status
     }
 
 
@@ -117,7 +117,7 @@ init initialValue validation =
     Model
         { value = initialValue
         , validation = validation
-        , fieldState = FieldState.Untouched
+        , fieldStatus = FieldStatus.Untouched
         }
 
 
@@ -307,16 +307,16 @@ update msg model =
     case msg of
         OnBlur ->
             model
-                |> mapFieldState FieldState.onBlur
+                |> mapFieldStatus FieldStatus.onBlur
 
         OnFocus ->
             model
-                |> mapFieldState FieldState.onFocus
+                |> mapFieldStatus FieldStatus.onFocus
 
         OnInput value ->
             model
                 |> setValue value
-                |> mapFieldState FieldState.onInput
+                |> mapFieldStatus FieldStatus.onInput
 
 
 {-| Internal.
@@ -352,7 +352,7 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as configura
         shownValidation : Result String ()
         shownValidation =
             StrategyInternal.getShownValidation
-                modelData.fieldState
+                modelData.fieldStatus
                 (modelData.validation ctx modelData.value)
                 configData.isSubmitted
                 configData.strategy
@@ -404,6 +404,6 @@ renderTextarea validationResult (Model modelData) (Config configData) =
 
 {-| Internal
 -}
-mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx -> Model ctx
-mapFieldState f (Model model) =
-    Model { model | fieldState = f model.fieldState }
+mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx -> Model ctx
+mapFieldStatus f (Model model) =
+    Model { model | fieldStatus = f model.fieldStatus }

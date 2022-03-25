@@ -11,7 +11,7 @@ module Components.Field.Error.Strategy exposing
 -}
 
 import Components.Field.Error.Strategy.Internal as StrategyInternal
-import Components.Field.State as FieldState
+import Components.Field.Status as FieldStatus
 
 
 {-| A type representing the approached used to show the error (if present)
@@ -29,13 +29,13 @@ onInput =
 
 {-| Internal
 -}
-inputStrategy : FieldState.State -> Bool
-inputStrategy fieldState =
-    case fieldState of
-        FieldState.Touched { dirty, blurred } ->
+inputStrategy : FieldStatus.Status -> Bool
+inputStrategy fieldStatus =
+    case fieldStatus of
+        FieldStatus.Touched { dirty, blurred } ->
             dirty || blurred
 
-        FieldState.Untouched ->
+        FieldStatus.Untouched ->
             False
 
 
@@ -48,13 +48,13 @@ onBlur =
 
 {-| Internal
 -}
-blurStrategy : FieldState.State -> Bool
-blurStrategy fieldState =
-    case fieldState of
-        FieldState.Touched { blurred } ->
+blurStrategy : FieldStatus.Status -> Bool
+blurStrategy fieldStatus =
+    case fieldStatus of
+        FieldStatus.Touched { blurred } ->
             blurred
 
-        FieldState.Untouched ->
+        FieldStatus.Untouched ->
             False
 
 

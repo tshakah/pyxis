@@ -64,16 +64,18 @@ const Autocomplete: FC<AutocompleteProps> = ({
   error = false,
   hint = false,
   id,
+  initialValue,
   label = undefined,
   name,
+  noResultAction = false,
   size = "medium",
   withHeader = false,
   withSuggestion = false,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
-  const [isFilled, setIsFilled] = useState(false);
-  const [filter, setFilter] = useState<string | null>(null);
-  const [value, setValue] = useState<string | null>(null);
+  const [isFilled, setIsFilled] = useState(!!initialValue);
+  const [filter, setFilter] = useState<string | null>(initialValue || null);
+  const [value, setValue] = useState<string | null>(initialValue || null);
 
   const clickOnItem = (item: string) => {
     setValue(item);
@@ -115,11 +117,11 @@ const Autocomplete: FC<AutocompleteProps> = ({
               className={getAutocompleteClasses(size, isFilled)}
               disabled={disabled}
               id={id}
-              onChange={(e) => onChange(e)}
-              onFocus={(e) => e.preventDefault()}
-              onClick={() => setIsOpened(!isOpened)}
-              placeholder="Search"
               name={name}
+              onChange={(e) => onChange(e)}
+              onClick={() => setIsOpened(!isOpened)}
+              onFocus={(e) => e.preventDefault()}
+              placeholder="Search"
               role="combobox"
               type="text"
               value={value || ''}
@@ -172,11 +174,11 @@ const Autocomplete: FC<AutocompleteProps> = ({
               {filteredChoices.length === 0 &&
                 <div className="form-dropdown__no-results">
                   No results found.
-                  <div className="form-dropdown__no-results__action">
+                  {noResultAction && <div className="form-dropdown__no-results__action">
                     <Button variant="ghost" size="medium">
                       Action link
                     </Button>
-                  </div>
+                  </div>}
                 </div>
               }
             </div>
@@ -196,16 +198,18 @@ interface AutocompleteProps {
   filled?: boolean,
   hint?: boolean,
   id?: string,
+  initialValue?: string,
   label?: string,
   name?: string,
+  noResultAction?: boolean,
   size?: "medium" | "small";
   withHeader?: boolean,
   withSuggestion?: boolean,
 }
 
 interface AutocompleteItemProps {
-  value: string;
   onClick: (item: string) => void;
+  value: string;
 }
 
 export default Autocomplete;

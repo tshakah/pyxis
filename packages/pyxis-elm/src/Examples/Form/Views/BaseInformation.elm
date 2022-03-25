@@ -1,9 +1,8 @@
 module Examples.Form.Views.BaseInformation exposing (view)
 
 import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Date as Date
+import Components.Field.Input as Input
 import Components.Field.Label as Label
-import Components.Field.Text as Text
 import Components.Form.FieldSet as FieldSet
 import Components.Form.Grid as Grid
 import Components.Form.Grid.Row as Row
@@ -29,32 +28,33 @@ view ((Data config) as data) =
                 [ Row.smallSize ]
                 [ Grid.simpleCol
                     [ "plate"
-                        |> Text.text
-                        |> Text.withPlaceholder "AA123BC"
-                        |> Text.withLabel
+                        |> Input.text
+                        |> Input.withPlaceholder "AA123BC"
+                        |> Input.withLabel
                             ("Targa del veicolo assicurato con Prima"
                                 |> Label.config
                                 |> Label.withSubText "(Veicolo A)"
                             )
-                        |> Text.render (Model.TextFieldChanged Data.Plate) data config.plate
+                        |> Input.withAdditionalContent (Html.button [] [])
+                        |> Input.render (Model.TextFieldChanged Data.Plate) data config.plate
                     ]
                 ]
             , Grid.row
                 [ Row.smallSize ]
                 [ Grid.simpleCol
                     [ "birth_date"
-                        |> Date.config
-                        |> Date.withLabel (Label.config "Data di nascita del proprietario")
-                        |> Date.render (Model.DateFieldChanged Data.Birth) data config.birth
+                        |> Input.date
+                        |> Input.withLabel (Label.config "Data di nascita del proprietario")
+                        |> Input.render (Model.DateFieldChanged Data.Birth) data config.birth
                     ]
                 ]
             , Grid.row
                 [ Row.smallSize ]
                 [ Grid.simpleCol
                     [ "claim_date"
-                        |> Date.config
-                        |> Date.withLabel (Label.config "Data del sinistro")
-                        |> Date.render (Model.DateFieldChanged Data.ClaimDate) data config.claimDate
+                        |> Input.date
+                        |> Input.withLabel (Label.config "Data del sinistro")
+                        |> Input.render (Model.DateFieldChanged Data.ClaimDate) data config.claimDate
                     ]
                 ]
             , Grid.row
