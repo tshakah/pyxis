@@ -9,13 +9,11 @@ import Stories.Chapters.Badge as Badge
 import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.Fields.CheckboxCardGroup as CheckboxCardGroupChapter
 import Stories.Chapters.Fields.CheckboxGroup as CheckboxChapter
-import Stories.Chapters.Fields.Date as DateFieldChapter
+import Stories.Chapters.Fields.Input as InputChapter
 import Stories.Chapters.Fields.Label as LabelChapter
-import Stories.Chapters.Fields.Number as NumberFieldChapter
 import Stories.Chapters.Fields.RadioCardGroup as RadioCardFieldChapter
 import Stories.Chapters.Fields.RadioGroup as RadioFieldChapter
 import Stories.Chapters.Fields.Select as SelectChapter
-import Stories.Chapters.Fields.Text as TextFieldChapter
 import Stories.Chapters.Fields.Textarea as TextareaChapter
 import Stories.Chapters.Form as Form
 import Stories.Chapters.Icon as IconChapter
@@ -26,29 +24,25 @@ import Stories.Chapters.Message as Message
 
 
 type alias SharedState =
-    { text : TextFieldChapter.Model
-    , textarea : TextareaChapter.Model
-    , number : NumberFieldChapter.Model
-    , date : DateFieldChapter.Model
+    { textarea : TextareaChapter.Model
     , select : SelectChapter.Model
     , radio : RadioFieldChapter.Model
     , checkbox : CheckboxChapter.Model
     , radioCard : RadioCardFieldChapter.Model
     , checkboxCard : CheckboxCardGroupChapter.Model
+    , input : InputChapter.Model
     }
 
 
 initialState : SharedState
 initialState =
-    { text = TextFieldChapter.init
-    , textarea = TextareaChapter.init
-    , number = NumberFieldChapter.init
-    , date = DateFieldChapter.init
+    { textarea = TextareaChapter.init
     , select = SelectChapter.init
     , radio = RadioFieldChapter.init
     , checkbox = CheckboxChapter.init
     , radioCard = RadioCardFieldChapter.init
     , checkboxCard = CheckboxCardGroupChapter.init
+    , input = InputChapter.init
     }
 
 
@@ -82,16 +76,14 @@ main =
               )
             , ( "Form"
               , [ Form.docs
-                , DateFieldChapter.docs
+                , InputChapter.docs
                 , LabelChapter.docs
-                , NumberFieldChapter.docs
                 , CheckboxChapter.docs
                 , CheckboxCardGroupChapter.docs
                 , RadioFieldChapter.docs
                 , RadioCardFieldChapter.docs
                 , SelectChapter.docs
                 , TextareaChapter.docs
-                , TextFieldChapter.docs
                 ]
               )
             , ( "Icons"

@@ -1,13 +1,16 @@
 module Components.Field.Input exposing
     ( Model
     , init
-    , setValue
-    , Config
     , date
+    , DateConfig
     , email
+    , EmailConfig
     , number
-    , text
+    , NumberConfig
     , password
+    , PasswordConfig
+    , text
+    , TextConfig
     , Addon
     , AddonType
     , iconAddon
@@ -24,6 +27,7 @@ module Components.Field.Input exposing
     , withPlaceholder
     , withStrategy
     , withValueMapper
+    , setValue
     , Msg
     , isOnBlur
     , isOnFocus
@@ -41,17 +45,20 @@ module Components.Field.Input exposing
 
 @docs Model
 @docs init
-@docs setValue
 
 
 ## Config
 
-@docs Config
 @docs date
+@docs DateConfig
 @docs email
+@docs EmailConfig
 @docs number
-@docs text
+@docs NumberConfig
 @docs password
+@docs PasswordConfig
+@docs text
+@docs TextConfig
 
 
 ## Addon
@@ -108,6 +115,7 @@ module Components.Field.Input exposing
 
 -}
 
+import Commons.ApiConstraints as API
 import Commons.Attributes
 import Commons.Properties.Placement as Placement exposing (Placement)
 import Commons.Properties.Size as Size exposing (Size)
@@ -118,7 +126,7 @@ import Components.Field.Error.Strategy.Internal as StrategyInternal
 import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
-import Components.Field.State as FieldState
+import Components.Field.Status as FieldStatus
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Date
@@ -126,27 +134,6 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
 import Result.Extra
-
-
-{-| The Input model.
--}
-type Model ctx value
-    = Model
-        { validation : ctx -> String -> Result String value
-        , value : String
-        , fieldState : FieldState.State
-        }
-
-
-{-| Inits the Input model.
--}
-init : String -> (ctx -> String -> Result String value) -> Model ctx value
-init initialValue validation =
-    Model
-        { validation = validation
-        , value = initialValue
-        , fieldState = FieldState.Untouched
-        }
 
 
 {-| Represent the messages the Input Text can handle.
@@ -193,28 +180,70 @@ isOnBlur msg =
             False
 
 
+{-| The Input model.
+-}
+type Model ctx parsedValue
+    = Model
+        { validation : ctx -> String -> Result String parsedValue
+        , value : String
+        , fieldStatus : FieldStatus.Status
+        }
+
+
+{-| Inits the Input model.
+-}
+init : String -> (ctx -> String -> Result String parsedValue) -> Model ctx parsedValue
+init initialValue validation =
+    Model
+        { validation = validation
+        , value = initialValue
+        , fieldStatus = FieldStatus.Untouched
+        }
+
+
 {-| Update the input internal model
 -}
-update : Msg -> Model ctx value -> Model ctx value
+update : Msg -> Model ctx parsedValue -> Model ctx parsedValue
 update msg model =
     case msg of
         OnBlur ->
             model
-                |> mapFieldState FieldState.onBlur
+                |> mapFieldStatus FieldStatus.onBlur
 
         OnFocus ->
             model
-                |> mapFieldState FieldState.onFocus
+                |> mapFieldStatus FieldStatus.onFocus
 
         OnInput value ->
             model
                 |> setValue value
-                |> mapFieldState FieldState.onInput
+                |> mapFieldStatus FieldStatus.onInput
+
+
+{-| Internal
+-}
+mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx parsedValue -> Model ctx parsedValue
+mapFieldStatus mapper (Model model) =
+    Model { model | fieldStatus = mapper model.fieldStatus }
+
+
+{-| Return the input value
+-}
+getValue : Model ctx parsedValue -> String
+getValue (Model { value }) =
+    value
+
+
+{-| Returns the validated value by running the function you gave to the init.
+-}
+validate : ctx -> Model ctx parsedValue -> Result String parsedValue
+validate ctx (Model { value, validation }) =
+    validation ctx value
 
 
 {-| The view config.
 -}
-type Config msg
+type Config constraints
     = Config
         { additionalContent : Maybe (Html Never)
         , addon : Maybe Addon
@@ -233,9 +262,69 @@ type Config msg
         }
 
 
+{-| Common constraints.
+-}
+type alias CommonConstraints specificConstraints =
+    { specificConstraints
+        | additionalContent : API.Allowed
+        , classList : API.Allowed
+        , disabled : API.Allowed
+        , hint : API.Allowed
+        , isSubmitted : API.Allowed
+        , label : API.Allowed
+        , name : API.Allowed
+        , size : API.Allowed
+        , strategy : API.Allowed
+        , valueMapper : API.Allowed
+    }
+
+
+{-| Date constraints.
+-}
+type alias DateConstraints =
+    CommonConstraints
+        {}
+
+
+{-| Email constraints.
+-}
+type alias EmailConstraints =
+    CommonConstraints
+        { addon : API.Allowed
+        , placeholder : API.Allowed
+        }
+
+
+{-| Number constraints.
+-}
+type alias NumberConstraints =
+    CommonConstraints
+        { addon : API.Allowed
+        , placeholder : API.Allowed
+        }
+
+
+{-| Password constraints.
+-}
+type alias PasswordConstraints =
+    CommonConstraints
+        { addon : API.Allowed
+        , placeholder : API.Allowed
+        }
+
+
+{-| Text constraints.
+-}
+type alias TextConstraints =
+    CommonConstraints
+        { addon : API.Allowed
+        , placeholder : API.Allowed
+        }
+
+
 {-| Internal. Creates an Input field.
 -}
-config : Type -> String -> Config msg
+config : Type -> String -> Config constraints
 config inputType id =
     Config
         { additionalContent = Nothing
@@ -265,37 +354,67 @@ type Type
     | Text
 
 
+{-| Date configuration.
+-}
+type alias DateConfig =
+    Config DateConstraints
+
+
+{-| Email configuration.
+-}
+type alias EmailConfig =
+    Config EmailConstraints
+
+
+{-| Number configuration.
+-}
+type alias NumberConfig =
+    Config NumberConstraints
+
+
+{-| Password configuration.
+-}
+type alias PasswordConfig =
+    Config PasswordConstraints
+
+
+{-| Text configuration.
+-}
+type alias TextConfig =
+    Config TextConstraints
+
+
 {-| Creates an input with [type="email"].
 -}
-email : String -> Config msg
+email : String -> EmailConfig
 email =
     config Email
 
 
 {-| Creates an input with [type="date"].
 -}
-date : String -> Config msg
+date : String -> DateConfig
 date =
     config Date
 
 
 {-| Creates an input with [type="number"].
 -}
-number : String -> Config msg
+number : String -> NumberConfig
 number =
     config Number
 
 
 {-| Creates an input with [type="text"].
 -}
-text : String -> Config msg
+text : String -> TextConfig
 text =
     config Text
 
 
 {-| Creates an input with [type="password"].
 -}
-password : String -> Config msg
+password : String -> PasswordConfig
 password =
     config Password
 
@@ -321,11 +440,15 @@ typeToAttribute a =
             Attributes.type_ "text"
 
 
+{-| Addon types.
+-}
 type AddonType
     = IconAddon IconSet.Icon
     | TextAddon String
 
 
+{-| Addon configuration.
+-}
 type alias Addon =
     { placement : Placement
     , type_ : AddonType
@@ -372,49 +495,79 @@ addonToAttribute { type_, placement } =
 
 {-| Sets the validation strategy (when to show the error, if present)
 -}
-withStrategy : Strategy -> Config msg -> Config msg
+withStrategy :
+    Strategy
+    -> Config { c | strategy : API.Allowed }
+    -> Config { c | strategy : API.Denied }
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }
 
 
 {-| Maps the inputted string before the update
+
+    Text.config "id"
+        |> Input.withValueMapper String.toUppercase
+        |> Input.render Tagger formData model.textModel
+
+In this example, if the user inputs "abc", the actual inputted text is "ABC".
+This applies to both the user UI and the `getValue`/`validate` functions
+
 -}
-withValueMapper : (String -> String) -> Config msg -> Config msg
+withValueMapper :
+    (String -> String)
+    -> Config { c | valueMapper : API.Allowed }
+    -> Config { c | valueMapper : API.Denied }
 withValueMapper mapper (Config configData) =
     Config { configData | valueMapper = mapper }
 
 
 {-| Sets whether the form was submitted
 -}
-withIsSubmitted : Bool -> Config msg -> Config msg
+withIsSubmitted :
+    Bool
+    -> Config { c | isSubmitted : API.Allowed }
+    -> Config { c | isSubmitted : API.Denied }
 withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
 {-| Sets an Addon to the Input.
 -}
-withAddon : Placement -> AddonType -> Config msg -> Config msg
+withAddon :
+    Placement
+    -> AddonType
+    -> Config { c | addon : API.Allowed }
+    -> Config { c | addon : API.Denied }
 withAddon placement type_ (Config configuration) =
     Config { configuration | addon = Just { placement = placement, type_ = type_ } }
 
 
 {-| Adds a Label to the Input.
 -}
-withLabel : Label.Config -> Config msg -> Config msg
+withLabel :
+    Label.Config
+    -> Config { c | label : API.Allowed }
+    -> Config { c | label : API.Denied }
 withLabel a (Config configuration) =
     Config { configuration | label = Just a }
 
 
 {-| Sets the input as disabled
 -}
-withDisabled : Bool -> Config msg -> Config msg
+withDisabled :
+    Bool
+    -> Config { c | disabled : API.Allowed }
+    -> Config { c | disabled : API.Denied }
 withDisabled isDisabled (Config configuration) =
     Config { configuration | disabled = isDisabled }
 
 
 {-| Sets the input hint
 -}
-withHint : String -> Config msg -> Config msg
+withHint :
+    String
+    -> Config { c | hint : API.Allowed }
+    -> Config { c | hint : API.Denied }
 withHint hintMessage (Config configuration) =
     Config
         { configuration
@@ -427,54 +580,68 @@ withHint hintMessage (Config configuration) =
 
 {-| Sets a Size to the Input.
 -}
-withSize : Size -> Config msg -> Config msg
+withSize :
+    Size
+    -> Config { c | size : API.Allowed }
+    -> Config { c | size : API.Denied }
 withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
 {-| Sets a ClassList to the Input.
 -}
-withClassList : List ( String, Bool ) -> Config msg -> Config msg
+withClassList :
+    List ( String, Bool )
+    -> Config { c | classList : API.Allowed }
+    -> Config { c | classList : API.Denied }
 withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
 {-| Sets a Name to the Input.
 -}
-withName : String -> Config msg -> Config msg
+withName :
+    String
+    -> Config { c | name : API.Allowed }
+    -> Config { c | name : API.Denied }
 withName name (Config configuration) =
     Config { configuration | name = Just name }
 
 
 {-| Sets a Placeholder to the Input.
 -}
-withPlaceholder : String -> Config msg -> Config msg
+withPlaceholder :
+    String
+    -> Config { c | placeholder : API.Allowed }
+    -> Config { c | placeholder : API.Denied }
 withPlaceholder placeholder (Config configuration) =
     Config { configuration | placeholder = Just placeholder }
 
 
 {-| Append an additional custom html.
 -}
-withAdditionalContent : Html Never -> Config msg -> Config msg
+withAdditionalContent :
+    Html Never
+    -> Config { c | additionalContent : API.Allowed }
+    -> Config { c | additionalContent : API.Denied }
 withAdditionalContent additionalContent (Config configuration) =
     Config { configuration | additionalContent = Just additionalContent }
 
 
 {-| Sets the input value attribute
 -}
-setValue : String -> Model ctx value -> Model ctx value
+setValue : String -> Model ctx parsedValue -> Model ctx parsedValue
 setValue value (Model configuration) =
     Model { configuration | value = value }
 
 
 {-| Internal
 -}
-normalizeConfig : Config msg -> Config msg
-normalizeConfig ((Config configData) as config_) =
+addIconCalendarToDateField : Config constraints -> Config constraints
+addIconCalendarToDateField ((Config configData) as config_) =
     case configData.type_ of
         Date ->
-            config_
-                |> withAddon Placement.prepend (iconAddon IconSet.Calendar)
+            Config { configData | addon = Just { placement = Placement.prepend, type_ = iconAddon IconSet.Calendar } }
 
         _ ->
             config_
@@ -482,21 +649,20 @@ normalizeConfig ((Config configData) as config_) =
 
 {-| Renders the Input.Stories/Chapters/DateField.elm
 -}
-render : (Msg -> msg) -> ctx -> Model ctx value -> Config msg -> Html msg
-render tagger ctx ((Model modelData) as model) rawConfig =
+render : (Msg -> msg) -> ctx -> Model ctx parsedValue -> Config constraints -> Html msg
+render tagger ctx ((Model modelData) as model) ((Config configData) as config_) =
     let
-        ((Config configData) as config_) =
-            normalizeConfig rawConfig
-
         shownValidation : Result String ()
         shownValidation =
             StrategyInternal.getShownValidation
-                modelData.fieldState
+                modelData.fieldStatus
                 (modelData.validation ctx modelData.value)
                 configData.isSubmitted
                 configData.strategy
     in
-    renderField shownValidation config_ model
+    config_
+        |> addIconCalendarToDateField
+        |> renderField shownValidation model
         |> Html.map tagger
         |> FormItem.config configData
         |> FormItem.withLabel configData.label
@@ -506,8 +672,8 @@ render tagger ctx ((Model modelData) as model) rawConfig =
 
 {-| Internal.
 -}
-renderField : Result String () -> Config msg -> Model ctx value -> Html Msg
-renderField shownValidation ((Config { disabled, addon }) as configuration) model =
+renderField : Result String () -> Model ctx parsedValue -> Config constraints -> Html Msg
+renderField shownValidation model ((Config { disabled, addon }) as configuration) =
     Html.div
         [ Attributes.classList
             [ ( "form-field", True )
@@ -524,7 +690,7 @@ renderField shownValidation ((Config { disabled, addon }) as configuration) mode
 
 {-| Internal.
 -}
-renderAddon : Result String () -> Model ctx value -> Config msg -> Addon -> Html Msg
+renderAddon : Result String () -> Model ctx parsedValue -> Config constraints -> Addon -> Html Msg
 renderAddon validationResult model configuration addon =
     Html.label
         [ Attributes.class "form-field__wrapper" ]
@@ -555,7 +721,7 @@ renderAddonByType type_ =
 
 {-| Internal.
 -}
-renderInput : Result String () -> Model ctx value -> Config msg -> Html Msg
+renderInput : Result String () -> Model ctx parsedValue -> Config constraints -> Html Msg
 renderInput validationResult (Model modelData) (Config configData) =
     Html.input
         [ Attributes.id configData.id
@@ -586,24 +752,3 @@ renderInput validationResult (Model modelData) (Config configData) =
         , Html.Events.onBlur OnBlur
         ]
         []
-
-
-{-| Return the input value
--}
-getValue : Model ctx value -> String
-getValue (Model { value }) =
-    value
-
-
-{-| Returns the validated value by running the function you gave to the init.
--}
-validate : ctx -> Model ctx value -> Result String value
-validate ctx (Model { value, validation }) =
-    validation ctx value
-
-
-{-| Internal
--}
-mapFieldState : (FieldState.State -> FieldState.State) -> Model ctx value -> Model ctx value
-mapFieldState f (Model model) =
-    Model { model | fieldState = f model.fieldState }

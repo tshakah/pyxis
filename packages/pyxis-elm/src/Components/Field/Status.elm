@@ -1,6 +1,9 @@
-module Components.Field.State exposing
-    ( State(..)
-    , onBlur, onChange, onFocus, onInput
+module Components.Field.Status exposing
+    ( Status(..)
+    , onBlur
+    , onChange
+    , onFocus
+    , onInput
     )
 
 {-| Internal field state representation
@@ -17,7 +20,7 @@ Untouched := Not focused yet
 Touched := triggered `focus` at least once
 
 -}
-type State
+type Status
     = Untouched -- Initial state
     | Touched
         { blurred : Bool
@@ -28,7 +31,7 @@ type State
 
 {-| User focuses the field
 -}
-onFocus : State -> State
+onFocus : Status -> Status
 onFocus state =
     case state of
         Untouched ->
@@ -45,7 +48,7 @@ onFocus state =
 
 {-| User blurs the field
 -}
-onBlur : State -> State
+onBlur : Status -> Status
 onBlur state =
     case state of
         Touched data ->
@@ -59,7 +62,7 @@ onBlur state =
 
 {-| User inputs a value
 -}
-onInput : State -> State
+onInput : Status -> Status
 onInput state =
     case state of
         Touched data ->
@@ -72,6 +75,6 @@ onInput state =
 
 {-| Same a `input`
 -}
-onChange : State -> State
+onChange : Status -> Status
 onChange =
     onInput

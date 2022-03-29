@@ -1,9 +1,8 @@
 module Examples.Form.Update exposing (update)
 
 import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Date as Date
+import Components.Field.Input as Input
 import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.Field.Text as Text
 import Components.Field.Textarea as Textarea
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model exposing (Model)
@@ -19,7 +18,7 @@ update msg model =
 
         --setSuccessResponse
         Model.DateFieldChanged Data.Birth subMsg ->
-            mapData (\(Data d) -> Data { d | birth = Date.update subMsg d.birth }) model
+            mapData (\(Data d) -> Data { d | birth = Input.update subMsg d.birth }) model
 
         Model.TextareaFieldChanged Data.Dynamics subMsg ->
             mapData (\(Data d) -> Data { d | dynamic = Textarea.update subMsg d.dynamic }) model
@@ -28,10 +27,10 @@ update msg model =
             mapData (\(Data d) -> Data { d | insuranceType = RadioCardGroup.update subMsg d.insuranceType }) model
 
         Model.TextFieldChanged Data.Plate subMsg ->
-            mapData (\(Data d) -> Data { d | plate = Text.update subMsg d.plate }) model
+            mapData (\(Data d) -> Data { d | plate = Input.update subMsg d.plate }) model
 
         Model.DateFieldChanged Data.ClaimDate subMsg ->
-            mapData (\(Data d) -> Data { d | claimDate = Date.update subMsg d.claimDate }) model
+            mapData (\(Data d) -> Data { d | claimDate = Input.update subMsg d.claimDate }) model
 
         Model.PrivacyChanged subMsg ->
             mapData (\(Data d) -> Data { d | privacyCheck = CheckboxGroup.update subMsg d.privacyCheck }) model

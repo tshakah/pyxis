@@ -1,6 +1,13 @@
-module Commons.ApiConstraints exposing (Allowed, Denied)
+module Commons.ApiConstraints exposing
+    ( Allowed
+    , Denied
+    )
 
 {-| Defines some types which are useful in order to express api constraints by using phantom types.
+
+@docs Allowed
+@docs Denied
+
 -}
 
 

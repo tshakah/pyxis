@@ -6,18 +6,18 @@ module Examples.Form.Model exposing
     )
 
 import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Date as Date
+import Components.Field.Input as Input
 import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.Field.Text as Text
 import Components.Field.Textarea as Textarea
+import Date exposing (Date)
 import Examples.Form.Data as Data exposing (Data(..))
 
 
 type Msg
     = Submit
-    | TextFieldChanged Data.TextField Text.Msg
+    | TextFieldChanged Data.TextField Input.Msg
     | TextareaFieldChanged Data.TextareaField Textarea.Msg
-    | DateFieldChanged Data.DateField Date.Msg
+    | DateFieldChanged Data.DateField Input.Msg
     | InsuranceTypeChanged (RadioCardGroup.Msg Data.InsuranceType)
     | PrivacyChanged (CheckboxGroup.Msg ())
     | ClaimTypeChanged (RadioCardGroup.Msg Data.ClaimType)
@@ -31,8 +31,8 @@ type alias Model =
 
 
 type alias Response =
-    { birth : Date.Date
-    , claimDate : Date.Date
+    { birth : Date
+    , claimDate : Date
     , claimType : Data.ClaimType
     , dynamic : String
     , insuranceType : Data.InsuranceType
@@ -56,13 +56,13 @@ updateResponse model =
 validate : Data -> Result String Response
 validate ((Data config) as data) =
     Ok Response
-        |> parseAndThen (Date.validate data config.birth)
-        |> parseAndThen (Date.validate data config.claimDate)
+        |> parseAndThen (Input.validate data config.birth)
+        |> parseAndThen (Input.validate data config.claimDate)
         |> parseAndThen (RadioCardGroup.validate data config.claimType)
         |> parseAndThen (Textarea.validate data config.dynamic)
         |> parseAndThen (RadioCardGroup.validate data config.insuranceType)
         |> parseAndThen (RadioCardGroup.validate data config.peopleInvolved)
-        |> parseAndThen (Text.validate data config.plate)
+        |> parseAndThen (Input.validate data config.plate)
 
 
 parseAndThen : Result x a -> Result x (a -> b) -> Result x b

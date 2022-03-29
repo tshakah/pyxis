@@ -20,7 +20,8 @@ suite =
         [ Test.test "renders the `form-field__text` class" <|
             \() ->
                 fieldConfig
-                    |> fieldRender () fieldModel
+                    |> Input.render identity () fieldModel
+                    |> Query.fromHtml
                     |> findInput
                     |> Query.has [ Selector.class "form-field__text" ]
         , Test.describe "Label"
@@ -28,7 +29,8 @@ suite =
                 \s ->
                     fieldConfig
                         |> Input.withLabel (LabelField.config s)
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> findLabel
                         |> Query.has [ Selector.text s ]
             ]
@@ -36,7 +38,8 @@ suite =
             [ Test.test "should be rendered correctly" <|
                 \() ->
                     fieldConfig
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> findInput
                         |> Query.has [ Selector.attribute (Html.Attributes.value "") ]
             ]
@@ -44,14 +47,16 @@ suite =
             [ Test.test "should be False by default" <|
                 \() ->
                     fieldConfig
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> findInput
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
                     fieldConfig
                         |> Input.withDisabled b
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> findInput
                         |> Query.has [ Selector.disabled b ]
             ]
@@ -59,7 +64,8 @@ suite =
             \name ->
                 fieldConfig
                     |> Input.withName name
-                    |> fieldRender () fieldModel
+                    |> Input.render identity () fieldModel
+                    |> Query.fromHtml
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.name name)
@@ -68,7 +74,8 @@ suite =
             \p ->
                 fieldConfig
                     |> Input.withPlaceholder p
-                    |> fieldRender () fieldModel
+                    |> Input.render identity () fieldModel
+                    |> Query.fromHtml
                     |> findInput
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.placeholder p)
@@ -76,7 +83,8 @@ suite =
         , Test.test "id attribute should be rendered correctly" <|
             \() ->
                 fieldConfig
-                    |> fieldRender () fieldModel
+                    |> Input.render identity () fieldModel
+                    |> Query.fromHtml
                     |> findInput
                     |> Query.has
                         [ Selector.id "input_field"
@@ -86,7 +94,8 @@ suite =
                 \s1 s2 s3 ->
                     fieldConfig
                         |> Input.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> findInput
                         |> Expect.all
                             [ Query.has
@@ -96,27 +105,13 @@ suite =
                                 [ Selector.classes [ s2 ]
                                 ]
                             ]
-            , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
-                \s1 s2 s3 ->
-                    fieldConfig
-                        |> Input.withClassList [ ( s1, True ), ( s2, True ) ]
-                        |> Input.withClassList [ ( s3, True ) ]
-                        |> fieldRender () fieldModel
-                        |> findInput
-                        |> Expect.all
-                            [ Query.hasNot
-                                [ Selector.classes [ s1, s2 ]
-                                ]
-                            , Query.has
-                                [ Selector.classes [ s3 ]
-                                ]
-                            ]
             ]
         , Test.describe "disabled attribute"
             [ Test.test "should be disabled by default" <|
                 \() ->
                     fieldConfig
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> Query.has
                             [ Selector.disabled False
                             ]
@@ -124,7 +119,8 @@ suite =
                 \b ->
                     fieldConfig
                         |> Input.withDisabled b
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> findInput
                         |> Query.has
                             [ Selector.disabled b
@@ -133,14 +129,16 @@ suite =
                 \() ->
                     fieldConfig
                         |> Input.withDisabled True
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> Query.has
                             [ Selector.class "form-field--disabled"
                             ]
             , Test.test "should not render the disabled class when not disabled" <|
                 \() ->
                     fieldConfig
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> Query.hasNot
                             [ Selector.class "form-field--disabled"
                             ]
@@ -152,7 +150,8 @@ suite =
                         \() ->
                             fieldConfig
                                 |> Input.withAddon Placement.append (Input.iconAddon IconSet.ArrowDown)
-                                |> fieldRender () fieldModel
+                                |> Input.render identity () fieldModel
+                                |> Query.fromHtml
                                 |> Query.has
                                     [ Selector.class "form-field--with-append-icon"
                                     , Selector.class "form-field__addon"
@@ -161,7 +160,8 @@ suite =
                         \() ->
                             fieldConfig
                                 |> Input.withAddon Placement.prepend (Input.iconAddon IconSet.ArrowDown)
-                                |> fieldRender () fieldModel
+                                |> Input.render identity () fieldModel
+                                |> Query.fromHtml
                                 |> Query.has
                                     [ Selector.class "form-field--with-prepend-icon"
                                     , Selector.class "form-field__addon"
@@ -172,7 +172,8 @@ suite =
                         \s ->
                             fieldConfig
                                 |> Input.withAddon Placement.append (Input.textAddon s)
-                                |> fieldRender () fieldModel
+                                |> Input.render identity () fieldModel
+                                |> Query.fromHtml
                                 |> Query.has
                                     [ Selector.class "form-field--with-append-text"
                                     , Selector.class "form-field__addon"
@@ -182,7 +183,8 @@ suite =
                         \s ->
                             fieldConfig
                                 |> Input.withAddon Placement.prepend (Input.textAddon s)
-                                |> fieldRender () fieldModel
+                                |> Input.render identity () fieldModel
+                                |> Query.fromHtml
                                 |> Query.has
                                     [ Selector.class "form-field--with-prepend-text"
                                     , Selector.class "form-field__addon"
@@ -196,7 +198,8 @@ suite =
                 \() ->
                     fieldConfig
                         |> Input.withSize Size.small
-                        |> fieldRender () fieldModel
+                        |> Input.render identity () fieldModel
+                        |> Query.fromHtml
                         |> findInput
                         |> Query.has
                             [ Selector.class "form-field__text--small"
@@ -210,15 +213,10 @@ fieldModel =
     Input.init "" (always Ok)
 
 
-fieldConfig : Input.Config msg
+fieldConfig : Input.TextConfig
 fieldConfig =
     Input.text
         "input_field"
-
-
-fieldRender : ctx -> Input.Model ctx value -> Input.Config Input.Msg -> Query.Single Input.Msg
-fieldRender ctx model =
-    Input.render identity ctx model >> Query.fromHtml
 
 
 findInput : Query.Single msg -> Query.Single msg

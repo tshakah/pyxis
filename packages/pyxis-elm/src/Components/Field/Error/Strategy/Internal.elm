@@ -10,7 +10,7 @@ module Components.Field.Error.Strategy.Internal exposing
 
 -}
 
-import Components.Field.State as FieldState
+import Components.Field.Status as FieldStatus
 
 
 {-| Internal representation of a Strategy, used in Field.Strategy
@@ -18,14 +18,14 @@ import Components.Field.State as FieldState
 type
     Strategy
     -- Returns whether to show the error
-    = ShowError (FieldState.State -> Bool)
+    = ShowError (FieldStatus.Status -> Bool)
 
 
 {-| Helper used to determine whether the error should be shown in the UI or not
 -}
-getShownValidation : FieldState.State -> Result error value -> Bool -> Strategy -> Result error ()
-getShownValidation fieldState getValidationResult isSubmitted (ShowError showError) =
-    if isSubmitted || showError fieldState then
+getShownValidation : FieldStatus.Status -> Result error value -> Bool -> Strategy -> Result error ()
+getShownValidation fieldStatus getValidationResult isSubmitted (ShowError showError) =
+    if isSubmitted || showError fieldStatus then
         Result.map (always ()) getValidationResult
 
     else
