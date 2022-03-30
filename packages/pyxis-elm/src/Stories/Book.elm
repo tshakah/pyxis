@@ -21,6 +21,7 @@ import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Introduction as Introduction
 import Stories.Chapters.Loader as Loader
 import Stories.Chapters.Message as Message
+import Stories.Chapters.Toggle as ToggleChapter
 
 
 type alias SharedState =
@@ -30,6 +31,7 @@ type alias SharedState =
     , checkbox : CheckboxChapter.Model
     , radioCard : RadioCardFieldChapter.Model
     , checkboxCard : CheckboxCardGroupChapter.Model
+    , toggle : ToggleChapter.Model
     , input : InputChapter.Model
     }
 
@@ -43,6 +45,7 @@ initialState =
     , radioCard = RadioCardFieldChapter.init
     , checkboxCard = CheckboxCardGroupChapter.init
     , input = InputChapter.init
+    , toggle = ToggleChapter.init
     }
 
 
@@ -84,6 +87,7 @@ main =
                 , RadioCardFieldChapter.docs
                 , SelectChapter.docs
                 , TextareaChapter.docs
+                , ToggleChapter.docs
                 ]
               )
             , ( "Icons"

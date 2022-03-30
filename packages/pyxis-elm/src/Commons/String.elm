@@ -1,4 +1,4 @@
-module Commons.String exposing (toKebabCase)
+module Commons.String exposing (fromBool, toKebabCase)
 
 {-| Utilities around `String` type
 -}
@@ -9,3 +9,14 @@ module Commons.String exposing (toKebabCase)
 toKebabCase : String -> String
 toKebabCase =
     String.toLower >> String.replace " " "-"
+
+
+{-| Transform a Bool to String.
+-}
+fromBool : Bool -> String
+fromBool bool =
+    if bool then
+        "true"
+
+    else
+        "false"
