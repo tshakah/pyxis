@@ -19,8 +19,9 @@ module Components.Field.Textarea exposing
     , isOnFocus
     , isOnInput
     , update
-    , validate
+    , updateValue
     , getValue
+    , validate
     , render
     )
 
@@ -66,12 +67,13 @@ module Components.Field.Textarea exposing
 @docs isOnFocus
 @docs isOnInput
 @docs update
-@docs validate
+@docs updateValue
 
 
 ## Readers
 
 @docs getValue
+@docs validate
 
 
 ## Rendering
@@ -317,6 +319,13 @@ update msg model =
             model
                 |> setValue value
                 |> mapFieldStatus FieldStatus.onInput
+
+
+{-| Update the field value.
+-}
+updateValue : String -> Model ctx -> Model ctx
+updateValue value =
+    update (OnInput value)
 
 
 {-| Internal.

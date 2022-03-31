@@ -27,12 +27,12 @@ module Components.Field.Input exposing
     , withPlaceholder
     , withStrategy
     , withValueMapper
-    , setValue
     , Msg
     , isOnBlur
     , isOnFocus
     , isOnInput
     , update
+    , updateValue
     , getValue
     , validate
     , render
@@ -89,11 +89,6 @@ module Components.Field.Input exposing
 @docs withValueMapper
 
 
-## Setters
-
-@docs setValue
-
-
 ## Update
 
 @docs Msg
@@ -101,6 +96,7 @@ module Components.Field.Input exposing
 @docs isOnFocus
 @docs isOnInput
 @docs update
+@docs updateValue
 
 
 ## Readers
@@ -218,6 +214,13 @@ update msg model =
             model
                 |> setValue value
                 |> mapFieldStatus FieldStatus.onInput
+
+
+{-| Update the field value.
+-}
+updateValue : String -> Model ctx parsedValue -> Model ctx parsedValue
+updateValue value =
+    update (OnInput value)
 
 
 {-| Internal

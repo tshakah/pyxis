@@ -15,8 +15,9 @@ module Components.Field.Select exposing
     , withStrategy
     , Msg
     , update
-    , validate
+    , updateValue
     , getValue
+    , validate
     , Option
     , option
     , withOptions
@@ -60,12 +61,13 @@ module Components.Field.Select exposing
 
 @docs Msg
 @docs update
-@docs validate
+@docs updateValue
 
 
 ## Readers
 
 @docs getValue
+@docs validate
 
 
 ## Options
@@ -135,10 +137,10 @@ type DropDownState
 
 {-| Internal.
 -}
-type alias ModelData ctx parsed =
+type alias ModelData ctx parsedValue =
     { isBlurringInternally : Bool
     , dropDownState : DropDownState
-    , validation : ctx -> Maybe String -> Result String parsed
+    , validation : ctx -> Maybe String -> Result String parsedValue
     , value : Maybe String
     , fieldStatus : FieldStatus.Status
     }
@@ -146,14 +148,14 @@ type alias ModelData ctx parsed =
 
 {-| A type representing the select field internal state
 -}
-type Model ctx parsed
-    = Model (ModelData ctx parsed)
+type Model ctx parsedValue
+    = Model (ModelData ctx parsedValue)
 
 
 {-| Initialize the select internal state. This belongs to your app's `Model`
 Takes a validation function as argument
 -}
-init : Maybe String -> (ctx -> Maybe String -> Result String parsed) -> Model ctx parsed
+init : Maybe String -> (ctx -> Maybe String -> Result String parsedValue) -> Model ctx parsedValue
 init initialValue validation =
     Model
         { dropDownState = Closed
@@ -166,14 +168,14 @@ init initialValue validation =
 
 {-| Returns the current native value of the Select
 -}
-getValue : Model ctx parsed -> String
+getValue : Model ctx parsedValue -> String
 getValue (Model { value }) =
     Maybe.withDefault "" value
 
 
 {-| Returns the validated value of the select
 -}
-validate : ctx -> Model ctx parsed -> Result String parsed
+validate : ctx -> Model ctx parsedValue -> Result String parsedValue
 validate ctx (Model { value, validation }) =
     validation ctx value
 
@@ -187,7 +189,7 @@ focusSelect =
 
 {-| Update the internal state of the Select component
 -}
-update : Msg -> Model ctx parsed -> ( Model ctx parsed, Cmd Msg )
+update : Msg -> Model ctx parsedValue -> ( Model ctx parsedValue, Cmd Msg )
 update msg model =
     case msg of
         Noop ->
@@ -209,7 +211,7 @@ update msg model =
 
         Selected value ->
             model
-                |> setSelectedValue value
+                |> setValue value
                 |> setIsOpen False
                 |> setIsBlurringInternally False
                 |> mapFieldStatus FieldStatus.onInput
@@ -237,6 +239,13 @@ update msg model =
                 |> PrimaUpdate.withoutCmds
 
 
+{-| Update the field value.
+-}
+updateValue : String -> Model ctx parsedValue -> ( Model ctx parsedValue, Cmd Msg )
+updateValue value =
+    update (Selected value)
+
+
 {-| Internal.
 -}
 setClickedLabel : String -> Commons.Events.PointerEvent -> Model ctx b -> PrimaUpdate.PrimaUpdate (Model ctx b) Msg
@@ -255,7 +264,7 @@ setClickedLabel id pointerEvent ((Model { dropDownState }) as model) =
 
 {-| Internal.
 -}
-setClickedClosedLabel : Maybe Commons.Events.PointerType -> Model ctx parsed -> Model ctx parsed
+setClickedClosedLabel : Maybe Commons.Events.PointerType -> Model ctx parsedValue -> Model ctx parsedValue
 setClickedClosedLabel pointerType ((Model modelData) as model) =
     case ( Maybe.withDefault Commons.Events.Mouse pointerType, modelData.dropDownState ) of
         ( Commons.Events.Mouse, Closed ) ->
@@ -267,7 +276,7 @@ setClickedClosedLabel pointerType ((Model modelData) as model) =
 
 {-| Internal.
 -}
-setIsBlurred : String -> Model ctx parsed -> PrimaUpdate.PrimaUpdate (Model ctx parsed) Msg
+setIsBlurred : String -> Model ctx parsedValue -> PrimaUpdate.PrimaUpdate (Model ctx parsedValue) Msg
 setIsBlurred id ((Model modelData) as model) =
     case ( modelData.isBlurringInternally, modelData.dropDownState ) of
         ( False, Open _ ) ->
@@ -322,7 +331,7 @@ setDropdownWrapperItemKeydown { id, next, previous } keyCode ((Model modelData) 
 
 {-| Internal.
 -}
-setSelectKeydown : { a | id : String, options : List Option } -> KeyDown.Event -> Model ctx parsed -> PrimaUpdate.PrimaUpdate (Model ctx parsed) Msg
+setSelectKeydown : { a | id : String, options : List Option } -> KeyDown.Event -> Model ctx parsedValue -> PrimaUpdate.PrimaUpdate (Model ctx parsedValue) Msg
 setSelectKeydown configData keyCode ((Model modelData) as model) =
     case modelData.dropDownState of
         Open open ->
@@ -607,7 +616,7 @@ handleSelectKeydown configData key =
 
 {-| Render the html
 -}
-render : (Msg -> msg) -> ctx -> Model ctx parsed -> Config msg -> Html msg
+render : (Msg -> msg) -> ctx -> Model ctx parsedValue -> Config msg -> Html msg
 render tagger ctx ((Model modelData) as model) ((Config configData) as configuration) =
     let
         shownValidation : Result String ()
@@ -695,7 +704,7 @@ renderField shownValidation ((Model modelData) as model) (Config configData) =
 
 {-| Internal.
 -}
-renderDropdownWrapper : Model ctx parsed -> Config msg -> Html Msg
+renderDropdownWrapper : Model ctx parsedValue -> Config msg -> Html Msg
 renderDropdownWrapper (Model model) (Config select) =
     -- Currently not using renderIf for performance reasons
     if select.isMobile then
@@ -856,7 +865,7 @@ focusDropDownItem delay value index =
 
 {-| Internal
 -}
-setKeyboardHoveredValue : String -> Model ctx parsed -> Model ctx parsed
+setKeyboardHoveredValue : String -> Model ctx parsedValue -> Model ctx parsedValue
 setKeyboardHoveredValue value (Model model) =
     case model.dropDownState of
         Closed ->
@@ -868,7 +877,7 @@ setKeyboardHoveredValue value (Model model) =
 
 {-| Internal
 -}
-isDropDownOpen : Model ctx parsed -> Bool
+isDropDownOpen : Model ctx parsedValue -> Bool
 isDropDownOpen (Model model) =
     case model.dropDownState of
         Open _ ->
@@ -880,7 +889,7 @@ isDropDownOpen (Model model) =
 
 {-| Internal.
 -}
-setIsOpen : Bool -> Model ctx parsed -> Model ctx parsed
+setIsOpen : Bool -> Model ctx parsedValue -> Model ctx parsedValue
 setIsOpen condition (Model model) =
     if condition then
         Model { model | dropDownState = Open { hoveredValue = model.value } }
@@ -891,14 +900,14 @@ setIsOpen condition (Model model) =
 
 {-| Internal.
 -}
-setIsBlurringInternally : Bool -> Model ctx parsed -> Model ctx parsed
+setIsBlurringInternally : Bool -> Model ctx parsedValue -> Model ctx parsedValue
 setIsBlurringInternally isBlurringInternally (Model model) =
     Model { model | isBlurringInternally = isBlurringInternally }
 
 
 {-| Internal.
 -}
-setHoveredValue : Maybe String -> Model ctx parsed -> Model ctx parsed
+setHoveredValue : Maybe String -> Model ctx parsedValue -> Model ctx parsedValue
 setHoveredValue hoveredValue (Model model) =
     Model { model | dropDownState = Open { hoveredValue = hoveredValue } }
 
@@ -906,20 +915,20 @@ setHoveredValue hoveredValue (Model model) =
 {-| Internal.
 Acts as identity when maybeValue == Nothing
 -}
-setSelectedValueWhenJust : Maybe String -> Model ctx parsed -> Model ctx parsed
+setSelectedValueWhenJust : Maybe String -> Model ctx parsedValue -> Model ctx parsedValue
 setSelectedValueWhenJust =
-    Maybe.map setSelectedValue >> Maybe.withDefault identity
+    Maybe.map setValue >> Maybe.withDefault identity
 
 
 {-| Internal.
 -}
-setSelectedValue : String -> Model ctx parsed -> Model ctx parsed
-setSelectedValue value (Model model) =
+setValue : String -> Model ctx parsedValue -> Model ctx parsedValue
+setValue value (Model model) =
     Model { model | value = Just value }
 
 
 {-| Internal.
 -}
-mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx parsed -> Model ctx parsed
+mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx parsedValue -> Model ctx parsedValue
 mapFieldStatus f (Model model) =
     Model { model | fieldStatus = f model.fieldStatus }

@@ -18,8 +18,9 @@ module Components.Field.RadioGroup exposing
     , Msg
     , isOnCheck
     , update
-    , validate
+    , updateValue
     , getValue
+    , validate
     , Option
     , option
     , withOptions
@@ -69,12 +70,13 @@ module Components.Field.RadioGroup exposing
 @docs Msg
 @docs isOnCheck
 @docs update
-@docs validate
+@docs updateValue
 
 
 ## Readers
 
 @docs getValue
+@docs validate
 
 
 ## Options
@@ -107,17 +109,17 @@ import Result.Extra
 
 {-| The RadioGroup model.
 -}
-type Model ctx value parsed
+type Model ctx value parsedValue
     = Model
         { selectedValue : Maybe value
-        , validation : ctx -> Maybe value -> Result String parsed
+        , validation : ctx -> Maybe value -> Result String parsedValue
         , fieldStatus : FieldStatus.Status
         }
 
 
 {-| Initialize the RadioGroup Model.
 -}
-init : Maybe value -> (ctx -> Maybe value -> Result String parsed) -> Model ctx value parsed
+init : Maybe value -> (ctx -> Maybe value -> Result String parsedValue) -> Model ctx value parsedValue
 init initialValue validation =
     Model
         { selectedValue = initialValue
@@ -306,7 +308,7 @@ option =
 
 {-| Render the RadioGroup.
 -}
-render : (Msg value -> msg) -> ctx -> Model ctx value parsed -> Config value -> Html.Html msg
+render : (Msg value -> msg) -> ctx -> Model ctx value parsedValue -> Config value -> Html.Html msg
 render tagger ctx ((Model modelData) as model) ((Config configData) as configuration) =
     let
         shownValidation : Result String ()
@@ -325,7 +327,7 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as configura
         |> FormItem.render shownValidation
 
 
-renderField : Result String () -> Model ctx value parsed -> Config value -> Html.Html (Msg value)
+renderField : Result String () -> Model ctx value parsedValue -> Config value -> Html.Html (Msg value)
 renderField shownValidation model ((Config configData) as configuration) =
     Html.div
         [ Attributes.classList
@@ -354,7 +356,7 @@ labelId =
 
 {-| Internal.
 -}
-renderRadio : Result String x -> Model ctx value parsed -> Config value -> Option value -> Html.Html (Msg value)
+renderRadio : Result String x -> Model ctx value parsedValue -> Config value -> Option value -> Html.Html (Msg value)
 renderRadio validationResult (Model { selectedValue }) (Config { id, name, isDisabled }) (Option { value, label }) =
     Html.label
         [ Attributes.classList
@@ -389,7 +391,7 @@ radioId id label =
 
 {-| Update the RadioGroup Model.
 -}
-update : Msg value -> Model ctx value parsed -> Model ctx value parsed
+update : Msg value -> Model ctx value parsedValue -> Model ctx value parsedValue
 update msg model =
     case msg of
         OnCheck value ->
@@ -406,29 +408,36 @@ update msg model =
                 |> mapFieldStatus FieldStatus.onFocus
 
 
+{-| Update the field value.
+-}
+updateValue : value -> Model ctx value parsedValue -> Model ctx value parsedValue
+updateValue value =
+    update (OnCheck value)
+
+
 {-| Set the radiogroup value
 -}
-setValue : value -> Model ctx value parsed -> Model ctx value parsed
+setValue : value -> Model ctx value parsedValue -> Model ctx value parsedValue
 setValue value (Model model) =
     Model { model | selectedValue = Just value }
 
 
 {-| Internal
 -}
-mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx value parsed -> Model ctx value parsed
+mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx value parsedValue -> Model ctx value parsedValue
 mapFieldStatus f (Model model) =
     Model { model | fieldStatus = f model.fieldStatus }
 
 
 {-| Return the selected value.
 -}
-getValue : Model ctx value parsed -> Maybe value
+getValue : Model ctx value parsedValue -> Maybe value
 getValue (Model { selectedValue }) =
     selectedValue
 
 
 {-| Get the (parsed) value
 -}
-validate : ctx -> Model ctx value parsed -> Result String parsed
+validate : ctx -> Model ctx value parsedValue -> Result String parsedValue
 validate ctx (Model { selectedValue, validation }) =
     validation ctx selectedValue
