@@ -16,7 +16,7 @@ steps:
     PLUGIN_DEPTH: 5
 
 - name: cache-restore
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-restore
@@ -31,7 +31,7 @@ steps:
   - git-clone
 
 - name: check-secrets
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - check-secrets-grants
@@ -42,14 +42,14 @@ steps:
   - git-clone
 
 - name: check-public-docker-images
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - check-public-docker-images
   depends_on:
   - git-clone
 
 - name: build-image
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - sed -i 's/USER node/USER root/g' ./Dockerfile
   - docker build -t prima/pyxis-ci:${DRONE_COMMIT} ./
@@ -114,15 +114,6 @@ steps:
   depends_on:
   - build
 
-- name: sassdocs
-  image: prima/pyxis-ci:${DRONE_COMMIT}
-  commands:
-  - yarn sassdocs:build
-  environment:
-    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
-  depends_on:
-  - build
-
 - name: elmbook
   image: prima/pyxis-ci:${DRONE_COMMIT}
   commands:
@@ -133,7 +124,7 @@ steps:
   - build
 
 - name: cache-save
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-save .cache node_modules
@@ -154,7 +145,6 @@ steps:
   - test
   - build
   - storybook
-  - sassdocs
   - elmbook
 
 volumes:
@@ -187,7 +177,7 @@ steps:
     PLUGIN_DEPTH: 5
 
 - name: cache-restore
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - cache-restore
@@ -202,7 +192,7 @@ steps:
   - git-clone
 
 - name: build-image
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - sed -i 's/USER node/USER root/g' ./Dockerfile
   - docker build -t prima/pyxis-ci:${DRONE_COMMIT} ./
@@ -262,14 +252,14 @@ steps:
     PLUGIN_DEPTH: 5
 
 - name: pre-start
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - pre-start-scripts
   depends_on:
   - git-clone
 
 - name: deploy
-  image: public.ecr.aws/prima/drone-tools:1.21.3
+  image: public.ecr.aws/prima/drone-tools:1.21.4
   commands:
   - . /etc/profile.d/ecs-credentials-endpoint
   - ./deploy/deploy-it staging
@@ -287,7 +277,11 @@ steps:
   settings:
     signature-secret:
       from_secret: captainhook_secret
-    urls: http://captainhook-internal.prima.it/drone/deploy?rollback=${ROLLBACK}
+    urls: http://captainhook-internal.prima.it/drone/deploy?rollback=${ROLLBACK}&country=it&environment=staging
+  when:
+    status:
+    - failure
+    - success
   depends_on:
   - deploy
 
@@ -349,6 +343,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 420e0e6777c7095401936ac41bfc6e734a46152e07928745a0ba425fcf7433ae
+hmac: 207fe605972c6634377e601021afb06470c109080a74cccf2571241dc431de19
 
 ...
