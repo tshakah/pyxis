@@ -21,7 +21,11 @@ $_variants: (brand, action, alert, success, error, neutralGradient, brandGradien
       color: foundations.color(neutralLight);
     } @else {
       background-color: foundations.color(#{$variant}Light);
-      color: if($variant == "alert", foundations.color(neutral25), foundations.color(#{$variant}Base));
+      color: if($variant == "alert", foundations.color(neutralBase), foundations.color(#{$variant}Dark));
+
+      &.badge--alt {
+        color: if($variant == "alert", foundations.color(neutral25), foundations.color(#{$variant}Base));
+      }
     }
   }
 }

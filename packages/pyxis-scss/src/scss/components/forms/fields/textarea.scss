@@ -22,6 +22,7 @@ $_offset: foundations.spacing(3xs);
 ///
 /// @access public
 .form-field__textarea {
+  @include foundations.text(m, book);
   display: block;
   flex: 1;
   margin: 0 $_offset $_offset 0;
