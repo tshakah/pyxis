@@ -1,48 +1,6 @@
-////
-/// Generated classes for text field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../foundations";
 @use "../variables";
 
-/// Set properties for styling input of type date.
-///
-/// @example scss - Date field
-///    <div class="form-field">
-///      <label class="form-field__wrapper">
-///         <div class="form-field__addon">
-///           <svg width="24" height="24"></svg>
-///         </div>
-///         <input type="date" class="form-field__date"/>
-///       </label>
-///    </div>
-///
-/// @example scss - Date field filled
-///    <div class="form-field">
-///      // Remember to add `form-field__date--filled` class when input is populated.
-///       <label class="form-field__wrapper">
-///        <div class="form-field__addon">
-///          <svg width="24" height="24"></svg>
-///        </div>
-///        <input
-///         class="form-field__date form-field__date--filled"
-///         value="2022-12-25" />
-///       </label>
-///    </div>
-///
-/// @example scss - Date field small
-///    <div class="form-field">
-///       <label class="form-field__wrapper">
-///        <div class="form-field__addon">
-///          // Remember use a 20x20 svg when field is small.
-///          <svg width="20" height="20"></svg>
-///        </div>
-///        <input class="form-field__date form-field__date--small" />
-///       </label>
-///    </div>
-///
-/// @access public
 .form-field__date {
   color: foundations.color(neutral50);
   height: variables.$fieldHeight;

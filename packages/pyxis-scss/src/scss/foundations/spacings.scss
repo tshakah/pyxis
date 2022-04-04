@@ -1,45 +1,22 @@
-////
-/// Spacings are part of a predefined set of negative space used in Pyxis.
-/// @group SPACINGS
-////
+// Spacings are part of a predefined set of negative space used in Pyxis.
 
 @use "../lib";
 @use "breakpoints";
 @use "../tokens/spacings" as *;
 
-
-/// Spacing list.  
-/// <em style="font-size:small;">This variable is private.</em>
-///
-/// @prop {String} 3xl
-/// @prop {String} 2xl
-/// @prop {String} xl
-/// @prop {String} l
-/// @prop {String} m
-/// @prop {String} s
-/// @prop {String} xs
-/// @prop {String} 2xs
-/// @prop {String} 3xs
-/// @prop {String} 4xs
-///
-/// @type List
-$_spacingsList: ();
-
-/// Includes the size contained in the spacings map with base breakpoint
-///
-/// @param {String} $size - Name of the size
-/// @throw {Error}
-/// @access public
+// Includes the size contained in the spacings map with base breakpoint
+//
+// @param {String} $size - Name of the size
+// @throw {Error}
 @function spacing($size) {
   @return lib.rem(lib.get($spacings, $size, base));
 }
 
-/// Includes the size contained in the spacings map on property in every breakpoints
-///
-/// @param {String} $property - Name of the property
-/// @param {String | Number} $size - Name of the size or 0 value
-/// @throw {Error}
-/// @access private
+// Includes the size contained in the spacings map on property in every breakpoints
+//
+// @param {String} $property - Name of the property
+// @param {String | Number} $size - Name of the size or 0 value
+// @throw {Error}
 @mixin _responsiveSpacing($property, $size) {
   @if $size == 0 {
     #{$property}: 0;
@@ -52,69 +29,32 @@ $_spacingsList: ();
   }
 }
 
-/// Includes equal padding by size in every breakpoints.
-///
-/// @param {String} $size - A size from `$spacings`
-/// 
-/// @output `padding` property.
-///
-/// @example scss - Set equal padding in every direction
-///  .element {
-///     @include padding(s);
-///  }
-///
-/// @access public
+// Includes equal padding by size in every breakpoints.
+//
+// @param {String} $size - A size from `$spacings`
 @mixin padding($size) {
   @include _responsiveSpacing("padding", $size);
 }
 
-/// Includes padding by size for vertical edges in every breakpoints.
-///
-/// @param {String} $size - A size from `$spacings`
-/// 
-/// @output `padding-bottom` and `padding-top` properties.
-///
-/// @example scss - Set vertical padding 
-///  .element {
-///     @include verticalPadding(s);
-///  }
-/// 
-/// @access public
+// Includes padding by size for vertical edges in every breakpoints.
+//
+// @param {String} $size - A size from `$spacings`
 @mixin verticalPadding($size) {
   @include _responsiveSpacing("padding-bottom", $size);
   @include _responsiveSpacing("padding-top", $size);
 }
 
-/// Includes padding by size for horizontal edges in every breakpoints.
-///
-/// @param {String} $size - A size from `$spacings`
-///
-/// @output `padding-right` and `padding-left` properties.
-///
-/// @example scss - Set vertical padding 
-///  .element {
-///     @include horizontalPadding(s);
-///  }
-/// 
-/// @access public
+// Includes padding by size for horizontal edges in every breakpoints.
+//
+// @param {String} $size - A size from `$spacings`
 @mixin horizontalPadding($size) {
   @include _responsiveSpacing("padding-left", $size);
   @include _responsiveSpacing("padding-right", $size);
 }
 
-/// Includes `margin-bottom` by size in every breakpoint.
-///
-/// @param {String} $size - A size from `$spacings`
-///
-/// @output `margin-bottom` property. If the element is `last-child`
-/// the property is set to `0`, regardless of the specified size.
-///
-/// @example scss - Set margin bottom 
-///  .element {
-///     @include verticalSpacing(s);
-///  }
-/// 
-/// @access public
+// Includes `margin-bottom` by size in every breakpoint.
+//
+// @param {String} $size - A size from `$spacings`
 @mixin verticalSpacing($size) {
   @include _responsiveSpacing("margin-bottom", $size);
 
@@ -123,19 +63,9 @@ $_spacingsList: ();
   }
 }
 
-/// Includes `margin-right` by size in every breakpoints.
-///
-/// @param {String} $size - A size from `$spacings`
-///
-/// @output `margin-right` property. If the element is `last-child`
-/// the property is set to `0`, regardless of the specified size.
-///
-/// @example scss - Set margin right 
-///  .element {
-///     @include horizontalSpacing(s);
-///  }
-/// 
-/// @access public
+// Includes `margin-right` by size in every breakpoints.
+//
+// @param {String} $size - A size from `$spacings`
 @mixin horizontalSpacing($size) {
   @include _responsiveSpacing("margin-right", $size);
 
@@ -144,48 +74,25 @@ $_spacingsList: ();
   }
 }
 
-/// Includes `grid-row-gap` by size in every breakpoints
-/// Same as `verticalSpacing()`, but used to space out vertical elements 
-/// in case a grid is used (`display: grid;`).
-///
-/// @param {String} $size - A size from `$spacings`
-///
-/// @output `row-gap` property.
-///
-/// @example scss - Set vertical gap in a grid environment 
-///  .element {
-///     display: grid;
-///     @include rowGap(s);
-///  }
-/// 
-/// @access public
+// Includes `grid-row-gap` by size in every breakpoints
+// Same as `verticalSpacing()`, but used to space out vertical elements
+// in case a grid is used (`display: grid;`).
+//
+// @param {String} $size - A size from `$spacings`
 @mixin rowGap($size) {
   @include _responsiveSpacing("row-gap", $size);
 }
 
-/// Includes `grid-column-gap` by size in every breakpoints
-/// Like `horizontalSpacing()`, but used to space out horizontal elements 
-/// in case a grid is used (`display: grid;`).
-///
-/// @param {String} $size - A size from `$spacings`
-///
-/// @output `column-gap` property.
-///
-/// @example scss - Set horizontal gap in a grid environment 
-///  .element {
-///     display: grid;
-///     @include columnGap(s);
-///  }
-/// 
-/// @access public
+// Includes `grid-column-gap` by size in every breakpoints
+// Like `horizontalSpacing()`, but used to space out horizontal elements
+// in case a grid is used (`display: grid;`).
+//
+// @param {String} $size - A size from `$spacings`
 @mixin columnGap($size) {
   @include _responsiveSpacing("column-gap", $size);
 }
 
-/// Create atom classes for all spacing in $spacings map
-///
-/// @alias createAtoms
-/// @access public
+// Create atom classes for all spacing in $spacings map
 @mixin createAtoms() {
   @each $size, $_ in $spacings {
     .padding-#{$size} {

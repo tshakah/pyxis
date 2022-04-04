@@ -1,8 +1,8 @@
-/// `normalize` and `base` must come before the other foundations
+// `normalize` and `base` must come before the other foundations
 @forward "normalize";
 @forward "base";
 
-/// The remaining foundations must be sorted alphabetically
+// The remaining foundations must be sorted alphabetically
 @forward "breakpoints";
 @forward "colors" hide createAtoms;
 @forward "containers" hide createAtoms;

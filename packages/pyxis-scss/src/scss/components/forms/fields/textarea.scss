@@ -1,26 +1,8 @@
-////
-/// Generated classes for text field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../foundations";
 @use "../../../lib";
 
 $_offset: foundations.spacing(3xs);
 
-/// Set properties for styling textarea.
-///
-/// @example scss - Default Textarea
-///    <div class="form-field">
-///      <textarea class="form-field__textarea" placeholder="Text area" />
-///    </div>
-///
-/// @example scss - Textarea small
-///    <div class="form-field form-field--small">
-///      <textarea class="form-field__textarea form-field__textarea--small" placeholder="Text area" />
-///    </div>
-///
-/// @access public
 .form-field__textarea {
   @include foundations.text(m, book);
   display: block;

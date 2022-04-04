@@ -1,15 +1,7 @@
-////
-/// Generated classes for autocomplete field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../foundations";
 @use "../../../lib";
 @use "../variables";
 
-/// Set general properties for styling autocomplete.
-///
-/// @access public
 .form-field__autocomplete {
   color: foundations.color(neutralBase);
   height: variables.$fieldHeight;

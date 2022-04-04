@@ -1,83 +1,16 @@
-////
-/// Generated classes for text field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../lib";
 @use "../../../foundations";
 @use "../mixins";
 @use "../variables";
 
-/// Add the same color and border-color to element.
-/// @param {Color} $color - Color name
-///
-/// @output Appropriate `border-color` and `color`.
-///
-/// @access private
+// Add the same color and border-color to element.
+//
+// @param {Color} $color - Color name
 @mixin _addonColors($color) {
   border-color: foundations.color($color);
   color: foundations.color($color);
 }
 
-/// Set general properties for the container of the field.
-///
-/// @example scss - Base field
-///    <div class="form-field">
-///      <input />
-///    </div>
-///
-/// @example scss - Base field with error message
-///    <div class="form-field form-field--error">
-///      <input />
-///      <div class="form-field__error-message">Error message</div>
-///    </div>
-///
-/// @example scss - Base field disabled
-///    <div class="form-field form-field--disabled">
-///      <input disabled/>
-///    </div>
-///
-/// @example scss - Input field with prepend icon
-///    <div class="form-field form-field--with-prepend-icon">
-///      <label class="form-field__wrapper">
-///        <div class="form-field__addon">
-///          // Use a 20x20 svg for small input field
-///          <svg width="24" height="24"></svg>
-///        </div>
-///        <input />
-///      </label>
-///    </div>
-///
-/// @example scss - Input field with append icon
-///    <div class="form-field form-field--with-append-icon">
-///      <label class="form-field__wrapper">
-///        <input />
-///        <div class="form-field__addon">
-///          // Use a 20x20 svg for small input field
-///          <svg width="24" height="24"></svg>
-///        </div>
-///      </label>
-///    </div>
-///
-/// @example scss - Input field with prepend text
-///    // Please note: this is available only with input of type text
-///    <div class="form-field form-field--with-prepend-text">
-///      <label class="form-field__wrapper">
-///        <span  class="form-field__addon">text</span>
-///        <input type="text" class="form-field__text" placeholder="Text field"/>
-///      </label>
-///    </div>
-///
-/// @example scss - Input field with append text
-///    // Please note: this is available only with input of type text
-///    <div class="form-field form-field--with-append-text">
-///      <label class="form-field__wrapper">
-///        <input type="text" class="form-field__text" placeholder="Text field"/>
-///        <span  class="form-field__addon">text</span>
-///      </label>
-///    </div>
-///
-/// @access public
 .form-field {
   @include foundations.radius(xs);
   @include foundations.text(m, book);

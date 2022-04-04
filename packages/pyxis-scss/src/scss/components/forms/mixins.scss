@@ -2,9 +2,7 @@
 @use "../../foundations";
 @use "variables";
 
-/// Add CSS rules for default, hover and focus field states.
-///
-/// @access private
+// Add CSS rules for default, hover and focus field states.
 @mixin fieldStateDefault {
   outline: transparent solid variables.$outlineWidth;
   outline-offset: 0;
@@ -32,9 +30,7 @@
   }
 }
 
-/// Add CSS rules for disabled field state.
-///
-/// @access private
+// Add CSS rules for disabled field state.
 @mixin fieldStateDisable {
   background-color: foundations.color(neutral95);
   border-color: foundations.color(neutral85);
@@ -42,9 +38,7 @@
   cursor: not-allowed;
 }
 
-/// Add CSS rules for error field state.
-///
-/// @access private
+// Add CSS rules for error field state.
 @mixin fieldStateError {
   &,
   &:active,
@@ -66,9 +60,7 @@
   }
 }
 
-/// Add CSS rules for opened dropdown.
-///
-/// @access private
+// Add CSS rules for opened dropdown.
 @mixin fieldWithOpenedDropdown {
   @include foundations.radius(xs, top);
   z-index: 2;
@@ -84,9 +76,7 @@
   }
 }
 
-/// Add CSS rules for error control state.
-///
-/// @access private
+// Add CSS rules for error control state.
 @mixin fieldControlError {
   @include fieldStateError;
 
@@ -96,9 +86,7 @@
   }
 }
 
-/// Add CSS rules for default control field.
-///
-/// @access private
+// Add CSS rules for default control field.
 @mixin controlDefault {
   border: variables.$borderWidth solid foundations.color(neutral85);
   cursor: pointer;
@@ -144,9 +132,7 @@
   }
 }
 
-/// Add CSS rules for focus shadow
-///
-/// @access private
+// Add CSS rules for focus shadow
 @mixin shadow($boxShadowColor) {
   box-shadow: 0 0 0 variables.$outlineWidth $boxShadowColor;
   outline: none;

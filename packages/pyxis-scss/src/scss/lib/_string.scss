@@ -1,18 +1,9 @@
-////
-/// Utilities for working with Strings.
-/// @group LIB
-////
+// Utilities for working with Strings.
 
-/// Converts a camelCase `$string` into a kebab-case one.
-///
-/// @param {String} $string - String in camelCase
-/// @return {String} - String in kebab-case
-///
-/// @example scss - Convert a camelCase string in kebab-case
-///   camelToKebabCase("iWantToBeKebabCase")
-///   // i-want-to-be-kebab-case
-///
-/// @access public
+// Converts a camelCase `$string` into a kebab-case one.
+//
+// @param {String} $string - String in camelCase
+// @return {String} - String in kebab-case
 @function camelToKebabCase($string) {
   $alphabet: "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
     "V", "W", "X", "Y", "Z";
@@ -38,35 +29,20 @@
   @return $kebabString;
 }
 
-/// Capitalize string.
-///
-/// @param {String} $string - Initial string
-/// @return {String} - Capitalized string
-///
-/// @example scss - Capitalize a lowercase string
-///   capitalize("string to capitalize")
-///   // String to capitalize
-///
-/// @access public
+// Capitalize string.
+//
+// @param {String} $string - Initial string
+// @return {String} - Capitalized string
 @function capitalize($string) {
   @return to-upper-case(str-slice($string, 1, 1)) + str-slice($string, 2);
 }
 
-/// Replace a substring in a string with the given value.
-///
-/// @param {String} $string - Initial string
-/// @param {String} $search - Substring to replace
-/// @param {String} $replace [""] - The new value for `$search` string
-/// @return {String}
-///
-/// @example scss - Replace all commas with a dash
-///   stringReplace("string, to, change", ", ", "-")
-///   // string-to-change
-/// @example scss - Delete all spaces in a string
-///   stringReplace("String To Change", " ")
-///   // StringToChange
-///
-/// @access public
+// Replace a substring in a string with the given value.
+//
+// @param {String} $string - Initial string
+// @param {String} $search - Substring to replace
+// @param {String} $replace [""] - The new value for `$search` string
+// @return {String}
 @function stringReplace($string, $search, $replace: "") {
   $index: str-index($string, $search);
   @if $index {
@@ -76,16 +52,10 @@
   @return $string;
 }
 
-/// Splits a string into a list of characters.
-///
-/// @param {String} $string - A string to split into characters.
-/// @return {List} - List of characters of $string
-///
-/// @example scss - Convert a string to a list of characters
-///   stringToCharList("string")
-///   // (s, t, r, i, n, g)
-///
-/// @access public
+// Splits a string into a list of characters.
+//
+// @param {String} $string - A string to split into characters.
+// @return {List} - List of characters of $string
 @function stringToCharList($string) {
   $chars: ();
 

@@ -1,46 +1,17 @@
-////
-/// Utilities for Null type.
-/// @group LIB
-////
+// Utilities for Null type.
 
-/// Check if value is null.
-///
-/// @param {Any} $value - The value to check
-/// @return {Bool}
-///
-/// @example scss - Check if `$value` is null
-///   $value: "string";
-///
-///   isNull($value)
-///   // false
-/// @example scss - Check if `$value` is null
-///   $value: null;
-///
-///   isNull($value)
-///   // true
-///
-/// @access public
+// Check if value is null.
+//
+// @param {Any} $value - The value to check
+// @return {Bool}
 @function isNull($value) {
   @return $value == null;
 }
 
-/// Check if value is not null.
-///
-/// @param {Any} $value - The value to check
-/// @return {Bool}
-///
-/// @example scss - Check if `$value` is not null
-///   $value: "string";
-///
-///   isNotNull($value)
-///   // true
-/// @example scss - Check if `$value` is not null
-///   $value: null;
-///
-///   isNotNull($value)
-///   // false
-///
-/// @access public
+// Check if value is not null.
+//
+// @param {Any} $value - The value to check
+// @return {Bool}
 @function isNotNull($value) {
   @return $value != null;
 }

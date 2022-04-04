@@ -9,13 +9,10 @@ $_size: (
 
 $_variants: (brand, alert, success, error);
 
-/// Add background-color and color to icon.
-/// @param {Color} $background - Background color name
-/// @param {Color} $icon - Color name
-///
-/// @output Appropriate `background-color` and `color`.
-///
-/// @access private
+// Add background-color and color to icon.
+//
+// @param {Color} $background - Background color name
+// @param {Color} $icon - Color name
 @mixin _setColors($background, $icon) {
   background-color: foundations.color($background);
   color: foundations.color($icon);

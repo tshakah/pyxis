@@ -1,90 +1,29 @@
-////
-/// These are the colours of our design system. Editing them will directly reflect on UI appearance.
-/// @group COLORS
-////
+// These are the colours of our design system.
 
 @use "../lib";
 @use "../tokens/colors" as *;
 @use "../tokens/gradients" as *;
 
-/// The color palette of Pyxis.  
-/// <em style="font-size:small;">This variable is private, please use function `color()`
-/// described below to retrieve a single value from the map.</em>
-///
-/// @prop {Color} actionBase [#067f96]
-/// @prop {Color} actionDark [#045767]
-/// @prop {Color} actionLight [#e5f1f4]
-/// @prop {Color} alertBase [#ffdc50]
-/// @prop {Color} alertDark [#ffc010]
-/// @prop {Color} alertLight [#fff8dc]
-/// @prop {Color} brandBase [#8334c2]
-/// @prop {Color} brandDark [#5b2488]
-/// @prop {Color} brandLight [#f2eaf8]
-/// @prop {Color} errorBase [#df1654]
-/// @prop {Color} errorDark [#b21143]
-/// @prop {Color} errorLight [#fbe7ed]
-/// @prop {Color} neutral25 [#595d6a]
-/// @prop {Color} neutral50 [#90939d]
-/// @prop {Color} neutral75 [#c7c9cd]
-/// @prop {Color} neutral85 [#dddee1]
-/// @prop {Color} neutral95 [#f3f4f4]
-/// @prop {Color} neutralLight [#ffffff]
-/// @prop {Color} neutralBase [#21283b]
-/// @prop {Color} successBase [#1d8147]
-/// @prop {Color} successDark [#145a31]
-/// @prop {Color} successLight [#e8f2ec]
-/// 
-/// @type Map
-$_colorsMap: ();
-
-/// The color palette for text
-///
-/// @type List
-/// @access private
+// The color palette for text
 $_textColors: (actionBase, alertBase, brandBase, errorBase, neutral25, neutralBase, neutralLight, successBase);
 
-/// The gradient palette of Pyxis.  
-/// <em style="font-size:small;">This variable is private, please use function `gradient()`
-/// described below to retrieve a single value from the map.</em>
-///
-/// @type Map
-/// @prop {Color} action [linear-gradient(45deg, #07a5b5, #067f96)]
-/// @prop {Color} brand [linear-gradient(45deg, #5b2488, #8334c2)]
-/// @prop {Color} neutral [linear-gradient(45deg, #21283b, #595d6a)]
-$gradientsMap: ();
-
-/// Returns the `$color` hex from map `$colors`.
-///
-/// @param {String} $color - Name of color
-/// @return {Color} Representation of named color
-///
-/// @example scss - Get the color hex
-///   color(brandDark)
-///   // #5b2488
-///
-/// @access public
+// Returns the `$color` hex from map `$colors`.
+//
+// @param {String} $color - Name of color
+// @return {Color} Representation of named color
 @function color($color) {
   @return lib.get($colors, $color);
 }
 
-/// Returns the `$gradient` from `$gradients`.
-///
-/// @param {String} $gradient - Name of gradient
-/// @return {Gradient} Representation of named gradient
-///
-/// @example scss - Get the linear-gradient
-///   gradient(brand)
-///   // linear-gradient(45deg, #8334c2, #f2eaf8)
-///
-/// @access public
+// Returns the `$gradient` from `$gradients`.
+//
+// @param {String} $gradient - Name of gradient
+// @return {Gradient} Representation of named gradient
 @function gradient($gradient) {
   @return lib.get($gradients, $gradient);
 }
 
-/// Create atom classes for all colors and gradient in $colors map and $gradients map
-///
-/// @alias createAtoms
-/// @access public
+// Create atom classes for all colors and gradient in $colors map and $gradients map
 @mixin createAtoms() {
   @each $colorName, $colorValue in $colors {
     .bg-#{lib.camelToKebabCase($colorName)} {

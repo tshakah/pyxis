@@ -1,179 +1,80 @@
-////
-/// Breakpoints define a small set of function used to adjust your
-/// style based on device width.
-/// @group BREAKPOINTS
-////
+// Breakpoints define a small set of function used to adjust your
+// style based on device width.
 
 @use "../lib";
 @use "../tokens/breakpoints" as *;
 
-/// The breakpoints of Pyxis.  
-/// <em style="font-size:small;">This variable is private, please use functions below to
-/// retrieve a single value or all the map.</em>
-///
-/// @prop {Number} base [1px]
-/// @prop {Number} xxsmall [375px]
-/// @prop {Number} xsmall [576px]
-/// @prop {Number} small [768px]
-/// @prop {Number} medium [992px]
-/// @prop {Number} large [1200px]
-/// @prop {Number} xlarge [1680px]
-/// 
-/// @type Map
-$_breakpointMap: ();
-
-/// Breakpoint bounding difference
-///
-/// @type Value
-/// @access private
+// Breakpoint bounding difference
 $_boundDiff: 1px;
 
-/// Returns the `$breakpoint` value from token map `$breakpoints`
-/// based on the key in input.
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @return {Number} The minimum value in which the breakpoint will be triggered
-///
-/// @example scss - Get the breakpoint value
-///   breakpoint(medium)
-///   // 992px
-///
-/// @access public
+// Returns the `$breakpoint` value from token map `$breakpoints`
+// based on the key in input.
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @return {Number} The minimum value in which the breakpoint will be triggered
 @function breakpoint($breakpoint) {
   @return lib.get($breakpoints, $breakpoint);
 }
 
-/// Check if the breakpoint is `base`.
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @return {Boolean}
-///
-/// @example scss - Check if a breakpoint is base
-///   @each $breakpointName, $_ in $breakpoints {
-///     @debug($breakpointName, isBase($breakpointName))
-///   }
-///   //  base, true
-///   //  xxsmall, false
-///   //  xsmall, false
-///   //  small, false
-///   //  medium, false
-///   //  large, false
-///   //  xlarge, false
-///
-/// @access public
+// Check if the breakpoint is `base`.
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @return {Boolean}
 @function isBase($breakpoint) {
   @return $breakpoint == base;
 }
 
-/// Check if breakpoint is strictly greater than the second one passed as input.
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @param {String} $lowerBound - Name of breakpoint to compare with
-/// @return {Boolean}
-///
-/// @example scss - Check if a breakpoint is strictly greater than the other
-///   isGreaterThan(medium, medium)
-///   // false
-/// @example scss - Check if a breakpoint is strictly greater than the other
-///   isGreaterThan(large, medium)
-///   // true
-///
-/// @access public
+// Check if breakpoint is strictly greater than the second one passed as input.
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @param {String} $lowerBound - Name of breakpoint to compare with
+// @return {Boolean}
 @function isGreaterThan($breakpoint, $lowerBound) {
   @return breakpoint($breakpoint) > breakpoint($lowerBound);
 }
 
-/// Check if a breakpoint is strictly lower than the second one passed as input.
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @param {String} $upperBound - Name of breakpoint to compare with
-/// @return {Boolean}
-///
-/// @example scss - Check if a breakpoint is strictly lower than the other
-///   isLowerThan(medium, medium)
-///   // false
-/// @example scss - Check if a breakpoint is strictly lower than the other
-///   isLowerThan(medium, large)
-///   // true
-///
-/// @access public
+// Check if a breakpoint is strictly lower than the second one passed as input.
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @param {String} $upperBound - Name of breakpoint to compare with
+// @return {Boolean}
 @function isLowerThan($breakpoint, $upperBound) {
   @return breakpoint($breakpoint) < breakpoint($upperBound);
 }
 
-/// Check if two breakpoints are equal.
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @param {String} $otherTerm - Name of breakpoint to compare with
-/// @return {Boolean}
-///
-/// @example scss - Check if two breakpoints are equal
-///   isEqualTo(medium, medium)
-///   // true
-///
-/// @access public
+// Check if two breakpoints are equal.
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @param {String} $otherTerm - Name of breakpoint to compare with
+// @return {Boolean}
 @function isEqualTo($breakpoint, $otherTerm) {
   @return breakpoint($breakpoint) == breakpoint($otherTerm);
 }
 
-/// Check if breakpoint is greater than or equal to the second one passed as input.
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @param {String} $upperBound - Name of breakpoint to compare with
-/// @return {Boolean}
-///
-/// @example scss - Check if a breakpoint is greater than the other
-///   isGreaterOrEqualTo(medium, medium)
-///   // true
-/// @example scss - Check if a breakpoint is greater than the other
-///   isGreaterOrEqualTo(large, medium)
-///   // true
-///
-/// @access public
+// Check if breakpoint is greater than or equal to the second one passed as input.
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @param {String} $upperBound - Name of breakpoint to compare with
+// @return {Boolean}
 @function isGreaterOrEqualTo($breakpoint, $upperBound) {
   @return isGreaterThan($breakpoint, $upperBound) or isEqualTo($breakpoint, $upperBound);
 }
 
-/// Check if breakpoint is lower than or equal to the second one passed as input.
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @param {String} $lowerBound - Name of breakpoint to compare with
-/// @return {Boolean}
-///
-/// @example scss - Check if a breakpoint is lower than the other
-///   isLowerOrEqualTo(medium, medium)
-///   // true
-/// @example scss - Check if a breakpoint is lower than the other
-///   isLowerOrEqualTo(medium, large)
-///   // true
-///
-/// @access public
+// Check if breakpoint is lower than or equal to the second one passed as input.
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @param {String} $lowerBound - Name of breakpoint to compare with
+// @return {Boolean}
 @function isLowerOrEqualTo($breakpoint, $lowerBound) {
   @return isLowerThan($breakpoint, $lowerBound) or isEqualTo($breakpoint, $lowerBound);
 }
 
-/// Wraps `@content` inside a media-query with a `min-width` and `max-width` (optional).
-///
-/// @param {String} $from - Name of breakpoint
-/// @param {String | Null} $until [null] - Name of breakpoint
-///
-/// @output `@content` inside a media-query
-///
-/// @example scss - Set of rules valid from `small` breakpoint
-/// .element {
-///   @include mq(small) {
-///     ...
-///   }
-/// }
-/// @example scss - Set of rules valid between `small` and `large`
-/// .element {
-///   @include mq(small, large) {
-///     ...
-///   }
-/// }
-///
-/// @throw Error if `$from` value is lower or equal to `$until` value
-/// @access public
+// Wraps `@content` inside a media-query with a `min-width` and `max-width` (optional).
+//
+// @param {String} $from - Name of breakpoint
+// @param {String | Null} $until [null] - Name of breakpoint
+//
+// @throw Error if `$from` value is lower or equal to `$until` value
 @mixin mq($from, $until: null) {
   $mediaQuery: "screen and (min-width: #{breakpoint($from)})";
 

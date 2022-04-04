@@ -1,29 +1,17 @@
-////
-/// Containers defines all container rules based on device width.
-/// @group CONTAINERS
-////
+// Containers defines all container rules based on device width.
 
 @use "../lib";
 @use "../tokens/containers" as *;
 @use "breakpoints";
 @use "sass:map";
 
-/// The gutter of container
-///
-/// @type Number
-/// @access private
+// The gutter of container
 $_gutter: lib.rem(lib.get($containers, gutter));
 
-/// Fluid dimension for small sizes
-///
-/// @type Number
-/// @access private
+// Fluid dimension for small sizes
 $_fluidWidth: calc(100vw - (#{$_gutter} * 2));
 
-/// The fluid containers of Pyxis
-///
-/// @type Map
-/// @access private
+// The fluid containers of Pyxis
 $_fluidContainers: (
   base: $_fluidWidth,
   xxsmall: $_fluidWidth,
@@ -31,28 +19,23 @@ $_fluidContainers: (
   small: $_fluidWidth
 );
 
-/// The containers of Pyxis
-///
-/// @type Map
-/// @access private
+// The containers of Pyxis
 $_containers: map.merge($_fluidContainers, lib.get($containers, size));
 
-/// Returns the $breakpoint value from map $_containers
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @return {Number} The max-value of container in breakpoint
-/// @throw {Error}
-/// @access private
+// Returns the $breakpoint value from map $_containers
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @return {Number} The max-value of container in breakpoint
+// @throw {Error}
 @function _container($breakpoint) {
   @return lib.get($_containers, $breakpoint);
 }
 
-/// Return the length of cycle
-///
-/// @param {String} $breakpoint - Name of breakpoint
-/// @return {Number} The length of @for cycle
-/// @throw {Error}
-/// @access private
+// Return the length of cycle
+//
+// @param {String} $breakpoint - Name of breakpoint
+// @return {Number} The length of @for cycle
+// @throw {Error}
 @function _lengthOfBreakpointCycle($breakpoint) {
   @if lib.isNotNull($breakpoint) {
     @return index($_containers, $breakpoint _container($breakpoint)) - 1;
@@ -61,12 +44,11 @@ $_containers: map.merge($_fluidContainers, lib.get($containers, size));
   @return length($_containers);
 }
 
-/// Returns the breakpoint name
-///
-/// @param {String:Null} $breakpoint - Name of breakpoint
-/// @param {Number} $index - Index of breakpoint in $_containers
-/// @return {String:Null} The name of container or null
-/// @access private
+// Returns the breakpoint name
+//
+// @param {String:Null} $breakpoint - Name of breakpoint
+// @param {Number} $index - Index of breakpoint in $_containers
+// @return {String:Null} The name of container or null
 @function _untilBreakpoint($breakpoint, $index) {
   @if lib.isNotNull($breakpoint) {
     @return nth(nth($_containers, $index + 1), 1);
@@ -75,35 +57,14 @@ $_containers: map.merge($_fluidContainers, lib.get($containers, size));
   @return null;
 }
 
-/// Include a container by `$fromBreakpoint` to `$toBreakpoint` value,
-/// outside the indicated breakpoints the container will be fluid.
-/// The container is based on `display: grid;` property.
-///
-/// @param {String} $fromBreakpoint [base] - Name of start breakpoint
-/// @param {String} $toBreakpoint [null] - Name of end breakpoint
-///
-/// @output Appropriate `max-width` based on breakpoints. Also `display: grid;`
-/// and `margin: 0 auto;`.
-///
-/// @example scss - Include a container with different width for every breakpoint
-///   .wrapper {
-///     @include container();
-///   }
-///
-/// @example scss - Include container from breakpoint small.
-///   .wrapper {
-///     @include container(small);
-///   }
-///   // Until breakpoint small, the container will be fluid
-///
-/// @example scss - Include container between breakpoint small and large
-///   .wrapper {
-///     @include container(small, large);
-///   }
-///   // Out of the range the container will be fluid
-///
-/// @throw Error if `$fromBreakpoint` value is lower or equal to `$untilBreakpoint` value
-/// @access public
+// Include a container by `$fromBreakpoint` to `$toBreakpoint` value,
+// outside the indicated breakpoints the container will be fluid.
+// The container is based on `display: grid;` property.
+//
+// @param {String} $fromBreakpoint [base] - Name of start breakpoint
+// @param {String} $toBreakpoint [null] - Name of end breakpoint
+//
+// @throw Error if `$fromBreakpoint` value is lower or equal to `$untilBreakpoint` value
 @mixin container($fromBreakpoint: base, $untilBreakpoint: null) {
   display: grid;
   margin: 0 auto;
@@ -123,10 +84,7 @@ $_containers: map.merge($_fluidContainers, lib.get($containers, size));
   }
 }
 
-/// Create atom classes for containers
-///
-/// @alias createAtoms
-/// @access public
+// Create atom classes for containers
 @mixin createAtoms() {
   .container {
     @include container();

@@ -1,51 +1,7 @@
-////
-/// Generated classes for select field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../foundations";
 @use "../../../lib";
 @use "../variables";
 
-/// Set general properties for styling select.
-///
-/// @example scss - Native select field
-///    <div class="form-field">
-///      <label class="form-field__wrapper">
-///        <select class="form-field__select">
-///          <option hidden disabled selected>Placeholder</option>
-///          <option value="1">Option 1</option>
-///          ...
-///        </select>
-///        <div class="form-field__addon">
-///          // Use a 20x20 svg for small input field
-///          <svg width="24" height="24"></svg>
-///        </div>
-///      </label>
-///    </div>
-///
-/// @example scss - Select field with custom dropdown
-///    <div class="form-field form-field--with-select-dropdown">
-///      <label class="form-field__wrapper">
-///        <select class="form-field__select">
-///          <option hidden disabled selected>Placeholder</option>
-///          <option value="1">Option 1</option>
-///          ...
-///        </select>
-///        <div class="form-field__addon">
-///          // Use a 20x20 svg for small input field
-///          <svg width="24" height="24"></svg>
-///        </div>
-///      </label>
-///      <div class="form-dropdown-wrapper">
-///        <div class="form-dropdown">
-///          <div class="form-dropdown__item">Option 1</div>
-///          ...
-///        </div>
-///      </div>
-///    </div>
-///
-/// @access public
 .form-field__select {
   color: foundations.color(neutral50);
   cursor: pointer;

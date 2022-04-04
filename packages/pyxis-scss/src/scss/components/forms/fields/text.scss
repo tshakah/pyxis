@@ -1,18 +1,10 @@
-////
-/// Generated classes for text field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../foundations";
 @use "../../../lib";
 @use "../variables";
 
-/// Set the correct width when an addon is present.
-/// @param {Number} $width - Input width
-///
-/// @output Appropriate `width`.
-///
-/// @access private
+// Set the correct width when an addon is present.
+//
+// @param {Number} $width - Input width
 @mixin _fieldWithAddon() {
   :where(
   .form-field--with-prepend-icon,
@@ -23,19 +15,6 @@
     @content; }
 }
 
-/// Set properties for styling input of type text.
-///
-/// @example scss - Default input field
-///    <div class="form-field">
-///      <input type="text" class="form-field__text" placeholder="Text field"/>
-///    </div>
-///
-/// @example scss - Small input
-///    <div class="form-field">
-///      <input type="text" class="form-field__text form-field__text--small" placeholder="Text field"/>
-///    </div>
-///
-/// @access public
 .form-field__text {
   @include foundations.horizontalPadding(s);
   height: variables.$fieldHeight;

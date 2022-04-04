@@ -1,8 +1,4 @@
-////
-/// Typography defines all fonts-related rules.
-///
-/// @group TYPOGRAPHY
-////
+// Typography defines all fonts-related rules.
 
 @use "../config";
 @use "../lib";
@@ -14,17 +10,11 @@
 @use "sass:math";
 @use "sass:map";
 
-/// The font path
-///
-/// @type String
-/// @access private
+// The font path
 $_fontPath: "https://d3be8952cnveif.cloudfront.net/fonts";
 
-/// The font setting map
-/// The `ss08` featureSettings allows to make numbers tall as uppercase letters
-///
-/// @type Map
-/// @access private
+// The font setting map
+// The `ss08` featureSettings allows to make numbers tall as uppercase letters
 $_font: (
   name: "CircularXXWeb",
   fallback: "Arial, sans-serif",
@@ -36,32 +26,27 @@ $_font: (
   ),
 );
 
-/// The letter-spacing map
-///
-/// @type Map
-/// @access private
+// The letter-spacing map
 $_letterSpacing: (
   base: 0,
   small: 0.1px,
   medium: 0.3px,
 );
 
-/// Returns a font-family with name and fallback
-///
-/// @param {Map} $font - The font settings
-/// @return {String} - A font-family value
-/// @throw {Error}
-/// @access private
+// Returns a font-family with name and fallback
+//
+// @param {Map} $font - The font settings
+// @return {String} - A font-family value
+// @throw {Error}
 @function _fontFamily($font) {
   @return #{lib.get($font, name), lib.get($font, fallback)};
 }
 
-/// Returns a line-height by `$fontSize`
-///
-/// @param {Number} $fontSize - The font-size to apply the line-height to
-/// @return {Number} - A line-height represented in percentage
-/// @throw {Error}
-/// @access private
+// Returns a line-height by `$fontSize`
+//
+// @param {Number} $fontSize - The font-size to apply the line-height to
+// @return {Number} - A line-height represented in percentage
+// @throw {Error}
 @function _lineHeight($fontSize) {
   $shouldUseBaseLineHeight: lib.stripUnit($fontSize) >= 32;
   $baseToRem: lib.rem(math.floor($fontSize * 1.5));
@@ -70,12 +55,11 @@ $_letterSpacing: (
   @return if($shouldUseBaseLineHeight, $baseToRem, $goldenToRem);
 }
 
-/// Returns a letter-spacing by `$fontSize`
-///
-/// @param {Number} $fontSize - The font-size to apply the letter-spacing to
-/// @return {Number} - A letter-spacing represented in rem
-/// @throw {Error}
-/// @access private
+// Returns a letter-spacing by `$fontSize`
+//
+// @param {Number} $fontSize - The font-size to apply the letter-spacing to
+// @return {Number} - A letter-spacing represented in rem
+// @throw {Error}
 @function _letterSpacing($fontSize) {
   $shouldUseBaseLetterSpacing: lib.stripUnit($fontSize) >= 16;
   $shouldUseSmallLetterSpacing: lib.stripUnit($fontSize) >= 14;
@@ -91,10 +75,8 @@ $_letterSpacing: (
   }
 }
 
-/// Base setting for Pyxis typography.
-/// It has to be used only in the html tag.
-///
-/// @access public
+// Base setting for Pyxis typography.
+// It has to be used only in the html tag.
 @mixin globalSettings() {
   @include _fontWeight(book);
   font-family: _fontFamily($_font);
@@ -107,21 +89,19 @@ $_letterSpacing: (
   text-rendering: optimizeLegibility;
 }
 
-/// Include the font-weight value by name.
-///
-/// @param {String} $weight - The name of the weight
-/// @throw {Error}
-/// @access private
+// Include the font-weight value by name.
+//
+// @param {String} $weight - The name of the weight
+// @throw {Error}
 @mixin _fontWeight($weight) {
   font-weight: #{lib.get($_font, weights, $weight)};
 }
 
-/// Includes the properties contained in the typography map for every breakpoint
-///
-/// @param {Map} $fontSizes - The map of fontSize
-/// @param {String} $size - The name of the size
-/// @throw {Error}
-/// @access private
+// Includes the properties contained in the typography map for every breakpoint
+//
+// @param {Map} $fontSizes - The map of fontSize
+// @param {String} $size - The name of the size
+// @throw {Error}
 @mixin _size($fontSizes, $size) {
   @each $breakpoint, $value in lib.get($fontSizes, $size) {
     @include breakpoints.mq($breakpoint) {
@@ -134,25 +114,12 @@ $_letterSpacing: (
   }
 }
 
-/// Include the responsive title size by name available in `$titleSizes`.
-///
-/// @param {String} $size - The name of the size
-/// @param {String} $weight - The name of the weight
-///
-/// @output Appropriate `font-size`, `letter-spacing`, `line-height`
-/// and `font-weight` for each breakpoint.
-///
-/// @example scss - Title of XL size
-/// .title {
-///  @include title(xl, bold)
-/// }
-/// @example scss - Bold title of M size
-/// .title {
-///  @include title(m, bold)
-/// }
-///
-/// @throw Error if font-weight `$weight` in input is not allowed in titles
-/// @access public
+// Include the responsive title size by name available in `$titleSizes`.
+//
+// @param {String} $size - The name of the size
+// @param {String} $weight - The name of the weight
+//
+// @throw Error if font-weight `$weight` in input is not allowed in titles
 @mixin title($size, $weight) {
   @include _size($titleSizes, $size);
 
@@ -163,32 +130,16 @@ $_letterSpacing: (
   }
 }
 
-/// Include the responsive text size by name available in `$textSizes`.
-///
-/// @param {String} $size - The name of the size:
-/// @param {String} $weight - The name of the weight
-///
-/// @output Appropriate `font-size`, `letter-spacing`, `line-height`
-/// and `font-weight` for each breakpoint.
-///
-/// @example scss - Text of L size
-///   .text {
-///     @include text(l, bold)
-///   }
-/// @example scss - Light text of M size
-///   .text {
-///     @include text(m, bold)
-///   }
-///
-/// @access public
+// Include the responsive text size by name available in `$textSizes`.
+//
+// @param {String} $size - The name of the size:
+// @param {String} $weight - The name of the weight
 @mixin text($size, $weight) {
   @include _fontWeight($weight);
   @include _size($textSizes, $size);
 }
 
-/// Create `@font-face` for all fonts available in `$_fonts` map.
-///
-/// @access public
+// Create `@font-face` for all fonts available in `$_fonts` map.
 @mixin fontFaces() {
   @each $name, $weight in lib.get($_font, weights) {
     $fileName: #{lib.get($_font, name)}-#{lib.capitalize($name)};
@@ -204,10 +155,7 @@ $_letterSpacing: (
   }
 }
 
-/// Create atom classes for all title and text variant
-///
-/// @alias createAtoms
-/// @access public
+// Create atom classes for all title and text variant
 @mixin createAtoms() {
   @each $size, $_ in $titleSizes {
     @each $weight, $_ in $titleWeights {
@@ -226,5 +174,5 @@ $_letterSpacing: (
   }
 }
 
-/// Generate @font-face
+// Generate @font-face
 @include fontFaces();

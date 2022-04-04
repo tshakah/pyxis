@@ -1,22 +1,17 @@
-////
-/// Utilities for SCSS browser query.
-/// @group LIB
-////
+// Utilities for SCSS browser query.
 
-/// Adds properties that only work on Firefox browser
-/// http://browserhacks.com/#hack-8e9b5504d9fda44ec75169381b3c3157
-///
-/// @access public
+// Adds properties that only work on Firefox browser
+// http://browserhacks.com/#hack-8e9b5504d9fda44ec75169381b3c3157
 @mixin onFirefox {
   @supports (-moz-appearance:meterbar) {
     @content;
   }
 }
 
-/// Adds properties that only work on Safari browser
-/// https://stackoverflow.com/a/25975282/17824440
-///
-/// @access public
+// Adds properties that only work on Safari browser
+// https://stackoverflow.com/a/25975282/17824440
+//
+// @access public
 @mixin onSafari {
   @media not all and (min-resolution:.001dpcm) {
     @supports (-webkit-appearance:none) and (stroke-color:transparent) {

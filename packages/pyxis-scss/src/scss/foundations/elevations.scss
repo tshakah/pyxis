@@ -1,7 +1,4 @@
-////
-/// Elevation is needed in order to give depth to our components.
-/// @group ELEVATION
-////
+// Elevation is needed in order to give depth to our components.
 
 @use "../lib";
 @use "breakpoints";
@@ -9,68 +6,31 @@
 @use "../tokens/elevationSizes" as *;
 @use "../tokens/elevationColors" as *;
 
-/// Elevations sizing map.  
-/// <em style="font-size:small;">This variable is private.</em>
-///
-/// @prop {String} s [0 5px 10px -2px]
-/// @prop {String} m [0 15px 30px -5px]
-/// @prop {String} l [0 30px 60px -10px]
-/// 
-/// @type Map
-$_elevationSizeMap: ();
-
-/// Elevations color map.  
-/// <em style="font-size:small;">This variable is private.</em>
-///
-/// @prop {Color} action15 [rgba(#067f96, 0.15)]
-/// @prop {Color} action40 [rgba(#067f96, 0.4)]
-/// @prop {Color} brand15 [rgba(#8334c2, 0.15)]
-/// @prop {Color} brand40 [rgba(#8334c2, 0.4)]
-/// @prop {Color} neutral15 [rgba(#595d6a, 0.15)]
-/// @prop {Color} neutral40 [rgba(#595d6a, 0.4)]
-///
-/// @type Map
-$_elevationColorMap: ();
-
-/// Returns the elevation size from map $elevationSizes
-///
-/// @param {String} $size - Name of size
-/// @throw {Error}
-/// @access private
+// Returns the elevation size from map $elevationSizes
+//
+// @param {String} $size - Name of size
+// @throw {Error}
 @function _elevationSize($size) {
   @return lib.get($elevationSizes, $size);
 }
 
-/// Returns the elevation color from map $elevationColors
-///
-/// @param {String} $color - Name of size
-/// @throw {Error}
-/// @access private
+// Returns the elevation color from map $elevationColors
+//
+// @param {String} $color - Name of size
+// @throw {Error}
 @function _elevationColor($color) {
   @return lib.get($elevationColors, $color);
 }
 
-/// Includes correct `box-shadow` based on size and color in input.
-///
-/// @param {String} $size - Name of the size from `$elevationSizes`
-/// @param {String} $color - Name of the color from `$elevationColors`
-/// 
-/// @output `box-shadow` property.
-/// 
-/// @example scss - Set element elevation through box shadow
-///   .element {
-///     @include elevation(s, brand15);
-///   }
-/// 
-/// @access public
+// Includes correct `box-shadow` based on size and color in input.
+//
+// @param {String} $size - Name of the size from `$elevationSizes`
+// @param {String} $color - Name of the color from `$elevationColors`
 @mixin elevation($size, $color) {
   box-shadow: _elevationSize($size) _elevationColor($color);
 }
 
-/// Create atom classes for all elevation sizes and colors
-///
-/// @alias createAtoms
-/// @access public
+// Create atom classes for all elevation sizes and colors
 @mixin createAtoms() {
   @each $size, $_ in $elevationSizes {
     @each $color, $_ in $elevationColors {

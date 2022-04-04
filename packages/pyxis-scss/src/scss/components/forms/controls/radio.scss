@@ -1,37 +1,14 @@
-////
-/// Generated classes for text field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../foundations";
 @use "../../../lib";
 @use "../mixins";
 
-/// Add a coloured shadow.
-/// @param {Color} $color - Color name
-///
-/// @output Appropriate `box-shadow`.
-///
-/// @access private
+// Add a coloured shadow.
+//
+// @param {Color} $color - Color name
 @mixin _boxShadow($color) {
   box-shadow: inset 0 0 0 lib.rem(3px) foundations.color($color);
 }
 
-/// Set properties for styling radio button.
-///
-/// @example scss - Radio button
-///    <div class="form-control-group">
-///      <label class="form-control">
-///        <input type="radio" name="example" class="form-control__radio" />
-///        Radio
-///      </label>
-///      <label class="form-control">
-///        <input type="radio" name="example" class="form-control__radio" checked />
-///        Radio
-///      </label>
-///    </div>
-///
-/// @access public
 .form-control__radio {
   @include mixins.fieldStateDefault;
   @include mixins.controlDefault;

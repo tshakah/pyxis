@@ -12,7 +12,6 @@
     "lint": "stylelint \"src/scss/**/*.scss\"",
     "lint:fix": "stylelint \"src/scss/**/*.scss\" --fix",
     "lint:fix-token": "stylelint \"src/scss/tokens/*.scss\" --fix",
-    "sassdocs:build": "sassdoc src --config sassdoc.config.json",
     "prettify:token": "prettier --write \"src/scss/tokens/*.scss\"",
     "serve": "webpack serve --config webpack.common.js"
   },
@@ -33,7 +32,6 @@
     "prettier": "^2.5.1",
     "sass": "^1.42.1",
     "sass-loader": "^12.1.0",
-    "sassdoc": "^2.7.3",
     "stylelint": "^13.13.1",
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-declaration-block-no-ignored-properties": "^2.4.0",

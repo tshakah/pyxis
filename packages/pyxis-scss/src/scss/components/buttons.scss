@@ -1,7 +1,3 @@
-////
-/// Generated classes for button styling.
-////
-
 @use "sass:math";
 @use "../lib";
 @use "../foundations";
@@ -9,11 +5,8 @@
 $_borderWidth: lib.rem(2px);
 $_outlineWidth: lib.rem(3px);
 
-/// Sizes of Pyxis' buttons.
-/// Each size has direct influence on properties in the sub-maps.
-///
-/// @type Map
-/// @access private
+// Sizes of Pyxis' buttons.
+// Each size has direct influence on properties in the sub-maps.
 $_sizes: (
   huge: (
     columnGap: 2xs,
@@ -57,23 +50,19 @@ $_sizes: (
   )
 );
 
-/// Set background and fill colors of loader
-///
-/// @param {Color} $background - Value of background color
-/// @param {Color} $fill - Value of fill color
-///
-/// @access private
+// Set background and fill colors of loader
+//
+// @param {Color} $background - Value of background color
+// @param {Color} $fill - Value of fill color
 @mixin _loaderColors ($background, $fill) {
   border: $_borderWidth solid $background;
   border-top-color: $fill;
 }
 
-/// Set properties for filled button types: primary and brand button.
-///
-/// @param {String} $gradient - Gradient color used for background
-/// @param {String} $elevationColor - Name of color + opacity for elevation, i.e. `brand40`
-///
-/// @access private
+// Set properties for filled button types: primary and brand button.
+//
+// @param {String} $gradient - Gradient color used for background
+// @param {String} $elevationColor - Name of color + opacity for elevation, i.e. `brand40`
 @mixin _filled ($gradient, $elevationColor) {
   background-image: $gradient;
   background-position: 100% 0;
@@ -132,11 +121,9 @@ $_sizes: (
   }
 }
 
-/// Set properties for outlined button types: secondary and tertiary button.
-///
-/// @param {Color} $borderColor - Name of the color used as border
-///
-/// @access private
+// Set properties for outlined button types: secondary and tertiary button.
+//
+// @param {Color} $borderColor - Name of the color used as border
 @mixin _outlined ($borderColor, $borderColorAlt) {
   border: $_borderWidth solid $borderColor;
   color: foundations.color(actionBase);
@@ -179,9 +166,6 @@ $_sizes: (
   }
 }
 
-/// Set general properties for button component
-///
-/// @access private
 .button {
   cursor: pointer;
   display: inline-grid;
@@ -237,9 +221,7 @@ $_sizes: (
   }
 }
 
-/// Generate classes for sizing and set related properties
-///
-/// @access private
+// Generate classes for sizing and set related properties
 @each $size, $properties in $_sizes {
   .button--#{$size} {
     $dimension: lib.get($properties, dimension);
@@ -281,10 +263,6 @@ $_sizes: (
   }
 }
 
-/// Sequence of classes that defines variants of button component:
-/// primary, brand, secondary, tertiary and ghost.
-///
-/// @access private
 .button--primary {
   $_endGradient: lighten(adjust-hue(foundations.color(actionDark), -4deg ), 16);
   @include _filled(linear-gradient(45deg, foundations.color(actionBase) 50%, $_endGradient), action40);
@@ -336,16 +314,10 @@ $_sizes: (
   }
 }
 
-/// Reset the min-width of button
-///
-/// @access private
 .button.button--content-width {
   min-width: initial;
 }
 
-/// Define properties for loading mode
-///
-/// @access private
 .button--loading,
 .button--loading.button--alt {
   color: transparent;

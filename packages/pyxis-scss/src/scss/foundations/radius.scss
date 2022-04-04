@@ -1,72 +1,27 @@
-////
-/// Radius is used to smooth our components borders.
-/// @group RADIUS
-////
+// Radius is used to smooth our components borders.
 
 @use "../lib";
 @use "breakpoints";
 @use "../tokens/radius" as *;
 
-/// Border radius map.  
-/// <em style="font-size:small;">This variable is private.</em>
-///
-/// @prop {Number} 2xl [32px]
-/// @prop {Number} xl [24px]
-/// @prop {Number} l [20px]
-/// @prop {Number} m [16px]
-/// @prop {Number} s [12px]
-/// @prop {Number} xs [8px]
-/// @prop {Number} 2xs [4px]
-///
-/// @type Map
-$_radiusMap: ();
-
-/// List of allowed edges for border-radius
-///
-/// @type List
-/// @access private
+// List of allowed edges for border-radius
 $_edges: (all, top, right, bottom, left);
 
-/// List of allowed edges for border-radius.  
-/// <em style="font-size:small;">This variable is private.</em>
-/// 
-/// @prop {String} all
-/// @prop {String} top
-/// @prop {String} right
-/// @prop {String} bottom
-/// @prop {String} left
-///
-/// @type List
-$_edgesList: ();
-
-/// Returns the radius value from map $radius
-///
-/// @param {String} $size - Size of radius
-/// @return {String} Representation of radius size
-/// @throw {Error}
-/// @access private
+// Returns the radius value from map $radius
+//
+// @param {String} $size - Size of radius
+// @return {String} Representation of radius size
+// @throw {Error}
 @function _radius($size) {
   @return lib.rem(lib.get($radius, $size));
 }
 
-/// Includes border-radius by size and edge.
-///
-/// @param {String} $size - Name of the size
-/// @param {String} $edge [all] - Edge to apply the border-radius
-///
-/// @output `border-radius` property.
-///
-/// @example scss - Set radius to all edges
-///   .element {
-///     @include radius(s);
-///   }
-/// @example scss - Set radius only on bottom right and bottom left edges
-///   .element {
-///     @include radius(l, bottom);
-///   }
-///
-/// @throw Error if `$edge` in input is not present in `$_edgesList`
-/// @access public
+// Includes border-radius by size and edge.
+//
+// @param {String} $size - Name of the size
+// @param {String} $edge [all] - Edge to apply the border-radius
+//
+// @throw Error if `$edge` in input is not present in `$_edgesList`
 @mixin radius($size, $edge: all) {
   @if index($_edges, $edge) {
     @if $edge == top {
@@ -85,10 +40,7 @@ $_edgesList: ();
   }
 }
 
-/// Create atom classes for all radius in $radius map
-///
-/// @alias createAtoms
-/// @access public
+// Create atom classes for all radius in $radius map
 @mixin createAtoms() {
   @each $size, $_ in $radius {
     .radius-#{$size} {

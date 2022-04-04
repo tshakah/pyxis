@@ -1,58 +1,8 @@
-////
-/// Generated classes for control field styling.
-/// @group COMPONENTS
-////
-
 @use "../../../foundations";
 @use "../../../lib";
 @use "../mixins";
 @use "../variables";
 
-/// Set general properties for control fields as radio and checkbox.
-///
-/// @example scss - Grouped control field - Horizontal layout (default)
-///    <div class="form-control-group">
-///      <label class="form-control">
-///        <input />
-///        Option
-///      </label>
-///      <label class="form-control">
-///        <input />
-///        Option
-///      </label>
-///    </div>
-///
-/// @example scss - Grouped control field - Vertical layout
-///    <div class="form-control-group form-control-group--column">
-///      <label class="form-control">
-///        <input />
-///        Option
-///      </label>
-///      <label class="form-control">
-///        <input />
-///        Option
-///      </label>
-///    </div>
-///
-/// @example scss - Control field with error
-///    <div class="form-control-group">
-///      <label class="form-control form-control--error">
-///        <input />
-///        Option
-///      </label>
-///      <div class="form-control-group__error-message">Error message</div>
-///    </div>
-///
-/// @example scss - Disabled control field
-///    <div class="form-control-group">
-///      // Please note that adding `form-control--disabled` is mandatory for a correct interaction.
-///      <label class="form-control form-control--disabled">
-///        <input disabled />
-///        Control
-///      </label>
-///    </div>
-///
-/// @access public
 .form-control {
   @include foundations.columnGap(xs);
   @include foundations.text(m, book);
