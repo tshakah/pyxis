@@ -277,7 +277,7 @@ render (Config { classList, icon, id, content, title, onDismiss, style, variant 
         [ Html.div
             [ Html.Attributes.class "message__icon", CommonsAttributes.testId (IconSet.toLabel icon) ]
             [ icon
-                |> Icon.create
+                |> Icon.config
                 |> Icon.render
             ]
         , Html.div
@@ -312,7 +312,7 @@ renderClose { onDismiss, ariaLabel } =
         , CommonsAttributes.ariaLabel ariaLabel
         ]
         [ IconSet.Close
-            |> Icon.create
+            |> Icon.config
             |> Icon.withSize Size.small
             |> Icon.render
         ]

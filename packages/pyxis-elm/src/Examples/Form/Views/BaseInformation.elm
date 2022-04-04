@@ -1,12 +1,16 @@
 module Examples.Form.Views.BaseInformation exposing (view)
 
+import Components.Field.Autocomplete as Autocomplete
 import Components.Field.CheckboxGroup as CheckboxGroup
+import Components.Field.Error.Strategy as Strategy
 import Components.Field.Input as Input
 import Components.Field.Label as Label
 import Components.Form.FieldSet as FieldSet
 import Components.Form.Grid as Grid
 import Components.Form.Grid.Row as Row
 import Components.Form.Legend as Legend
+import Components.IconSet as IconSet
+import Examples.Form.Api.City as City
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model
 import Html
@@ -51,6 +55,27 @@ view ((Data config) as data) =
             , Grid.row
                 [ Row.smallSize ]
                 [ Grid.simpleCol
+                    [ "residential_city"
+                        |> Autocomplete.config City.startsWith City.getName
+                        |> Autocomplete.withStrategy Strategy.onSubmit
+                        |> Autocomplete.withNoResultsFoundMessage "Nessun risultato trovato."
+                        |> Autocomplete.withLabel (Label.config "Città di residenza")
+                        |> Autocomplete.withHint "Min. 3 caratteri"
+                        |> Autocomplete.withPlaceholder "Milano"
+                        |> Autocomplete.withAddon
+                            (Autocomplete.suggestionAddon
+                                { icon = IconSet.InfoCircle
+                                , title = "Lorem ipsum"
+                                , subtitle = Just "Lorem ipsum dolor sit amet."
+                                }
+                            )
+                        --(Autocomplete.headerAddon "Lorem ipsum")
+                        |> Autocomplete.render (Model.AutocompleteFieldChanged Data.ResidentialCity) data config.residentialCity
+                    ]
+                ]
+            , Grid.row
+                [ Row.smallSize ]
+                [ Grid.simpleCol
                     [ "claim_date"
                         |> Input.date
                         |> Input.withLabel (Label.config "Data del sinistro")
@@ -62,7 +87,8 @@ view ((Data config) as data) =
                 [ Grid.simpleCol
                     [ "checkbox-id"
                         |> CheckboxGroup.single
-                            (Html.div []
+                            (Html.div
+                                []
                                 [ Html.text
                                     "Dichiaro di aver letto l’"
                                 , Html.a [ Attributes.href "https://www.prima.it/app/privacy-policy" ]
@@ -71,6 +97,7 @@ view ((Data config) as data) =
                                     ", disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "
                                 ]
                             )
+                        |> CheckboxGroup.withStrategy Strategy.onSubmit
                         |> CheckboxGroup.withName "checkbox-group-single"
                         |> CheckboxGroup.render Model.PrivacyChanged data config.privacyCheck
                     ]

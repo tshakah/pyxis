@@ -73,7 +73,7 @@ suite =
                     |> Query.fromHtml
                     |> Query.contains
                         [ IconSet.User
-                            |> Icon.create
+                            |> Icon.config
                             |> Icon.withStyle Icon.brand
                             |> Icon.render
                         ]

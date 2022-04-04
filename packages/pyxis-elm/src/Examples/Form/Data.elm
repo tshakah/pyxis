@@ -1,5 +1,6 @@
 module Examples.Form.Data exposing
-    ( ClaimType(..)
+    ( AutocompleteField(..)
+    , ClaimType(..)
     , Data(..)
     , DateField(..)
     , InsuranceType(..)
@@ -11,11 +12,13 @@ module Examples.Form.Data exposing
     , notEmptyStringValidation
     )
 
+import Components.Field.Autocomplete as Autocomplete
 import Components.Field.CheckboxGroup as CheckboxGroup
 import Components.Field.Input as Input
 import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.Field.Textarea as Textarea
 import Date exposing (Date)
+import Examples.Form.Api.City exposing (City)
 
 
 type Data
@@ -29,6 +32,7 @@ type Data
         , peopleInvolved : RadioCardGroup.Model Data PeopleInvolved PeopleInvolved
         , plate : Input.Model Data String
         , privacyCheck : CheckboxGroup.Model Data () Bool
+        , residentialCity : Autocomplete.Model Data City
         }
 
 
@@ -38,13 +42,30 @@ initialData =
         { isFormSubmitted = False
         , birth = Input.init "" birthValidation
         , claimDate = Input.init "" birthValidation
-        , claimType = RadioCardGroup.init (Just CarAccident) (always (Result.fromMaybe ""))
+        , claimType =
+            Result.fromMaybe ""
+                |> always
+                |> RadioCardGroup.init (Just CarAccident)
         , dynamic = Textarea.init "" notEmptyStringValidation
-        , insuranceType = RadioCardGroup.init Nothing (cardValidation Motor)
-        , peopleInvolved = RadioCardGroup.init Nothing (cardValidation NotInvolved)
+        , insuranceType =
+            Motor
+                |> cardValidation
+                |> RadioCardGroup.init Nothing
+        , peopleInvolved =
+            NotInvolved
+                |> cardValidation
+                |> RadioCardGroup.init Nothing
         , plate = Input.init "" notEmptyStringValidation
         , privacyCheck = CheckboxGroup.init [] privacyValidation
+        , residentialCity =
+            Result.fromMaybe ""
+                |> always
+                |> Autocomplete.init Nothing
         }
+
+
+type AutocompleteField
+    = ResidentialCity
 
 
 type TextField

@@ -4,12 +4,14 @@ import Browser
 import Examples.Form.Model as Model exposing (Model)
 import Examples.Form.Update as Update
 import Examples.Form.View as View
+import PrimaUpdate
 
 
 main : Program () Model Model.Msg
 main =
-    Browser.sandbox
-        { init = Model.initialModel
-        , view = View.view
+    Browser.document
+        { init = always (PrimaUpdate.withoutCmds Model.initialModel)
+        , view = \model -> { title = "Example app", body = [ View.view model ] }
         , update = Update.update
+        , subscriptions = always Sub.none
         }

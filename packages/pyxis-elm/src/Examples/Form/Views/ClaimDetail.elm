@@ -1,6 +1,7 @@
 module Examples.Form.Views.ClaimDetail exposing (view)
 
 import Components.Button as Button
+import Components.Field.Error.Strategy as Strategy
 import Components.Field.Label as Label
 import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.Field.Textarea as Textarea
@@ -30,6 +31,8 @@ view ((Data config) as data) =
                 [ Grid.simpleCol
                     [ "people-involved"
                         |> RadioCardGroup.config
+                        |> RadioCardGroup.withStrategy Strategy.onSubmit
+                        |> RadioCardGroup.withLabel (Label.config "Il veicolo era in movimento?")
                         |> RadioCardGroup.withOptions
                             [ RadioCardGroup.option { value = Data.Involved, title = Nothing, text = Just "Sì", addon = Nothing }
                             , RadioCardGroup.option { value = Data.NotInvolved, title = Nothing, text = Just "No", addon = Nothing }
@@ -42,6 +45,7 @@ view ((Data config) as data) =
                 [ Grid.simpleCol
                     [ "claim-dynamic"
                         |> Textarea.config
+                        |> Textarea.withStrategy Strategy.onSubmit
                         |> Textarea.withLabel (Label.config "Dinamica del sinistro")
                         |> Textarea.withPlaceholder "Descrivi la dinamica del sinistro (massimo 1.800 caratteri)"
                         |> Textarea.withHint "Massimo 300 parole"

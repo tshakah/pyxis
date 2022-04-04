@@ -692,9 +692,10 @@ renderField shownValidation ((Model modelData) as model) (Config configData) =
                     ]
                     :: List.map renderNativeOption configData.options
                 )
-            , Html.div [ Attributes.class "form-field__addon" ]
+            , Html.div
+                [ Attributes.class "form-field__addon" ]
                 [ IconSet.ChevronDown
-                    |> Icon.create
+                    |> Icon.config
                     |> Icon.render
                 ]
             ]

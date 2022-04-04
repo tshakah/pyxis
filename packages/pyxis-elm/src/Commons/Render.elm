@@ -2,10 +2,11 @@ module Commons.Render exposing
     ( empty
     , renderIf
     , renderErrorOrHint
+    , renderMaybe
     , renderUnless
     , renderListIf
+    , renderListMaybe
     , renderListUnless
-    , renderMaybe
     )
 
 {-| Do not expose this module.
@@ -17,10 +18,11 @@ module Commons.Render exposing
 
 @docs renderIf
 @docs renderErrorOrHint
+@docs renderMaybe
 @docs renderUnless
 @docs renderListIf
+@docs renderListMaybe
 @docs renderListUnless
-@docs renderMaybe
 
 -}
 
@@ -78,6 +80,13 @@ renderListUnless condition =
 renderMaybe : Maybe (Html msg) -> Html msg
 renderMaybe =
     Maybe.withDefault empty
+
+
+{-| Renders a Maybe Html if its value is Just _something_.
+-}
+renderListMaybe : Maybe (List (Html msg)) -> List (Html msg)
+renderListMaybe =
+    Maybe.withDefault []
 
 
 {-| -}

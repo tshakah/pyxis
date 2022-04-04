@@ -17,7 +17,7 @@ suite =
             [ Test.test "is light" <|
                 \() ->
                     IconSet.User
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withTheme Theme.default
                         |> Icon.render
                         |> Query.fromHtml
@@ -25,7 +25,7 @@ suite =
             , Test.test "is dark" <|
                 \() ->
                     IconSet.Alarm
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withTheme Theme.alternative
                         |> Icon.render
                         |> Query.fromHtml
@@ -35,7 +35,7 @@ suite =
             [ Test.test "is large" <|
                 \() ->
                     IconSet.Facebook
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withSize Size.large
                         |> Icon.render
                         |> Query.fromHtml
@@ -43,7 +43,7 @@ suite =
             , Test.test "is medium" <|
                 \() ->
                     IconSet.Book
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withSize Size.medium
                         |> Icon.render
                         |> Query.fromHtml
@@ -51,7 +51,7 @@ suite =
             , Test.test "is small" <|
                 \() ->
                     IconSet.Van
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withSize Size.small
                         |> Icon.render
                         |> Query.fromHtml
@@ -61,7 +61,7 @@ suite =
             [ Test.test "is default" <|
                 \() ->
                     IconSet.Wallet
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withStyle Icon.default
                         |> Icon.render
                         |> Query.fromHtml
@@ -69,7 +69,7 @@ suite =
             , Test.test "is boxed neutral" <|
                 \() ->
                     IconSet.Motorcycle
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withStyle Icon.neutral
                         |> Icon.render
                         |> Query.fromHtml
@@ -77,7 +77,7 @@ suite =
             , Test.test "is boxed brand" <|
                 \() ->
                     IconSet.Motorcycle
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withStyle Icon.brand
                         |> Icon.render
                         |> Query.fromHtml
@@ -85,7 +85,7 @@ suite =
             , Test.test "is boxed success" <|
                 \() ->
                     IconSet.Motorcycle
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withStyle Icon.success
                         |> Icon.render
                         |> Query.fromHtml
@@ -93,7 +93,7 @@ suite =
             , Test.test "is boxed alert" <|
                 \() ->
                     IconSet.Motorcycle
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withStyle Icon.alert
                         |> Icon.render
                         |> Query.fromHtml
@@ -101,7 +101,7 @@ suite =
             , Test.test "is boxed error" <|
                 \() ->
                     IconSet.Motorcycle
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withStyle Icon.error
                         |> Icon.render
                         |> Query.fromHtml
@@ -111,7 +111,7 @@ suite =
             [ Test.test "has accessible description" <|
                 \() ->
                     IconSet.VehicleNaturalEvents
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withDescription "Natural events"
                         |> Icon.render
                         |> Query.fromHtml
@@ -119,7 +119,7 @@ suite =
             , Test.test "has accessible role" <|
                 \() ->
                     IconSet.VehicleVandalism
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withDescription "Vehicle vandalism"
                         |> Icon.render
                         |> Query.fromHtml
@@ -127,14 +127,14 @@ suite =
             , Test.test "is hidden for screen readers when no description is provided" <|
                 \() ->
                     IconSet.Camera
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (CA.ariaHidden True) ]
             , Test.test "has a classList" <|
                 \() ->
                     IconSet.Calendar
-                        |> Icon.create
+                        |> Icon.config
                         |> Icon.withClassList
                             [ ( "my-class", True )
                             , ( "my-other-class", True )

@@ -156,73 +156,73 @@ componentsList : List ( String, Html (ElmBook.Msg state) )
 componentsList =
     [ ( "Large"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withSize Size.large
             |> Icon.render
       )
     , ( "Medium"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withSize Size.medium
             |> Icon.render
       )
     , ( "Small"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withSize Size.small
             |> Icon.render
       )
     , ( "Default Style"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withStyle Icon.default
             |> Icon.render
       )
     , ( "Boxed Neutral Style"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withStyle Icon.neutral
             |> Icon.render
       )
     , ( "Boxed Brand Style"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withStyle Icon.brand
             |> Icon.render
       )
     , ( "Boxed Success Style"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withStyle Icon.success
             |> Icon.render
       )
     , ( "Boxed Alert Style"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withStyle Icon.alert
             |> Icon.render
       )
     , ( "Boxed Error Style"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withStyle Icon.error
             |> Icon.render
       )
     , ( "Default Theme"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withTheme Theme.default
             |> Icon.render
       )
     , ( "Alternative Theme"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withTheme Theme.alternative
             |> Icon.render
       )
     , ( "Accessible Description"
       , IconSet.User
-            |> Icon.create
+            |> Icon.config
             |> Icon.withDescription "A screen-reader useful description"
             |> Icon.render
       )

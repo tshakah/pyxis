@@ -712,7 +712,7 @@ renderAddonByType type_ =
             Html.div
                 [ Attributes.class "form-field__addon" ]
                 [ icon
-                    |> Icon.create
+                    |> Icon.config
                     |> Icon.render
                 ]
 

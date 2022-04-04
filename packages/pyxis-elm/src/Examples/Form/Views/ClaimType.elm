@@ -1,5 +1,6 @@
 module Examples.Form.Views.ClaimType exposing (view)
 
+import Components.Field.Error.Strategy as Strategy
 import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.Form.FieldSet as FieldSet
 import Components.Form.Grid as Grid
@@ -27,6 +28,7 @@ view ((Data config) as data) =
                 [ Grid.simpleCol
                     [ "claim-type"
                         |> RadioCardGroup.config
+                        |> RadioCardGroup.withStrategy Strategy.onSubmit
                         |> RadioCardGroup.withLayout RadioCardGroup.vertical
                         |> RadioCardGroup.withOptions
                             [ RadioCardGroup.option

@@ -1,6 +1,7 @@
 module Examples.Form.Views.InsuranceType exposing (view)
 
 import Commons.Properties.Size as Size
+import Components.Field.Error.Strategy as Strategy
 import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.Form.FieldSet as FieldSet
 import Components.Form.Grid as Grid
@@ -26,6 +27,7 @@ view ((Data config) as data) =
                 [ Grid.simpleCol
                     [ "insurance-type"
                         |> RadioCardGroup.config
+                        |> RadioCardGroup.withStrategy Strategy.onSubmit
                         |> RadioCardGroup.withSize Size.large
                         |> RadioCardGroup.withOptions
                             [ RadioCardGroup.option { value = Data.Motor, title = Just "Veicoli", text = Nothing, addon = RadioCardGroup.imgAddon "../../../../assets/placeholder.svg" }

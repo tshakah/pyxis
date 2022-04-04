@@ -215,7 +215,7 @@ renderPrependAddon addon =
                 , Commons.Attributes.testId (IconSet.toLabel icon)
                 ]
                 [ icon
-                    |> Icon.create
+                    |> Icon.config
                     |> Icon.withSize Size.large
                     |> Icon.render
                 ]

@@ -1,6 +1,6 @@
 module Components.Icon exposing
-    ( Model
-    , create
+    ( Config
+    , config
     , withTheme
     , withSize
     , Style
@@ -11,6 +11,7 @@ module Components.Icon exposing
     , alert
     , error
     , withStyle
+    , withSpinner
     , withDescription
     , withClassList
     , render
@@ -21,8 +22,8 @@ module Components.Icon exposing
 
 # Icon component
 
-@docs Model
-@docs create
+@docs Config
+@docs config
 
 
 ## Theme
@@ -49,6 +50,7 @@ module Components.Icon exposing
 
 ## Generics
 
+@docs withSpinner
 @docs withDescription
 @docs withClassList
 
@@ -72,31 +74,28 @@ import SvgParser
 
 {-| The Icon model.
 -}
-type Model
-    = Model Configuration
-
-
-{-| Internal. The internal Icon configuration.
--}
-type alias Configuration =
-    { classList : List ( String, Bool )
-    , description : Maybe String
-    , icon : IconSet.Icon
-    , size : Size
-    , style : Style
-    , theme : Theme
-    }
+type Config
+    = Config
+        { classList : List ( String, Bool )
+        , description : Maybe String
+        , icon : IconSet.Icon
+        , size : Size
+        , spinner : Bool
+        , style : Style
+        , theme : Theme
+        }
 
 
 {-| Inits the Icon.
 -}
-create : IconSet.Icon -> Model
-create icon =
-    Model
+config : IconSet.Icon -> Config
+config icon =
+    Config
         { classList = []
         , description = Nothing
         , icon = icon
         , size = Size.medium
+        , spinner = False
         , style = Default
         , theme = Theme.default
         }
@@ -104,16 +103,16 @@ create icon =
 
 {-| Sets a theme to the Icon.
 -}
-withTheme : Theme -> Model -> Model
-withTheme a (Model configuration) =
-    Model { configuration | theme = a }
+withTheme : Theme -> Config -> Config
+withTheme a (Config configuration) =
+    Config { configuration | theme = a }
 
 
 {-| Sets a large size to the Icon.
 -}
-withSize : Size -> Model -> Model
-withSize a (Model configuration) =
-    Model { configuration | size = a }
+withSize : Size -> Config -> Config
+withSize a (Config configuration) =
+    Config { configuration | size = a }
 
 
 {-| The available Icon styles.
@@ -170,9 +169,9 @@ alert =
 
 {-| Sets a default style to the Icon.
 -}
-withStyle : Style -> Model -> Model
-withStyle a (Model configuration) =
-    Model { configuration | style = a }
+withStyle : Style -> Config -> Config
+withStyle a (Config configuration) =
+    Config { configuration | style = a }
 
 
 {-| Represent a error style for the Icon.
@@ -182,18 +181,25 @@ error =
     Boxed Error
 
 
+{-| Sets whether the Icon should spin or not.
+-}
+withSpinner : Bool -> Config -> Config
+withSpinner spinner (Config configuration) =
+    Config { configuration | spinner = spinner }
+
+
 {-| Adds an accessible text to the Icon.
 -}
-withDescription : String -> Model -> Model
-withDescription a (Model configuration) =
-    Model { configuration | description = Just a }
+withDescription : String -> Config -> Config
+withDescription a (Config configuration) =
+    Config { configuration | description = Just a }
 
 
 {-| Adds a classList to the Icon.
 -}
-withClassList : List ( String, Bool ) -> Model -> Model
-withClassList a (Model configuration) =
-    Model { configuration | classList = a }
+withClassList : List ( String, Bool ) -> Config -> Config
+withClassList a (Config configuration) =
+    Config { configuration | classList = a }
 
 
 {-| Internal.
@@ -210,28 +216,29 @@ isBoxed style =
 
 {-| Renders the Icon.
 -}
-render : Model -> Html msg
-render (Model configuration) =
+render : Config -> Html msg
+render (Config configData) =
     Html.div
         [ Attributes.classList
             ([ ( "icon", True )
-             , ( "icon--size-l", Size.isLarge configuration.size )
-             , ( "icon--size-m", Size.isMedium configuration.size )
-             , ( "icon--size-s", Size.isSmall configuration.size )
-             , ( "icon--boxed", isBoxed configuration.style || Theme.isAlternative configuration.theme )
-             , ( "icon--brand", configuration.style == brand )
-             , ( "icon--success", configuration.style == success )
-             , ( "icon--alert", configuration.style == alert )
-             , ( "icon--error", configuration.style == error )
-             , ( "icon--alt", Theme.isAlternative configuration.theme )
+             , ( "icon--spinner", configData.spinner )
+             , ( "icon--size-l", Size.isLarge configData.size )
+             , ( "icon--size-m", Size.isMedium configData.size )
+             , ( "icon--size-s", Size.isSmall configData.size )
+             , ( "icon--boxed", isBoxed configData.style || Theme.isAlternative configData.theme )
+             , ( "icon--brand", configData.style == brand )
+             , ( "icon--success", configData.style == success )
+             , ( "icon--alert", configData.style == alert )
+             , ( "icon--error", configData.style == error )
+             , ( "icon--alt", Theme.isAlternative configData.theme )
              ]
-                ++ configuration.classList
+                ++ configData.classList
             )
-        , Commons.Attributes.ariaHidden (configuration.description == Nothing)
-        , Commons.Attributes.maybe Commons.Attributes.ariaLabel configuration.description
-        , Commons.Attributes.renderIf (Maybe.Extra.isJust configuration.description) (Commons.Attributes.role "img")
+        , Commons.Attributes.ariaHidden (Maybe.Extra.isNothing configData.description)
+        , Commons.Attributes.maybe Commons.Attributes.ariaLabel configData.description
+        , Commons.Attributes.renderIf (Maybe.Extra.isJust configData.description) (Commons.Attributes.role "img")
         ]
-        [ configuration.icon
+        [ configData.icon
             |> IconSet.toString
             |> SvgParser.parse
             |> Result.toMaybe

@@ -4,7 +4,7 @@
 $_size: (
   s: 16px,
   m: 20px,
-  l: 24px
+  l: 24px,
 );
 
 $_variants: (brand, alert, success, error);
@@ -48,3 +48,15 @@ $_variants: (brand, alert, success, error);
   }
 }
 
+.icon--spinner {
+  animation: spin 2s linear forwards;
+
+  @keyframes spin {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

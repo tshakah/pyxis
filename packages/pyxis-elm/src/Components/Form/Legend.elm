@@ -100,7 +100,7 @@ type alias ConfigData =
     , title : String
     , alignment : Alignment
     , description : Maybe String
-    , icon : Maybe Icon.Model
+    , icon : Maybe Icon.Config
     , imageUrl : Maybe String
     }
 
@@ -176,7 +176,7 @@ renderAddonByType type_ =
             Html.div
                 [ Attributes.class "form-legend__addon" ]
                 [ icon
-                    |> Icon.create
+                    |> Icon.config
                     |> Icon.withStyle Icon.brand
                     |> Icon.render
                 ]

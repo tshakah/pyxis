@@ -18,6 +18,7 @@ module Components.Field.RadioCardGroup exposing
     , withLabel
     , withName
     , withSize
+    , withStrategy
     , Msg
     , isOnCheck
     , update
@@ -70,7 +71,6 @@ module Components.Field.RadioCardGroup exposing
 @docs withIsSubmitted
 @docs withLabel
 @docs withName
-
 @docs withSize
 @docs withStrategy
 
@@ -273,6 +273,13 @@ withLayout (Layout layout) (Config configuration) =
     Config { configuration | layout = layout }
 
 
+{-| Append an additional custom html.
+-}
+withAdditionalContent : Html Never -> Config value -> Config value
+withAdditionalContent additionalContent (Config configuration) =
+    Config { configuration | additionalContent = Just additionalContent }
+
+
 {-| Add the classes to the card group wrapper.
 -}
 withClassList : List ( String, Bool ) -> Config value -> Config value
@@ -328,11 +335,9 @@ withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
-{-| Append an additional custom html.
--}
-withAdditionalContent : Html Never -> Config value -> Config value
-withAdditionalContent additionalContent (Config configuration) =
-    Config { configuration | additionalContent = Just additionalContent }
+withStrategy : Strategy -> Config value -> Config value
+withStrategy strategy (Config configuration) =
+    Config { configuration | strategy = strategy }
 
 
 {-| Render the RadioCardGroup.

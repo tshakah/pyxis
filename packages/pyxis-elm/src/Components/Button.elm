@@ -665,7 +665,7 @@ renderIcon size icon =
     icon
         |> pickIcon
         |> Maybe.map
-            (Icon.create
+            (Icon.config
                 >> applyIconSize size
                 >> Icon.render
             )
@@ -674,7 +674,7 @@ renderIcon size icon =
 
 {-| Internal.
 -}
-applyIconSize : Size -> Icon.Model -> Icon.Model
+applyIconSize : Size -> Icon.Config -> Icon.Config
 applyIconSize size =
     if size == Huge then
         Icon.withSize Size.large

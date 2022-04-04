@@ -7,6 +7,7 @@ import Html
 import Html.Attributes
 import Stories.Chapters.Badge as Badge
 import Stories.Chapters.Buttons as ButtonChapter
+import Stories.Chapters.Fields.Autocomplete as AutocompleteChapter
 import Stories.Chapters.Fields.CheckboxCardGroup as CheckboxCardGroupChapter
 import Stories.Chapters.Fields.CheckboxGroup as CheckboxChapter
 import Stories.Chapters.Fields.Input as InputChapter
@@ -25,7 +26,8 @@ import Stories.Chapters.Toggle as ToggleChapter
 
 
 type alias SharedState =
-    { textarea : TextareaChapter.Model
+    { autocomplete : AutocompleteChapter.Model
+    , textarea : TextareaChapter.Model
     , select : SelectChapter.Model
     , radio : RadioFieldChapter.Model
     , checkbox : CheckboxChapter.Model
@@ -38,7 +40,8 @@ type alias SharedState =
 
 initialState : SharedState
 initialState =
-    { textarea = TextareaChapter.init
+    { autocomplete = AutocompleteChapter.init
+    , textarea = TextareaChapter.init
     , select = SelectChapter.init
     , radio = RadioFieldChapter.init
     , checkbox = CheckboxChapter.init
@@ -79,10 +82,11 @@ main =
               )
             , ( "Form"
               , [ Form.docs
-                , InputChapter.docs
+                , AutocompleteChapter.docs
                 , LabelChapter.docs
                 , CheckboxChapter.docs
                 , CheckboxCardGroupChapter.docs
+                , InputChapter.docs
                 , RadioFieldChapter.docs
                 , RadioCardFieldChapter.docs
                 , SelectChapter.docs

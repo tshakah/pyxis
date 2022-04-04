@@ -44,7 +44,7 @@ toComponent icons =
                         , Html.br [] []
                         , Html.br [] []
                         , icon
-                            |> Icon.create
+                            |> Icon.config
                             |> Icon.withSize Size.large
                             |> Icon.render
                         ]

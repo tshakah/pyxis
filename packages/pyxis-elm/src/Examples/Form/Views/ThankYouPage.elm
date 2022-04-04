@@ -15,7 +15,7 @@ view =
         [ Html.div
             [ Html.Attributes.class "spacing-v-m" ]
             [ IconSet.CheckCircle
-                |> Icon.create
+                |> Icon.config
                 |> Icon.withSize Size.large
                 |> Icon.withStyle Icon.success
                 |> Icon.render
