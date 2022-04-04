@@ -21,6 +21,17 @@
   }
 }
 
+// Hide scrollbar
+@mixin hideScrollbar {
+  -ms-overflow-style: none;
+  overflow-y: scroll;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 // Create atom classes for hiding
 @mixin createAtoms() {
   @each $breakpointName, $breakpointValue in tokens.$breakpoints {

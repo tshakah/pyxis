@@ -65,21 +65,15 @@ $_wrapperAnimationOffset: lib.rem(10px);
   @include foundations.horizontalPadding(2xs);
   @include foundations.rowGap(4xs);
   @include foundations.verticalPadding(3xs);
+  @include foundations.hideScrollbar;
   background-color: foundations.color(neutralLight);
   border-radius: $radius;
   border-top: lib.rem(1px) solid foundations.color(neutral85);
   cursor: default;
   display: grid;
   max-height: $maxHeight;
-  -ms-overflow-style: none;
   overflow-x: hidden;
-  overflow-y: scroll;
   position: relative;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 
   .form-dropdown-wrapper--small & {
     @include foundations.horizontalPadding(3xs);

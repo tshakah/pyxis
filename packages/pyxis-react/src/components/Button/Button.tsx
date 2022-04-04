@@ -25,7 +25,7 @@ const ButtonContent:FC<ButtonContentProps> = ({
   Icon ? (
     <>
       { iconPlacement === 'prepend' && <Icon size={getIconSize(size as ButtonSize)} /> }
-      { iconPlacement === 'only' && <Icon size={getIconSize(size as ButtonSize)} description={children} /> }
+      { iconPlacement === 'only' && <Icon description={children} size={getIconSize(size as ButtonSize)} /> }
       { iconPlacement !== 'only' && children}
       { iconPlacement === 'append' && <Icon size={getIconSize(size as ButtonSize)} /> }
     </>

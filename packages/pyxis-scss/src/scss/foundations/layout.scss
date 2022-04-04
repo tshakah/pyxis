@@ -1,0 +1,19 @@
+// Layout utilities used in Pyxis.
+
+// Generate position sticky coordinates
+@mixin sticky($top: 0, $right: 0, $bottom: 0, $left: 0) {
+  bottom: $bottom;
+  left: $left;
+  position: sticky;
+  right: $right;
+  top: $top;
+}
+
+// Generate position fixed coordinates
+@mixin fixed($top: 0, $right: 0, $bottom: 0, $left: 0) {
+  bottom: $bottom;
+  left: $left;
+  position: fixed;
+  right: $right;
+  top: $top;
+}

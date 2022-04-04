@@ -1,0 +1,117 @@
+@use "../lib";
+@use "../foundations";
+
+// Allowed sizes of modals
+$_sizes: (small, medium, large);
+
+// Allowed sizes of modals depending on breakpoints
+$_sizesOnBp: (
+  xsmall: lib.rem(500px),
+  medium: lib.rem(800px),
+  large: lib.rem(1000px),
+);
+
+.modal-backdrop {
+  @include foundations.fixed;
+  @include foundations.hideScrollbar;
+  align-items: end;
+  background-color: rgba(foundations.color(neutralBase), 0.5);
+  display: grid;
+  justify-items: center;
+  z-index: foundations.zIndex(modal);
+
+  @include foundations.mq(xsmall) {
+    align-items: start;
+  }
+}
+
+.modal {
+  $minHeight: lib.rem(200px);
+  $offset: lib.rem(80px);
+
+  @include foundations.radius(m, top);
+  background-color: foundations.color(neutralLight);
+  display: grid;
+  height: min-content;
+  min-height: $minHeight;
+  width: 100%;
+
+  @include foundations.mq(base, xsmall) {
+    @include foundations.fixed($top: initial);
+    @include foundations.hideScrollbar;
+    max-height: calc(100vh - #{foundations.spacing(2xl)});
+  }
+
+  @include foundations.mq(xsmall) {
+    @include foundations.radius(m);
+    margin: $offset 0;
+  }
+}
+
+// Generate size classes
+@each $size in $_sizes {
+  .modal--#{$size} {
+    @each $bp, $value in $_sizesOnBp {
+      @if foundations.isLowerOrEqualTo($bp, $size) {
+        @include foundations.mq($bp) {
+          max-width: $value;
+        }
+      }
+    }
+  }
+}
+
+.modal--center {
+  @include foundations.mq(xsmall) {
+    place-self: center;
+  }
+}
+
+.modal__header {
+  @include foundations.columnGap(xs);
+  @include foundations.padding(m);
+  @include foundations.radius(m, top);
+  background: foundations.color(neutralLight);
+  display: grid;
+  grid-template-columns: auto max-content;
+  z-index: 1;
+
+  @include foundations.mq(base, xsmall) {
+    @include foundations.sticky;
+  }
+}
+
+.modal__header__wrapper {
+  @include foundations.columnGap(s);
+  @include foundations.rowGap(2xs);
+  align-items: center;
+  display: grid;
+  justify-content: start;
+  justify-items: start;
+}
+
+.modal__header__title {
+  @include foundations.title(s, bold);
+}
+
+.modal__content {
+  @include foundations.horizontalPadding(m);
+  @include foundations.verticalPadding(xs);
+}
+
+.modal__footer {
+  @include foundations.padding(m);
+  @include foundations.radius(m, bottom);
+  background: foundations.color(neutralLight);
+  display: grid;
+  z-index: 1;
+
+  @include foundations.mq(base, xsmall) {
+    @include foundations.sticky;
+  }
+}
+
+.modal__header--sticky,
+.modal__footer--sticky {
+  @include foundations.sticky;
+}

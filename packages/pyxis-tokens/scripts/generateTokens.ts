@@ -14,6 +14,7 @@ import textSizes from "../json/typography/text/sizes.json";
 import textWeights from "../json/typography/text/weights.json";
 import titleSizes from "../json/typography/title/sizes.json";
 import titleWeights from "../json/typography/title/weights.json";
+import zIndexes from "../json/zIndexes.json";
 
 const scssPath = resolve(__dirname, '../../', 'pyxis-scss/src/scss/tokens');
 
@@ -73,6 +74,10 @@ const tokens: {name: string, source: Token}[] = [
   {
     "name": "titleWeights",
     "source": titleWeights
+  },
+  {
+    "name": "zIndexes",
+    "source": zIndexes
   },
 ]
 

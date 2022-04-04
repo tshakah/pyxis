@@ -8,7 +8,9 @@
 @forward "containers" hide createAtoms;
 @forward "elevations" hide createAtoms;
 @forward "hiding" hide createAtoms;
+@forward "layout";
 @forward "motion";
 @forward "radius" hide createAtoms;
 @forward "spacings" hide createAtoms;
 @forward "typography" hide createAtoms, fontFaces, globalSettings;
+@forward "zIndex";

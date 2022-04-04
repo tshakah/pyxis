@@ -20,10 +20,10 @@ const Icon: FC<IconProps> = ({
   children,
 }) => (
   <div
+    aria-hidden={!description}
+    aria-label={description}
     className={getClasses(size, className, alt, boxedVariant)}
     role={description && 'img'}
-    aria-label={description}
-    aria-hidden={!description}
   >
     {children}
   </div>
