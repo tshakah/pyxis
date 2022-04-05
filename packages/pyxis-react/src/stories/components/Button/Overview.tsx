@@ -26,11 +26,11 @@ const overviewDescription = (
     <p>
       All the properties described below concern the visual implementation of the component,
       in addition to these properties the component also supports all the&nbsp;
-      <a className="c-action-base" target="_blank" href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2059">properties</a>
+      <a className="link" target="_blank" href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2059">properties</a>
       &nbsp;of a <code>{`<button>`}</code> component,
-      in case you want to render an <code>{`<a>`}</code>, just use the <a className="c-action-base" href="#link" target="_self">attribute href</a>,
+      in case you want to render an <code>{`<a>`}</code>, just use the <a className="link" href="#link" target="_self">attribute href</a>,
       in this way the allowed&nbsp;
-      <a className="c-action-base" target="_blank" href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2023">properties</a>
+      <a className="link" target="_blank" href="https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts#L2023">properties</a>
       &nbsp;will become those of an <code>{`<a>`}</code>.
     </p>
   </>

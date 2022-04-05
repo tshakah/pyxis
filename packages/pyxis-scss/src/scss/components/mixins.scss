@@ -1,0 +1,35 @@
+@use "../foundations";
+@use "../lib";
+
+// Add CSS rules for focus status, used in buttons and links.
+//
+// @param {Color} $color - Value of focus color
+// @param {Bool} $inset - Positioning of focus
+// @param {Value} $offset - Offset size
+// @param {Value} $width - Width of focus
+@mixin focus($color, $inset: false, $offset: lib.rem(2px), $width: lib.rem(3px)) {
+  &:focus-visible {
+    outline: $color solid $width;
+    outline-offset: $offset;
+
+    @include lib.onSafari {
+      outline: none;
+
+      &:before {
+        $beforeOffset: -($width + $offset);
+
+        @if($inset) {
+          $beforeOffset: -($width + ($offset * 2));
+        }
+
+        border: $width solid $color;
+        bottom: $beforeOffset;
+        content: "";
+        left: $beforeOffset;
+        position: absolute;
+        right: $beforeOffset;
+        top: $beforeOffset;
+      }
+    }
+  }
+}

@@ -4,11 +4,11 @@
 $formBackground: #0094FF;
 $gapBackground: #FDEEC0;
 
-/// Includes the size contained in the spacings map on height/top in every breakpoints
-///
-/// @param {String} $size - Name of the size
-/// @throw {Error}
-/// @access private
+// Includes the size contained in the spacings map on height/top in every breakpoints
+//
+// @param {String} $size - Name of the size
+// @throw {Error}
+// @access private
 @mixin _heightFromGap($size) {
   @each $breakpoint, $space in pyxis.get(spacings.$spacings, $size) {
     @include pyxis.mq($breakpoint) {
@@ -18,27 +18,27 @@ $gapBackground: #FDEEC0;
   }
 }
 
-/// Includes content if parent have class `.form-show-grid`
-///
-/// @access private
+// Includes content if parent have class `.form-show-grid`
+//
+// @access private
 @mixin _visualGrid {
   .form-show-grid & {
     @content;
   }
 }
 
-/// Includes content if parent have class `.form-item-show-gap`
-///
-/// @access private
+// Includes content if parent have class `.form-item-show-gap`
+//
+// @access private
 @mixin _visualGap {
   .form-item-show-gap & {
     @content;
   }
 }
 
-/// Include the gap style without height
-///
-/// @access private
+// Include the gap style without height
+//
+// @access private
 @mixin _gapStyle {
   @include pyxis.radius(2xs);
   background-color: $gapBackground;

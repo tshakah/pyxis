@@ -1,6 +1,7 @@
-@use "sass:math";
-@use "../lib";
 @use "../foundations";
+@use "../lib";
+@use "mixins";
+@use "sass:math";
 
 $_borderWidth: lib.rem(2px);
 $_outlineWidth: lib.rem(3px);
@@ -64,6 +65,7 @@ $_sizes: (
 // @param {String} $gradient - Gradient color used for background
 // @param {String} $elevationColor - Name of color + opacity for elevation, i.e. `brand40`
 @mixin _filled ($gradient, $elevationColor) {
+  @include mixins.focus(rgba(foundations.color(actionBase), 0.2));
   background-image: $gradient;
   background-position: 100% 0;
   background-size: 200%;
@@ -98,6 +100,7 @@ $_sizes: (
   }
 
   &.button--alt {
+    @include mixins.focus(rgba(foundations.color(neutralLight), 0.4));
     background: foundations.color(neutralLight);
     color: foundations.color(neutralBase);
 
@@ -125,6 +128,7 @@ $_sizes: (
 //
 // @param {Color} $borderColor - Name of the color used as border
 @mixin _outlined ($borderColor, $borderColorAlt) {
+  @include mixins.focus(rgba(foundations.color(actionBase), 0.2), true);
   border: $_borderWidth solid $borderColor;
   color: foundations.color(actionBase);
 
@@ -144,6 +148,7 @@ $_sizes: (
   }
 
   &.button--alt {
+    @include mixins.focus(rgba(foundations.color(neutralLight), 0.4), true);
     border-color: $borderColorAlt;
     color: foundations.color(neutralLight);
 
@@ -174,41 +179,10 @@ $_sizes: (
   place-items: center;
   position: relative;
   transition-duration: foundations.duration(fast);
-  transition-property: background, color, outline, transform;
+  transition-property: background, border-color, box-shadow, color, outline, transform;
   transition-timing-function: foundations.timing(base);
   user-select: none;
-  will-change: transform;
-
-  &:focus {
-    outline: rgba(foundations.color(actionBase), 0.2) solid $_outlineWidth;
-    outline-offset: $_borderWidth;
-
-    @include lib.onSafari {
-      outline: none;
-
-      &:before {
-        $offset: -#{$_outlineWidth + $_borderWidth};
-
-        border: $_outlineWidth solid rgba(foundations.color(actionBase), 0.2);
-        bottom: $offset;
-        content: "";
-        left: $offset;
-        position: absolute;
-        right: $offset;
-        top: $offset;
-      }
-    }
-
-    &.button--alt {
-      outline-color: rgba(foundations.color(neutralLight), 0.2);
-
-      @include lib.onSafari {
-        &:before {
-          border-color: rgba(foundations.color(neutralLight), 0.2);
-        }
-      }
-    }
-  }
+  will-change: background, border-color, box-shadow, color, outline, transform;
 
   &:active {
     transform: scale(0.97);
@@ -235,6 +209,10 @@ $_sizes: (
     &:before,
     &:not(.button--ghost) {
       @include foundations.radius(lib.get($properties, radius));
+    }
+
+    &:where(.button--huge):before {
+      @include foundations.radius(l);
     }
 
     &:not(.button--ghost) {
@@ -281,6 +259,7 @@ $_sizes: (
 }
 
 .button--ghost {
+  @include mixins.focus(rgba(foundations.color(actionBase), 0.2));
   border-bottom: $_borderWidth solid transparent;
   color: foundations.color(actionBase);
   padding-top: foundations.spacing(4xs);

@@ -34,6 +34,12 @@ const textDescription = (
   </p>
 );
 
+const linkDescription = (
+  <p>
+    Texts can have anchor links. They can have normal or alternative theme, based on background color.
+  </p>
+);
+
 const usageDescription = (
   <p>
     Typography can be used via mixins and atomic classes. It is recommended that you use the mixins as specified in
@@ -64,6 +70,29 @@ const tableUsageBody: TableRow[] = [
     <CopyableCode text="@include text($size, $weight)" key={shortid.generate()} />,
     <CopyableCode text=".text-$size-$weight" key={shortid.generate()} />,
   ],
+  [
+    'Link',
+    '-',
+    <CopyableCode text=".link" key={shortid.generate()} />,
+  ],
+  [
+    'Link Alt',
+    '-',
+    <CopyableCode text=".link--alt" key={shortid.generate()} />,
+  ],
+];
+
+const generateLinkBody = (): TableRow[] =>  [
+  [
+    <a href="#" className="link">This is a link</a>,
+    '-',
+  ],
+  [
+    <div className="alt-wrapper" key={shortid.generate()} >
+      <a href="#" className="link link--alt">This is a link</a>
+    </div>,
+    'Alt version',
+  ]
 ];
 
 const Overview: FC = () => (
@@ -80,6 +109,13 @@ const Overview: FC = () => (
       <Table
         head={['Sample', 'Size', 'Weight']}
         body={generateBody(text)}
+        gridTemplateColumns="200px"
+      />
+    </OverviewTemplate>
+    <OverviewTemplate title="Link" description={linkDescription}>
+      <Table
+        head={['Sample', 'Theme']}
+        body={generateLinkBody()}
         gridTemplateColumns="200px"
       />
     </OverviewTemplate>

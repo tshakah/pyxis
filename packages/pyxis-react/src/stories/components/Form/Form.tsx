@@ -120,7 +120,7 @@ const Form: FC = () => {
                   </div>
                   <div className="message__content-wrapper">
                     <div className="message__text">
-                      If the vehicle is not insured with Prima, send an email to <a href="#" className="c-action-base">hello@prima.it</a>
+                      If the vehicle is not insured with Prima, send an email to <a href="#" className="link">hello@prima.it</a>
                     </div>
                   </div>
                 </div>
@@ -130,7 +130,7 @@ const Form: FC = () => {
             {/* Row with button group */}
             <div className="form-grid__row form-grid__row--small">
               <div className="form-grid__row__column">
-                <div className="button-group">
+                <div className="button-row">
                   <Button size="large" variant="ghost" icon={IconChevronLeft}>Back</Button>
                   <Button size="large">Proceed</Button>
                 </div>

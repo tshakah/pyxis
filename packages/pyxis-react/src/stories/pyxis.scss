@@ -21,16 +21,6 @@
   @include pyxis.verticalSpacing(3xs);
 }
 
-.link {
-  color: pyxis.color(actionBase);
-  cursor: pointer;
-
-  &:hover {
-    color: pyxis.color(actionDark);
-    text-decoration: underline;
-  }
-}
-
 .full-width {
   width: 100%;
 }
