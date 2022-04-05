@@ -8,7 +8,7 @@
 // @param {Value} $offset - Offset size
 // @param {Value} $width - Width of focus
 @mixin focus($color, $inset: false, $offset: lib.rem(2px), $width: lib.rem(3px)) {
-  &:focus-visible {
+  &:focus {
     outline: $color solid $width;
     outline-offset: $offset;
 
