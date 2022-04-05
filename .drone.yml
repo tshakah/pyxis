@@ -236,6 +236,74 @@ depends_on:
 
 ---
 kind: pipeline
+name: build-production
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: git-clone
+  image: public.ecr.aws/prima/drone-git:1.3-3
+  environment:
+    PLUGIN_DEPTH: 5
+
+- name: cache-restore
+  image: public.ecr.aws/prima/drone-tools:1.21.4
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - cache-restore
+  environment:
+    BUCKET_NAME: prima-ci-cache
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  - name: docker
+    path: /var/run/docker.sock
+  depends_on:
+  - git-clone
+
+- name: build-image
+  image: public.ecr.aws/prima/drone-tools:1.21.4
+  commands:
+  - sed -i 's/USER node/USER root/g' ./Dockerfile
+  - docker build -t prima/pyxis-ci:${DRONE_COMMIT} ./
+  volumes:
+  - name: docker
+    path: /var/run/docker.sock
+  depends_on:
+  - cache-restore
+
+- name: build-production
+  image: prima/pyxis-ci:${DRONE_COMMIT}
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - ./deploy/build production
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  depends_on:
+  - build-image
+
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
+- name: ecs
+  host:
+    path: /etc/profile.d/ecs-credentials-endpoint
+
+trigger:
+  event:
+  - tag
+  ref:
+  - refs/tags/*.*.*
+
+---
+kind: pipeline
 name: deploy-it-staging
 
 platform:
@@ -306,6 +374,114 @@ depends_on:
 
 ---
 kind: pipeline
+name: wait-for-artifact-it
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: git-clone
+  image: public.ecr.aws/prima/drone-git:1.3-3
+  environment:
+    PLUGIN_DEPTH: 5
+
+- name: wait-for-artifact
+  image: public.ecr.aws/prima/drone-tools:1.21.4
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - ./deploy/deploy-it production --wait-for-artifact
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
+- name: ecs
+  host:
+    path: /etc/profile.d/ecs-credentials-endpoint
+
+trigger:
+  event:
+  - promote
+  target:
+  - deploy-it-production
+
+---
+kind: pipeline
+name: deploy-it-production
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: git-clone
+  image: public.ecr.aws/prima/drone-git:1.3-3
+  environment:
+    PLUGIN_DEPTH: 5
+
+- name: pre-start
+  image: public.ecr.aws/prima/drone-tools:1.21.4
+  commands:
+  - pre-start-scripts
+  depends_on:
+  - git-clone
+
+- name: deploy
+  image: public.ecr.aws/prima/drone-tools:1.21.4
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - ./deploy/deploy-it production
+  environment:
+    CLOUDFLARE_TOKEN:
+      from_secret: cloudflare_token
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  depends_on:
+  - pre-start
+
+- name: captainhook-notification
+  image: public.ecr.aws/prima/drone-webhook
+  settings:
+    signature-secret:
+      from_secret: captainhook_secret
+    urls: http://captainhook-internal.prima.it/drone/deploy?rollback=${ROLLBACK}&country=it&environment=production
+  when:
+    status:
+    - failure
+    - success
+  depends_on:
+  - deploy
+
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
+- name: ecs
+  host:
+    path: /etc/profile.d/ecs-credentials-endpoint
+
+trigger:
+  event:
+  - promote
+  target:
+  - deploy-it-production
+
+depends_on:
+- wait-for-artifact-it
+
+---
+kind: pipeline
 name: email-failure
 
 platform:
@@ -339,10 +515,12 @@ trigger:
 depends_on:
 - default
 - build-staging
+- build-production
 - deploy-it-staging
+- deploy-it-production
 
 ---
 kind: signature
-hmac: 207fe605972c6634377e601021afb06470c109080a74cccf2571241dc431de19
+hmac: 75ecaaf4007b5cbf4a6895fdfce206e4a3c305b40eba1366791c0009a15e89c2
 
 ...
