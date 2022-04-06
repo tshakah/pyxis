@@ -489,11 +489,15 @@ render msgMapper ctx ((Model modelData) as model) ((Config configData) as config
                 (modelData.validation ctx modelData.value)
                 configData.isSubmitted
                 configData.strategy
+
+        dropdown : Maybe (Html msg)
+        dropdown =
+            renderDropdown msgMapper model configuration
     in
     Html.div
         [ Attributes.classList
             [ ( "form-field", True )
-            , ( "form-field--with-opened-dropdown", modelData.dropdownOpen )
+            , ( "form-field--with-opened-dropdown", modelData.dropdownOpen && Maybe.Extra.isJust dropdown )
             , ( "form-field--error", Result.Extra.isErr shownValidation )
             , ( "form-field--disabled", configData.disabled )
             ]
@@ -503,7 +507,7 @@ render msgMapper ctx ((Model modelData) as model) ((Config configData) as config
         , Events.onBlur (msgMapper OnBlur)
         ]
         [ renderField shownValidation msgMapper model configuration
-        , renderDropdown msgMapper model configuration
+        , Commons.Render.renderMaybe dropdown
         ]
         |> FormItem.config configData
         |> FormItem.withLabel configData.label
@@ -598,7 +602,7 @@ getFieldAddonIcon (Model modelData) =
 
 {-| Internal.
 -}
-renderDropdown : (Msg value -> msg) -> Model ctx value -> Config value msg -> Html msg
+renderDropdown : (Msg value -> msg) -> Model ctx value -> Config value msg -> Maybe (Html msg)
 renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as configuration) =
     let
         renderedSuggestions : List (Html msg)
@@ -610,41 +614,50 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
         noAvailableSuggestions : Bool
         noAvailableSuggestions =
             List.length (getSuggestions model configuration) == 0 && RemoteData.isSuccess modelData.suggestions
+
+        nothingRetrievedYet : Bool
+        nothingRetrievedYet =
+            List.length (getSuggestions model configuration) == 0 && RemoteData.isNotAsked modelData.suggestions
     in
-    FormDropdown.render
-        configData.id
-        (if noAvailableSuggestions then
-            FormDropdown.action
-                { label = configData.noResultsFoundMessage
-                , content =
-                    configData.addon
-                        |> Maybe.andThen getNoResultsActionAddonContent
-                        |> Maybe.map (Button.render >> List.singleton)
-                        |> Commons.Render.renderListMaybe
-                }
+    if nothingRetrievedYet then
+        Nothing
 
-         else
-            case
-                ( Maybe.andThen getHeaderAddonContent configData.addon
-                , Maybe.andThen getSuggestionAddonContent configData.addon
-                )
-            of
-                ( Just headerLabel, _ ) ->
-                    FormDropdown.headerAndContent
-                        { header = Html.text headerLabel
-                        , content = renderedSuggestions
-                        }
+    else
+        FormDropdown.render
+            configData.id
+            (if noAvailableSuggestions then
+                FormDropdown.action
+                    { label = configData.noResultsFoundMessage
+                    , content =
+                        configData.addon
+                            |> Maybe.andThen getNoResultsActionAddonContent
+                            |> Maybe.map (Button.render >> List.singleton)
+                            |> Commons.Render.renderListMaybe
+                    }
 
-                ( Nothing, Just suggestionConfig ) ->
-                    if not (RemoteData.isSuccess modelData.suggestions) && String.isEmpty modelData.filter then
-                        FormDropdown.suggestion suggestionConfig
+             else
+                case
+                    ( Maybe.andThen getHeaderAddonContent configData.addon
+                    , Maybe.andThen getSuggestionAddonContent configData.addon
+                    )
+                of
+                    ( Just headerLabel, _ ) ->
+                        FormDropdown.headerAndContent
+                            { header = Html.text headerLabel
+                            , content = renderedSuggestions
+                            }
 
-                    else
+                    ( Nothing, Just suggestionConfig ) ->
+                        if not (RemoteData.isSuccess modelData.suggestions) && String.isEmpty modelData.filter then
+                            FormDropdown.suggestion suggestionConfig
+
+                        else
+                            FormDropdown.content renderedSuggestions
+
+                    ( Nothing, Nothing ) ->
                         FormDropdown.content renderedSuggestions
-
-                ( Nothing, Nothing ) ->
-                    FormDropdown.content renderedSuggestions
-        )
+            )
+            |> Just
 
 
 {-| Internal.
