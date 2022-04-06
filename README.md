@@ -108,6 +108,9 @@ If you don't feel comfortable in proposing any solution, just try to be clearer 
 
 Always remember to also note which _browsers, resolutions or devices_ suffer from this bug so can be easier to address the issue.
 
+## 🧭 Name's origin
+The name of **Pyxis** comes from a [small constellation](https://en.wikipedia.org/wiki/Pyxis) in the southern sky. The name comes from the Latin for *compass* and was chosen to indicate the path to follow for the design in Prima.
+
 ## 🚧 License
 
 WIP
