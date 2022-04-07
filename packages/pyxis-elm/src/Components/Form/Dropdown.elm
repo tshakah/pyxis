@@ -1,9 +1,10 @@
 module Components.Form.Dropdown exposing
     ( Content
-    , action
     , content
     , headerAndContent
+    , noResult
     , suggestion
+    , SuggestionData
     , render
     )
 
@@ -12,11 +13,13 @@ module Components.Form.Dropdown exposing
 
 # Dropdown
 
-@docs Content
 @docs action
+@docs Content
 @docs content
 @docs headerAndContent
+@docs noResult
 @docs suggestion
+@docs SuggestionData
 
 
 ## Rendering
@@ -35,32 +38,41 @@ import Html.Keyed
 
 
 type Content msg
-    = Action
-        { label : String
-        , content : List (Html msg)
-        }
-    | HeaderAndContent
-        { header : Html msg
-        , content : List (Html msg)
-        }
+    = NoResult (NoResultData msg)
+    | HeaderAndContent (HeaderAndContentData msg)
     | Content (List (Html msg))
-    | Suggestion
-        { icon : IconSet.Icon
-        , title : String
-        , subtitle : Maybe String
-        }
+    | Suggestion SuggestionData
+
+
+type alias NoResultData msg =
+    { label : String
+    , action : Maybe (Html msg)
+    }
+
+
+type alias HeaderAndContentData msg =
+    { header : Html msg
+    , content : List (Html msg)
+    }
+
+
+type alias SuggestionData =
+    { icon : IconSet.Icon
+    , title : String
+    , subtitle : Maybe String
+    }
 
 
 {-| Creates the action.
 -}
-action : { label : String, content : List (Html msg) } -> Content msg
-action =
-    Action
+noResult : NoResultData msg -> Content msg
+noResult =
+    NoResult
 
 
 {-| Creates a content with and header.
 -}
-headerAndContent : { header : Html msg, content : List (Html msg) } -> Content msg
+headerAndContent : HeaderAndContentData msg -> Content msg
 headerAndContent =
     HeaderAndContent
 
@@ -74,12 +86,7 @@ content =
 
 {-| Creates a suggestion.
 -}
-suggestion :
-    { icon : IconSet.Icon
-    , title : String
-    , subtitle : Maybe String
-    }
-    -> Content msg
+suggestion : SuggestionData -> Content msg
 suggestion =
     Suggestion
 
@@ -129,8 +136,8 @@ renderContent content_ =
         Content content__ ->
             content__
 
-        Action config ->
-            [ renderAction config.label config.content ]
+        NoResult noResultData ->
+            [ renderNoResult noResultData ]
 
         Suggestion config ->
             [ renderSuggestion config ]
@@ -138,14 +145,14 @@ renderContent content_ =
 
 {-| Internal.
 -}
-renderAction : String -> List (Html msg) -> Html msg
-renderAction label content_ =
+renderNoResult : NoResultData msg -> Html msg
+renderNoResult { label, action } =
     Html.div
         [ Attributes.class "form-dropdown__no-results" ]
         [ Html.text label
-        , content_
-            |> Html.div [ Attributes.class "form-dropdown__no-results__action" ]
-            |> Commons.Render.renderIf (List.length content_ > 0)
+        , action
+            |> Maybe.map (List.singleton >> Html.div [ Attributes.class "form-dropdown__no-results__action" ])
+            |> Commons.Render.renderMaybe
         ]
 
 
@@ -158,12 +165,7 @@ renderHeader content_ =
 
 {-| Internal.
 -}
-renderSuggestion :
-    { icon : IconSet.Icon
-    , title : String
-    , subtitle : Maybe String
-    }
-    -> Html msg
+renderSuggestion : SuggestionData -> Html msg
 renderSuggestion { icon, title, subtitle } =
     Html.div
         [ Attributes.class "form-dropdown__suggestion" ]

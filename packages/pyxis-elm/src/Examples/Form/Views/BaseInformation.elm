@@ -62,13 +62,11 @@ view ((Data config) as data) =
                         |> Autocomplete.withLabel (Label.config "Città di residenza")
                         |> Autocomplete.withHint "Min. 3 caratteri"
                         |> Autocomplete.withPlaceholder "Milano"
-                        |> Autocomplete.withAddon
-                            (Autocomplete.suggestionAddon
-                                { icon = IconSet.InfoCircle
-                                , title = "Lorem ipsum"
-                                , subtitle = Just "Lorem ipsum dolor sit amet."
-                                }
-                            )
+                        |> Autocomplete.withAddonSuggestion
+                            { icon = IconSet.InfoCircle
+                            , title = "Lorem ipsum"
+                            , subtitle = Just "Lorem ipsum dolor sit amet."
+                            }
                         --(Autocomplete.headerAddon "Lorem ipsum")
                         |> Autocomplete.render (Model.AutocompleteFieldChanged Data.ResidentialCity) data config.residentialCity
                     ]

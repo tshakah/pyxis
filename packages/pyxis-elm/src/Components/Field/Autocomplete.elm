@@ -13,11 +13,9 @@ module Components.Field.Autocomplete exposing
     , withPlaceholder
     , withSize
     , withStrategy
-    , Addon
-    , headerAddon
-    , noResultsActionAddon
-    , suggestionAddon
-    , withAddon
+    , withAddonAction
+    , withAddonHeader
+    , withAddonSuggestion
     , Msg
     , update
     , setSuggestions
@@ -62,11 +60,9 @@ module Components.Field.Autocomplete exposing
 
 ## Suggestions Addon
 
-@docs Addon
-@docs headerAddon
-@docs noResultsActionAddon
-@docs suggestionAddon
-@docs withAddon
+@docs withAddonAction
+@docs withAddonHeader
+@docs withAddonSuggestion
 
 
 ## Update
@@ -95,7 +91,6 @@ module Components.Field.Autocomplete exposing
 import Commons.Attributes
 import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
-import Components.Button as Button
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as StrategyInternal
@@ -283,14 +278,16 @@ getSuggestions (Model modelData) (Config configData) =
 type Config value msg
     = Config
         { additionalContent : Maybe (Html Never)
-        , addon : Maybe (Addon msg)
         , disabled : Bool
+        , addonHeader : Maybe String
         , hint : Maybe Hint.Config
         , id : String
         , isSubmitted : Bool
         , label : Maybe Label.Config
         , name : Maybe String
         , noResultsFoundMessage : String
+        , addonAction : Maybe (Html msg)
+        , addonSuggestion : Maybe FormDropdown.SuggestionData
         , placeholder : String
         , size : Size
         , strategy : Strategy
@@ -305,14 +302,16 @@ config : (String -> value -> Bool) -> (value -> String) -> String -> Config valu
 config suggestionsFilter suggestionRenderer id =
     Config
         { additionalContent = Nothing
-        , addon = Nothing
         , disabled = False
+        , addonHeader = Nothing
         , hint = Nothing
         , id = id
         , isSubmitted = False
         , label = Nothing
         , name = Nothing
         , noResultsFoundMessage = "No results found."
+        , addonAction = Nothing
+        , addonSuggestion = Nothing
         , placeholder = ""
         , strategy = Strategy.onBlur
         , size = Size.medium
@@ -321,83 +320,27 @@ config suggestionsFilter suggestionRenderer id =
         }
 
 
-{-| Represents an Autocomplete addon.
--}
-type Addon msg
-    = Header String
-    | NoResultAction (Button.Config () msg)
-    | Suggestion { icon : IconSet.Icon, title : String, subtitle : Maybe String }
-
-
-{-| Creates an addon which suggest or help the user during search.
+{-| Add an addon which suggest or help the user during search.
 Will be prepended to suggestions.
 -}
-headerAddon : String -> Addon msg
-headerAddon =
-    Header
+withAddonHeader : String -> Config value msg -> Config value msg
+withAddonHeader addonHeader (Config configData) =
+    Config { configData | addonHeader = Just addonHeader }
 
 
-{-| Creates an addon with a call to action to be shown when no suggestions are found.
+{-| Add an addon with a call to action to be shown when no suggestions are found.
 -}
-noResultsActionAddon : Button.Config () msg -> Addon msg
-noResultsActionAddon =
-    NoResultAction
+withAddonAction : Html msg -> Config value msg -> Config value msg
+withAddonAction addonAction (Config configData) =
+    Config { configData | addonAction = Just addonAction }
 
 
-{-| Creates an addon which suggest or help the user during search.
+{-| Add an addon which suggest or help the user during search.
 Will be appended to suggestions.
 -}
-suggestionAddon :
-    { icon : IconSet.Icon
-    , title : String
-    , subtitle : Maybe String
-    }
-    -> Addon msg
-suggestionAddon =
-    Suggestion
-
-
-{-| Internal.
--}
-getHeaderAddonContent : Addon msg -> Maybe String
-getHeaderAddonContent addon =
-    case addon of
-        Header label ->
-            Just label
-
-        _ ->
-            Nothing
-
-
-{-| Internal.
--}
-getNoResultsActionAddonContent : Addon msg -> Maybe (Button.Config () msg)
-getNoResultsActionAddonContent addon =
-    case addon of
-        NoResultAction config_ ->
-            Just config_
-
-        _ ->
-            Nothing
-
-
-{-| Internal.
--}
-getSuggestionAddonContent : Addon msg -> Maybe { icon : IconSet.Icon, title : String, subtitle : Maybe String }
-getSuggestionAddonContent addon =
-    case addon of
-        Suggestion config_ ->
-            Just config_
-
-        _ ->
-            Nothing
-
-
-{-| Sets an addon to be placed inside the Autocomplete's dropdown.
--}
-withAddon : Addon msg -> Config value msg -> Config value msg
-withAddon addon (Config configuration) =
-    Config { configuration | addon = Just addon }
+withAddonSuggestion : FormDropdown.SuggestionData -> Config value msg -> Config value msg
+withAddonSuggestion addonSuggestion (Config configData) =
+    Config { configData | addonSuggestion = Just addonSuggestion }
 
 
 {-| Append an additional custom html.
@@ -626,19 +569,15 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
         FormDropdown.render
             configData.id
             (if noAvailableSuggestions then
-                FormDropdown.action
+                FormDropdown.noResult
                     { label = configData.noResultsFoundMessage
-                    , content =
-                        configData.addon
-                            |> Maybe.andThen getNoResultsActionAddonContent
-                            |> Maybe.map (Button.render >> List.singleton)
-                            |> Commons.Render.renderListMaybe
+                    , action = configData.addonAction
                     }
 
              else
                 case
-                    ( Maybe.andThen getHeaderAddonContent configData.addon
-                    , Maybe.andThen getSuggestionAddonContent configData.addon
+                    ( configData.addonHeader
+                    , configData.addonSuggestion
                     )
                 of
                     ( Just headerLabel, _ ) ->
