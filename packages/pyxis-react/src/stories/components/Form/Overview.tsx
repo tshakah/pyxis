@@ -127,7 +127,7 @@ const tableClassBody: TableRow[] = [
     <code>div</code>
   ],
   [
-    <CopyableCode text="form-grid__row--large" key={shortid.generate()} />,
+    <CopyableCode text="form-grid__row--medium" key={shortid.generate()} />,
     'Row Modifier',
     <code>div</code>
   ],
@@ -210,11 +210,11 @@ const Overview: FC = () => (
         <Story id="components-form-🚧-all-stories--row-default" />
       </Canvas>
       <p>
-        <strong>Large</strong> dimensions are recommended to use this setting for vertical development forms
+        <strong>Medium</strong> dimensions are recommended to use this setting for vertical development forms
         with the possibility of placing components not belonging to the same group side by side.
       </p>
       <Canvas>
-        <Story id="components-form-🚧-all-stories--row-large" />
+        <Story id="components-form-🚧-all-stories--row-medium" />
       </Canvas>
       <p>
         <strong>Small</strong> dimensions are recommended to use this setting for vertical development forms

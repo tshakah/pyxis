@@ -46,15 +46,15 @@ suite =
                         |> Query.contains
                             [ Html.div [ Html.Attributes.class "form-grid__row form-grid__row--small" ] []
                             ]
-            , Test.test "has large size" <|
+            , Test.test "has medium size" <|
                 \_ ->
                     Grid.render
                         []
-                        [ Grid.row [ Row.largeSize ] []
+                        [ Grid.row [ Row.mediumSize ] []
                         ]
                         |> Query.fromHtml
                         |> Query.contains
-                            [ Html.div [ Html.Attributes.class "form-grid__row form-grid__row--large" ] []
+                            [ Html.div [ Html.Attributes.class "form-grid__row form-grid__row--medium" ] []
                             ]
             ]
         , Test.describe "Col"

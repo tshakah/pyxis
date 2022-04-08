@@ -31,10 +31,8 @@ $_largeRowWidth: lib.rem(720px);
   }
 }
 
-.form-grid__row--large {
-  @include foundations.mq(xsmall) {
-    max-width: $_largeRowWidth;
-  }
+.form-grid__row--medium {
+  @include foundations.containerWithFixedSize(medium);
 
   @include foundations.mq(small) {
     grid-template-columns: unset;
@@ -42,9 +40,7 @@ $_largeRowWidth: lib.rem(720px);
 }
 
 .form-grid__row--small {
-  @include foundations.mq(xsmall) {
-    max-width: $_smallRowWidth;
-  }
+  @include foundations.containerWithFixedSize(small);
 
   @include foundations.mq(small) {
     grid-template-columns: unset;

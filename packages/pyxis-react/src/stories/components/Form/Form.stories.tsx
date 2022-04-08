@@ -87,17 +87,17 @@ const RowDefaultInner = () => (
 )
 RowDefault.parameters = renderSourceAsHTML(RowDefaultInner());
 
-export const RowLarge = () => (
+export const RowMedium = () => (
   <div className="form-show-grid">
-    {RowLargeInner()}
+    {RowMediumInner()}
   </div>
 );
-const RowLargeInner = () => (
+const RowMediumInner = () => (
   <div className="form-grid">
-    <div className="form-grid__row form-grid__row--large" />
+    <div className="form-grid__row form-grid__row--medium" />
   </div>
 )
-RowLarge.parameters = renderSourceAsHTML(RowLargeInner());
+RowMedium.parameters = renderSourceAsHTML(RowMediumInner());
 
 export const RowSmall = () => (
   <div className="form-show-grid">

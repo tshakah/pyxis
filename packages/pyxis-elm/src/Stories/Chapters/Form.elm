@@ -102,17 +102,17 @@ Grid.render
     [ Grid.simpleOneColRow [ columnContent "Lorem ipsum dolor sit amet." ] ]
 ```
 
-### Large Row
+### Medium Row
 
-Large dimensions (720px) are recommended to use this setting for vertical development forms with the possibility
+Medium dimensions (720px) are recommended to use this setting for vertical development forms with the possibility
 of placing components not belonging to the same group side by side.
 
-<component with-label="Row Large" />
+<component with-label="Row Medium" />
 
 ```
 Grid.render
     []
-    [ Grid.row [ Row.largeSize ]
+    [ Grid.row [ Row.mediumSize ]
         [ Grid.simpleCol [ columnContent "Lorem ipsum dolor sit amet." ]
         ]
     ]
@@ -255,10 +255,10 @@ componentsList =
             []
             [ Grid.simpleOneColRow [ columnContent "Lorem ipsum dolor sit amet." ] ]
       )
-    , ( "Row Large"
+    , ( "Row Medium"
       , Grid.render
             []
-            [ Grid.row [ Row.largeSize ]
+            [ Grid.row [ Row.mediumSize ]
                 [ Grid.simpleCol [ columnContent "Lorem ipsum dolor sit amet." ]
                 ]
             ]

@@ -9,7 +9,7 @@
 $_gutter: lib.rem(lib.get($containers, gutter));
 
 // Fluid dimension for small sizes
-$_fluidWidth: calc(100vw - (#{$_gutter} * 2));
+$_fluidWidth: calc(100vw - (#{$_gutter * 2}));
 
 // The fluid containers of Pyxis
 $_fluidContainers: (
@@ -19,16 +19,19 @@ $_fluidContainers: (
   small: $_fluidWidth
 );
 
-// The containers of Pyxis
-$_containers: map.merge($_fluidContainers, lib.get($containers, size));
+// The responsive containers of Pyxis
+$_responsiveContainers: map.merge($_fluidContainers, lib.get($containers, responsiveSize));
 
-// Returns the $breakpoint value from map $_containers
+// The fixed size containers of Pyxis
+$_fixedSizeContainers: lib.get($containers, fixedSize);
+
+// Returns the $breakpoint value from map $_responsiveContainers
 //
 // @param {String} $breakpoint - Name of breakpoint
 // @return {Number} The max-value of container in breakpoint
 // @throw {Error}
 @function _container($breakpoint) {
-  @return lib.get($_containers, $breakpoint);
+  @return lib.get($_responsiveContainers, $breakpoint);
 }
 
 // Return the length of cycle
@@ -38,23 +41,29 @@ $_containers: map.merge($_fluidContainers, lib.get($containers, size));
 // @throw {Error}
 @function _lengthOfBreakpointCycle($breakpoint) {
   @if lib.isNotNull($breakpoint) {
-    @return index($_containers, $breakpoint _container($breakpoint)) - 1;
+    @return index($_responsiveContainers, $breakpoint _container($breakpoint)) - 1;
   }
 
-  @return length($_containers);
+  @return length($_responsiveContainers);
 }
 
 // Returns the breakpoint name
 //
 // @param {String:Null} $breakpoint - Name of breakpoint
-// @param {Number} $index - Index of breakpoint in $_containers
+// @param {Number} $index - Index of breakpoint in $_responsiveContainers
 // @return {String:Null} The name of container or null
 @function _untilBreakpoint($breakpoint, $index) {
   @if lib.isNotNull($breakpoint) {
-    @return nth(nth($_containers, $index + 1), 1);
+    @return nth(nth($_responsiveContainers, $index + 1), 1);
   }
 
   @return null;
+}
+
+// Include the base property for container
+@mixin _baseContainerProperty {
+  display: grid;
+  margin: 0 auto;
 }
 
 // Include a container by `$fromBreakpoint` to `$toBreakpoint` value,
@@ -65,18 +74,17 @@ $_containers: map.merge($_fluidContainers, lib.get($containers, size));
 // @param {String} $toBreakpoint [null] - Name of end breakpoint
 //
 // @throw Error if `$fromBreakpoint` value is lower or equal to `$untilBreakpoint` value
-@mixin container($fromBreakpoint: base, $untilBreakpoint: null) {
-  display: grid;
-  margin: 0 auto;
+@mixin containerResponsive($fromBreakpoint: base, $untilBreakpoint: null) {
+  @include _baseContainerProperty;
 
   @if(lib.isNotNull($untilBreakpoint) and breakpoints.isGreaterOrEqualTo($fromBreakpoint, $untilBreakpoint)) {
     @error "You cannot use a `$untilBreakpoint` value smaller or equal than `$fromBreakpoint` value";
   }
 
-  $_indexFromBreakpoint: index($_containers, $fromBreakpoint _container($fromBreakpoint));
+  $_indexFromBreakpoint: index($_responsiveContainers, $fromBreakpoint _container($fromBreakpoint));
 
   @for $i from $_indexFromBreakpoint through _lengthOfBreakpointCycle($untilBreakpoint) {
-    $_containerFromBreakpoint: nth(nth($_containers, $i), 1);
+    $_containerFromBreakpoint: nth(nth($_responsiveContainers, $i), 1);
 
     @include breakpoints.mq($_containerFromBreakpoint, _untilBreakpoint($untilBreakpoint, $i)) {
       max-width: _container($_containerFromBreakpoint);
@@ -84,15 +92,33 @@ $_containers: map.merge($_fluidContainers, lib.get($containers, size));
   }
 }
 
+// Include a container with a fixed max-width after the `xsmall` breakpoint
+//
+// @param {String} $size - Name of size
+@mixin containerWithFixedSize($size) {
+  @include _baseContainerProperty;
+  max-width: _container(base);
+
+  @include breakpoints.mq(xsmall) {
+    max-width: min(calc(100vw - #{$_gutter * 2}), #{lib.get($_fixedSizeContainers, $size)});
+  }
+}
+
 // Create atom classes for containers
 @mixin createAtoms() {
-  .container {
-    @include container();
+  .container-responsive {
+    @include containerResponsive();
   }
 
-  @each $breakpoint, $value in map-remove($_containers, base) {
-    .container-from-#{$breakpoint} {
-      @include container($breakpoint);
+  @each $breakpoint, $value in map-remove($_responsiveContainers, base) {
+    .container-responsive-from-#{$breakpoint} {
+      @include containerResponsive($breakpoint);
+    }
+  }
+
+  @each $size, $_ in $_fixedSizeContainers {
+    .container-#{$size} {
+      @include containerWithFixedSize($size);
     }
   }
 }

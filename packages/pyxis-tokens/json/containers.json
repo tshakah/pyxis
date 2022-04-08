@@ -1,8 +1,12 @@
 {
-  "size": {
+  "responsiveSize": {
     "medium": 960,
     "large": 1140,
     "xlarge": 1370
+  },
+  "fixedSize": {
+    "small": 360,
+    "medium": 720
   },
   "gutter": 20
 }

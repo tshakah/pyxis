@@ -28,6 +28,10 @@
   &:last-child {
     border-bottom: none;
   }
+
+  .wrapperSmall & {
+    @include pyxis.verticalPadding(2xs);
+  }
 }
 
 .cell {

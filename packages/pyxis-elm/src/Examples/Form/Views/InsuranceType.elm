@@ -23,7 +23,7 @@ view ((Data config) as data) =
             ]
         |> FieldSet.withContent
             [ Grid.row
-                [ Row.largeSize ]
+                [ Row.mediumSize ]
                 [ Grid.simpleCol
                     [ "insurance-type"
                         |> RadioCardGroup.config

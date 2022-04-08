@@ -116,7 +116,7 @@ type alias RowConfigData msg =
 -}
 initialRowConfiguration : RowConfigData msg
 initialRowConfiguration =
-    { size = Size.medium
+    { size = Size.large
     , children = []
     }
 
@@ -220,7 +220,7 @@ renderRow (Row configuration) =
     Html.div
         [ Attributes.classList
             [ ( "form-grid__row", True )
-            , ( "form-grid__row--large", Size.isLarge configuration.size )
+            , ( "form-grid__row--medium", Size.isMedium configuration.size )
             , ( "form-grid__row--small", Size.isSmall configuration.size )
             ]
         ]

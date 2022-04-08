@@ -31,7 +31,7 @@ const Form: FC = () => {
         <fieldset className="form-fieldset">
           <div className="form-grid form-grid--gap-large">
             {/* Row with message */}
-            <div className="form-grid__row form-grid__row--large">
+            <div className="form-grid__row form-grid__row--medium">
               <div className="form-grid__row__column">
                 <div className="message message--alert message--with-background-color" role="status">
                   <div className="message__icon">
