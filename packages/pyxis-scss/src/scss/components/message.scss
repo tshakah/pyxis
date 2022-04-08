@@ -43,7 +43,7 @@ $_states: (brand, alert, success, error);
 
 .message__text {
   @include foundations.text(m, book);
-  color: foundations.color(neutralBase);
+  color: foundations.color(neutral25);
 }
 
 .message__close {

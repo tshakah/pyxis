@@ -1,0 +1,162 @@
+@use "../foundations";
+@use "../lib";
+@use "mixins";
+
+// Set neutralLight color to text in alt mode.
+@mixin _setColorAlt {
+  .accordion-item--alt & {
+    color: foundations.color(neutralLight);
+  }
+}
+
+.accordion {
+  @include foundations.rowGap(xs);
+  display: grid;
+  grid-auto-flow: row;
+}
+
+.accordion-item {
+  @include foundations.radius(m);
+  background-color: foundations.color(neutral95);
+}
+
+.accordion-item--light {
+  background-color: foundations.color(neutralLight);
+}
+
+.accordion-item--alt {
+  background-color: rgba(foundations.color(neutralLight), 0.15);
+}
+
+.accordion-item__header {
+  @include foundations.columnGap(s);
+  @include foundations.radius(m);
+  @include foundations.horizontalPadding(s);
+  @include foundations.verticalPadding(xs);
+  @include mixins.focus(foundations.color(actionBase));
+  @include _setColorAlt;
+  align-items: center;
+  border: lib.rem(2px) solid transparent;
+  color: foundations.color(neutralBase);
+  cursor: pointer;
+  display: flex;
+  transition-duration: foundations.duration(fast);
+  transition-property: border-color, outline;
+  transition-timing-function: foundations.timing(base);
+  width: 100%;
+  will-change: border-color, outline;
+
+  @include foundations.mq(xsmall) {
+    @include foundations.verticalPadding(s);
+    padding-left: foundations.spacing(l);
+    padding-right: foundations.spacing(l);
+  }
+
+  &:hover {
+    border-color: foundations.color(neutral85);
+    color: foundations.color(actionBase);
+  }
+
+  .accordion-item--alt & {
+    @include mixins.focus(foundations.color(neutralLight));
+
+    &:hover {
+      border-color: rgba(foundations.color(neutralLight), 0.15);
+      color: foundations.color(neutralLight);
+    }
+  }
+}
+
+.accordion-item__header__addon {
+  @include _setColorAlt;
+  color: foundations.color(brandBase);
+  flex: 0 0 fit-content;
+
+  @include foundations.mq(base, xsmall) {
+    max-width: lib.rem(48px);
+  }
+}
+
+.accordion-item__header__content-wrapper {
+  flex: auto;
+  text-align: left;
+}
+
+.accordion-item__header__title {
+  @include foundations.text(l, bold);
+}
+
+.accordion-item__header__subtitle {
+  @include foundations.text(m, book);
+}
+
+.accordion-item__header__action-wrapper {
+  @include foundations.columnGap(3xs);
+  @include foundations.text(m, bold);
+  @include _setColorAlt;
+  align-items: center;
+  color: foundations.color(actionBase);
+  display: grid;
+  flex: fit-content 0 0;
+  grid-auto-flow: column;
+  user-select: none;
+}
+
+.accordion-item__header__action-icon {
+  border-radius: 50%;
+  transition-duration: foundations.duration(fast);
+  transition-property: background-color, transform;
+  transition-timing-function: foundations.timing(base);
+  will-change: background-color, transform;
+
+  .accordion-item__header:hover & {
+    background-color: foundations.color(neutralLight);
+
+    .accordion-item--light & {
+      background-color: foundations.color(actionLight);
+    }
+
+    .accordion-item--alt & {
+      background-color: rgba(foundations.color(neutralLight), 0.15);
+    }
+  }
+}
+
+.accordion-item__header__action-icon--open {
+  transform: rotate(180deg);
+}
+
+.accordion-item__panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height foundations.duration(fast) foundations.timing(base);
+  visibility: hidden;
+}
+
+.accordion-item__panel--open {
+  max-height: fit-content;
+  visibility: visible;
+}
+
+.accordion-item__panel__inner-wrapper {
+  @include foundations.radius(m, bottom);
+  @include foundations.text(m, book);
+  @include _setColorAlt;
+  color: foundations.color(neutral25);
+  opacity: 0;
+  padding: foundations.spacing(xs) foundations.spacing(s) foundations.spacing(s);
+  transform: translateY(lib.rem(-20px));
+  transition-duration: foundations.duration(base);
+  transition-property: opacity, transform;
+  transition-timing-function: foundations.timing(base);
+  will-change: opacity, transform;
+
+  @include foundations.mq(xsmall) {
+    padding: foundations.spacing(s) foundations.spacing(l) foundations.spacing(l);
+  }
+
+  .accordion-item__panel--open & {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

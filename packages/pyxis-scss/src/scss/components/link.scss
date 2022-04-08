@@ -12,7 +12,7 @@
   $color: foundations.color(actionBase);
 
   @include _underlineGradient($color);
-  @include mixins.focus(rgba($color, 0.2));
+  @include mixins.focus($color);
   background-position: 100% 100%;
   background-repeat: no-repeat;
   background-size: 300% lib.rem(1px);
@@ -32,6 +32,6 @@
   $color: foundations.color(neutralLight);
 
   @include _underlineGradient($color);
-  @include mixins.focus(rgba($color, 0.4));
+  @include mixins.focus($color);
   color: $color;
 }
