@@ -54,7 +54,7 @@
     "selector-max-specificity": [
       "0,3,1",
       {
-        "ignoreSelectors": [":before", ":after", ":hover", ":checked"]
+        "ignoreSelectors": [":before", ":after", ":hover", ":checked", ":first-child", ":nth-child", ":not"]
       }
     ],
     "selector-max-type": 2,

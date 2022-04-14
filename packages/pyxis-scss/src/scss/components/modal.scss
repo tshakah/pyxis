@@ -18,11 +18,28 @@ $_sizesOnBp: (
   background-color: rgba(foundations.color(neutralBase), 0.5);
   display: grid;
   justify-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: foundations.duration(fast);
+  transition-property: opacity, visibility;
+  transition-timing-function: foundations.timing(entrance);
+  visibility: hidden;
+  will-change: opacity, visibility;
   z-index: foundations.zIndex(modal);
 
   @include foundations.mq(xsmall) {
     align-items: start;
   }
+}
+
+.modal-backdrop--show {
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+}
+
+.modal-close {
+  @include foundations.absolute;
 }
 
 .modal {
@@ -34,7 +51,12 @@ $_sizesOnBp: (
   display: grid;
   height: min-content;
   min-height: $minHeight;
+  transform: translateY(100%);
+  transition-duration: foundations.duration(slow);
+  transition-property: opacity, transform;
+  transition-timing-function: foundations.timing(entrance);
   width: 100%;
+  will-change: opacity, transform;
 
   @include foundations.mq(base, xsmall) {
     @include foundations.fixed($top: initial);
@@ -45,6 +67,18 @@ $_sizesOnBp: (
   @include foundations.mq(xsmall) {
     @include foundations.radius(m);
     margin: $offset 0;
+    opacity: 0;
+    transform: scale(0.9) translateY(10%);
+    transition-duration: foundations.duration(base);
+  }
+
+  .modal-backdrop--show & {
+    transform: translateY(0);
+
+    @include foundations.mq(xsmall) {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
   }
 }
 
@@ -74,10 +108,16 @@ $_sizesOnBp: (
   background: foundations.color(neutralLight);
   display: grid;
   grid-template-columns: auto max-content;
+  height: fit-content;
+  padding-bottom: foundations.spacing(xs);
   z-index: 1;
 
   @include foundations.mq(base, xsmall) {
     @include foundations.sticky;
+  }
+
+  @include foundations.mq(xsmall) {
+    padding: foundations.spacing(2xl) foundations.spacing(2xl) foundations.spacing(s);
   }
 }
 
@@ -86,8 +126,13 @@ $_sizesOnBp: (
   @include foundations.rowGap(2xs);
   align-items: center;
   display: grid;
+  grid-template-areas: "badge badge";
   justify-content: start;
   justify-items: start;
+}
+
+.modal__header__badge {
+  grid-area: badge;
 }
 
 .modal__header__title {
@@ -96,22 +141,87 @@ $_sizesOnBp: (
 
 .modal__content {
   @include foundations.horizontalPadding(m);
-  @include foundations.verticalPadding(xs);
+  padding-bottom: foundations.spacing(xs);
+  padding-top: foundations.spacing(3xs);
+
+  @include foundations.mq(xsmall) {
+    padding: 0 foundations.spacing(2xl);
+  }
 }
 
 .modal__footer {
   @include foundations.padding(m);
-  @include foundations.radius(m, bottom);
+  align-items: center;
   background: foundations.color(neutralLight);
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  gap: foundations.spacing(xs);
+  justify-content: end;
   z-index: 1;
 
   @include foundations.mq(base, xsmall) {
     @include foundations.sticky;
+  }
+
+  @include foundations.mq(xsmall) {
+    @include foundations.radius(m, bottom);
+    gap: foundations.spacing(s);
+    padding: foundations.spacing(m) foundations.spacing(2xl);
+  }
+}
+
+.modal__footer--alt {
+  background-color: foundations.color(neutralBase);
+  color: foundations.color(neutralLight);
+  margin-top: foundations.spacing(l);
+}
+
+.modal__footer__text {
+  flex: 1 min-content;
+}
+
+.modal__footer__buttons {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: foundations.spacing(xs);
+  height: fit-content;
+  justify-content: end;
+
+  @include foundations.mq(xsmall) {
+    gap: foundations.spacing(s);
+  }
+}
+
+.modal__footer__buttons--full-width {
+  @include foundations.mq(base, xsmall) {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .button:first-child:not(:only-child) {
+    grid-row: end;
   }
 }
 
 .modal__header--sticky,
 .modal__footer--sticky {
   @include foundations.sticky;
+}
+
+.modal__header__wrapper--custom,
+.modal__footer--custom {
+  align-items: unset;
+  gap: unset;
+  grid-template-areas: none;
+  justify-content: unset;
+  justify-items: unset;
+}
+
+// Class for `html` tag when modal is open.
+.scroll-locked {
+  overflow: hidden;
+  padding-right: foundations.$scrollBarWidth;
+  touch-action: none;
 }

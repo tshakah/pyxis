@@ -1,6 +1,11 @@
+@use "../breakpoints";
 @use "../colors";
+@use "../motion";
+@use "../radius";
 @use "../spacings";
 @use "../typography";
+@use "../variables";
+@use "../../lib";
 @use "form";
 
 *,
@@ -50,4 +55,27 @@ svg {
   fill: currentColor;
   height: inherit;
   width: auto;
+}
+
+::-webkit-scrollbar {
+  @include radius.radius(xs);
+  background: transparent;
+  width: variables.$scrollBarWidth;
+
+  @include breakpoints.mq(small) {
+    background: colors.color(neutralLight);
+  }
+}
+
+::-webkit-scrollbar:hover {
+  background: colors.color(neutralLight);
+}
+
+::-webkit-scrollbar-thumb {
+  @include radius.radius(xs);
+  background: colors.color(neutral75);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: colors.color(neutral50);
 }
