@@ -8,8 +8,9 @@
 // @param {Value} $offset - Offset size
 // @param {Value} $width - Width of focus
 // @param {Value} $opacity - Opacity oof outline
-@mixin focus($color, $inset: false, $offset: lib.rem(2px), $width: lib.rem(3px), $opacity: 0.4) {
-  &:focus {
+@mixin focus($color, $inset: false, $offset: lib.rem(2px), $width: lib.rem(3px), $opacity: 0.2) {
+  &:focus,
+  &:focus-within {
     outline: rgba($color, $opacity) solid $width;
     outline-offset: $offset;
 
@@ -34,3 +35,4 @@
     }
   }
 }
+

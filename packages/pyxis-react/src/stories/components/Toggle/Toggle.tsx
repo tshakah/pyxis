@@ -1,6 +1,5 @@
 import {FC} from "react";
 import classNames from "classnames";
-import styles from "./Toggle.module.scss"
 
 // TODO: remove this implementation when Toggle will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.

@@ -1,0 +1,108 @@
+@use "../../foundations";
+@use "../../lib";
+@use "../mixins";
+
+.text-switch-wrapper {
+  @include foundations.rowGap(xs);
+  display: grid;
+  justify-items: center;
+  width: fit-content;
+}
+
+.text-switch-wrapper--top-left-label {
+  justify-items: start;
+}
+
+.text-switch-wrapper--left-label {
+  @include foundations.columnGap(s);
+  align-items: center;
+  grid-auto-flow: column;
+}
+
+.text-switch {
+  @include foundations.columnGap(3xs);
+  @include foundations.padding(3xs);
+  @include foundations.radius(m);
+  background-color: foundations.color(neutral95);
+  display: grid;
+  grid-auto-flow: column;
+  position: relative;
+  width: fit-content;
+
+  .text-switch-wrapper--alt & {
+    background-color: rgba(foundations.color(neutral95), 0.15);
+  }
+}
+
+.text-switch--equal-option-width {
+  grid-auto-columns: 1fr;
+  text-align: center;
+}
+
+.text-switch__label {
+  @include foundations.text(m, book);
+  color: foundations.color(neutralBase);
+
+  .text-switch-wrapper--alt & {
+    color: foundations.color(neutralLight);
+  }
+}
+
+.text-switch__option {
+  @include foundations.text(m, bold);
+  @include foundations.radius(m);
+  @include foundations.verticalPadding(4xs);
+  @include foundations.horizontalPadding(xs);
+  @include mixins.focus(foundations.color(actionBase));
+  background-color: transparent;
+  color: foundations.color(neutral25);
+  cursor: pointer;
+  transition-duration: foundations.duration(fast);
+  transition-property: background-color, color;
+  transition-timing-function: foundations.timing(base);
+  z-index: 1;
+
+  &:hover {
+    background-color: rgba(foundations.color(neutralLight), 0.75);
+  }
+
+  .text-switch--equal-option-width & {
+    width: 100%;
+  }
+
+  .text-switch-wrapper--alt & {
+    @include mixins.focus(foundations.color(neutralLight));
+    color: foundations.color(neutralLight);
+
+    &:hover {
+      background-color: rgba(foundations.color(neutralLight), 0.15);
+    }
+  }
+
+  &.text-switch__option--checked {
+    color: foundations.color(actionBase);
+
+    &:hover {
+      color: foundations.color(actionDark);
+    }
+  }
+}
+
+.text-switch__slider {
+  $offset: foundations.spacing(3xs);
+
+  @include foundations.radius(m);
+  @include foundations.elevation(s, neutral15);
+  background-color: foundations.color(neutralLight);
+  height: calc(100% - #{$offset * 2});
+  left: $offset;
+  position: absolute;
+  top: $offset;
+  transition-duration: foundations.duration(base);
+  transition-property: transform, width;
+  transition-timing-function: foundations.timing(base);
+
+  .text-switch-wrapper--alt & {
+    box-shadow: none;
+  }
+}
