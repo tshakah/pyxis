@@ -1,7 +1,7 @@
 module Components.Form.Dropdown exposing
     ( Content
-    , content
-    , headerAndContent
+    , options
+    , headerAndOptions
     , noResult
     , suggestion
     , SuggestionData
@@ -15,8 +15,8 @@ module Components.Form.Dropdown exposing
 
 @docs action
 @docs Content
-@docs content
-@docs headerAndContent
+@docs options
+@docs headerAndOptions
 @docs noResult
 @docs suggestion
 @docs SuggestionData
@@ -39,8 +39,8 @@ import Html.Keyed
 
 type Content msg
     = NoResult (NoResultData msg)
-    | HeaderAndContent (HeaderAndContentData msg)
-    | Content (List (Html msg))
+    | HeaderAndOptions (HeaderAndOptionsData msg)
+    | Options (List (Html msg))
     | Suggestion SuggestionData
 
 
@@ -50,9 +50,9 @@ type alias NoResultData msg =
     }
 
 
-type alias HeaderAndContentData msg =
+type alias HeaderAndOptionsData msg =
     { header : Html msg
-    , content : List (Html msg)
+    , options : List (Html msg)
     }
 
 
@@ -72,16 +72,16 @@ noResult =
 
 {-| Creates a content with and header.
 -}
-headerAndContent : HeaderAndContentData msg -> Content msg
-headerAndContent =
-    HeaderAndContent
+headerAndOptions : HeaderAndOptionsData msg -> Content msg
+headerAndOptions =
+    HeaderAndOptions
 
 
 {-| Creates the most simple content.
 -}
-content : List (Html msg) -> Content msg
-content =
-    Content
+options : List (Html msg) -> Content msg
+options =
+    Options
 
 
 {-| Creates a suggestion.
@@ -96,7 +96,7 @@ suggestion =
 hasHeader : Content msg -> Bool
 hasHeader content_ =
     case content_ of
-        HeaderAndContent _ ->
+        HeaderAndOptions _ ->
             True
 
         _ ->
@@ -130,11 +130,11 @@ render id content_ =
 renderContent : Content msg -> List (Html msg)
 renderContent content_ =
     case content_ of
-        HeaderAndContent config ->
-            renderHeader config.header :: config.content
+        HeaderAndOptions config ->
+            renderHeader config.header :: config.options
 
-        Content content__ ->
-            content__
+        Options options_ ->
+            options_
 
         NoResult noResultData ->
             [ renderNoResult noResultData ]

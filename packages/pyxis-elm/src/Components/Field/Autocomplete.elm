@@ -18,7 +18,7 @@ module Components.Field.Autocomplete exposing
     , withAddonSuggestion
     , Msg
     , update
-    , setSuggestions
+    , setOptions
     , validate
     , isOnInput
     , isOnSelect
@@ -69,7 +69,7 @@ module Components.Field.Autocomplete exposing
 
 @docs Msg
 @docs update
-@docs setSuggestions
+@docs setOptions
 @docs validate
 @docs isOnInput
 @docs isOnSelect
@@ -118,7 +118,7 @@ type Model ctx value
         , fieldState : Status.Status
         , filter : String
         , filtering : Bool
-        , suggestions : RemoteData Http.Error (List value)
+        , options : RemoteData Http.Error (List value)
         , validation : ctx -> Maybe value -> Result String value
         , value : Maybe value
         }
@@ -133,17 +133,17 @@ init value validation =
         , fieldState = Status.Untouched
         , filter = ""
         , filtering = False
-        , suggestions = RemoteData.NotAsked
+        , options = RemoteData.NotAsked
         , validation = validation
         , value = value
         }
 
 
-{-| Allow to updates the suggestions list.
+{-| Allow to updates the options list.
 -}
-setSuggestions : RemoteData Http.Error (List value) -> Model ctx value -> Model ctx value
-setSuggestions suggestionsRemoteData (Model modelData) =
-    Model { modelData | suggestions = suggestionsRemoteData, dropdownOpen = True }
+setOptions : RemoteData Http.Error (List value) -> Model ctx value -> Model ctx value
+setOptions optionsRemoteData (Model modelData) =
+    Model { modelData | options = optionsRemoteData, dropdownOpen = True }
 
 
 {-| Represents the Autocomplete message.
@@ -156,7 +156,7 @@ type Msg value
     | OnSelect value
 
 
-{-| Tells if the Autocomplete is currently filtering suggestions or at least the filter has been modified.
+{-| Tells if the Autocomplete is currently filtering options or at least the filter has been modified.
 -}
 isOnInput : Msg value -> Bool
 isOnInput msg =
@@ -168,7 +168,7 @@ isOnInput msg =
             False
 
 
-{-| Tells if the Autocomplete is currently selecting a suggestion.
+{-| Tells if the Autocomplete is currently selecting a option.
 -}
 isOnSelect : Msg value -> Bool
 isOnSelect msg =
@@ -267,10 +267,10 @@ mapFieldState f (Model modelData) =
 -}
 getSuggestions : Model ctx value -> Config value msg -> List value
 getSuggestions (Model modelData) (Config configData) =
-    modelData.suggestions
+    modelData.options
         |> RemoteData.toMaybe
         |> Maybe.withDefault []
-        |> List.filter (configData.suggestionsFilter modelData.filter)
+        |> List.filter (configData.optionsFilter modelData.filter)
 
 
 {-| Represents the Autocomplete view configuration.
@@ -291,15 +291,15 @@ type Config value msg
         , placeholder : String
         , size : Size
         , strategy : Strategy
-        , suggestionsFilter : String -> value -> Bool
-        , suggestionToString : value -> String
+        , optionsFilter : String -> value -> Bool
+        , optionToString : value -> String
         }
 
 
 {-| Creates the Autocomplete view configuration..
 -}
 config : (String -> value -> Bool) -> (value -> String) -> String -> Config value msg
-config suggestionsFilter suggestionRenderer id =
+config optionsFilter optionToString id =
     Config
         { additionalContent = Nothing
         , disabled = False
@@ -315,20 +315,20 @@ config suggestionsFilter suggestionRenderer id =
         , placeholder = ""
         , strategy = Strategy.onBlur
         , size = Size.medium
-        , suggestionsFilter = suggestionsFilter
-        , suggestionToString = suggestionRenderer
+        , optionsFilter = optionsFilter
+        , optionToString = optionToString
         }
 
 
 {-| Add an addon which suggest or help the user during search.
-Will be prepended to suggestions.
+Will be prepended to options.
 -}
 withAddonHeader : String -> Config value msg -> Config value msg
 withAddonHeader addonHeader (Config configData) =
     Config { configData | addonHeader = Just addonHeader }
 
 
-{-| Add an addon with a call to action to be shown when no suggestions are found.
+{-| Add an addon with a call to action to be shown when no options are found.
 -}
 withAddonAction : Html msg -> Config value msg -> Config value msg
 withAddonAction addonAction (Config configData) =
@@ -336,7 +336,7 @@ withAddonAction addonAction (Config configData) =
 
 
 {-| Add an addon which suggest or help the user during search.
-Will be appended to suggestions.
+Will be appended to options.
 -}
 withAddonSuggestion : FormDropdown.SuggestionData -> Config value msg -> Config value msg
 withAddonSuggestion addonSuggestion (Config configData) =
@@ -445,7 +445,7 @@ render msgMapper ctx ((Model modelData) as model) ((Config configData) as config
             , ( "form-field--disabled", configData.disabled )
             ]
 
-        {--The onBlur event should be set at this level in order to allow suggestion selection.
+        {--The onBlur event should be set at this level in order to allow option selection.
         Setting it to the input element causes dropdown items flashing. --}
         , Events.onBlur (msgMapper OnBlur)
         ]
@@ -483,7 +483,7 @@ renderField validationResult msgMapper ((Model modelData) as model) (Config conf
             , Attributes.type_ "text"
             , Commons.Attributes.testId configData.id
             , modelData.value
-                |> Maybe.map configData.suggestionToString
+                |> Maybe.map configData.optionToString
                 |> Maybe.withDefault modelData.filter
                 |> Attributes.value
                 |> Commons.Attributes.renderIf (not modelData.filtering)
@@ -531,7 +531,7 @@ renderFieldIconAddon ((Model modelData) as model) =
 -}
 getFieldAddonIcon : Model ctx value -> Icon.Config
 getFieldAddonIcon (Model modelData) =
-    if RemoteData.isLoading modelData.suggestions then
+    if RemoteData.isLoading modelData.options then
         IconSet.Loader
             |> Icon.config
             |> Icon.withSpinner True
@@ -548,19 +548,19 @@ getFieldAddonIcon (Model modelData) =
 renderDropdown : (Msg value -> msg) -> Model ctx value -> Config value msg -> Maybe (Html msg)
 renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as configuration) =
     let
-        renderedSuggestions : List (Html msg)
-        renderedSuggestions =
+        renderedOptions : List (Html msg)
+        renderedOptions =
             configuration
                 |> getSuggestions model
                 |> List.map (renderSuggestionsItem msgMapper model configuration)
 
         noAvailableSuggestions : Bool
         noAvailableSuggestions =
-            List.length (getSuggestions model configuration) == 0 && RemoteData.isSuccess modelData.suggestions
+            List.length (getSuggestions model configuration) == 0 && RemoteData.isSuccess modelData.options
 
         nothingRetrievedYet : Bool
         nothingRetrievedYet =
-            List.length (getSuggestions model configuration) == 0 && RemoteData.isNotAsked modelData.suggestions
+            List.length (getSuggestions model configuration) == 0 && RemoteData.isNotAsked modelData.options
     in
     if nothingRetrievedYet then
         Nothing
@@ -581,20 +581,20 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
                     )
                 of
                     ( Just headerLabel, _ ) ->
-                        FormDropdown.headerAndContent
+                        FormDropdown.headerAndOptions
                             { header = Html.text headerLabel
-                            , content = renderedSuggestions
+                            , options = renderedOptions
                             }
 
                     ( Nothing, Just suggestionConfig ) ->
-                        if not (RemoteData.isSuccess modelData.suggestions) && String.isEmpty modelData.filter then
+                        if not (RemoteData.isSuccess modelData.options) && String.isEmpty modelData.filter then
                             FormDropdown.suggestion suggestionConfig
 
                         else
-                            FormDropdown.content renderedSuggestions
+                            FormDropdown.options renderedOptions
 
                     ( Nothing, Nothing ) ->
-                        FormDropdown.content renderedSuggestions
+                        FormDropdown.options renderedOptions
             )
             |> Just
 
@@ -602,16 +602,16 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
 {-| Internal.
 -}
 renderSuggestionsItem : (Msg value -> msg) -> Model ctx value -> Config value msg -> value -> Html msg
-renderSuggestionsItem msgMapper (Model modelData) (Config configData) suggestion =
+renderSuggestionsItem msgMapper (Model modelData) (Config configData) option =
     Html.div
         [ Attributes.class "form-dropdown__item"
-        , suggestion
+        , option
             |> OnSelect
             |> msgMapper
             |> Events.onClick
         ]
-        [ suggestion
-            |> configData.suggestionToString
+        [ option
+            |> configData.optionToString
             |> String.trim
             |> renderSuggestionText modelData.filter
             |> Html.span []

@@ -138,7 +138,7 @@ update : Autocomplete.Msg Job -> Model -> ( Model, Cmd (Autocomplete.Msg Job) )
 update msg model =
     ( Autocomplete.update msg model
         |> PrimaFunction.ifThenMap (always (Autocomplete.isOnInput msg))
-            (Autocomplete.setSuggestions (RemoteData.Success [ Designer, Developer, ProductManager ]))
+            (Autocomplete.setOptions (RemoteData.Success [ Designer, Developer, ProductManager ]))
     , Cmd.none
     )
 

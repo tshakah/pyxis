@@ -18,12 +18,12 @@ update msg model =
     case msg of
         Model.CitiesFetched ((RemoteData.Success _) as remoteData) ->
             { model | citiesApi = remoteData }
-                |> Model.mapData (\(Data d) -> Data { d | residentialCity = Autocomplete.setSuggestions remoteData d.residentialCity })
+                |> Model.mapData (\(Data d) -> Data { d | residentialCity = Autocomplete.setOptions remoteData d.residentialCity })
                 |> PrimaUpdate.withoutCmds
 
         Model.CitiesFetched ((RemoteData.Failure _) as remoteData) ->
             { model | citiesApi = remoteData }
-                |> Model.mapData (\(Data d) -> Data { d | residentialCity = Autocomplete.setSuggestions remoteData d.residentialCity })
+                |> Model.mapData (\(Data d) -> Data { d | residentialCity = Autocomplete.setOptions remoteData d.residentialCity })
                 |> PrimaUpdate.withoutCmds
 
         Model.CitiesFetched remoteData ->

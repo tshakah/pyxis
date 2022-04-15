@@ -136,7 +136,7 @@ simulation =
     Simulation.fromElement
         { init =
             ( Autocomplete.init Nothing (always validation)
-                |> Autocomplete.setSuggestions (RemoteData.Success [ Developer, Designer, ProductManager ])
+                |> Autocomplete.setOptions (RemoteData.Success [ Developer, Designer, ProductManager ])
             , Cmd.none
             )
         , update = \msg model -> ( Autocomplete.update msg model, Cmd.none )
