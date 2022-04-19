@@ -34,6 +34,7 @@ import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
+import Html.Events as Events
 import Html.Keyed
 
 
@@ -105,10 +106,11 @@ hasHeader content_ =
 
 {-| Renders the Dropdown.
 -}
-render : String -> Content msg -> Html msg
-render id content_ =
+render : String -> msg -> Content msg -> Html msg
+render id onBlur content_ =
     Html.div
         [ Attributes.class "form-dropdown-wrapper"
+        , Events.onBlur onBlur
         ]
         [ Html.Keyed.node "div"
             [ Attributes.attribute "role" "listbox"

@@ -265,8 +265,8 @@ mapFieldState f (Model modelData) =
 
 {-| Internal.
 -}
-getSuggestions : Model ctx value -> Config value msg -> List value
-getSuggestions (Model modelData) (Config configData) =
+getOptions : Model ctx value -> Config value msg -> List value
+getOptions (Model modelData) (Config configData) =
     modelData.options
         |> RemoteData.toMaybe
         |> Maybe.withDefault []
@@ -470,6 +470,9 @@ renderField validationResult msgMapper ((Model modelData) as model) (Config conf
                 , ( "form-field__autocomplete--small", Size.isSmall configData.size )
                 , ( "form-field__autocomplete--filled", Maybe.Extra.isJust modelData.value )
                 ]
+
+            {--Remove this onBlur--}
+            , Events.onBlur OnBlur
             , Events.onFocus OnFocus
             , Events.onInput OnInput
             , Attributes.id configData.id
@@ -551,24 +554,27 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
         renderedOptions : List (Html msg)
         renderedOptions =
             configuration
-                |> getSuggestions model
+                |> getOptions model
                 |> List.map (renderSuggestionsItem msgMapper model configuration)
 
-        noAvailableSuggestions : Bool
-        noAvailableSuggestions =
-            List.length (getSuggestions model configuration) == 0 && RemoteData.isSuccess modelData.options
+        noAvailableOptions : Bool
+        noAvailableOptions =
+            List.length (getOptions model configuration) == 0 && RemoteData.isSuccess modelData.options
 
         nothingRetrievedYet : Bool
         nothingRetrievedYet =
-            List.length (getSuggestions model configuration) == 0 && RemoteData.isNotAsked modelData.options
+            List.length (getOptions model configuration) == 0 && RemoteData.isNotAsked modelData.options
     in
     if nothingRetrievedYet then
-        Nothing
+        configData.addonSuggestion
+            |> Maybe.map FormDropdown.suggestion
+            |> Maybe.map (FormDropdown.render configData.id (msgMapper OnBlur))
 
     else
         FormDropdown.render
             configData.id
-            (if noAvailableSuggestions then
+            (msgMapper OnBlur)
+            (if noAvailableOptions then
                 FormDropdown.noResult
                     { label = configData.noResultsFoundMessage
                     , action = configData.addonAction
