@@ -142,7 +142,7 @@ Autocomplete.config jobMatches jobToLabel "autocomplete-id"
     |> Autocomplete.render JobChanged () model.job
 ```
 
-## Options Addon
+## Addon
 <component with-label="Action" />
 ```
 Autocomplete.config jobMatches jobToLabel "autocomplete-id"
