@@ -480,6 +480,7 @@ renderField validationResult msgMapper ((Model modelData) as model) (Config conf
             , Attributes.attribute "aria-autocomplete" "both"
             , Commons.Attributes.renderIf modelData.dropdownOpen (Attributes.attribute "aria-expanded" "true")
             , Attributes.attribute "role" "combobox"
+            , Attributes.attribute "aria-owns" (configData.id ++ "-dropdown-list")
             , Attributes.autocomplete False
             , Attributes.disabled configData.disabled
             , Attributes.placeholder configData.placeholder
@@ -555,7 +556,7 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
         renderedOptions =
             configuration
                 |> getOptions model
-                |> List.map (renderSuggestionsItem msgMapper model configuration)
+                |> List.map (renderOptionsItem msgMapper model configuration)
 
         noAvailableOptions : Bool
         noAvailableOptions =
@@ -607,8 +608,8 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
 
 {-| Internal.
 -}
-renderSuggestionsItem : (Msg value -> msg) -> Model ctx value -> Config value msg -> value -> Html msg
-renderSuggestionsItem msgMapper (Model modelData) (Config configData) option =
+renderOptionsItem : (Msg value -> msg) -> Model ctx value -> Config value msg -> value -> Html msg
+renderOptionsItem msgMapper (Model modelData) (Config configData) option =
     Html.div
         [ Attributes.class "form-dropdown__item"
         , option
@@ -619,15 +620,15 @@ renderSuggestionsItem msgMapper (Model modelData) (Config configData) option =
         [ option
             |> configData.optionToString
             |> String.trim
-            |> renderSuggestionText modelData.filter
+            |> renderOptionText modelData.filter
             |> Html.span []
         ]
 
 
 {-| Internal.
 -}
-renderSuggestionText : String -> String -> List (Html msg)
-renderSuggestionText filter label =
+renderOptionText : String -> String -> List (Html msg)
+renderOptionText filter label =
     label
         |> String.split filter
         |> List.map Html.text
