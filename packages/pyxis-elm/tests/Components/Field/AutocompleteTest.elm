@@ -90,6 +90,15 @@ suite =
                     |> render
                     |> findInput
                     |> Query.has [ Selector.class "form-field__autocomplete--small" ]
+        , Test.test "Show the custom message when no result is found" <|
+            \() ->
+                config "autocomplete-id"
+                    |> Autocomplete.withNoResultsFoundMessage "Nothing was found."
+                    |> simulation
+                    |> Simulation.simulate ( Event.input "Qwerty", [ Selector.tag "input" ] )
+                    |> Simulation.expectHtml
+                        (findDropdown >> Query.has [ Selector.text "Nothing was found." ])
+                    |> Simulation.run
         , Test.describe "Addon"
             [ Test.test "Show action under no result message" <|
                 \() ->
