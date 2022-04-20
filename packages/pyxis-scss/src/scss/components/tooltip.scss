@@ -1,0 +1,240 @@
+@use "../foundations";
+@use "../lib";
+@use "./mixins";
+@use "sass:math";
+
+// Setting of the tooltip arrow
+$_arrow: "%3Csvg width='16' height='8' viewBox='0 0 16 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.50518 0.681671L0 8H16L9.49482 0.681671C8.69924 -0.213359 7.30076 -0.213359 6.50518 0.681671Z' fill='%%COLOR%%'/%3E%3C/svg%3E";
+$_arrowOffsetWidth: foundations.spacing(s);
+$_arrowOffsetHeight: lib.rem(1px);
+$_arrowWidth: lib.rem(16px);
+$_arrowHeight: math.div($_arrowWidth, 2);
+
+// Setting of tooltip
+$_tooltipPositionY: calc(100% + #{foundations.spacing(s)});
+$_tooltipPositionX: calc(50% - #{$_arrowOffsetWidth + math.div($_arrowWidth, 2)});
+$_tooltipInitialOffset: foundations.spacing(3xs);
+
+// Map of the CSS properties for positioning and animation of tooltip
+// based on its position
+$_tooltipPositions: (
+  topLeft: (
+    bottom: $_tooltipPositionY,
+    right: $_tooltipPositionX,
+    transform: scale(0.9) translateY($_tooltipInitialOffset),
+    transform-origin: bottom right
+  ),
+  topRight: (
+    bottom: $_tooltipPositionY,
+    left: $_tooltipPositionX,
+    transform: scale(0.9) translateY($_tooltipInitialOffset),
+    transform-origin: bottom left
+  ),
+  right: (
+    top: 50%,
+    transform: scale(0.9) translateY(-50%) translateX(-$_tooltipInitialOffset),
+    left: $_tooltipPositionY,
+    transform-origin: left
+  ),
+  bottomLeft: (
+    top: $_tooltipPositionY,
+    right: $_tooltipPositionX,
+    transform: scale(0.9) translateY(-$_tooltipInitialOffset),
+    transform-origin: top right
+  ),
+  bottomRight: (
+    top: $_tooltipPositionY,
+    left: $_tooltipPositionX,
+    transform: scale(0.9) translateY(-$_tooltipInitialOffset),
+    transform-origin: top left
+  ),
+  left: (
+    top: 50%,
+    transform: scale(0.9) translateY(-50%) translateX($_tooltipInitialOffset),
+    right: $_tooltipPositionY,
+    transform-origin: right
+  ),
+);
+
+// Map of the CSS properties for the positioning of the arrow
+// based on tooltip position
+$_arrowPositions: (
+  topLeft: (
+    bottom: $_arrowOffsetHeight,
+    right: $_arrowOffsetWidth,
+    transform: rotate(180deg)
+  ),
+  topRight: (
+    bottom: $_arrowOffsetHeight,
+    left: $_arrowOffsetWidth,
+    transform: rotate(180deg)
+  ),
+  right: (
+    top: calc(50% - #{$_arrowHeight}),
+    left: -$_arrowHeight + $_arrowOffsetHeight,
+    transform: rotate(270deg)
+  ),
+  bottomLeft: (
+    top: -$_arrowHeight + $_arrowOffsetHeight,
+    right: $_arrowOffsetWidth,
+    transform: rotate(0)
+  ),
+  bottomRight: (
+    top: -$_arrowHeight + $_arrowOffsetHeight,
+    left: $_arrowOffsetWidth,
+    transform: rotate(0)
+  ),
+  left: (
+    top: calc(50% - #{$_arrowHeight}),
+    right: -$_arrowHeight + $_arrowOffsetHeight,
+    transform: rotate(90deg)
+  ),
+);
+
+// It sets the color and background color of the tooltip and the arrow
+//
+// @param {Color} $backgroundColor - Value of the background color
+// @param {Color} $color - Value of the color
+@mixin _setColors($backgroundColor, $color: neutralLight) {
+  @include foundations.mq(xsmall) {
+    background-color: foundations.color($backgroundColor);
+    color: foundations.color($color);
+
+    &:before {
+      @include mixins.backgroundImage($_arrow, $backgroundColor);
+    }
+  }
+}
+
+.tooltip-backdrop {
+  @include mixins.backdrop;
+}
+
+.tooltip-wrapper {
+  position: relative;
+  width: fit-content;
+}
+
+.tooltip {
+  @include _setColors(neutralBase);
+  visibility: hidden;
+
+  @include foundations.mq(base, xsmall) {
+    @include mixins.bottomSheet(lib.rem(182px));
+
+    .tooltip-backdrop--show & {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      visibility: visible;
+    }
+  }
+
+  @include foundations.mq(xsmall) {
+    $maxWidth: lib.rem(320px);
+    @include foundations.horizontalPadding(s);
+    @include foundations.verticalPadding(xs);
+    @include foundations.columnGap(xs);
+    @include foundations.radius(s);
+    @include foundations.text(m, book);
+    align-items: center;
+    display: grid;
+    grid-auto-columns: fit-content($maxWidth);
+    grid-auto-flow: column;
+    max-width: $maxWidth;
+    opacity: 0;
+    position: absolute;
+    transition-duration: foundations.duration(fast);
+    transition-property: transform, opacity;
+    transition-timing-function: foundations.timing(base);
+    width: max-content;
+    z-index: foundations.zIndex(tooltip);
+
+    &:before {
+      content: "";
+      height: $_arrowHeight;
+      position: absolute;
+      transform-origin: bottom;
+      width: $_arrowWidth;
+    }
+
+    &:after {
+      content: "";
+      height: $_arrowWidth * 2;
+      position: absolute;
+      width: $_arrowWidth * 3;
+    }
+
+    .tooltip-wrapper:hover &,
+    .tooltip-wrapper:focus-within & {
+      opacity: 1;
+      transform: scale(1);
+      visibility: visible;
+
+      &.tooltip--left,
+      &.tooltip--right {
+        transform: scale(1) translateY(-50%);
+      }
+    }
+  }
+}
+
+@each $position, $properties in $_tooltipPositions {
+  .tooltip--#{lib.camelToKebabCase($position)} {
+    @each $prop, $value in $properties {
+      #{$prop}: $value;
+    }
+    $arrowProps: map-get($_arrowPositions, $position);
+    @each $prop, $value in $arrowProps {
+      &:before {
+        #{$prop}: $value;
+      }
+      &:after {
+        @if($prop == "transform") {
+          #{$prop}: $value;
+        } @else {
+          #{$prop}: if(type-of($value) == number, $value - $_arrowOffsetWidth, $value);
+        }
+      }
+    }
+  }
+}
+
+.tooltip--brand {
+  @include _setColors(brandBase);
+}
+
+.tooltip--alt {
+  @include _setColors(neutralLight, neutralBase);
+}
+
+.tooltip__header {
+  @include foundations.horizontalPadding(m);
+  @include foundations.sticky;
+  background: foundations.color(neutralLight);
+  display: grid;
+  grid-template-areas: "title close";
+  grid-template-columns: auto min-content;
+  justify-content: space-between;
+  padding-bottom: foundations.spacing(2xs);
+  padding-top: foundations.spacing(l);
+}
+
+.tooltip__header__title {
+  @include foundations.title(s, bold);
+  @include foundations.columnGap(xs);
+  align-items: center;
+  display: flex;
+  width: fit-content;
+}
+
+.tooltip__header__close {
+  grid-area: close;
+}
+
+.tooltip__content {
+  @include foundations.padding(m);
+  @include foundations.text(l, book);
+  color: foundations.color(neutral25);
+  padding-top: 0;
+}
+

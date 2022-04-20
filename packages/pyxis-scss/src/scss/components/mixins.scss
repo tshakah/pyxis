@@ -36,3 +36,55 @@
   }
 }
 
+// Add properties to create and animate a backdrop
+@mixin backdrop() {
+  @include foundations.fixed;
+  @include foundations.hideScrollbar;
+  background-color: rgba(foundations.color(neutralBase), 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: foundations.duration(fast);
+  transition-property: opacity, visibility;
+  transition-timing-function: foundations.timing(entrance);
+  visibility: hidden;
+  will-change: opacity, visibility;
+  z-index: foundations.zIndex(modal);
+
+  &--show {
+    opacity: 1;
+    pointer-events: all;
+    visibility: visible;
+  }
+}
+
+// Add properties to add and animate a bottomSheet
+//
+// @param {Value} $minHeight - Minimum bottomSheet height
+@mixin bottomSheet($minHeight) {
+  @include foundations.radius(m, top);
+  @include foundations.fixed($top: initial);
+  @include foundations.hideScrollbar;
+  background-color: foundations.color(neutralLight);
+  height: min-content;
+  max-height: calc(100vh - #{foundations.spacing(2xl)});
+  min-height: $minHeight;
+  transform: translateY(100%);
+  transition-duration: foundations.duration(slow);
+  transition-property: opacity, transform;
+  transition-timing-function: foundations.timing(entrance);
+  width: 100%;
+  will-change: opacity, transform;
+}
+
+
+// Add a background image with a proper color.
+//
+// @param {String} $image - An svg with '%%COLOR%%' placeholder
+// @param {Color} $color - Color name
+@mixin backgroundImage($image, $color: neutralLight) {
+  $escapedColor: lib.stringReplace("#{foundations.color($color)}", "#", "%23");
+  $svg: lib.stringReplace($image, "%%COLOR%%", $escapedColor);
+
+  background-image: url("data:image/svg+xml,#{$svg}");
+}
+

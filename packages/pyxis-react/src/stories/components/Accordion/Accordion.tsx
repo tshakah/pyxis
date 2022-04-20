@@ -38,13 +38,13 @@ const AccordionItem:FC<AccordionItemProps> =
      hasActionText
   }) => {
   const panelContentRef = React.useRef<HTMLDivElement>(null);
-  const [maxHeightPanel, setMaxHeightPanel] = React.useState(panelContentRef?.current?.offsetHeight);
+  const [maxHeightPanel, setMaxHeightPanel] = React.useState(panelContentRef?.current?.offsetHeight || 0);
   const headerId = `${id}-header`;
   const sectId = `${id}-section`;
 
   React.useLayoutEffect(
     () => {
-      const updateSize = () => setMaxHeightPanel(panelContentRef?.current?.offsetHeight);
+      const updateSize = () => setMaxHeightPanel(panelContentRef?.current?.offsetHeight || 0);
       window.addEventListener('resize', updateSize);
       updateSize();
       return () => window.removeEventListener('resize', updateSize);

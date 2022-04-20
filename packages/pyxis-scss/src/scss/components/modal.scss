@@ -1,5 +1,6 @@
 @use "../lib";
 @use "../foundations";
+@use "./mixins";
 
 // Allowed sizes of modals
 $_sizes: (small, medium, large);
@@ -12,30 +13,14 @@ $_sizesOnBp: (
 );
 
 .modal-backdrop {
-  @include foundations.fixed;
-  @include foundations.hideScrollbar;
+  @include mixins.backdrop;
   align-items: end;
-  background-color: rgba(foundations.color(neutralBase), 0.5);
   display: grid;
   justify-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transition-duration: foundations.duration(fast);
-  transition-property: opacity, visibility;
-  transition-timing-function: foundations.timing(entrance);
-  visibility: hidden;
-  will-change: opacity, visibility;
-  z-index: foundations.zIndex(modal);
 
   @include foundations.mq(xsmall) {
     align-items: start;
   }
-}
-
-.modal-backdrop--show {
-  opacity: 1;
-  pointer-events: all;
-  visibility: visible;
 }
 
 .modal-close {
@@ -46,30 +31,25 @@ $_sizesOnBp: (
   $minHeight: lib.rem(200px);
   $offset: lib.rem(80px);
 
-  @include foundations.radius(m, top);
-  background-color: foundations.color(neutralLight);
   display: grid;
-  height: min-content;
-  min-height: $minHeight;
-  transform: translateY(100%);
-  transition-duration: foundations.duration(slow);
-  transition-property: opacity, transform;
-  transition-timing-function: foundations.timing(entrance);
-  width: 100%;
-  will-change: opacity, transform;
 
   @include foundations.mq(base, xsmall) {
-    @include foundations.fixed($top: initial);
-    @include foundations.hideScrollbar;
-    max-height: calc(100vh - #{foundations.spacing(2xl)});
+    @include mixins.bottomSheet($minHeight);
   }
 
   @include foundations.mq(xsmall) {
     @include foundations.radius(m);
+    background-color: foundations.color(neutralLight);
+    height: min-content;
     margin: $offset 0;
+    min-height: $minHeight;
     opacity: 0;
     transform: scale(0.9) translateY(10%);
     transition-duration: foundations.duration(base);
+    transition-property: opacity, transform;
+    transition-timing-function: foundations.timing(entrance);
+    width: 100%;
+    will-change: opacity, transform;
   }
 
   .modal-backdrop--show & {
@@ -217,11 +197,4 @@ $_sizesOnBp: (
   grid-template-areas: none;
   justify-content: unset;
   justify-items: unset;
-}
-
-// Class for `html` tag when modal is open.
-.scroll-locked {
-  overflow: hidden;
-  padding-right: foundations.$scrollBarWidth;
-  touch-action: none;
 }

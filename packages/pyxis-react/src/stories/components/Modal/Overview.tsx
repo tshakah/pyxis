@@ -26,6 +26,7 @@ const Overview: FC = () => {
       <div
         aria-describedby='modal-description'
         aria-hidden={!isOpened}
+        aria-modal={true}
         aria-labelledby='modal-label'
         className={getClasses(isOpened)}
         role="dialog"

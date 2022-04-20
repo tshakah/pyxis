@@ -42,9 +42,16 @@ const containerWithFixedWidthDescription = (
   </p>
 );
 
+const scrollingDescription = (
+  <p>
+    Sometimes preventing page content from scrolling could be useful: for example if you have a fixed element like
+    a modal or a bottom sheet in the foreground. In these cases you can add the class <code>.scroll-locked</code> to HTML tag.
+  </p>
+);
+
 const usageDescription = (
   <p>
-    Containers can be used via mixin and atomic classes.
+    Containers and the other utilities for layout can be used via mixin and atomic classes.
   </p>
 );
 
@@ -80,6 +87,11 @@ const tableClassBody: TableRow[] = [
     <CopyableCode text="containerWithFixedSize($size)" key={shortid.generate()} />,
     'Apply the fixed container on all breakpoints after xsmall.'
   ],
+  [
+    <CopyableCode text="scroll-locked" key={shortid.generate()} />,
+    '-',
+    'Applied to HTML element, prevent the page from scrolling.'
+  ],
 ];
 
 const Overview: FC = () => (
@@ -108,6 +120,7 @@ const Overview: FC = () => (
         size="small"
       />
     </OverviewTemplate>
+    <OverviewTemplate title="Prevent scrolling" description={scrollingDescription} />
     <OverviewTemplate title="Usage" description={usageDescription}>
       <Table
         head={['Atomic class', 'Mixin', 'Note']}
