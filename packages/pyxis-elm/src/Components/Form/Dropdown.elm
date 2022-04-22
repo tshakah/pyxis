@@ -28,7 +28,7 @@ module Components.Form.Dropdown exposing
 
 -}
 
-import Commons.Properties.Size as Size
+import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -106,10 +106,13 @@ hasHeader content_ =
 
 {-| Renders the Dropdown.
 -}
-render : String -> msg -> Content msg -> Html msg
-render id onBlur content_ =
+render : String -> msg -> Size -> Content msg -> Html msg
+render id onBlur size content_ =
     Html.div
         [ Attributes.class "form-dropdown-wrapper"
+        , Attributes.classList
+            [ ( "form-dropdown-wrapper--small", Size.isSmall size )
+            ]
         , Events.onBlur onBlur
         ]
         [ Html.Keyed.node "div"

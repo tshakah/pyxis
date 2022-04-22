@@ -569,12 +569,13 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
     if nothingRetrievedYet then
         configData.addonSuggestion
             |> Maybe.map FormDropdown.suggestion
-            |> Maybe.map (FormDropdown.render configData.id (msgMapper OnBlur))
+            |> Maybe.map (FormDropdown.render configData.id (msgMapper OnBlur) configData.size)
 
     else
         FormDropdown.render
             configData.id
             (msgMapper OnBlur)
+            configData.size
             (if noAvailableOptions then
                 FormDropdown.noResult
                     { label = configData.noResultsFoundMessage
