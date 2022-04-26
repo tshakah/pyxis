@@ -38,7 +38,7 @@ $_sizesOnBp: (
   }
 
   @include foundations.mq(xsmall) {
-    @include foundations.radius(m);
+    @include foundations.radius(xl);
     background-color: foundations.color(neutralLight);
     height: min-content;
     margin: $offset 0;
@@ -84,7 +84,7 @@ $_sizesOnBp: (
 .modal__header {
   @include foundations.columnGap(xs);
   @include foundations.padding(m);
-  @include foundations.radius(m, top);
+  @include foundations.radius(xl, top);
   background: foundations.color(neutralLight);
   display: grid;
   grid-template-columns: auto max-content;
@@ -144,7 +144,7 @@ $_sizesOnBp: (
   }
 
   @include foundations.mq(xsmall) {
-    @include foundations.radius(m, bottom);
+    @include foundations.radius(xl, bottom);
     gap: foundations.spacing(s);
     padding: foundations.spacing(m) foundations.spacing(2xl);
   }

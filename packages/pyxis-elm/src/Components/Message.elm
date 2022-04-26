@@ -197,7 +197,7 @@ withIcon icon (Config configuration) =
     Config { configuration | icon = icon }
 
 
-{-| The internal configuration for a dismissible massage
+{-| The internal configuration for a dismissible message
 -}
 type alias DismissData msg =
     { onDismiss : msg

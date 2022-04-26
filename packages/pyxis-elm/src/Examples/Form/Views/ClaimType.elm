@@ -1,5 +1,6 @@
 module Examples.Form.Views.ClaimType exposing (view)
 
+import Components.Button as Button
 import Components.Field.Error.Strategy as Strategy
 import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.Form.FieldSet as FieldSet
@@ -9,6 +10,8 @@ import Components.Form.Legend as Legend
 import Components.IconSet as IconSet
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model
+import Html
+import Html.Attributes
 
 
 view : Data -> FieldSet.Config Model.Msg
@@ -45,6 +48,17 @@ view ((Data config) as data) =
                                 }
                             ]
                         |> RadioCardGroup.render Model.ClaimTypeChanged data config.claimType
+                    ]
+                ]
+            ]
+        |> FieldSet.withFooter
+            [ Grid.simpleOneColRow
+                [ Html.div
+                    [ Html.Attributes.class "button-row justify-content-center" ]
+                    [ Button.secondary
+                        |> Button.withType (Button.button (Model.ShowModal True))
+                        |> Button.withText "Show Modal"
+                        |> Button.render
                     ]
                 ]
             ]

@@ -84,3 +84,7 @@ update msg model =
             model
                 |> Model.mapData (\(Data d) -> Data { d | peopleInvolved = RadioCardGroup.update subMsg d.peopleInvolved })
                 |> PrimaUpdate.withoutCmds
+
+        Model.ShowModal bool ->
+            { model | showModal = bool }
+                |> PrimaUpdate.withoutCmds

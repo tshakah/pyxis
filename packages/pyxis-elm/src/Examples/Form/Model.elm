@@ -30,12 +30,14 @@ type Msg
     | PrivacyChanged (CheckboxGroup.Msg ())
     | ClaimTypeChanged (RadioCardGroup.Msg Data.ClaimType)
     | PeopleInvolvedChanged (RadioCardGroup.Msg Data.PeopleInvolved)
+    | ShowModal Bool
 
 
 type alias Model =
     { data : Data
     , response : Maybe (Result String Response)
     , citiesApi : RemoteData Http.Error (List City)
+    , showModal : Bool
     }
 
 
@@ -56,6 +58,7 @@ initialModel =
     { data = Data.initialData
     , citiesApi = RemoteData.NotAsked
     , response = Nothing
+    , showModal = False
     }
 
 
