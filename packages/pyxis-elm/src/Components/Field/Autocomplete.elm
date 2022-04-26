@@ -561,12 +561,8 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
         noAvailableOptions : Bool
         noAvailableOptions =
             List.length (getOptions model configuration) == 0 && RemoteData.isSuccess modelData.options
-
-        nothingRetrievedYet : Bool
-        nothingRetrievedYet =
-            List.length (getOptions model configuration) == 0 && RemoteData.isNotAsked modelData.options
     in
-    if nothingRetrievedYet then
+    if String.isEmpty modelData.filter then
         configData.addonSuggestion
             |> Maybe.map FormDropdown.suggestion
             |> Maybe.map (FormDropdown.render configData.id (msgMapper OnBlur) configData.size)
@@ -630,7 +626,32 @@ renderOptionsItem msgMapper (Model modelData) (Config configData) option =
 -}
 renderOptionText : String -> String -> List (Html msg)
 renderOptionText filter label =
-    label
-        |> String.split filter
-        |> List.map Html.text
-        |> List.intersperse (Html.strong [ Attributes.class "text-m-bold" ] [ Html.text filter ])
+    let
+        matchStartIndex : Int
+        matchStartIndex =
+            label
+                |> String.toLower
+                |> String.indexes (String.toLower filter)
+                |> List.head
+                |> Maybe.withDefault 0
+
+        matchEndIndex : Int
+        matchEndIndex =
+            matchStartIndex + String.length filter
+
+        labelStart : String
+        labelStart =
+            String.slice 0 matchStartIndex label
+
+        labelCenter : String
+        labelCenter =
+            String.slice matchStartIndex matchEndIndex label
+
+        labelEnd : String
+        labelEnd =
+            String.slice matchEndIndex (String.length label) label
+    in
+    [ Html.strong [ Attributes.class "text-m-bold" ] [ Html.text labelStart ]
+    , Html.text labelCenter
+    , Html.strong [ Attributes.class "text-m-bold" ] [ Html.text labelEnd ]
+    ]

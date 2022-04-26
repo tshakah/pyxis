@@ -289,7 +289,7 @@ updateNoResult msg model =
         | noResult =
             Autocomplete.update msg model.noResult
                 |> PrimaFunction.ifThenMap (always (Autocomplete.isOnInput msg))
-                    (Autocomplete.setOptions (RemoteData.Success []))
+                    (Autocomplete.setOptions (RemoteData.Success [ Designer, Developer, ProductManager ]))
       }
     , Cmd.none
     )
