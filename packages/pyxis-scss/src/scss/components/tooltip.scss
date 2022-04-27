@@ -30,6 +30,12 @@ $_tooltipPositions: (
     transform: scale(0.9) translateY($_tooltipInitialOffset),
     transform-origin: bottom left
   ),
+  top: (
+    bottom: $_tooltipPositionY,
+    left: 50%,
+    transform: translateX(-50%) translateY($_tooltipInitialOffset) scale(0.9),
+    transform-origin: bottom
+  ),
   right: (
     top: 50%,
     transform: scale(0.9) translateY(-50%) translateX(-$_tooltipInitialOffset),
@@ -47,6 +53,12 @@ $_tooltipPositions: (
     left: $_tooltipPositionX,
     transform: scale(0.9) translateY(-$_tooltipInitialOffset),
     transform-origin: top left
+  ),
+  bottom: (
+    top: $_tooltipPositionY,
+    left: 50%,
+    transform: translateY(-$_tooltipInitialOffset) translateX(-50%) scale(0.9),
+    transform-origin: top
   ),
   left: (
     top: 50%,
@@ -69,6 +81,11 @@ $_arrowPositions: (
     left: $_arrowOffsetWidth,
     transform: rotate(180deg)
   ),
+  top: (
+    bottom: $_arrowOffsetHeight,
+    left: calc(50% - #{math.div($_arrowWidth, 2)}),
+    transform: rotate(180deg)
+  ),
   right: (
     top: calc(50% - #{$_arrowHeight}),
     left: -$_arrowHeight + $_arrowOffsetHeight,
@@ -83,6 +100,11 @@ $_arrowPositions: (
     top: -$_arrowHeight + $_arrowOffsetHeight,
     left: $_arrowOffsetWidth,
     transform: rotate(0)
+  ),
+  bottom: (
+    top: -$_arrowHeight + $_arrowOffsetHeight,
+    left: calc(50% - #{math.div($_arrowWidth, 2)}),
+    transform: rotate(0deg)
   ),
   left: (
     top: calc(50% - #{$_arrowHeight}),
@@ -144,7 +166,7 @@ $_arrowPositions: (
     opacity: 0;
     position: absolute;
     transition-duration: foundations.duration(fast);
-    transition-property: transform, opacity;
+    transition-property: transform, opacity, visibility;
     transition-timing-function: foundations.timing(base);
     width: max-content;
     z-index: foundations.zIndex(tooltip);
@@ -173,6 +195,11 @@ $_arrowPositions: (
       &.tooltip--left,
       &.tooltip--right {
         transform: scale(1) translateY(-50%);
+      }
+
+      &.tooltip--top,
+      &.tooltip--bottom {
+        transform: scale(1) translateX(-50%);
       }
     }
   }

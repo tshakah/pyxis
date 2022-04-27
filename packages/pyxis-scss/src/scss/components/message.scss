@@ -1,4 +1,5 @@
 @use "../foundations";
+@use "mixins";
 
 $_states: (brand, alert, success, error);
 
@@ -47,7 +48,9 @@ $_states: (brand, alert, success, error);
 }
 
 .message__close {
-  @include foundations.verticalPadding(4xs);
+  @include foundations.padding(4xs);
+  @include mixins.focus(actionBase, $radiusSize: m);
   align-self: start;
+  border-radius: 50%;
   cursor: pointer;
 }

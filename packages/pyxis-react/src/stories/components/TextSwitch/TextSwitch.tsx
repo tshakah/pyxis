@@ -127,9 +127,9 @@ const TextSwitches = () =>
   <div className={styles.wrapper}>
     <TextSwitch name={"default"}/>
     <TextSwitch name={"equal"} optionWidth="equal"/>
-    <TextSwitch name={"default"} hasLabel />
-    <TextSwitch name={"default"} hasLabel labelPosition="topLeft" />
-    <TextSwitch name={"default"} hasLabel labelPosition="left" />
+    <TextSwitch name={"label"} hasLabel />
+    <TextSwitch name={"labelTop"} hasLabel labelPosition="topLeft" />
+    <TextSwitch name={"labelLeft"} hasLabel labelPosition="left" />
     <div className="padding-xs bg-neutral-base">
       <TextSwitch name={"alt"} alt hasLabel/>
     </div>

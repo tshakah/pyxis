@@ -7,6 +7,7 @@
 @use "../tokens/titleSizes" as *;
 @use "../tokens/titleWeights" as *;
 @use "breakpoints";
+@use "colors";
 @use "sass:math";
 @use "sass:map";
 
@@ -78,7 +79,7 @@ $_letterSpacing: (
 // Base setting for Pyxis typography.
 // It has to be used only in the html tag.
 @mixin globalSettings() {
-  @include _fontWeight(book);
+  @include fontWeight(book);
   font-family: _fontFamily($_font);
   font-feature-settings: lib.get($_font, featureSettings);
   font-size: config.$fontSizeRoot;
@@ -93,7 +94,7 @@ $_letterSpacing: (
 //
 // @param {String} $weight - The name of the weight
 // @throw {Error}
-@mixin _fontWeight($weight) {
+@mixin fontWeight($weight) {
   font-weight: #{lib.get($_font, weights, $weight)};
 }
 
@@ -118,13 +119,18 @@ $_letterSpacing: (
 //
 // @param {String} $size - The name of the size
 // @param {String} $weight - The name of the weight
+// @param {Color} $color - The name of the color
 //
 // @throw Error if font-weight `$weight` in input is not allowed in titles
-@mixin title($size, $weight) {
+@mixin title($size, $weight, $color: null) {
   @include _size($titleSizes, $size);
 
+  @if($color) {
+    color: colors.color($color);
+  }
+
   @if map.has-key($titleWeights, $weight) {
-    @include _fontWeight($weight);
+    @include fontWeight($weight);
   } @else {
     @error "Font-weight `#{$weight}` is not allowed in titles";
   }
@@ -134,9 +140,14 @@ $_letterSpacing: (
 //
 // @param {String} $size - The name of the size:
 // @param {String} $weight - The name of the weight
-@mixin text($size, $weight) {
-  @include _fontWeight($weight);
+// @param {Color} $color - The name of the color
+@mixin text($size, $weight, $color: null) {
+  @include fontWeight($weight);
   @include _size($textSizes, $size);
+
+  @if($color) {
+    color: colors.color($color);
+  }
 }
 
 // Create `@font-face` for all fonts available in `$_fonts` map.

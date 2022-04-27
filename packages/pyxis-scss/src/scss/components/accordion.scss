@@ -33,7 +33,7 @@
   @include foundations.radius(m);
   @include foundations.horizontalPadding(s);
   @include foundations.verticalPadding(xs);
-  @include mixins.focus(foundations.color(actionBase));
+  @include mixins.focus(actionBase, true, $radiusSize: l);
   @include _setColorAlt;
   align-items: center;
   border: lib.rem(2px) solid transparent;
@@ -58,7 +58,7 @@
   }
 
   .accordion-item--alt & {
-    @include mixins.focus(foundations.color(neutralLight));
+    @include mixins.focus(neutralLight);
 
     &:hover {
       border-color: rgba(foundations.color(neutralLight), 0.15);

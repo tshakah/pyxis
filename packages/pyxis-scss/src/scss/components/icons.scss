@@ -7,6 +7,12 @@ $_size: (
   l: 24px,
 );
 
+$_paddingBasedOnSize: (
+  s: xs,
+  m: s,
+  l: m,
+);
+
 $_variants: (brand, alert, success, error);
 
 // Add background-color and color to icon.
@@ -22,15 +28,7 @@ $_variants: (brand, alert, success, error);
   display: block;
 }
 
-@each $sizeName, $sizeValue in $_size {
-  .icon--size-#{$sizeName} {
-    height: lib.rem($sizeValue);
-    width: lib.rem($sizeValue);
-  }
-}
-
 .icon--boxed {
-  @include foundations.padding(xs);
   @include foundations.radius(m);
   @include _setColors(neutral95, neutral25);
   box-sizing: content-box;
@@ -45,6 +43,17 @@ $_variants: (brand, alert, success, error);
 
   &.icon--alt {
     @include _setColors(neutralLight, brandBase);
+  }
+}
+
+@each $sizeName, $sizeValue in $_size {
+  .icon--size-#{$sizeName} {
+    height: lib.rem($sizeValue);
+    width: lib.rem($sizeValue);
+
+    &.icon--boxed {
+      padding: foundations.spacing(lib.get($_paddingBasedOnSize, $sizeName));
+    }
   }
 }
 

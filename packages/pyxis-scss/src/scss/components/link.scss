@@ -4,20 +4,28 @@
 @use "mixins";
 
 // Generate linear gradient for underline animation
+//
+// @param {Color} $color - The name of the color
 @mixin _underlineGradient($color) {
   background-image: linear-gradient(to right, $color 0%, $color 33%, transparent 33%, transparent 66%, $color 66%, $color 100%);
 }
 
-.link {
-  $color: foundations.color(actionBase);
+// Set color properties
+//
+// @param {Color} $colorName - The name of the color
+@mixin _setColors($colorName) {
+  @include _underlineGradient(foundations.color($colorName));
+  @include mixins.focus($colorName);
+  color: foundations.color($colorName);
+}
 
-  @include _underlineGradient($color);
-  @include mixins.focus($color);
+.link {
+  @include foundations.fontWeight(bold);
+  @include _setColors(actionBase);
   background-position: 100% 100%;
   background-repeat: no-repeat;
   background-size: 300% lib.rem(1px);
   border-radius: lib.rem(1px);
-  color: $color;
   display: inline;
   text-decoration: none;
   transition: background-position foundations.duration(slow) foundations.timing(base);
@@ -29,9 +37,5 @@
 }
 
 .link--alt {
-  $color: foundations.color(neutralLight);
-
-  @include _underlineGradient($color);
-  @include mixins.focus($color);
-  color: $color;
+  @include _setColors(neutralLight);
 }

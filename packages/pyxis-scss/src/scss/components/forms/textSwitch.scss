@@ -53,7 +53,7 @@
   @include foundations.radius(m);
   @include foundations.verticalPadding(4xs);
   @include foundations.horizontalPadding(xs);
-  @include mixins.focus(foundations.color(actionBase));
+  @include mixins.focus(actionBase, $radiusSize: l);
   background-color: transparent;
   color: foundations.color(neutral25);
   cursor: pointer;
@@ -71,7 +71,7 @@
   }
 
   .text-switch-wrapper--alt & {
-    @include mixins.focus(foundations.color(neutralLight));
+    @include mixins.focus(neutralLight);
     color: foundations.color(neutralLight);
 
     &:hover {

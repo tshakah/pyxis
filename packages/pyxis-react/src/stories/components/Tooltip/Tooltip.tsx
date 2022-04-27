@@ -138,6 +138,9 @@ const Tooltips = () => {
       <Tooltip id="tooltip-id-top-right" position={"topRight"}>
         <Button icon={IconQuestionCircle} iconPlacement="only" variant="ghost">Tooltip</Button>
       </Tooltip>
+      <Tooltip id="tooltip-id-top" position={"top"}>
+        <Button icon={IconQuestionCircle} iconPlacement="only" variant="ghost">Tooltip</Button>
+      </Tooltip>
       <Tooltip id="tooltip-id-right" position={"right"}>
         <Button icon={IconQuestionCircle} iconPlacement="only" variant="ghost">Tooltip</Button>
       </Tooltip>
@@ -148,6 +151,9 @@ const Tooltips = () => {
         <Button icon={IconQuestionCircle} iconPlacement="only" variant="ghost">Tooltip</Button>
       </Tooltip>
       <Tooltip id="tooltip-id-bottom-left" position={"bottomLeft"}>
+        <Button icon={IconQuestionCircle} iconPlacement="only" variant="ghost">Tooltip</Button>
+      </Tooltip>
+      <Tooltip id="tooltip-id-bottom" position={"bottom"}>
         <Button icon={IconQuestionCircle} iconPlacement="only" variant="ghost">Tooltip</Button>
       </Tooltip>
       <Tooltip id="tooltip-id-brand" variant={"brand"}>
@@ -171,7 +177,7 @@ const Tooltips = () => {
 )
 }
 
-type TooltipPosition = "topLeft" | "topRight" | "left" | "bottomLeft" | "bottomRight" | "right";
+type TooltipPosition = "top" | "topLeft" | "topRight" | "left" | "bottom" | "bottomLeft" | "bottomRight" | "right";
 
 interface TooltipProps {
   alt?:boolean;

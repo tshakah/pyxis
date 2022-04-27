@@ -65,7 +65,7 @@ $_sizes: (
 // @param {String} $gradient - Gradient color used for background
 // @param {String} $elevationColor - Name of color + opacity for elevation, i.e. `brand40`
 @mixin _filled ($gradient, $elevationColor) {
-  @include mixins.focus(foundations.color(actionBase));
+  @include mixins.focus(actionBase);
   background-image: $gradient;
   background-position: 100% 0;
   background-size: 200%;
@@ -100,7 +100,7 @@ $_sizes: (
   }
 
   &.button--alt {
-    @include mixins.focus(foundations.color(neutralLight));
+    @include mixins.focus(neutralLight);
     background: foundations.color(neutralLight);
     color: foundations.color(neutralBase);
 
@@ -128,7 +128,7 @@ $_sizes: (
 //
 // @param {Color} $borderColor - Name of the color used as border
 @mixin _outlined ($borderColor, $borderColorAlt) {
-  @include mixins.focus(foundations.color(actionBase), true);
+  @include mixins.focus(actionBase, true);
   border: $_borderWidth solid $borderColor;
   color: foundations.color(actionBase);
 
@@ -148,7 +148,7 @@ $_sizes: (
   }
 
   &.button--alt {
-    @include mixins.focus(foundations.color(neutralLight), true);
+    @include mixins.focus(neutralLight, true);
     border-color: $borderColorAlt;
     color: foundations.color(neutralLight);
 
@@ -259,7 +259,7 @@ $_sizes: (
 }
 
 .button--ghost {
-  @include mixins.focus(foundations.color(actionBase));
+  @include mixins.focus(actionBase, $radiusSize: 2xs);
   border-bottom: $_borderWidth solid transparent;
   color: foundations.color(actionBase);
   padding-top: foundations.spacing(4xs);

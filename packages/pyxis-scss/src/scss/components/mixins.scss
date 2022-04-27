@@ -3,31 +3,34 @@
 
 // Add CSS rules for focus status, used in buttons and links.
 //
-// @param {Color} $color - Value of focus color
+// @param {Color} $colorName - Value of focus color
 // @param {Bool} $inset - Positioning of focus
 // @param {Value} $offset - Offset size
 // @param {Value} $width - Width of focus
 // @param {Value} $opacity - Opacity oof outline
-@mixin focus($color, $inset: false, $offset: lib.rem(2px), $width: lib.rem(3px), $opacity: 0.2) {
+// @param {String} $radiusSize - Radius of the item
+@mixin focus($colorName, $inset: false, $offset: lib.rem(2px), $width: lib.rem(3px), $opacity: 0.2, $radiusSize: null) {
   &:focus,
   &:focus-within {
-    outline: rgba($color, $opacity) solid $width;
+    outline: rgba(foundations.color($colorName), $opacity) solid $width;
     outline-offset: $offset;
 
     @include lib.onSafari {
       outline: none;
+      position: relative;
 
       &:before {
-        $beforeOffset: -($width + $offset);
+        $beforeOffset: if($inset, -($width + ($offset * 2)), -($width + $offset));
 
-        @if($inset) {
-          $beforeOffset: -($width + ($offset * 2));
+        @if($radiusSize) {
+          @include foundations.radius($radiusSize);
         }
 
-        border: $width solid $color;
+        border: $width solid foundations.color($colorName);
         bottom: $beforeOffset;
         content: "";
         left: $beforeOffset;
+        opacity: $opacity;
         position: absolute;
         right: $beforeOffset;
         top: $beforeOffset;

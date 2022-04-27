@@ -62,12 +62,12 @@ const generateBody = ({ sizes, weights, type }: TypographyRow): TableRow[] => (
 const tableUsageBody: TableRow[] = [
   [
     'Title',
-    <CopyableCode text="@include title($size, $weight)" key={shortid.generate()} />,
+    <CopyableCode text="@include title($size, $weight, $color?)" key={shortid.generate()} />,
     <CopyableCode text=".title-$size-$weight" key={shortid.generate()} />,
   ],
   [
     'Text',
-    <CopyableCode text="@include text($size, $weight)" key={shortid.generate()} />,
+    <CopyableCode text="@include text($size, $weight, $color?)" key={shortid.generate()} />,
     <CopyableCode text=".text-$size-$weight" key={shortid.generate()} />,
   ],
   [

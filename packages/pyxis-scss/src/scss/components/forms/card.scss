@@ -83,22 +83,23 @@
 }
 
 .form-card__title {
-  @include foundations.text(m, bold);
+  @include foundations.text(m, bold, neutralBase);
 }
 
 .form-card__text {
-  @include foundations.text(m, book);
-  color: foundations.color(neutral25);
+  @include foundations.text(m, book, neutral25);
 }
 
 
 .form-card__addon {
-  @include foundations.text(m, bold);
+  @include foundations.text(m, bold, neutralBase);
   display: inline-flex;
 
   .form-card--large & {
     grid-area: addon;
+    justify-self: center;
     padding-top: foundations.spacing(2xs);
+    width: fit-content;
   }
 
   .form-card--disabled & {
