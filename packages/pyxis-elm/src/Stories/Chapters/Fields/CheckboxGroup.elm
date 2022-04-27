@@ -99,6 +99,7 @@ CheckboxGroup.single
      , Html.a
          [ Attributes.href "https://www.prima.it/app/privacy-policy"
          , Attributes.target "blank"
+         , Attributes.class "link"
          ]
          [ Html.text "Informativa Privacy" ]
      , Html.text
@@ -217,6 +218,7 @@ componentsList =
                     , Html.a
                         [ Attributes.href "https://www.prima.it/app/privacy-policy"
                         , Attributes.target "blank"
+                        , Attributes.class "link"
                         ]
                         [ Html.text "Informativa Privacy" ]
                     , Html.text

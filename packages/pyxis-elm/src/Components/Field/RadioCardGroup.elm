@@ -68,7 +68,6 @@ module Components.Field.RadioCardGroup exposing
 @docs withClassList
 @docs withDisabled
 @docs withHint
-@docs withIsSubmitted
 @docs withLabel
 @docs withName
 @docs withSize
@@ -335,6 +334,8 @@ withSize size (Config configuration) =
     Config { configuration | size = size }
 
 
+{-| Sets the validation strategy (when to show the error, if present).
+-}
 withStrategy : Strategy -> Config value -> Config value
 withStrategy strategy (Config configuration) =
     Config { configuration | strategy = strategy }

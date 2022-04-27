@@ -132,6 +132,8 @@ config id =
         }
 
 
+{-| The size configuration
+-}
 type Size
     = Small
     | Medium

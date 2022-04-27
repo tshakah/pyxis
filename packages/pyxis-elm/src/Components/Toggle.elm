@@ -59,6 +59,17 @@ type Config msg
     = Config (ConfigData msg)
 
 
+{-| Inits the Toggle.
+
+    type Msg
+            = OnToggle Bool
+
+        toggle : Bool -> Html Msg
+        toggle initialState =
+            Toggle.config OnToggle
+                |> Toggle.render initialState
+
+-}
 config : (Bool -> msg) -> Config msg
 config onCheck =
     Config

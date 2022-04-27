@@ -67,7 +67,6 @@ module Components.Field.CheckboxCardGroup exposing
 
 @docs withAdditionalContent
 @docs withClassList
-@docs withDisabled
 @docs withHint
 @docs withIsSubmitted
 @docs withLabel
@@ -294,6 +293,8 @@ option args =
         }
 
 
+{-| Sets the disabled attribute on option
+-}
 withDisabledOption : Bool -> Option value -> Option value
 withDisabledOption disabled (Option option_) =
     Option { option_ | disabled = disabled }

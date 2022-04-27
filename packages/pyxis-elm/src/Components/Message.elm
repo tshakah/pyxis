@@ -46,7 +46,6 @@ module Components.Message exposing
 @docs withIcon
 @docs withId
 @docs withOnDismiss
-@docs withText
 @docs withTitle
 
 

@@ -56,7 +56,6 @@ module Components.Field.Textarea exposing
 @docs withName
 @docs withPlaceholder
 @docs withStrategy
-@docs withIsSubmitted
 @docs withValueMapper
 
 

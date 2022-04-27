@@ -23,8 +23,8 @@ module Components.Field.CheckboxGroup exposing
     , option
     , withOptions
     , withDisabledOption
-    , render
     , single
+    , render
     )
 
 {-|
@@ -54,7 +54,6 @@ module Components.Field.CheckboxGroup exposing
 
 @docs withAdditionalContent
 @docs withClassList
-@docs withDisabled
 @docs withIsSubmitted
 @docs withLabel
 @docs withName
@@ -81,6 +80,7 @@ module Components.Field.CheckboxGroup exposing
 @docs option
 @docs withOptions
 @docs withDisabledOption
+@docs single
 
 
 ## Rendering
@@ -136,6 +136,8 @@ type Msg value
     | Blurred value
 
 
+{-| Returns True if the message is triggered by `Html.Events.onCheck`
+-}
 isOnCheck : Msg value -> Bool
 isOnCheck msg =
     case msg of
@@ -220,6 +222,8 @@ withAdditionalContent additionalContent (Config configData) =
     Config { configData | additionalContent = Just additionalContent }
 
 
+{-| Sets the disabled attribute on option
+-}
 withDisabledOption : Bool -> Option value -> Option value
 withDisabledOption disabled (Option optionData) =
     Option { optionData | disabled = disabled }
