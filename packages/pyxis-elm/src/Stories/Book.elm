@@ -27,7 +27,7 @@ import Stories.Chapters.Toggle as ToggleChapter
 
 
 type alias SharedState =
-    { autocomplete : AutocompleteChapter.Model
+    { autocomplete : AutocompleteChapter.Models
     , textarea : TextareaChapter.Model
     , select : SelectChapter.Model
     , radio : RadioFieldChapter.Model

@@ -1,9 +1,10 @@
 module Components.Form.Dropdown exposing
     ( Content
-    , action
-    , content
-    , headerAndContent
+    , options
+    , headerAndOptions
+    , noResult
     , suggestion
+    , SuggestionData
     , render
     )
 
@@ -12,11 +13,13 @@ module Components.Form.Dropdown exposing
 
 # Dropdown
 
-@docs Content
 @docs action
-@docs content
-@docs headerAndContent
+@docs Content
+@docs options
+@docs headerAndOptions
+@docs noResult
 @docs suggestion
+@docs SuggestionData
 
 
 ## Rendering
@@ -25,61 +28,66 @@ module Components.Form.Dropdown exposing
 
 -}
 
-import Commons.Properties.Size as Size
+import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
 import Html.Attributes as Attributes
+import Html.Events as Events
 import Html.Keyed
 
 
 type Content msg
-    = Action
-        { label : String
-        , content : List (Html msg)
-        }
-    | HeaderAndContent
-        { header : Html msg
-        , content : List (Html msg)
-        }
-    | Content (List (Html msg))
-    | Suggestion
-        { icon : IconSet.Icon
-        , title : String
-        , subtitle : Maybe String
-        }
+    = NoResult (NoResultData msg)
+    | HeaderAndOptions (HeaderAndOptionsData msg)
+    | Options (List (Html msg))
+    | Suggestion SuggestionData
 
 
-{-| Creates the action.
--}
-action : { label : String, content : List (Html msg) } -> Content msg
-action =
-    Action
+type alias NoResultData msg =
+    { label : String
+    , action : Maybe (Html msg)
+    }
 
 
-{-| Creates a content with and header.
--}
-headerAndContent : { header : Html msg, content : List (Html msg) } -> Content msg
-headerAndContent =
-    HeaderAndContent
+type alias HeaderAndOptionsData msg =
+    { header : Html msg
+    , options : List (Html msg)
+    }
 
 
-{-| Creates the most simple content.
--}
-content : List (Html msg) -> Content msg
-content =
-    Content
-
-
-{-| Creates a suggestion.
--}
-suggestion :
+type alias SuggestionData =
     { icon : IconSet.Icon
     , title : String
     , subtitle : Maybe String
     }
-    -> Content msg
+
+
+{-| Creates the action.
+-}
+noResult : NoResultData msg -> Content msg
+noResult =
+    NoResult
+
+
+{-| Creates a content with and header.
+-}
+headerAndOptions : HeaderAndOptionsData msg -> Content msg
+headerAndOptions =
+    HeaderAndOptions
+
+
+{-| Creates the most simple content.
+-}
+options : List (Html msg) -> Content msg
+options =
+    Options
+
+
+{-| Creates a suggestion.
+-}
+suggestion : SuggestionData -> Content msg
 suggestion =
     Suggestion
 
@@ -89,7 +97,7 @@ suggestion =
 hasHeader : Content msg -> Bool
 hasHeader content_ =
     case content_ of
-        HeaderAndContent _ ->
+        HeaderAndOptions _ ->
             True
 
         _ ->
@@ -98,10 +106,14 @@ hasHeader content_ =
 
 {-| Renders the Dropdown.
 -}
-render : String -> Content msg -> Html msg
-render id content_ =
+render : String -> msg -> Size -> Content msg -> Html msg
+render id onBlur size content_ =
     Html.div
         [ Attributes.class "form-dropdown-wrapper"
+        , Attributes.classList
+            [ ( "form-dropdown-wrapper--small", Size.isSmall size )
+            ]
+        , Events.onBlur onBlur
         ]
         [ Html.Keyed.node "div"
             [ Attributes.attribute "role" "listbox"
@@ -123,14 +135,14 @@ render id content_ =
 renderContent : Content msg -> List (Html msg)
 renderContent content_ =
     case content_ of
-        HeaderAndContent config ->
-            renderHeader config.header :: config.content
+        HeaderAndOptions config ->
+            renderHeader config.header :: config.options
 
-        Content content__ ->
-            content__
+        Options options_ ->
+            options_
 
-        Action config ->
-            [ renderAction config.label config.content ]
+        NoResult noResultData ->
+            [ renderNoResult noResultData ]
 
         Suggestion config ->
             [ renderSuggestion config ]
@@ -138,14 +150,14 @@ renderContent content_ =
 
 {-| Internal.
 -}
-renderAction : String -> List (Html msg) -> Html msg
-renderAction label content_ =
+renderNoResult : NoResultData msg -> Html msg
+renderNoResult { label, action } =
     Html.div
         [ Attributes.class "form-dropdown__no-results" ]
         [ Html.text label
-        , content_
-            |> Html.div [ Attributes.class "form-dropdown__no-results__action" ]
-            |> Commons.Render.renderIf (List.length content_ > 0)
+        , action
+            |> Maybe.map (List.singleton >> Html.div [ Attributes.class "form-dropdown__no-results__action" ])
+            |> Commons.Render.renderMaybe
         ]
 
 
@@ -158,12 +170,7 @@ renderHeader content_ =
 
 {-| Internal.
 -}
-renderSuggestion :
-    { icon : IconSet.Icon
-    , title : String
-    , subtitle : Maybe String
-    }
-    -> Html msg
+renderSuggestion : SuggestionData -> Html msg
 renderSuggestion { icon, title, subtitle } =
     Html.div
         [ Attributes.class "form-dropdown__suggestion" ]

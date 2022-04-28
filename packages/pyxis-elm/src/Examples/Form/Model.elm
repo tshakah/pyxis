@@ -72,7 +72,7 @@ setCitiesApi remoteData model =
     { model | citiesApi = remoteData }
         |> mapData
             (\(Data d) ->
-                Data { d | residentialCity = Autocomplete.setSuggestions remoteData d.residentialCity }
+                Data { d | residentialCity = Autocomplete.setOptions remoteData d.residentialCity }
             )
 
 

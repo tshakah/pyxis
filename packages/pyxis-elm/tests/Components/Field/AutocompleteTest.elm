@@ -1,8 +1,10 @@
 module Components.Field.AutocompleteTest exposing (suite)
 
 import Commons.Properties.Size as Size
+import Components.Button as Button
 import Components.Field.Autocomplete as Autocomplete
 import Components.Field.Label as Label
+import Components.IconSet as IconSet
 import Expect
 import Fuzz
 import Html
@@ -88,10 +90,59 @@ suite =
                     |> render
                     |> findInput
                     |> Query.has [ Selector.class "form-field__autocomplete--small" ]
+        , Test.test "Show the custom message when no result is found" <|
+            \() ->
+                config "autocomplete-id"
+                    |> Autocomplete.withNoResultsFoundMessage "Nothing was found."
+                    |> simulation
+                    |> Simulation.simulate ( Event.input "Qwerty", [ Selector.tag "input" ] )
+                    |> Simulation.expectHtml
+                        (findDropdown >> Query.has [ Selector.text "Nothing was found." ])
+                    |> Simulation.run
+        , Test.describe "Addon"
+            [ Test.test "Show action under no result message" <|
+                \() ->
+                    config "autocomplete-id"
+                        |> Autocomplete.withAddonAction
+                            (Button.ghost
+                                |> Button.withText "Visit the page"
+                                |> Button.withType (Button.link "https://www.google.com")
+                                |> Button.render
+                            )
+                        |> simulation
+                        |> Simulation.simulate ( Event.input "Qwerty", [ Selector.tag "input" ] )
+                        |> Simulation.expectHtml
+                            (findDropdown
+                                >> Query.find [ Selector.class "form-dropdown__no-results__action" ]
+                                >> Query.has [ Selector.text "Visit the page", Selector.attribute (Html.Attributes.href "https://www.google.com") ]
+                            )
+                        |> Simulation.run
+            , Test.test "Prepend an header to the option list" <|
+                \() ->
+                    config "autocomplete-id"
+                        |> Autocomplete.withAddonHeader "Choose a role:"
+                        |> simulation
+                        |> Simulation.simulate ( Event.input "D", [ Selector.tag "input" ] )
+                        |> Simulation.expectHtml
+                            (findDropdown
+                                >> Query.find [ Selector.class "form-dropdown__header" ]
+                                >> Query.has [ Selector.text "Choose a role:" ]
+                            )
+                        |> Simulation.run
+            , Test.test "On focus the suggestion should be visible" <|
+                \() ->
+                    config "autocomplete-id"
+                        |> Autocomplete.withAddonSuggestion { title = "Suggestion", subtitle = Just "Subtitle", icon = IconSet.Search }
+                        |> render
+                        |> findDropdown
+                        |> Query.find [ Selector.class "form-dropdown__suggestion" ]
+                        |> Query.has [ Selector.text "Suggestion", Selector.text "Subtitle" ]
+            ]
         , Test.describe "Update"
             [ Test.test "Inputting a given option should update the model" <|
                 \() ->
-                    simulation
+                    config "autocomplete-id"
+                        |> simulation
                         |> Simulation.simulate ( Event.input "DEVELOPER", [ Selector.tag "input" ] )
                         |> Simulation.simulate ( Event.click, [ Selector.class "form-dropdown__item" ] )
                         |> Simulation.expectModel
@@ -119,6 +170,11 @@ findInput =
     Query.find [ Selector.tag "input" ]
 
 
+findDropdown : Query.Single msg -> Query.Single msg
+findDropdown =
+    Query.find [ Selector.class "form-dropdown" ]
+
+
 render : Autocomplete.Config Job (Autocomplete.Msg Job) -> Query.Single (Autocomplete.Msg Job)
 render =
     Autocomplete.render identity () init >> Query.fromHtml
@@ -131,14 +187,14 @@ validation maybeJob =
         |> Maybe.withDefault (Err "Select a job.")
 
 
-simulation : Simulation (Autocomplete.Model () Job) (Autocomplete.Msg Job)
-simulation =
+simulation : Autocomplete.Config Job (Autocomplete.Msg Job) -> Simulation (Autocomplete.Model () Job) (Autocomplete.Msg Job)
+simulation config_ =
     Simulation.fromElement
         { init =
             ( Autocomplete.init Nothing (always validation)
-                |> Autocomplete.setSuggestions (RemoteData.Success [ Developer, Designer, ProductManager ])
+                |> Autocomplete.setOptions (RemoteData.Success [ Developer, Designer, ProductManager ])
             , Cmd.none
             )
         , update = \msg model -> ( Autocomplete.update msg model, Cmd.none )
-        , view = \model -> Autocomplete.render identity () model (config "autocomplete-id")
+        , view = \model -> Autocomplete.render identity () model config_
         }
