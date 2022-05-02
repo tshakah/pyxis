@@ -161,6 +161,15 @@ Input.text "text-id"
     |> Input.withDisabled True
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
+
+<component with-label="Input date withStep, withMin and withMax" />
+```
+Input.date "date-id"
+    |> Input.withMin "2022-01-01"
+    |> Input.withMax "2022-12-31"
+    |> Input.withStep "1"
+    |> Input.render OnInputFieldMsg formData textFieldModel
+```
 """
 
 
@@ -292,6 +301,15 @@ componentsList =
       , \sharedState ->
             Input.text "placeholder"
                 |> Input.withPlaceholder "Custom placeholder"
+                |> Input.render identity () sharedState.input.base
+                |> statelessComponent
+      )
+    , ( "Input date withStep, withMin and withMax"
+      , \sharedState ->
+            Input.date "date"
+                |> Input.withMin "2022-01-01"
+                |> Input.withMax "2022-12-31"
+                |> Input.withStep "1"
                 |> Input.render identity () sharedState.input.base
                 |> statelessComponent
       )

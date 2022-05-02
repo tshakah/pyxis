@@ -23,8 +23,11 @@ module Components.Field.Input exposing
     , withHint
     , withIsSubmitted
     , withLabel
+    , withMax
+    , withMin
     , withName
     , withPlaceholder
+    , withStep
     , withStrategy
     , withValueMapper
     , Msg
@@ -83,8 +86,11 @@ module Components.Field.Input exposing
 @docs withHint
 @docs withIsSubmitted
 @docs withLabel
+@docs withMax
+@docs withMin
 @docs withName
 @docs withPlaceholder
+@docs withStep
 @docs withStrategy
 @docs withValueMapper
 
@@ -256,10 +262,13 @@ type Config constraints
         , id : String
         , isSubmitted : Bool
         , label : Maybe Label.Config
+        , min : Maybe String
+        , max : Maybe String
         , name : Maybe String
         , placeholder : Maybe String
         , size : Size
         , strategy : Strategy
+        , step : Maybe String
         , type_ : Type
         , valueMapper : String -> String
         }
@@ -286,7 +295,10 @@ type alias CommonConstraints specificConstraints =
 -}
 type alias DateConstraints =
     CommonConstraints
-        {}
+        { min : API.Allowed
+        , max : API.Allowed
+        , step : API.Allowed
+        }
 
 
 {-| Email constraints.
@@ -304,6 +316,9 @@ type alias NumberConstraints =
     CommonConstraints
         { addon : API.Allowed
         , placeholder : API.Allowed
+        , min : API.Allowed
+        , max : API.Allowed
+        , step : API.Allowed
         }
 
 
@@ -338,9 +353,12 @@ config inputType id =
         , id = id
         , isSubmitted = False
         , label = Nothing
+        , max = Nothing
+        , min = Nothing
         , name = Nothing
         , placeholder = Nothing
         , size = Size.medium
+        , step = Nothing
         , strategy = Strategy.onBlur
         , type_ = inputType
         , valueMapper = identity
@@ -601,6 +619,26 @@ withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
+{-| Sets a Max attribute to the Input.
+-}
+withMax :
+    String
+    -> Config { c | max : API.Allowed }
+    -> Config { c | max : API.Denied }
+withMax max (Config configuration) =
+    Config { configuration | max = Just max }
+
+
+{-| Sets a Min attribute to the Input.
+-}
+withMin :
+    String
+    -> Config { c | min : API.Allowed }
+    -> Config { c | min : API.Denied }
+withMin min (Config configuration) =
+    Config { configuration | min = Just min }
+
+
 {-| Sets a Name to the Input.
 -}
 withName :
@@ -609,6 +647,16 @@ withName :
     -> Config { c | name : API.Denied }
 withName name (Config configuration) =
     Config { configuration | name = Just name }
+
+
+{-| Sets a Step to the Input.
+-}
+withStep :
+    String
+    -> Config { c | step : API.Allowed }
+    -> Config { c | step : API.Denied }
+withStep step (Config configuration) =
+    Config { configuration | step = Just step }
 
 
 {-| Sets a Placeholder to the Input.
@@ -745,6 +793,9 @@ renderInput validationResult (Model modelData) (Config configData) =
         , Commons.Attributes.testId configData.id
         , Commons.Attributes.maybe Attributes.name configData.name
         , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
+        , Commons.Attributes.maybe Attributes.min configData.min
+        , Commons.Attributes.maybe Attributes.max configData.max
+        , Commons.Attributes.maybe Attributes.step configData.step
         , validationResult
             |> Error.fromResult
             |> Maybe.map (always (Error.toId configData.id))

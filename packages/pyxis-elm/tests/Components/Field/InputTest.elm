@@ -80,6 +80,39 @@ suite =
                     |> Query.has
                         [ Selector.attribute (Html.Attributes.placeholder p)
                         ]
+        , Test.fuzz Fuzz.string "min attribute should be rendered correctly" <|
+            \p ->
+                Input.date
+                    "input_field"
+                    |> Input.withMin p
+                    |> Input.render identity () fieldModel
+                    |> Query.fromHtml
+                    |> findInput
+                    |> Query.has
+                        [ Selector.attribute (Html.Attributes.min p)
+                        ]
+        , Test.fuzz Fuzz.string "max attribute should be rendered correctly" <|
+            \p ->
+                Input.date
+                    "input_field"
+                    |> Input.withMax p
+                    |> Input.render identity () fieldModel
+                    |> Query.fromHtml
+                    |> findInput
+                    |> Query.has
+                        [ Selector.attribute (Html.Attributes.max p)
+                        ]
+        , Test.fuzz Fuzz.string "step attribute should be rendered correctly" <|
+            \p ->
+                Input.date
+                    "input_field"
+                    |> Input.withStep p
+                    |> Input.render identity () fieldModel
+                    |> Query.fromHtml
+                    |> findInput
+                    |> Query.has
+                        [ Selector.attribute (Html.Attributes.step p)
+                        ]
         , Test.test "id attribute should be rendered correctly" <|
             \() ->
                 fieldConfig
