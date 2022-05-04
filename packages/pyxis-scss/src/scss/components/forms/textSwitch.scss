@@ -60,6 +60,7 @@
   transition-duration: foundations.duration(fast);
   transition-property: background-color, color;
   transition-timing-function: foundations.timing(base);
+  user-select: none;
   z-index: 1;
 
   &:hover {
@@ -84,6 +85,16 @@
 
     &:hover {
       color: foundations.color(actionDark);
+    }
+  }
+
+  //@TODO: delete this class when Elm module will be complete
+  &.text-switch__option--checked-no-transition {
+    @include foundations.elevation(s, neutral15);
+    background-color: foundations.color(neutralLight);
+
+    .text-switch-wrapper--alt & {
+      box-shadow: none;
     }
   }
 }

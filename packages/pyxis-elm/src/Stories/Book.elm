@@ -23,6 +23,7 @@ import Stories.Chapters.Introduction as Introduction
 import Stories.Chapters.Loader as Loader
 import Stories.Chapters.Message as Message
 import Stories.Chapters.Modal as ModalChapter
+import Stories.Chapters.TextSwitch as TextSwitchChapter
 import Stories.Chapters.Toggle as ToggleChapter
 
 
@@ -35,6 +36,7 @@ type alias SharedState =
     , radioCard : RadioCardFieldChapter.Model
     , checkboxCard : CheckboxCardGroupChapter.Model
     , toggle : ToggleChapter.Model
+    , textSwitch : TextSwitchChapter.Model
     , modal : ModalChapter.Model
     , input : InputChapter.Model
     }
@@ -51,6 +53,7 @@ initialState =
     , checkboxCard = CheckboxCardGroupChapter.init
     , input = InputChapter.init
     , toggle = ToggleChapter.init
+    , textSwitch = TextSwitchChapter.init
     , modal = ModalChapter.init
     }
 
@@ -96,6 +99,7 @@ main =
                 , SelectChapter.docs
                 , TextareaChapter.docs
                 , ToggleChapter.docs
+                , TextSwitchChapter.docs
                 ]
               )
             , ( "Icons"

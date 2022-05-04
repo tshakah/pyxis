@@ -29,7 +29,7 @@ const Option: FC<OptionProps> = (
     checked = false,
     id,
     name,
-    onChange= () => {},
+    onChange = () => {},
     text
   }) =>
     <label className={setOptionClass(checked)}>

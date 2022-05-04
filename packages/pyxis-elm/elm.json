@@ -28,6 +28,7 @@
         "Components.Form.Legend",
         "Components.Icon",
         "Components.IconSet",
+        "Components.TextSwitch",
         "Components.Loaders.Loader",
         "Components.Message",
         "Components.Modal",
