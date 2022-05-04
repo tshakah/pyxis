@@ -1,27 +1,27 @@
 # Pyxis
 
-The Prima Assicurazioni's design system.
+Prima's design system.
 
 <img alt="Pyxis Design System" src="pyxis.png" width="100%" />
 
 ## ✨ Introduction
 
-Pyxis is our Design System which helps Prima's to build UI-consistent applications.
+Pyxis helps Prima build consistent user interfaces and experiences.
 
-In order to allow you to build your application, Pyxis offers you a ready-to-use kit with three different technologies and languages.
-In addition we also maintain two packages regarding Icons and Design Tokens.
+Pyxis is composed of an agnostic _scss framework_ and two _ready-to-use bindings_ for [React](https://reactjs.org/) and [Elm](https://elm-lang.org/).
+In addition we also maintain two packages containing _icons_ and _design tokens_.
 
-| Package name                               | Description                                                      |
-| ------------------------------------------ | ---------------------------------------------------------------- |
-| [`@pyxis/scss`](./packages/pyxis-scss)     | SCSS foundations and components documentation.                   |
-| [`@pyxis/elm`](./packages/pyxis-elm)       | Elm components and Elmbook documentation.                        |
-| [`@pyxis/react`](./packages/pyxis-react)   | React components and Storybook documentation.                    |
-| [`@pyxis/tokens`](./packages/pyxis-tokens) | Design Tokens are the bricks in which our foundations are built. |
-| [`@pyxis/icons`](./packages/pyxis-icons)   | A collection of icons in svg used in our Design System.          |
+| Package name                               | Description                                                        |
+| ------------------------------------------ | ------------------------------------------------------------------ |
+| [`@pyxis/scss`](./packages/pyxis-scss)     | SCSS foundations and components documentation.                     |
+| [`@pyxis/elm`](./packages/pyxis-elm)       | Elm components and Elmbook documentation.                          |
+| [`@pyxis/react`](./packages/pyxis-react)   | React components and Storybook documentation.                      |
+| [`@pyxis/tokens`](./packages/pyxis-tokens) | Design Tokens are the bricks from which our foundations are built. |
+| [`@pyxis/icons`](./packages/pyxis-icons)   | A collection of svg icons used in our Design System.               |
 
 ## 📚 Documentation
 
-You can take a look at our live-documentation by following:
+We offer live documentation and code examples for both the bare scss framework and its bindings:
 
 - [SCSS documentation](https://scss-staging.prima.design/)
 - [React documentation](https://react-staging.prima.design/)
@@ -31,7 +31,7 @@ You can take a look at our live-documentation by following:
 
 Pyxis was built as a single repository with development simplicity in mind.
 
-To achieve this we had chosen to use [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) for dependencies handling and [Lerna](https://github.com/lerna/lerna/) manage versioning and publishing.
+We use [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) for handling dependencies and [Lerna](https://github.com/lerna/lerna/) to manage versioning and publishing.
 
 Run the following commands to setup your local dev environment:
 
@@ -39,7 +39,7 @@ Run the following commands to setup your local dev environment:
 # Install `yarn`, alternatives at https://yarnpkg.com/en/docs/install
 brew install yarn
 
-# Clone `pyxis`
+# Clone the `pyxis` repo
 git clone git@github.com:primait/pyxis.git
 cd pyxis
 
@@ -53,20 +53,21 @@ yarn storybook:serve
 yarn elmbook:serve
 ```
 
-For a specific documentation about development view the Readme on the sub-repository.
+For more in-depth instructions, development guidelines etc., see the README files for each sub-repository.
 
-### Generate icons
+### Icons
 
-Pyxis also includes a repository, `@pyxis/icons`, which contains all our SVG icons. We provided a script to turn icons into components within React and Elm.
-You can generate icons by running the following command:
+Pyxis also includes `@pyxis/icons`, a repository which contains all of our SVG icons.
+
+Automatic _code generation_ lets us turn these icons into React components and Elm functions, by running the following command:
 
 ```sh
 yarn generate:icons
 ```
 
-### Build Design Tokens
+### Design Tokens
 
-Pyxis foundations is a set of constants obtained by the Design Token entities.
+Pyxis foundations is a set of constants derived from the design token entities.
 
 To generate fresh tokens, run the following command:
 
@@ -76,40 +77,43 @@ yarn tokens:build
 
 ## 💜 Contributing
 
-Pyxis is still in development (and hopefully will always be!) and often you'll find yourself stuck in creating something is currently not allowed to be done via Pyxis'APIs.
+Pyxis is a living design system, undergoing continuous development, and you may find that it doesn't yet satisfy your requirements, be it a missing UI component, or a missing icon, or perhaps a typography setting you'd like to see changed...
 
-Below lies a list of possible issues you'll find when approaching Pyxis usage in your application. Each issue has a related process defined by Pyxis team in order to allow you to continue with your development.
+Following is a list of possible issues you'll encounter when integrating Pyxis in your application. Each issue has a related process defined by the Pyxis team in order to unblock you as soon as possible, letting you continue with your development.
 
-#### 1) I want to use Pyxis but I don't have any mockup
+#### 1) I want to use Pyxis but I'm not following a mockup
 
 That's a really bad situation! Pyxis is a Design System which obviously strictly relies on the guidelines defined by our Design team.
 Not only the mockup should _have been validated by designers_ but also needs to be created _by only using foundations, components and design tokens_ which are the basic bricks for building everything with Pyxis.
 
-This is not a team's whim but a requirement which allow all our applications to be consistent, reduces code fragmentation and prevent unexpected behaviours when you'll manage to upgrade to the future versions of Pyxis.
+This is not a team's whim but a requirement which enforces UI/UX consistency, reduces code fragmentation and prevents unexpected behaviours when upgrading to future versions of Pyxis.
 
-#### 2) I've a mockup which defines something I'm not able to do with current apis
+#### 2) I've got a mockup but it contains something that's missing from the current version of Pyxis
 
-If you're sure that our documentation doesn't help you addressing this issue and you own a mockup which follows guidelines defined in the previous case, you can open us an issue with the following informations:
+If you're sure that our documentation doesn't help you addressing this issue and you have a mockup which follows the guidelines defined in the previous case, you can _open an issue_, specifying the following information:
 
-1. a **short title** which define the issue
-2. a **description** of what you should do and how current apis prevents you to do that
-3. **at least two reviewers** from Pyxis team which can help you in the subsequent discussion on how this issue should be solved
-4. _[optional]_ **a suggestion** of how the issue's solution should be addressed. This will be the basic of the discussion. Keep in mind that this kind of solution should follow our code guidelines and be something each other can use. _Don't think about a solution which can only satisfies your particular need._
+1. a **short title** which defines the issue
+2. a **description** of what you need to do and how current Pyxis APIs prevent you from doing that
+3. **at least two reviewers** from the Pyxis team which can help you in the subsequent discussion on how this issue should be solved
+4. _[optional]_ **a suggestion** of how the issue's solution should be addressed. This will start the conversation. Keep in mind that this kind of solution should follow our guidelines and be something that benefits other Pyxis users. _Don't propose solutions that only satisfy your specific needs._
 
-Keep in mind that Pyxis belongs to anyone in Prima, so it is your responsibility to open the issue and collaborate with the Pyxis team in order to solve the problem. Opening an issue and then forgetting about that is not the way things should be done.
+If you do open an issue, remember to stay engaged and to partecipate in the discussion and development surrounding that issue, don't let it die! Pyxis belongs to everyone in Prima, and that means you too! So be responsible.
 
-Instead, use the `#team-pyxis` channel on Slack in order to follow discussion and help us to address the issue.
+Use the `#team-pyxis` Slack channel in order to follow current discussions and help us address any issues.
 
 #### 3) I've found a bug
 
-This is one of the most common problems you can experience when using Pyxis. When you find a bug in Pyxis you should open us an issue with the same criteria you can find in the previous point.
+Unfortunately, this can happen. When you find a bug in Pyxis please open an issue with the same criteria you can find in the previous point.
 
-If you don't feel comfortable in proposing any solution, just try to be clearer as possible in describing the bug. Any image or small video you can provide helps us in detecting and solving the bug.
+Additionally, please provide us with with clear steps to let us reproduce the issue. Include screenshots if you believe they can help us address the bug.
 
-Always remember to also note which _browsers, resolutions or devices_ suffer from this bug so can be easier to address the issue.
+Bug reproduction steps should also note which _browsers, resolutions or devices_ suffer from the bug.
 
-## 🧭 Name's origin
-The name of **Pyxis** comes from a [small constellation](https://en.wikipedia.org/wiki/Pyxis) in the southern sky. The name comes from the Latin for *compass* and was chosen to indicate the path to follow for the design in Prima.
+Remember, if we can't reproduce the bug, we won't be able to fix it.
+
+## 🧭 Etymology
+
+The name "**Pyxis**" comes from a [small constellation](https://en.wikipedia.org/wiki/Pyxis) in the southern sky. It's the latin term for *compass* and we chose it to indicate the path to follow for the designs of Prima.
 
 ## 🚧 License
 
