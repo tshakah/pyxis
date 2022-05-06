@@ -6,6 +6,7 @@ module.exports = {
     actions: { argTypesRegex: "^on[A-Z].*" },
     backgrounds: { values: [
         { name: 'light', value: '#ffffff' },
+        { name: 'neutral95', value: '#f3f4f4' },
         { name: 'dark', value: '#21283b' },
       ]
     },

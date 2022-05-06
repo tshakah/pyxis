@@ -1,6 +1,5 @@
 import React, {FC} from "react";
 import classNames from "classnames";
-import styles from "./Accordion.module.scss"
 import placeholder from "stories/assets/placeholder.svg"
 import {IconCar, IconChevronDown} from "components/Icon/Icons";
 
@@ -102,12 +101,15 @@ const Accordion:FC<AccordionProps> =
     hasIcon = false,
     hasImage = false,
     hasSubtext = true,
-    hasActionText = true,
+    hasActionText = false,
+    onlyItem= false
   }) => {
   /* Accordion component should implement both this logic (all the accordion items could be opened at once)
   * and the exclusive one (just one accordion open at time)
   * */
-  const [expandedItems, setExpandedItems] = React.useState<string[]>([`${id}-first`])
+  const initialState = onlyItem ? [] : [`${id}-first`];
+  const itemIds = onlyItem ? [`${id}-first`] : [`${id}-first`, `${id}-second`];
+  const [expandedItems, setExpandedItems] = React.useState<string[]>(initialState)
   const checkIsExpanded = (id:string):boolean => expandedItems.some((el) => el === id);
   const handleClick = (id:string) => {
     if (expandedItems.some((el) => el === id)) {
@@ -119,7 +121,7 @@ const Accordion:FC<AccordionProps> =
   }
   return (
     <div className="accordion">
-      {[`${id}-first`, `${id}-second`].map(
+      {itemIds.map(
         el => (
           <AccordionItem
             alt={alt}
@@ -138,21 +140,6 @@ const Accordion:FC<AccordionProps> =
     </div>
   );
 }
-
-export const Accordions = () => (
-  <div className={styles.wrapper}>
-    <Accordion id="default" />
-    <Accordion id="with-icon" hasIcon />
-    <Accordion id="with-image" hasImage />
-    <Accordion id="with-no-subtext" hasSubtext={false} hasActionText={false}/>
-    <div className="padding-s bg-neutral-95">
-      <Accordion id="with-color" color="white" hasIcon />
-    </div>
-    <div className="padding-s bg-neutral-base">
-      <Accordion id="with-alt" alt hasIcon />
-    </div>
-  </div>
-)
 
 interface AccordionItemProps {
   alt: boolean;
@@ -174,6 +161,7 @@ interface AccordionProps {
   hasSubtext?: boolean;
   hasActionText?: boolean;
   id:string;
+  onlyItem?:boolean;
 }
 
 export default Accordion;

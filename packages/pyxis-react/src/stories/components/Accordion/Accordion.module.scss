@@ -1,6 +1,0 @@
-@use "src/stories/pyxis";
-
-.wrapper {
-  @include pyxis.rowGap(l);
-  display: grid;
-}
