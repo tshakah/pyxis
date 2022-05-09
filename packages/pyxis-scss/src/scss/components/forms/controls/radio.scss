@@ -15,7 +15,7 @@
   border-radius: 50%;
 
   &:checked,
-  &:active:not(:disabled, [disabled]) {
+  &:active {
     @include _boxShadow(neutralLight);
   }
 
