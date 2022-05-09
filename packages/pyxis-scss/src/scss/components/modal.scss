@@ -157,16 +157,17 @@ $_sizesOnBp: (
 }
 
 .modal__footer__text {
-  flex: 1 min-content;
+  flex: 1;
 }
 
 .modal__footer__buttons {
   align-items: center;
   display: flex;
-  flex-wrap: wrap;
+  flex: 1;
   gap: foundations.spacing(xs);
   height: fit-content;
-  justify-content: end;
+  justify-content: flex-end;
+  width: 100%;
 
   @include foundations.mq(xsmall) {
     gap: foundations.spacing(s);
