@@ -7,6 +7,7 @@ module Examples.Form.Model exposing
     , updateResponse
     )
 
+import Components.Accordion as Accordion
 import Components.Field.Autocomplete as Autocomplete
 import Components.Field.CheckboxGroup as CheckboxGroup
 import Components.Field.Input as Input
@@ -31,6 +32,7 @@ type Msg
     | ClaimTypeChanged (RadioCardGroup.Msg Data.ClaimType)
     | PeopleInvolvedChanged (RadioCardGroup.Msg Data.PeopleInvolved)
     | ShowModal Bool
+    | AccordionChanged Accordion.Msg
 
 
 type alias Model =
@@ -38,6 +40,7 @@ type alias Model =
     , response : Maybe (Result String Response)
     , citiesApi : RemoteData Http.Error (List City)
     , showModal : Bool
+    , accordion : Accordion.Model
     }
 
 
@@ -59,6 +62,7 @@ initialModel =
     , citiesApi = RemoteData.NotAsked
     , response = Nothing
     , showModal = False
+    , accordion = Accordion.init (Accordion.singleOpening (Just "accordion-1"))
     }
 
 

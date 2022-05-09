@@ -2,11 +2,13 @@ module Examples.Form.View exposing (view)
 
 import Commons.Properties.Theme as Theme
 import Commons.Render
+import Components.Accordion as Accordion
+import Components.Accordion.Item as AccordionItem
 import Components.Badge as Badge
 import Components.Button as Button
 import Components.Form as Form
 import Components.Icon as Icon
-import Components.IconSet as Icon
+import Components.IconSet as IconSet
 import Components.Modal as Modal
 import Components.Modal.Footer as ModalFooter
 import Components.Modal.Header as ModalHeader
@@ -49,6 +51,11 @@ view model =
                     |> Maybe.withDefault False
                 )
         , modal model.showModal
+        , Html.div [ Html.Attributes.class "container-medium padding-v-m" ]
+            [ Accordion.config "accordion-id"
+                |> Accordion.withItems accordionItems
+                |> Accordion.render Model.AccordionChanged model.accordion
+            ]
         ]
 
 
@@ -88,7 +95,7 @@ modalHeader =
 
 modalIcon : Icon.Config
 modalIcon =
-    Icon.Car
+    IconSet.Car
         |> Icon.config
         |> Icon.withClassList [ ( "c-brand-base", True ) ]
         |> Icon.withSize Icon.large
@@ -115,3 +122,23 @@ modalFooter =
                 |> Button.withOnClick (Model.ShowModal False)
                 |> Button.render
             ]
+
+
+accordionItems : List (AccordionItem.Config msg)
+accordionItems =
+    [ AccordionItem.config "accordion-1"
+        |> AccordionItem.withTitle "Title one"
+        |> AccordionItem.withSubtitle "Subtitle"
+        |> AccordionItem.withContent
+            [ Html.div
+                []
+                [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ultrices libero ac semper cursus.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ultrices libero ac semper cursus. " ]
+            ]
+    , AccordionItem.config "accordion-2"
+        |> AccordionItem.withTitle "Title two"
+        |> AccordionItem.withContent
+            [ Html.div
+                []
+                [ Html.text "Lorem ipsum." ]
+            ]
+    ]

@@ -1,5 +1,6 @@
 module Examples.Form.Update exposing (update)
 
+import Components.Accordion as Accordion
 import Components.Field.Autocomplete as Autocomplete
 import Components.Field.CheckboxGroup as CheckboxGroup
 import Components.Field.Input as Input
@@ -88,3 +89,11 @@ update msg model =
         Model.ShowModal bool ->
             { model | showModal = bool }
                 |> PrimaUpdate.withoutCmds
+
+        Model.AccordionChanged subMsg ->
+            let
+                ( accordionModel, accordionCmd ) =
+                    Accordion.update subMsg model.accordion
+            in
+            { model | accordion = accordionModel }
+                |> PrimaUpdate.withCmd (Cmd.map Model.AccordionChanged accordionCmd)

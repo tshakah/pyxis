@@ -129,7 +129,9 @@
 .accordion-item__panel {
   max-height: 0;
   overflow: hidden;
-  transition: max-height foundations.duration(fast) foundations.timing(base);
+  transition-duration: foundations.duration(fast);
+  transition-property: max-height, visibility;
+  transition-timing-function: foundations.timing(base);
   visibility: hidden;
 }
 

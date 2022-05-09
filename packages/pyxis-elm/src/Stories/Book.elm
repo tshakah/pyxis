@@ -5,6 +5,7 @@ import ElmBook.StatefulOptions
 import ElmBook.ThemeOptions
 import Html
 import Html.Attributes
+import Stories.Chapters.Accordion as AccordionChapter
 import Stories.Chapters.Badge as Badge
 import Stories.Chapters.Buttons as ButtonChapter
 import Stories.Chapters.Fields.Autocomplete as AutocompleteChapter
@@ -40,6 +41,7 @@ type alias SharedState =
     , textSwitch : TextSwitchChapter.Model
     , modal : ModalChapter.Model
     , input : InputChapter.Model
+    , accordion : AccordionChapter.Models
     }
 
 
@@ -56,6 +58,7 @@ initialState =
     , toggle = ToggleChapter.init
     , textSwitch = TextSwitchChapter.init
     , modal = ModalChapter.init
+    , accordion = AccordionChapter.init
     }
 
 
@@ -86,6 +89,7 @@ main =
                 , Message.docs
                 , ModalChapter.docs
                 , Badge.docs
+                , AccordionChapter.docs
                 ]
               )
             , ( "Form"

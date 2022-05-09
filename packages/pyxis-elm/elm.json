@@ -7,6 +7,8 @@
     "exposed-modules": [
         "Commons.ApiConstraints",
         "Commons.Properties.Theme",
+        "Components.Accordion",
+        "Components.Accordion.Item",
         "Components.Badge",
         "Components.Button",
         "Components.Field.Autocomplete",
