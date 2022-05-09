@@ -1,6 +1,5 @@
 import React, {FC} from "react";
 import classNames from "classnames";
-import styles from "./TextSwitch.module.scss"
 
 // TODO: remove this implementation when TextSwitch will be implemented in pyxis-react
 // Non-exhaustive implementation, made for testing purposes only.
@@ -123,18 +122,6 @@ const TextSwitch:FC<TextSwitchProps> =
   );
 }
 
-const TextSwitches = () =>
-  <div className={styles.wrapper}>
-    <TextSwitch name={"default"}/>
-    <TextSwitch name={"equal"} optionWidth="equal"/>
-    <TextSwitch name={"label"} hasLabel />
-    <TextSwitch name={"labelTop"} hasLabel labelPosition="topLeft" />
-    <TextSwitch name={"labelLeft"} hasLabel labelPosition="left" />
-    <div className="padding-xs bg-neutral-base">
-      <TextSwitch name={"alt"} alt hasLabel/>
-    </div>
-  </div>
-
 type LabelPosition = "topCenter" | "topLeft" | "left";
 
 type OptionWidth = "equal" | "inherit";
@@ -155,4 +142,4 @@ interface TextSwitchProps {
   alt?: boolean;
 }
 
-export default TextSwitches;
+export default TextSwitch;
