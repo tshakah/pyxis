@@ -1,8 +1,15 @@
 module Components.Form.Grid.Row exposing
     ( Option
+    , Size
+    , large
+    , medium
+    , small
     , largeSize
     , mediumSize
     , smallSize
+    , isLarge
+    , isMedium
+    , isSmall
     , buildConfiguration
     )
 
@@ -16,9 +23,16 @@ module Components.Form.Grid.Row exposing
 
 ## Size options
 
+@docs Size
+@docs large
+@docs medium
+@docs small
 @docs largeSize
 @docs mediumSize
 @docs smallSize
+@docs isLarge
+@docs isMedium
+@docs isSmall
 
 
 ## Methods
@@ -27,7 +41,55 @@ module Components.Form.Grid.Row exposing
 
 -}
 
-import Commons.Properties.Size as Size exposing (Size)
+
+{-| Row size
+-}
+type Size
+    = Small
+    | Medium
+    | Large
+
+
+{-| Row size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Row size medium
+-}
+medium : Size
+medium =
+    Medium
+
+
+{-| Row size large
+-}
+large : Size
+large =
+    Large
+
+
+{-| Check if the size is small
+-}
+isSmall : Size -> Bool
+isSmall =
+    (==) Small
+
+
+{-| Check if the size is medium
+-}
+isMedium : Size -> Bool
+isMedium =
+    (==) Medium
+
+
+{-| Check if the size is large
+-}
+isLarge : Size -> Bool
+isLarge =
+    (==) Large
 
 
 {-| Internal. Convenient type to work with a partial Grid.Row configuration.
@@ -53,18 +115,18 @@ buildConfiguration options config =
 -}
 smallSize : Option config
 smallSize =
-    Option (\config -> { config | size = Size.small })
+    Option (\config -> { config | size = Small })
 
 
 {-| Creates a medium size Row option.
 -}
 mediumSize : Option config
 mediumSize =
-    Option (\config -> { config | size = Size.medium })
+    Option (\config -> { config | size = Medium })
 
 
 {-| Creates a large size Row option.
 -}
 largeSize : Option config
 largeSize =
-    Option (\config -> { config | size = Size.large })
+    Option (\config -> { config | size = Large })

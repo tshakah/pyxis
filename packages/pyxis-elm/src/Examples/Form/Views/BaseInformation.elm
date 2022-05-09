@@ -22,8 +22,7 @@ view ((Data config) as data) =
     FieldSet.config
         |> FieldSet.withHeader
             [ Grid.simpleOneColRow
-                [ Legend.config
-                    |> Legend.withTitle "Inserisci alcune informazioni di base"
+                [ Legend.config "Inserisci alcune informazioni di base"
                     |> Legend.render
                 ]
             ]
@@ -96,7 +95,7 @@ view ((Data config) as data) =
                                 ]
                             )
                         |> CheckboxGroup.withStrategy Strategy.onSubmit
-                        |> CheckboxGroup.withName "checkbox-group-single"
+                        |> CheckboxGroup.withId "checkbox-group-single"
                         |> CheckboxGroup.render Model.PrivacyChanged data config.privacyCheck
                     ]
                 ]

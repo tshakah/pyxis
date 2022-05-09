@@ -3,14 +3,17 @@ module Components.Field.Select exposing
     , init
     , Config
     , config
+    , small
+    , medium
+    , Size
     , withSize
     , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
+    , withId
     , withIsSubmitted
     , withLabel
-    , withName
     , withPlaceholder
     , withStrategy
     , Msg
@@ -41,6 +44,9 @@ module Components.Field.Select exposing
 
 ## Size
 
+@docs small
+@docs medium
+@docs Size
 @docs withSize
 
 
@@ -50,9 +56,9 @@ module Components.Field.Select exposing
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withId
 @docs withIsSubmitted
 @docs withLabel
-@docs withName
 @docs withPlaceholder
 @docs withStrategy
 
@@ -88,15 +94,14 @@ import Commons.Attributes
 import Commons.Events
 import Commons.Events.KeyDown as KeyDown
 import Commons.List
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as StrategyInternal
-import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.Status as FieldStatus
+import Components.Form.FormItem as FormItem
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -427,6 +432,27 @@ hoverFirstDropdownItem { options, id, delayed } ((Model modelData) as model) =
 -- View config
 
 
+{-| Select size
+-}
+type Size
+    = Small
+    | Medium
+
+
+{-| Select size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Select size medium
+-}
+medium : Size
+medium =
+    Medium
+
+
 {-| Internal.
 -}
 type alias ConfigData =
@@ -436,7 +462,7 @@ type alias ConfigData =
     , hint : Maybe Hint.Config
     , id : String
     , isMobile : Bool
-    , name : Maybe String
+    , name : String
     , options : List Option
     , placeholder : Maybe String
     , size : Size
@@ -457,18 +483,18 @@ type Config msg
 You can apply different options with the `withX` modifiers
 -}
 config : Bool -> String -> Config msg
-config isMobile id =
+config isMobile name =
     Config
         { additionalContent = Nothing
         , classList = []
         , disabled = False
         , hint = Nothing
-        , id = id
+        , id = "id-" ++ name
         , isMobile = isMobile
-        , name = Nothing
+        , name = name
         , options = []
         , placeholder = Nothing
-        , size = Size.medium
+        , size = Medium
         , label = Nothing
         , strategy = Strategy.onBlur
         , isSubmitted = False
@@ -540,11 +566,11 @@ withHint hintMessage (Config configuration) =
         }
 
 
-{-| Set the name attribute
+{-| Set the id attribute
 -}
-withName : String -> Config msg -> Config msg
-withName name (Config select) =
-    Config { select | name = Just name }
+withId : String -> Config msg -> Config msg
+withId id (Config select) =
+    Config { select | id = id }
 
 
 {-| Set the select size
@@ -629,7 +655,7 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as configura
 
         customizedLabel : Maybe Label.Config
         customizedLabel =
-            Maybe.map (Label.withSize configData.size) configData.label
+            Maybe.map (configData.size |> mapLabelSize |> Label.withSize) configData.label
     in
     renderField shownValidation model configuration
         |> FormItem.config configData
@@ -659,7 +685,7 @@ renderField shownValidation ((Model modelData) as model) (Config configData) =
                 [ Attributes.classList
                     [ ( "form-field__select", True )
                     , ( "form-field__select--filled", modelData.value /= Nothing )
-                    , ( "form-field__select--small", Size.isSmall configData.size )
+                    , ( "form-field__select--small", Small == configData.size )
                     ]
                 , Attributes.id configData.id
                 , Commons.Attributes.testId configData.id
@@ -673,7 +699,7 @@ renderField shownValidation ((Model modelData) as model) (Config configData) =
 
                 -- Conditional attributes
                 , Commons.Attributes.maybe Attributes.value modelData.value
-                , Commons.Attributes.maybe Attributes.name configData.name
+                , Attributes.name configData.name
 
                 -- Events
                 , Html.Events.onInput Selected
@@ -715,7 +741,7 @@ renderDropdownWrapper (Model model) (Config select) =
         Html.div
             [ Attributes.classList
                 [ ( "form-dropdown-wrapper", True )
-                , ( "form-dropdown-wrapper--small", Size.isSmall select.size )
+                , ( "form-dropdown-wrapper--small", Small == select.size )
                 ]
             ]
             [ Html.div [ Attributes.class "form-dropdown" ]
@@ -933,3 +959,13 @@ setValue value (Model model) =
 mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx parsedValue -> Model ctx parsedValue
 mapFieldStatus f (Model model) =
     Model { model | fieldStatus = f model.fieldStatus }
+
+
+mapLabelSize : Size -> Label.Size
+mapLabelSize size =
+    case size of
+        Small ->
+            Label.small
+
+        Medium ->
+            Label.medium

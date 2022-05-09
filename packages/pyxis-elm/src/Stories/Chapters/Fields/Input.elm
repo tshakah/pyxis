@@ -1,7 +1,6 @@
 module Stories.Chapters.Fields.Input exposing (Model, docs, init)
 
 import Commons.Properties.Placement as Placement
-import Commons.Properties.Size as Size
 import Components.Field.Input as Input
 import Components.IconSet as IconSet
 import Date exposing (Date)
@@ -46,7 +45,7 @@ textFieldModel =
 
 textField : FormData -> Html Msg
 textField formData =
-    Input.text "text-id"
+    Input.text "text-name"
         |> Input.withLabel (Label.config "Name")
         |> Input.render OnInputFieldMsg formData textFieldModel
 ```
@@ -58,7 +57,7 @@ Input field can have several types such as `text`, `number`, `date`, `password` 
 ### Type: Text
 <component with-label="Input with type text" />
 ```
-Input.text "input-text-id"
+Input.text "input-text-name"
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
 
@@ -100,7 +99,7 @@ Input field can have several addons, such as icons or texts. They are used to ma
 <component with-label="Input withAddon prepend text" />
 
 ```
-Input.text "text-id"
+Input.text "text-name"
     |> Input.withAddon Placement.prepend (Input.textAddon "mq")
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
@@ -109,7 +108,7 @@ Input.text "text-id"
 <component with-label="Input withAddon append text" />
 
 ```
-Input.text "text-id"
+Input.text "text-name"
     |> Input.withAddon Placement.append (Input.textAddon "€")
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
@@ -118,7 +117,7 @@ Input.text "text-id"
 <component with-label="Input withAddon prepend icon" />
 
 ```
-Input.text "text-id"
+Input.text "text-name"
     |> Input.withAddon Placement.prepend (Input.iconAddon IconSet.AccessKey)
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
@@ -127,7 +126,7 @@ Input.text "text-id"
 <component with-label="Input withAddon append icon" />
 
 ```
-Input.text "text-id"
+Input.text "text-name"
     |> Input.withAddon Placement.append (Input.iconAddon IconSet.Bell)
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
@@ -141,8 +140,8 @@ You can set your InputField with a _size_ of default or small.
 <component with-label="Input withSize small" />
 
 ```
-Input.text "text-id"
-    |> Input.withSize Size.small
+Input.text "text-name"
+    |> Input.withSize Input.small
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
 
@@ -150,14 +149,14 @@ Input.text "text-id"
 
 <component with-label="Input withPlaceholder" />
 ```
-Input.text "text-id"
+Input.text "text-name"
     |> Input.withPlaceholder "Custom placeholder"
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
 
 <component with-label="Input withDisabled" />
 ```
-Input.text "text-id"
+Input.text "text-name"
     |> Input.withDisabled True
     |> Input.render OnInputFieldMsg formData textFieldModel
 ```
@@ -286,7 +285,7 @@ componentsList =
     , ( "Input withSize small"
       , \sharedState ->
             Input.text "small"
-                |> Input.withSize Size.small
+                |> Input.withSize Input.small
                 |> Input.render identity () sharedState.input.base
                 |> statelessComponent
       )

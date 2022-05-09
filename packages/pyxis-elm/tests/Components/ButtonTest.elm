@@ -1,5 +1,6 @@
 module Components.ButtonTest exposing (suite)
 
+import Commons.Attributes.LinkTarget as LinkTarget
 import Commons.Properties.Theme as Theme
 import Components.Button as Button
 import Components.IconSet as IconSet
@@ -123,7 +124,8 @@ suite =
             , Test.test "is button" <|
                 \() ->
                     Button.primary
-                        |> Button.withType (Button.button OnClick)
+                        |> Button.withType Button.button
+                        |> Button.withOnClick OnClick
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ attribute (Html.Attributes.type_ "button") ]
@@ -184,7 +186,8 @@ suite =
             [ Test.test "has onClick" <|
                 \() ->
                     Button.primary
-                        |> Button.withType (Button.button OnClick)
+                        |> Button.withType Button.button
+                        |> Button.withOnClick OnClick
                         |> Button.render
                         |> Query.fromHtml
                         |> Event.simulate Event.click

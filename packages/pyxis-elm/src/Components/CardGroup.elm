@@ -6,6 +6,7 @@ module Components.CardGroup exposing
     , Config
     , Layout(..)
     , Option
+    , Size(..)
     , renderCheckbox
     , renderRadio
     )
@@ -14,13 +15,12 @@ module Components.CardGroup exposing
 -}
 
 import Commons.Attributes
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Commons.String
 import Components.Field.Error as Error
-import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
+import Components.Form.FormItem as FormItem
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -42,12 +42,19 @@ type Type
     | Checkbox
 
 
+{-| Card group size
+-}
+type Size
+    = Medium
+    | Large
+
+
 {-| This is non opaque by design
 -}
 type alias Config r =
     { r
         | size : Size
-        , name : Maybe String
+        , name : String
         , id : String
         , label : Maybe Label.Config
         , classList : List ( String, Bool )
@@ -124,8 +131,8 @@ render type_ validationResult configData options =
 {-| Internal.
 -}
 labelId : String -> String
-labelId =
-    (++) "label-"
+labelId id =
+    id ++ "-label"
 
 
 renderCard : Type -> Result String value -> Config r -> Int -> Option msg -> Html msg
@@ -141,7 +148,7 @@ renderCard type_ validationResult config index option =
             , ( "form-card--error", Result.Extra.isErr validationResult )
             , ( "form-card--checked", option.isChecked )
             , ( "form-card--disabled", option.isDisabled )
-            , ( "form-card--large", config.size == Size.large )
+            , ( "form-card--large", config.size == Large )
             ]
         ]
         [ option.addon
@@ -166,7 +173,7 @@ renderCard type_ validationResult config index option =
             , Attributes.disabled option.isDisabled
             , Attributes.id id_
             , Commons.Attributes.testId id_
-            , Commons.Attributes.maybe Attributes.name config.name
+            , Attributes.name config.name
             , Events.onCheck option.onCheck
             , Events.onFocus option.onFocus
             , Events.onBlur option.onBlur
@@ -216,7 +223,7 @@ renderPrependAddon addon =
                 ]
                 [ icon
                     |> Icon.config
-                    |> Icon.withSize Size.large
+                    |> Icon.withSize Icon.large
                     |> Icon.render
                 ]
 

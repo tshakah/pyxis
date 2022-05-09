@@ -20,8 +20,7 @@ view ((Data config) as data) =
     FieldSet.config
         |> FieldSet.withHeader
             [ Grid.simpleOneColRow
-                [ Legend.config
-                    |> Legend.withTitle "Inserisci i dettagli del sinistro"
+                [ Legend.config "Inserisci i dettagli del sinistro"
                     |> Legend.render
                 ]
             ]
@@ -58,7 +57,8 @@ view ((Data config) as data) =
                 [ Html.div
                     [ Html.Attributes.class "button-row justify-content-center" ]
                     [ Button.primary
-                        |> Button.withType (Button.button Model.Submit)
+                        |> Button.withType Button.button
+                        |> Button.withOnClick Model.Submit
                         |> Button.withText "Procedi"
                         |> Button.render
                     ]

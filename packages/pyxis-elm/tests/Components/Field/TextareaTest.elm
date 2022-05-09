@@ -23,8 +23,8 @@ suite =
                         |> fieldRender () fieldModel
                         |> findTextarea
                         |> Query.has
-                            [ attribute (Html.Attributes.id "input-id")
-                            , attribute (Html.Attributes.attribute "data-test-id" "input-id")
+                            [ attribute (Html.Attributes.id "textarea-id")
+                            , attribute (Html.Attributes.attribute "data-test-id" "textarea-id")
                             , classes [ "form-field__textarea" ]
                             ]
             ]
@@ -56,8 +56,7 @@ suite =
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                fieldConfig
-                    |> TextareaField.withName name
+                TextareaField.config name
                     |> fieldRender () fieldModel
                     |> findTextarea
                     |> Query.has
@@ -138,7 +137,8 @@ fieldModel =
 
 fieldConfig : TextareaField.Config
 fieldConfig =
-    TextareaField.config "input-id"
+    TextareaField.config "name"
+        |> TextareaField.withId "textarea-id"
 
 
 fieldRender : ctx -> TextareaField.Model ctx -> TextareaField.Config -> Query.Single TextareaField.Msg

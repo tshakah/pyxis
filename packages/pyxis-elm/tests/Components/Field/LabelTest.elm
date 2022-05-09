@@ -1,6 +1,5 @@
 module Components.Field.LabelTest exposing (suite)
 
-import Commons.Properties.Size as Size
 import Components.Field.Label as Label
 import Html.Attributes
 import Test exposing (Test)
@@ -26,7 +25,7 @@ suite =
                 [ Test.test "is small" <|
                     \() ->
                         Label.config "My label"
-                            |> Label.withSize Size.small
+                            |> Label.withSize Label.small
                             |> Label.render
                             |> Query.fromHtml
                             |> Query.has [ classes [ "form-label", "form-label--small" ] ]

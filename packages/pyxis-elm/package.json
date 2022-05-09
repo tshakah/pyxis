@@ -18,7 +18,7 @@
     "generate:icons": "ts-node --project scripts/tsconfig.json ./scripts/generateIcons.ts && elm-format src/Components/IconSet.elm --yes",
     "preelmbook:build": "yarn reset-dist",
     "preelmbook:serve": "yarn reset-dist",
-    "precommit": "yarn review && yarn test && yarn build",
+    "precommit": "yarn review && yarn test && yarn build && yarn elmbook:build",
     "reset-dist": "mkdir -p dist && elm make && cp ../pyxis-scss/dist/pyxis.css ./dist/pyxis.css && cp -r ./assets ./dist/assets",
     "review": "elm-review src",
     "review:fix": "elm-review src --fix",

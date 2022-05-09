@@ -45,7 +45,7 @@ radioGroupModel =
 
 radioGroupView : formData -> Html Msg
 radioGroupView formData =
-    RadioGroup.config "radio-id"
+    RadioGroup.config "radio-name"
         |> RadioGroup.withName "insurance-type"
         |> RadioGroup.withLabel (Label.config "Choose the insurance type")
         |> RadioGroup.withOptions
@@ -63,7 +63,7 @@ Radio group have a horizontal layout as default, but with more then two items a 
 <component with-label="RadioGroup vertical" />
 
 ```
-RadioGroup.config id
+RadioGroup.config name
     |> RadioGroup.withLayout RadioGroup.vertical
     |> RadioGroup.render
         OnRadioFieldMsg
@@ -75,7 +75,7 @@ RadioGroup.config id
 # Disabled
 <component with-label="RadioGroup disabled" />
 ```
-RadioGroup.config id
+RadioGroup.config name
     |> RadioGroup.withDisabled True
     |> RadioGroup.render
         OnRadioFieldMsg
@@ -122,7 +122,7 @@ componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState 
 componentsList =
     [ ( "RadioGroup"
       , statefulComponent
-            { id = "radio-group"
+            { name = "radio-group"
             , configModifier = RadioGroup.withLabel (Label.config "Choose the insurance type")
             , modelPicker = .base
             , update = \msg models -> { models | base = RadioGroup.update msg models.base }
@@ -130,7 +130,7 @@ componentsList =
       )
     , ( "RadioGroup vertical"
       , statefulComponent
-            { id = "radio-group-vertical"
+            { name = "radio-group-vertical"
             , configModifier = RadioGroup.withLayout RadioGroup.vertical
             , modelPicker = .vertical
             , update = \msg models -> { models | vertical = RadioGroup.update msg models.vertical }
@@ -138,7 +138,7 @@ componentsList =
       )
     , ( "RadioGroup disabled"
       , statefulComponent
-            { id = "radio-group-disabled"
+            { name = "radio-group-disabled"
             , configModifier = RadioGroup.withDisabled True
             , modelPicker = .disabled
             , update = always identity
@@ -155,7 +155,7 @@ options =
 
 
 type alias StatefulConfig =
-    { id : String
+    { name : String
     , configModifier : RadioGroup.Config Option -> RadioGroup.Config Option
     , modelPicker : Model -> RadioGroup.Model () Option Option
     , update : RadioGroup.Msg Option -> RadioFieldModels -> RadioFieldModels
@@ -163,9 +163,8 @@ type alias StatefulConfig =
 
 
 statefulComponent : StatefulConfig -> SharedState x -> Html (ElmBook.Msg (SharedState x))
-statefulComponent { id, configModifier, modelPicker, update } sharedState =
-    RadioGroup.config id
-        |> RadioGroup.withName id
+statefulComponent { name, configModifier, modelPicker, update } sharedState =
+    RadioGroup.config name
         |> RadioGroup.withOptions options
         |> configModifier
         |> RadioGroup.render identity () (sharedState.radio |> modelPicker)

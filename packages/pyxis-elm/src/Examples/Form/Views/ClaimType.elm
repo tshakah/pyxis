@@ -19,8 +19,7 @@ view ((Data config) as data) =
     FieldSet.config
         |> FieldSet.withHeader
             [ Grid.simpleOneColRow
-                [ Legend.config
-                    |> Legend.withTitle "Scegli la tipologia di sinistro"
+                [ Legend.config "Scegli la tipologia di sinistro"
                     |> Legend.withAddon (Legend.imageAddon "../../../assets/placeholder.svg")
                     |> Legend.render
                 ]
@@ -56,7 +55,8 @@ view ((Data config) as data) =
                 [ Html.div
                     [ Html.Attributes.class "button-row justify-content-center" ]
                     [ Button.secondary
-                        |> Button.withType (Button.button (Model.ShowModal True))
+                        |> Button.withType Button.button
+                        |> Button.withOnClick (Model.ShowModal True)
                         |> Button.withText "Show Modal"
                         |> Button.render
                     ]

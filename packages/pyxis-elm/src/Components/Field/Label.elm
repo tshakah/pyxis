@@ -3,9 +3,12 @@ module Components.Field.Label exposing
     , config
     , withFor
     , withId
-    , withSize
     , withSubText
     , withClassList
+    , small
+    , medium
+    , Size
+    , withSize
     , render
     )
 
@@ -25,9 +28,16 @@ module Components.Field.Label exposing
 
 @docs withFor
 @docs withId
-@docs withSize
 @docs withSubText
 @docs withClassList
+
+
+## Size
+
+@docs small
+@docs medium
+@docs Size
+@docs withSize
 
 
 ## Rendering
@@ -37,10 +47,30 @@ module Components.Field.Label exposing
 -}
 
 import Commons.Attributes
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render as CR
 import Html exposing (Html)
 import Html.Attributes
+
+
+{-| Label size
+-}
+type Size
+    = Small
+    | Medium
+
+
+{-| Label size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Label size medium
+-}
+medium : Size
+medium =
+    Medium
 
 
 {-| The Label model.
@@ -77,7 +107,7 @@ config text =
         { classList = []
         , for = Nothing
         , id = Nothing
-        , size = Size.medium
+        , size = Medium
         , subText = Nothing
         , text = text
         }
@@ -170,7 +200,7 @@ render (Config { for, classList, id, size, text, subText }) =
     Html.label
         [ Html.Attributes.classList
             [ ( "form-label", True )
-            , ( "form-label--small", size == Size.small )
+            , ( "form-label--small", size == Small )
             ]
         , Html.Attributes.classList classList
         , Commons.Attributes.maybe Html.Attributes.for for

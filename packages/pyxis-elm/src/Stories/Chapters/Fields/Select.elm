@@ -1,6 +1,5 @@
 module Stories.Chapters.Fields.Select exposing (Model, docs, init)
 
-import Commons.Properties.Size as Size
 import Components.Field.Label as Label
 import Components.Field.Select as Select
 import ElmBook
@@ -80,7 +79,7 @@ And the native `<select>` on mobile:
 
 <component with-label="Select (mobile)" />
 ```
-Select.config True "select-id"
+Select.config True "radio-name"
     |> Select.render OnSelectMsg formData selectModel
 ```
 
@@ -88,7 +87,7 @@ Select.config True "select-id"
 
 <component with-label="Select with disabled=True" />
 ```
-Select.config False "select-id"
+Select.config False "radio-name"
     |> Select.withDisabled True
     |> Select.render OnSelectMsg formData selectModel
 ```
@@ -98,8 +97,8 @@ Select can have two size: default or small.
 
 <component with-label="Select with size=Small" />
 ```
-Select.config False "select-id"
-    |> Select.withSize Size.small
+Select.config False "radio-name"
+    |> Select.withSize Select.small
     |> Select.render OnSelectMsg formData selectModel
 ```
 """
@@ -169,7 +168,7 @@ componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState 
 componentsList =
     [ ( "Select (desktop)"
       , statefulComponent
-            { id = "desktop-select"
+            { name = "desktop-select"
             , isMobile = False
             , configModifier = Select.withLabel (Label.config "Label")
             }
@@ -178,21 +177,21 @@ componentsList =
       )
     , ( "Select (mobile)"
       , statelessComponent
-            { id = "mobile-select", isMobile = True, configModifier = identity }
+            { name = "mobile-select", isMobile = True, configModifier = identity }
       )
     , ( "Select with disabled=True"
       , statelessComponent
-            { id = "disabled-select", isMobile = False, configModifier = Select.withDisabled True }
+            { name = "disabled-select", isMobile = False, configModifier = Select.withDisabled True }
       )
     , ( "Select with size=Small"
       , statelessComponent
-            { id = "small-select", isMobile = False, configModifier = Select.withSize Size.small }
+            { name = "small-select", isMobile = False, configModifier = Select.withSize Select.small }
       )
     ]
 
 
 type alias StatelessConfig =
-    { id : String
+    { name : String
     , isMobile : Bool
     , configModifier : Select.Config Select.Msg -> Select.Config Select.Msg
     }
@@ -212,8 +211,8 @@ statefulComponent :
     -> (Select.Msg -> Model -> ( Model, Cmd Select.Msg ))
     -> SharedState x
     -> Html (ElmBook.Msg (SharedState x))
-statefulComponent { id, isMobile, configModifier } modelPicker internalUpdate sharedState =
-    Select.config isMobile id
+statefulComponent { name, isMobile, configModifier } modelPicker internalUpdate sharedState =
+    Select.config isMobile name
         |> Select.withPlaceholder "Select your role..."
         |> Select.withOptions
             [ Select.option { value = "DEVELOPER", label = "Developer" }

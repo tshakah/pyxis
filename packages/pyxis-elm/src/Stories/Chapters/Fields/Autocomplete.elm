@@ -1,6 +1,5 @@
 module Stories.Chapters.Fields.Autocomplete exposing (Models, docs, init)
 
-import Commons.Properties.Size as Size
 import Components.Button as Button
 import Components.Field.Autocomplete as Autocomplete
 import Components.Field.Label as Label
@@ -85,7 +84,7 @@ update msg model =
 -}
 view : Model -> Html Msg
 view model =
-    Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+    Autocomplete.config jobMatches jobToLabel "autocomplete-name"
         |> Autocomplete.withPlaceholder "Choose your job role"
         |> Autocomplete.render JobChanged () model.job
 
@@ -95,57 +94,57 @@ view model =
 
 <component with-label="Additional content" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |> Autocomplete.withAdditionalContent (Html.text "Additional content to the Autocomplete")
     |> Autocomplete.render JobChanged () model.job
 ```
 
 <component with-label="Hint" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |> Autocomplete.withHint "This is an hint for the autocomplete"
     |> Autocomplete.render JobChanged () model.job
 ```
 
 <component with-label="Disabled" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |> Autocomplete.withDisabled True
     |> Autocomplete.render JobChanged () model.job
 ```
 
 <component with-label="Label" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |> Autocomplete.withLabel (Label.config "Label")
     |> Autocomplete.render JobChanged () model.job
 ```
 
 <component with-label="No Results Found Message" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |> Autocomplete.withNoResultsFoundMessage "No result for this search!"
     |> Autocomplete.render JobChanged () model.job
 ```
 
 <component with-label="Placeholder" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |> Autocomplete.withPlaceholder "Placeholder"
     |> Autocomplete.render JobChanged () model.job
 ```
 
 <component with-label="Size small" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
-    |> Autocomplete.withSize Size.small
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
+    |> Autocomplete.withSize Autocomplete.small
     |> Autocomplete.render JobChanged () model.job
 ```
 
 ## Addon
 <component with-label="Action" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |>Autocomplete.withAddonAction
           (Button.ghost
               |> Button.withText "Visit the page"
@@ -157,14 +156,14 @@ Autocomplete.config jobMatches jobToLabel "autocomplete-id"
 
 <component with-label="Header" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |>Autocomplete.withAddonHeader "Choose a role:"
     |> Autocomplete.render JobChanged () model.job
 ```
 
 <component with-label="Suggestion" />
 ```
-Autocomplete.config jobMatches jobToLabel "autocomplete-id"
+Autocomplete.config jobMatches jobToLabel "autocomplete-name"
     |>Autocomplete.withAddonSuggestion { title = "Suggestion", subtitle = Just "Subtitle", icon = IconSet.Search }
     |> Autocomplete.render JobChanged () model.job
 ```
@@ -238,7 +237,7 @@ componentsList =
       , statefulComponent (Autocomplete.withPlaceholder "Placeholder") .base updateBase
       )
     , ( "Size small"
-      , statefulComponent (Autocomplete.withSize Size.small) .base updateBase
+      , statefulComponent (Autocomplete.withSize Autocomplete.small) .base updateBase
       )
     , ( "Action"
       , statefulComponent

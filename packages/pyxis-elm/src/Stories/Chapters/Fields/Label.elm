@@ -1,6 +1,5 @@
 module Stories.Chapters.Fields.Label exposing (docs)
 
-import Commons.Properties.Size as Size
 import Components.Field.Label as Label
 import ElmBook
 import ElmBook.Chapter
@@ -56,7 +55,7 @@ Label.config "Main label"
 <component with-label="Small" />
 ```
 Label.config "Smaller label"
-    |> Label.withSize Size.small
+    |> Label.withSize Label.small
     |> Label.render
 ```
 ---
@@ -89,7 +88,7 @@ componentsList =
       )
     , ( "Small"
       , Label.config "Smaller label"
-            |> Label.withSize Size.small
+            |> Label.withSize Label.small
             |> Label.render
       )
     ]

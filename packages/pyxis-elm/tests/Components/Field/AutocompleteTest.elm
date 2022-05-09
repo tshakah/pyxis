@@ -1,6 +1,6 @@
 module Components.Field.AutocompleteTest exposing (suite)
 
-import Commons.Properties.Size as Size
+import Commons.Attributes.LinkTarget as LinkTarget
 import Components.Button as Button
 import Components.Field.Autocomplete as Autocomplete
 import Components.Field.Label as Label
@@ -11,10 +11,9 @@ import Html
 import Html.Attributes
 import RemoteData
 import Test exposing (Test)
-import Test.Extra as Test
 import Test.Html.Event as Event
 import Test.Html.Query as Query
-import Test.Html.Selector as Selector exposing (attribute)
+import Test.Html.Selector as Selector
 import Test.Simulation as Simulation exposing (Simulation)
 
 
@@ -47,21 +46,21 @@ suite =
     Test.describe "The Autocomplete component"
         [ Test.fuzz Fuzz.string "should set an additional content" <|
             \s ->
-                config "autocomplete-id"
+                config
                     |> Autocomplete.withAdditionalContent (Html.span [] [ Html.text s ])
                     |> render
                     |> Query.find [ Selector.tag "span" ]
                     |> Query.has [ Selector.text s ]
         , Test.fuzz Fuzz.string "should set a disabled attribute" <|
             \s ->
-                config "autocomplete-id"
+                config
                     |> Autocomplete.withDisabled True
                     |> render
                     |> findInput
                     |> Query.has [ Selector.attribute (Html.Attributes.disabled True) ]
         , Test.fuzz Fuzz.string "should add a label" <|
             \s ->
-                config "autocomplete-id"
+                config
                     |> Autocomplete.withLabel (Label.config s)
                     |> render
                     |> Query.find
@@ -71,28 +70,27 @@ suite =
                     |> Query.has [ Selector.text s ]
         , Test.fuzz Fuzz.string "should set a name attribute" <|
             \s ->
-                config "autocomplete-id"
-                    |> Autocomplete.withName s
+                Autocomplete.config filterJobs getJobName s
                     |> render
                     |> findInput
                     |> Query.has [ Selector.attribute (Html.Attributes.name s) ]
         , Test.fuzz Fuzz.string "should set a placeholder attribute" <|
             \s ->
-                config "autocomplete-id"
+                config
                     |> Autocomplete.withPlaceholder s
                     |> render
                     |> findInput
                     |> Query.has [ Selector.attribute (Html.Attributes.placeholder s) ]
         , Test.test "should set a size" <|
             \() ->
-                config "autocomplete-id"
-                    |> Autocomplete.withSize Size.small
+                config
+                    |> Autocomplete.withSize Autocomplete.small
                     |> render
                     |> findInput
                     |> Query.has [ Selector.class "form-field__autocomplete--small" ]
         , Test.test "Show the custom message when no result is found" <|
             \() ->
-                config "autocomplete-id"
+                config
                     |> Autocomplete.withNoResultsFoundMessage "Nothing was found."
                     |> simulation
                     |> Simulation.simulate ( Event.input "Qwerty", [ Selector.tag "input" ] )
@@ -102,7 +100,7 @@ suite =
         , Test.describe "Addon"
             [ Test.test "Show action under no result message" <|
                 \() ->
-                    config "autocomplete-id"
+                    config
                         |> Autocomplete.withAddonAction
                             (Button.ghost
                                 |> Button.withText "Visit the page"
@@ -119,7 +117,7 @@ suite =
                         |> Simulation.run
             , Test.test "Prepend an header to the option list" <|
                 \() ->
-                    config "autocomplete-id"
+                    config
                         |> Autocomplete.withAddonHeader "Choose a role:"
                         |> simulation
                         |> Simulation.simulate ( Event.input "D", [ Selector.tag "input" ] )
@@ -131,7 +129,7 @@ suite =
                         |> Simulation.run
             , Test.test "On focus the suggestion should be visible" <|
                 \() ->
-                    config "autocomplete-id"
+                    config
                         |> Autocomplete.withAddonSuggestion { title = "Suggestion", subtitle = Just "Subtitle", icon = IconSet.Search }
                         |> render
                         |> findDropdown
@@ -141,7 +139,7 @@ suite =
         , Test.describe "Update"
             [ Test.test "Inputting a given option should update the model" <|
                 \() ->
-                    config "autocomplete-id"
+                    config
                         |> simulation
                         |> Simulation.simulate ( Event.input "DEVELOPER", [ Selector.tag "input" ] )
                         |> Simulation.simulate ( Event.click, [ Selector.class "form-dropdown__item" ] )
@@ -155,9 +153,10 @@ suite =
         ]
 
 
-config : String -> Autocomplete.Config Job (Autocomplete.Msg Job)
+config : Autocomplete.Config Job (Autocomplete.Msg Job)
 config =
-    Autocomplete.config filterJobs getJobName
+    Autocomplete.config filterJobs getJobName "autocomplete"
+        |> Autocomplete.withId "autocomplete-id"
 
 
 init : Autocomplete.Model () Job

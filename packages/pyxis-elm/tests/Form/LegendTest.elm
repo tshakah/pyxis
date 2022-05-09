@@ -3,12 +3,13 @@ module Form.LegendTest exposing (suite)
 import Components.Form.Legend as Legend
 import Components.Icon as Icon
 import Components.IconSet as IconSet
+import Expect
 import Fuzz
 import Html
 import Html.Attributes
 import Test exposing (Test)
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (classes)
+import Test.Html.Selector exposing (class, classes, text)
 
 
 suite : Test
@@ -16,31 +17,23 @@ suite =
     Test.describe "The Form Legend component"
         [ Test.test "is empty by default" <|
             \_ ->
-                Legend.config
+                Legend.config "Legend"
                     |> Legend.render
                     |> Query.fromHtml
-                    |> Query.has [ classes [ "form-legend" ] ]
+                    |> Expect.all
+                        [ Query.has [ class "form-legend" ]
+                        , Query.find [ class "form-legend__title" ] >> Query.has [ text "Legend" ]
+                        ]
         , Test.test "has left aligned content" <|
             \_ ->
-                Legend.config
+                Legend.config "Legend"
                     |> Legend.withAlignmentLeft
                     |> Legend.render
                     |> Query.fromHtml
                     |> Query.has [ classes [ "form-legend", "form-legend--align-left" ] ]
-        , Test.fuzz Fuzz.string "contains title" <|
-            \s ->
-                Legend.config
-                    |> Legend.withTitle s
-                    |> Legend.render
-                    |> Query.fromHtml
-                    |> Query.contains
-                        [ Html.span
-                            [ Html.Attributes.class "form-legend__title" ]
-                            [ Html.text s ]
-                        ]
         , Test.fuzz Fuzz.string "contains description" <|
             \s ->
-                Legend.config
+                Legend.config "Legend"
                     |> Legend.withDescription s
                     |> Legend.render
                     |> Query.fromHtml
@@ -51,7 +44,7 @@ suite =
                         ]
         , Test.fuzz Fuzz.string "contains image addon" <|
             \s ->
-                Legend.config
+                Legend.config "Legend"
                     |> Legend.withAddon (Legend.imageAddon s)
                     |> Legend.render
                     |> Query.fromHtml
@@ -67,7 +60,7 @@ suite =
                         ]
         , Test.test "contains icon addon" <|
             \_ ->
-                Legend.config
+                Legend.config "Legend"
                     |> Legend.withAddon (Legend.iconAddon IconSet.User)
                     |> Legend.render
                     |> Query.fromHtml

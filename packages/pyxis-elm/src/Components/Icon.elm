@@ -2,6 +2,10 @@ module Components.Icon exposing
     ( Config
     , config
     , withTheme
+    , small
+    , medium
+    , large
+    , Size
     , withSize
     , Style
     , default
@@ -33,6 +37,10 @@ module Components.Icon exposing
 
 ## Size
 
+@docs small
+@docs medium
+@docs large
+@docs Size
 @docs withSize
 
 
@@ -62,7 +70,6 @@ module Components.Icon exposing
 -}
 
 import Commons.Attributes
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Properties.Theme as Theme exposing (Theme)
 import Commons.Render as CR
 import Components.IconSet as IconSet
@@ -86,6 +93,35 @@ type Config
         }
 
 
+{-| Icon size
+-}
+type Size
+    = Small
+    | Medium
+    | Large
+
+
+{-| Icon size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Icon size medium
+-}
+medium : Size
+medium =
+    Medium
+
+
+{-| Icon size large
+-}
+large : Size
+large =
+    Large
+
+
 {-| Inits the Icon.
 -}
 config : IconSet.Icon -> Config
@@ -94,7 +130,7 @@ config icon =
         { classList = []
         , description = Nothing
         , icon = icon
-        , size = Size.medium
+        , size = Medium
         , spinner = False
         , style = Default
         , theme = Theme.default
@@ -222,9 +258,9 @@ render (Config configData) =
         [ Attributes.classList
             ([ ( "icon", True )
              , ( "icon--spinner", configData.spinner )
-             , ( "icon--size-l", Size.isLarge configData.size )
-             , ( "icon--size-m", Size.isMedium configData.size )
-             , ( "icon--size-s", Size.isSmall configData.size )
+             , ( "icon--size-l", Large == configData.size )
+             , ( "icon--size-m", Medium == configData.size )
+             , ( "icon--size-s", Small == configData.size )
              , ( "icon--boxed", isBoxed configData.style || Theme.isAlternative configData.theme )
              , ( "icon--brand", configData.style == brand )
              , ( "icon--success", configData.style == success )

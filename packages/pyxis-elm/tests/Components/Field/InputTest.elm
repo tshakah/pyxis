@@ -1,7 +1,6 @@
 module Components.Field.InputTest exposing (suite)
 
 import Commons.Properties.Placement as Placement
-import Commons.Properties.Size as Size
 import Components.Field.Input as Input
 import Components.Field.Label as LabelField
 import Components.IconSet as IconSet
@@ -62,8 +61,7 @@ suite =
             ]
         , Test.fuzz Fuzz.string "Name attribute should be rendered correctly" <|
             \name ->
-                fieldConfig
-                    |> Input.withName name
+                Input.text name
                     |> Input.render identity () fieldModel
                     |> Query.fromHtml
                     |> findInput
@@ -116,11 +114,12 @@ suite =
         , Test.test "id attribute should be rendered correctly" <|
             \() ->
                 fieldConfig
+                    |> Input.withId "field-id"
                     |> Input.render identity () fieldModel
                     |> Query.fromHtml
                     |> findInput
                     |> Query.has
-                        [ Selector.id "input_field"
+                        [ Selector.id "field-id"
                         ]
         , Test.describe "classList"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
@@ -230,7 +229,7 @@ suite =
             [ Test.test "should render the correct size class" <|
                 \() ->
                     fieldConfig
-                        |> Input.withSize Size.small
+                        |> Input.withSize Input.small
                         |> Input.render identity () fieldModel
                         |> Query.fromHtml
                         |> findInput
@@ -248,8 +247,7 @@ fieldModel =
 
 fieldConfig : Input.TextConfig
 fieldConfig =
-    Input.text
-        "input_field"
+    Input.text "field"
 
 
 findInput : Query.Single msg -> Query.Single msg

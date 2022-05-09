@@ -1,6 +1,5 @@
 module Examples.Form.View exposing (view)
 
-import Commons.Properties.Size as Size
 import Commons.Properties.Theme as Theme
 import Commons.Render
 import Components.Badge as Badge
@@ -92,7 +91,7 @@ modalIcon =
     Icon.Car
         |> Icon.config
         |> Icon.withClassList [ ( "c-brand-base", True ) ]
-        |> Icon.withSize Size.large
+        |> Icon.withSize Icon.large
 
 
 modalContent : List (Html msg)
@@ -112,6 +111,7 @@ modalFooter =
                 |> Button.render
             , Button.primary
                 |> Button.withText "Close"
-                |> Button.withType (Button.button (Model.ShowModal False))
+                |> Button.withType Button.button
+                |> Button.withOnClick (Model.ShowModal False)
                 |> Button.render
             ]

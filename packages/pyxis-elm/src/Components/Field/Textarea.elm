@@ -3,6 +3,9 @@ module Components.Field.Textarea exposing
     , init
     , Config
     , config
+    , Size
+    , medium
+    , small
     , withSize
     , withAdditionalContent
     , withClassList
@@ -10,7 +13,7 @@ module Components.Field.Textarea exposing
     , withHint
     , withIsSubmitted
     , withLabel
-    , withName
+    , withId
     , withPlaceholder
     , withStrategy
     , withValueMapper
@@ -42,6 +45,9 @@ module Components.Field.Textarea exposing
 
 ## Size
 
+@docs Size
+@docs medium
+@docs small
 @docs withSize
 
 
@@ -53,7 +59,7 @@ module Components.Field.Textarea exposing
 @docs withHint
 @docs withIsSubmitted
 @docs withLabel
-@docs withName
+@docs withId
 @docs withPlaceholder
 @docs withStrategy
 @docs withValueMapper
@@ -82,14 +88,13 @@ module Components.Field.Textarea exposing
 -}
 
 import Commons.Attributes
-import Commons.Properties.Size as Size exposing (Size)
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as StrategyInternal
-import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.Status as FieldStatus
+import Components.Form.FormItem as FormItem
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events
@@ -122,6 +127,27 @@ init initialValue validation =
         }
 
 
+{-| Textarea size
+-}
+type Size
+    = Small
+    | Medium
+
+
+{-| Textarea size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Textarea size medium
+-}
+medium : Size
+medium =
+    Medium
+
+
 {-| The view configuration.
 -}
 type Config
@@ -136,7 +162,7 @@ type alias ConfigData =
     , disabled : Bool
     , hint : Maybe Hint.Config
     , id : String
-    , name : Maybe String
+    , name : String
     , placeholder : Maybe String
     , size : Size
     , label : Maybe Label.Config
@@ -149,16 +175,16 @@ type alias ConfigData =
 {-| Creates a Textarea.
 -}
 config : String -> Config
-config id =
+config name =
     Config
         { additionalContent = Nothing
         , classList = []
         , disabled = False
         , hint = Nothing
-        , id = id
-        , name = Nothing
+        , id = "id-" ++ name
+        , name = name
         , placeholder = Nothing
-        , size = Size.medium
+        , size = Medium
         , label = Nothing
         , strategy = Strategy.onBlur
         , isSubmitted = False
@@ -236,11 +262,11 @@ withClassList classes (Config configuration) =
     Config { configuration | classList = classes }
 
 
-{-| Sets a Name to the Textarea
+{-| Sets a id to the Textarea
 -}
-withName : String -> Config -> Config
-withName name (Config configuration) =
-    Config { configuration | name = Just name }
+withId : String -> Config -> Config
+withId id (Config configuration) =
+    Config { configuration | id = id }
 
 
 {-| Sets a Placeholder to the Textarea
@@ -355,7 +381,7 @@ render tagger ctx ((Model modelData) as model) ((Config configData) as configura
     let
         customizedLabel : Maybe Label.Config
         customizedLabel =
-            Maybe.map (Label.withSize configData.size) configData.label
+            Maybe.map (configData.size |> mapLabelSize |> Label.withSize) configData.label
 
         shownValidation : Result String ()
         shownValidation =
@@ -389,13 +415,13 @@ renderTextarea validationResult (Model modelData) (Config configData) =
             [ Attributes.id configData.id
             , Attributes.classList
                 [ ( "form-field__textarea", True )
-                , ( "form-field__textarea--small", Size.isSmall configData.size )
+                , ( "form-field__textarea--small", Small == configData.size )
                 ]
             , Attributes.classList configData.classList
             , Attributes.disabled configData.disabled
             , Attributes.value modelData.value
             , Commons.Attributes.testId configData.id
-            , Commons.Attributes.maybe Attributes.name configData.name
+            , Attributes.name configData.name
             , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
             , validationResult
                 |> Error.fromResult
@@ -413,5 +439,15 @@ renderTextarea validationResult (Model modelData) (Config configData) =
 {-| Internal
 -}
 mapFieldStatus : (FieldStatus.Status -> FieldStatus.Status) -> Model ctx -> Model ctx
-mapFieldStatus f (Model model) =
-    Model { model | fieldStatus = f model.fieldStatus }
+mapFieldStatus mapper (Model model) =
+    Model { model | fieldStatus = mapper model.fieldStatus }
+
+
+mapLabelSize : Size -> Label.Size
+mapLabelSize size =
+    case size of
+        Small ->
+            Label.small
+
+        Medium ->
+            Label.medium

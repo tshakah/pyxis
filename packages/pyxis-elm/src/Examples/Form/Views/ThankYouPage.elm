@@ -1,6 +1,5 @@
 module Examples.Form.Views.ThankYouPage exposing (view)
 
-import Commons.Properties.Size as Size
 import Components.Button as Button
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -16,7 +15,7 @@ view =
             [ Html.Attributes.class "spacing-v-m" ]
             [ IconSet.CheckCircle
                 |> Icon.config
-                |> Icon.withSize Size.large
+                |> Icon.withSize Icon.large
                 |> Icon.withStyle Icon.success
                 |> Icon.render
             ]

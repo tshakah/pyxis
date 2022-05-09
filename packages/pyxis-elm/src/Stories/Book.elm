@@ -20,6 +20,7 @@ import Stories.Chapters.Form as Form
 import Stories.Chapters.Icon as IconChapter
 import Stories.Chapters.IconSet as IconSetChapter
 import Stories.Chapters.Introduction as Introduction
+import Stories.Chapters.Legend as LegendChapter
 import Stories.Chapters.Loader as Loader
 import Stories.Chapters.Message as Message
 import Stories.Chapters.Modal as ModalChapter
@@ -89,6 +90,7 @@ main =
               )
             , ( "Form"
               , [ Form.docs
+                , LegendChapter.docs
                 , AutocompleteChapter.docs
                 , LabelChapter.docs
                 , CheckboxChapter.docs

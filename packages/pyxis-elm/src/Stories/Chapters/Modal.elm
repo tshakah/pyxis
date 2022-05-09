@@ -272,7 +272,8 @@ modalFooter configModifier updater sharedState =
         |> ModalFooter.withButtons
             [ Button.primary
                 |> Button.withText "Ok"
-                |> Button.withType (Button.button (toggleVisibility updater sharedState))
+                |> Button.withType Button.button
+                |> Button.withOnClick (toggleVisibility updater sharedState)
                 |> Button.render
             ]
 
@@ -396,7 +397,8 @@ statefulComponent id configModifier headerModifier footerModifier modelPicker up
     Html.div []
         [ Button.primary
             |> Button.withText "Open modal"
-            |> Button.withType (Button.button (toggleVisibility updater sharedState))
+            |> Button.withType Button.button
+            |> Button.withOnClick (toggleVisibility updater sharedState)
             |> Button.render
         , Modal.config id
             |> Modal.withCloseMsg (toggleVisibility updater sharedState) "Close"

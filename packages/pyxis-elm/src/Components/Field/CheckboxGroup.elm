@@ -9,9 +9,9 @@ module Components.Field.CheckboxGroup exposing
     , withLayout
     , withAdditionalContent
     , withClassList
+    , withId
     , withIsSubmitted
     , withLabel
-    , withName
     , withStrategy
     , Msg
     , isOnCheck
@@ -54,9 +54,9 @@ module Components.Field.CheckboxGroup exposing
 
 @docs withAdditionalContent
 @docs withClassList
+@docs withId
 @docs withIsSubmitted
 @docs withLabel
-@docs withName
 @docs withStrategy
 
 
@@ -92,10 +92,10 @@ module Components.Field.CheckboxGroup exposing
 import Commons.Attributes
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as InternalStrategy
-import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.Status as FieldStatus
+import Components.Form.FormItem as FormItem
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
@@ -250,11 +250,11 @@ withClassList classList (Config configData) =
     Config { configData | classList = classList }
 
 
-{-| Sets the name attribute
+{-| Sets the id attribute
 -}
-withName : String -> Config value -> Config value
-withName name (Config configData) =
-    Config { configData | name = Just name }
+withId : String -> Config value -> Config value
+withId id (Config configData) =
+    Config { configData | id = id }
 
 
 {-| Sets the validation strategy (when to show the error, if present)
@@ -309,7 +309,7 @@ type alias ConfigData value =
     , id : String
     , label : Maybe Label.Config
     , layout : Layout
-    , name : Maybe String
+    , name : String
     , options : List (Option value)
     , strategy : Strategy
     , isSubmitted : Bool
@@ -326,16 +326,16 @@ type Config value
 {-| Create a default [`CheckboxGroup.Config`](CheckboxGroup#Config)
 -}
 config : String -> Config value
-config id =
+config name =
     Config
         { additionalContent = Nothing
         , ariaLabelledBy = Nothing
         , classList = []
         , hint = Nothing
-        , id = id
+        , id = "id-" ++ name
         , label = Nothing
         , layout = Horizontal
-        , name = Nothing
+        , name = name
         , options = []
         , strategy = Strategy.onBlur
         , isSubmitted = False
@@ -432,7 +432,7 @@ getValue (Model modelData) =
 
 {-| Internal
 -}
-renderCheckbox : { hasError : Bool, checkedValues : List value } -> { r | name : Maybe String } -> Option value -> Html (Msg value)
+renderCheckbox : { hasError : Bool, checkedValues : List value } -> { r | name : String } -> Option value -> Html (Msg value)
 renderCheckbox { hasError, checkedValues } configData (Option optionData) =
     Html.label
         [ Html.Attributes.class "form-control"
@@ -449,7 +449,7 @@ renderCheckbox { hasError, checkedValues } configData (Option optionData) =
                 ]
             , Html.Attributes.checked (List.member optionData.value checkedValues)
             , Html.Attributes.disabled optionData.disabled
-            , Commons.Attributes.maybe Html.Attributes.name configData.name
+            , Html.Attributes.name configData.name
             , Html.Events.onCheck (Checked optionData.value)
             , Html.Events.onFocus (Focused optionData.value)
             , Html.Events.onBlur (Blurred optionData.value)

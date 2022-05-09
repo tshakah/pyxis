@@ -1,6 +1,5 @@
 module Stories.Chapters.Fields.CheckboxCardGroup exposing (Model, docs, init)
 
-import Commons.Properties.Size as Size
 import Components.Field.CheckboxCardGroup as CheckboxCardGroup
 import Components.Field.Label as Label
 import Components.IconSet as IconSet
@@ -46,7 +45,7 @@ checkboxCardGroupModel =
 
 checkboxCardGroupView : formData -> Html Msg
 checkboxCardGroupView formData =
-    CheckboxCardGroup.config "checkboxCard-id"
+    CheckboxCardGroup.config "checkboxCard-name"
         |> CheckboxCardGroup.withLabel (Label.config "Choose the area")
         |> CheckboxCardGroup.withName "area"
         |> CheckboxCardGroup.withOptions
@@ -68,7 +67,7 @@ checkboxCardGroupView formData =
 ## Vertical
 <component with-label="CheckboxCardGroup vertical" />
 ```
-CheckboxGroup.config "checkboxgroup-id"
+CheckboxGroup.config "checkboxgroup-name"
     |> CheckboxCardGroup.withLayout CheckboxCardGroup.vertical
     |> CheckboxCardGroup.render OnCheckboxFieldMsg formData checkboxCardModel
 ```
@@ -93,7 +92,7 @@ optionsWithImage =
     ]
 
 CheckboxGroup.config "checkbox-id"
-    |> CheckboxCardGroup.withSize Size.large
+    |> CheckboxCardGroup.withSize CheckboxCardGroup.large
     |> CheckboxCardGroup.withOptions optionsWithImage
     |> CheckboxCardGroup.render OnCheckboxFieldMsg formData checkboxCardModel
 ```
@@ -116,7 +115,7 @@ optionsWithIcon =
         }
     ]
 
-CheckboxGroup.config "checkboxgroup-id"
+CheckboxGroup.config "checkboxgroup-name"
     |> CheckboxCardGroup.withOptions optionsWithIcon
     |> CheckboxCardGroup.render OnCheckboxFieldMsg formData checkboxCardModel
 ```
@@ -139,7 +138,7 @@ optionsWithTextAddon =
         }
     ]
 
-CheckboxGroup.config "checkboxgroup-id"
+CheckboxGroup.config "checkboxgroup-name"
     |> CheckboxCardGroup.withOptions optionsWithTextAddon
     |> CheckboxCardGroup.render OnCheckboxFieldMsg formData checkboxCardModel
 ```
@@ -261,7 +260,7 @@ componentsList : List ( String, SharedState x -> Html (Msg x) )
 componentsList =
     [ ( "CheckboxCardGroup"
       , statefulComponent
-            { id = "base"
+            { name = "base"
             , configModifier = CheckboxCardGroup.withLabel (Label.config "Choose the area")
             , modelPicker = .base
             , update = \msg models -> { models | base = CheckboxCardGroup.update msg models.base }
@@ -269,7 +268,7 @@ componentsList =
       )
     , ( "CheckboxCardGroup vertical"
       , statefulComponent
-            { id = "vertical"
+            { name = "vertical"
             , configModifier = CheckboxCardGroup.withLayout CheckboxCardGroup.vertical
             , modelPicker = .vertical
             , update = \msg models -> { models | vertical = CheckboxCardGroup.update msg models.vertical }
@@ -277,15 +276,15 @@ componentsList =
       )
     , ( "CheckboxCardGroup large"
       , statefulComponent
-            { id = "large"
-            , configModifier = CheckboxCardGroup.withSize Size.large >> CheckboxCardGroup.withOptions optionsWithImage
+            { name = "large"
+            , configModifier = CheckboxCardGroup.withSize CheckboxCardGroup.large >> CheckboxCardGroup.withOptions optionsWithImage
             , modelPicker = .large
             , update = \msg models -> { models | large = CheckboxCardGroup.update msg models.large }
             }
       )
     , ( "CheckboxCardGroup with icon"
       , statefulComponent
-            { id = "icon"
+            { name = "icon"
             , configModifier = CheckboxCardGroup.withOptions optionsWithIcon
             , modelPicker = .icon
             , update = \msg models -> { models | icon = CheckboxCardGroup.update msg models.icon }
@@ -293,7 +292,7 @@ componentsList =
       )
     , ( "CheckboxCardGroup with text"
       , statefulComponent
-            { id = "with-text"
+            { name = "with-text"
             , configModifier = CheckboxCardGroup.withOptions optionsWithTextAddon
             , modelPicker = .text
             , update = \msg models -> { models | text = CheckboxCardGroup.update msg models.text }
@@ -303,7 +302,7 @@ componentsList =
 
 
 type alias StatefulConfig parsed =
-    { id : String
+    { name : String
     , configModifier : CheckboxCardGroup.Config Option -> CheckboxCardGroup.Config Option
     , modelPicker : Model -> CheckboxCardGroup.Model () Option parsed
     , update : CheckboxCardGroup.Msg Option -> CheckboxCardFieldModels -> CheckboxCardFieldModels
@@ -311,8 +310,8 @@ type alias StatefulConfig parsed =
 
 
 statefulComponent : StatefulConfig parsed -> SharedState x -> Html (Msg x)
-statefulComponent { id, configModifier, modelPicker, update } sharedState =
-    CheckboxCardGroup.config id
+statefulComponent { name, configModifier, modelPicker, update } sharedState =
+    CheckboxCardGroup.config name
         |> CheckboxCardGroup.withOptions
             [ CheckboxCardGroup.option
                 { value = M
@@ -327,7 +326,6 @@ statefulComponent { id, configModifier, modelPicker, update } sharedState =
                 , addon = Nothing
                 }
             ]
-        |> CheckboxCardGroup.withName id
         |> configModifier
         |> CheckboxCardGroup.render identity () (sharedState.checkboxCard |> modelPicker)
         |> Html.map

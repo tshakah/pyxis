@@ -15,10 +15,12 @@ module Components.Field.RadioCardGroup exposing
     , withClassList
     , withDisabled
     , withHint
+    , withId
     , withLabel
-    , withName
-    , withSize
     , withStrategy
+    , medium
+    , large
+    , withSize
     , Msg
     , isOnCheck
     , update
@@ -68,10 +70,16 @@ module Components.Field.RadioCardGroup exposing
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withId
 @docs withLabel
-@docs withName
-@docs withSize
 @docs withStrategy
+
+
+## Size
+
+@docs medium
+@docs large
+@docs withSize
 
 
 ## Update
@@ -101,7 +109,6 @@ module Components.Field.RadioCardGroup exposing
 
 -}
 
-import Commons.Properties.Size as Size exposing (Size)
 import Components.CardGroup as CardGroup
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as InternalStrategy
@@ -141,9 +148,9 @@ type alias ConfigData value =
     , isDisabled : Bool
     , label : Maybe Label.Config
     , layout : CardGroup.Layout
-    , name : Maybe String
+    , name : String
     , options : List (Option value)
-    , size : Size
+    , size : CardGroup.Size
     , strategy : Strategy
     , isSubmitted : Bool
     }
@@ -158,18 +165,18 @@ type Config value
 {-| Initialize the RadioCardGroup Config.
 -}
 config : String -> Config value
-config id =
+config name =
     Config
         { additionalContent = Nothing
         , classList = []
         , hint = Nothing
-        , id = id
+        , id = "id-" ++ name
         , isDisabled = False
         , layout = CardGroup.Horizontal
         , label = Nothing
-        , name = Nothing
+        , name = name
         , options = []
-        , size = Size.medium
+        , size = CardGroup.Medium
         , strategy = Strategy.onBlur
         , isSubmitted = False
         }
@@ -306,11 +313,11 @@ withHint hintMessage (Config configuration) =
         }
 
 
-{-| Add a name to the inputs.
+{-| Add an id to the inputs.
 -}
-withName : String -> Config value -> Config value
-withName name (Config configuration) =
-    Config { configuration | name = Just name }
+withId : String -> Config value -> Config value
+withId id (Config configuration) =
+    Config { configuration | id = id }
 
 
 {-| Add a label to the card group.
@@ -327,9 +334,23 @@ withOptions options (Config configuration) =
     Config { configuration | options = options }
 
 
+{-| Card group size medium
+-}
+medium : CardGroup.Size
+medium =
+    CardGroup.Medium
+
+
+{-| Card group size large
+-}
+large : CardGroup.Size
+large =
+    CardGroup.Large
+
+
 {-| Define the size of cards.
 -}
-withSize : Size -> Config value -> Config value
+withSize : CardGroup.Size -> Config value -> Config value
 withSize size (Config configuration) =
     Config { configuration | size = size }
 

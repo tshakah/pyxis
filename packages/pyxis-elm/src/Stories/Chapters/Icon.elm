@@ -1,6 +1,5 @@
 module Stories.Chapters.Icon exposing (docs)
 
-import Commons.Properties.Size as Size
 import Commons.Properties.Theme as Theme
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -30,7 +29,7 @@ icon: Html msg
 icon =
   IconSet.User
     |> Icon.create
-    |> Icon.withSize Size.large
+    |> Icon.withSize Icon.large
     |> Icon.render
 ```
 
@@ -39,7 +38,7 @@ icon =
 ```
 IconSet.User
     |> Icon.create
-    |> Icon.withSize Size.medium
+    |> Icon.withSize Icon.medium
     |> Icon.render
 ```
 
@@ -48,7 +47,7 @@ IconSet.User
 ```
 IconSet.User
     |> Icon.create
-    |> Icon.withSize Size.small
+    |> Icon.withSize Icon.small
     |> Icon.render
 ```
 
@@ -157,19 +156,19 @@ componentsList =
     [ ( "Large"
       , IconSet.User
             |> Icon.config
-            |> Icon.withSize Size.large
+            |> Icon.withSize Icon.large
             |> Icon.render
       )
     , ( "Medium"
       , IconSet.User
             |> Icon.config
-            |> Icon.withSize Size.medium
+            |> Icon.withSize Icon.medium
             |> Icon.render
       )
     , ( "Small"
       , IconSet.User
             |> Icon.config
-            |> Icon.withSize Size.small
+            |> Icon.withSize Icon.small
             |> Icon.render
       )
     , ( "Default Style"

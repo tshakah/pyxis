@@ -1,6 +1,5 @@
 module Stories.Chapters.IconSet exposing (docs)
 
-import Commons.Properties.Size as Size
 import Components.Form.Grid as Grid
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -45,7 +44,7 @@ toComponent icons =
                         , Html.br [] []
                         , icon
                             |> Icon.config
-                            |> Icon.withSize Size.large
+                            |> Icon.withSize Icon.large
                             |> Icon.render
                         ]
                     ]

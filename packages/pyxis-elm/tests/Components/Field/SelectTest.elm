@@ -24,7 +24,8 @@ suite =
         [ Test.describe "Default"
             [ Test.fuzz Fuzz.string "the input has an id and a data-test-id" <|
                 \id ->
-                    Select.config False id
+                    Select.config False "name"
+                        |> Select.withId id
                         |> renderSelect
                         |> Query.has
                             [ attribute (Html.Attributes.id id)
@@ -34,13 +35,13 @@ suite =
         , Test.describe "Disabled attribute"
             [ Test.test "should be False by default" <|
                 \() ->
-                    Select.config False "select-id"
+                    Select.config False "select-name"
                         |> renderSelect
                         |> findSelect
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    Select.config False "select-id"
+                    Select.config False "select-name"
                         |> Select.withDisabled b
                         |> renderSelect
                         |> findSelect
@@ -48,8 +49,7 @@ suite =
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                Select.config False "select-id"
-                    |> Select.withName name
+                Select.config False name
                     |> renderSelect
                     |> findSelect
                     |> Query.has
@@ -57,7 +57,7 @@ suite =
                         ]
         , Test.fuzz Fuzz.string "placeholder attribute should be rendered correctly" <|
             \p ->
-                Select.config False "select-id"
+                Select.config False "select-name"
                     |> Select.withPlaceholder p
                     |> renderSelect
                     |> findSelect
@@ -67,7 +67,7 @@ suite =
                         ]
         , Test.fuzz Fuzz.string "error message should be rendered correctly" <|
             \p ->
-                Select.config False "select-id"
+                Select.config False "select-name"
                     |> Select.withPlaceholder p
                     |> renderSelect
                     |> findSelect
@@ -78,7 +78,7 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    Select.config False "select-id"
+                    Select.config False "select-name"
                         |> Select.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
                         |> renderSelect
                         |> findSelect
@@ -92,7 +92,7 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    Select.config False "select-id"
+                    Select.config False "select-name"
                         |> Select.withClassList [ ( s1, True ), ( s2, True ) ]
                         |> Select.withClassList [ ( s3, True ) ]
                         |> renderSelect
@@ -167,7 +167,7 @@ simulationDesktop =
         , update = Select.update
         , view =
             \model ->
-                Select.config False "select-id"
+                Select.config False "select-name"
                     |> Select.withOptions
                         [ Select.option { value = "DEVELOPER", label = "Developer" }
                         , Select.option { value = "DESIGNER", label = "Designer" }

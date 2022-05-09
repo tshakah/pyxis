@@ -1,7 +1,6 @@
 module Components.Field.RadioCardGroupTest exposing (suite)
 
 import Commons.Attributes as CommonsAttributes
-import Commons.Properties.Size as Size
 import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.IconSet as IconSet
 import Expect
@@ -48,8 +47,8 @@ suite =
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                radioCardGroupConfig noAddonOptions
-                    |> RadioCardGroup.withName name
+                RadioCardGroup.config name
+                    |> RadioCardGroup.withOptions noAddonOptions
                     |> renderRadioCardGroup
                     |> findInputs
                     |> Query.each
@@ -109,7 +108,7 @@ suite =
             [ Test.test "should have the class for the large" <|
                 \() ->
                     radioCardGroupConfig noAddonOptions
-                        |> RadioCardGroup.withSize Size.large
+                        |> RadioCardGroup.withSize RadioCardGroup.large
                         |> renderRadioCardGroup
                         |> findCards
                         |> Query.each (Query.has [ Selector.classes [ "form-card--large" ] ])
@@ -125,7 +124,7 @@ suite =
             , Test.test "with text addon should render the text passed with proper class" <|
                 \() ->
                     radioCardGroupConfig withTextAddonOptions
-                        |> RadioCardGroup.withSize Size.large
+                        |> RadioCardGroup.withSize RadioCardGroup.large
                         |> renderRadioCardGroup
                         |> findCards
                         |> Query.each
@@ -133,7 +132,7 @@ suite =
             , Test.test "with icon addon should render an Icon with proper class" <|
                 \() ->
                     radioCardGroupConfig withIconAddonOptions
-                        |> RadioCardGroup.withSize Size.large
+                        |> RadioCardGroup.withSize RadioCardGroup.large
                         |> renderRadioCardGroup
                         |> findCards
                         |> Query.each
@@ -250,6 +249,7 @@ radioCardGroupConfig : List (RadioCardGroup.Option Option) -> RadioCardGroup.Con
 radioCardGroupConfig options =
     RadioCardGroup.config "area"
         |> RadioCardGroup.withOptions options
+        |> RadioCardGroup.withId "area"
 
 
 renderRadioCardGroup : RadioCardGroup.Config Option -> Query.Single (RadioCardGroup.Msg Option)

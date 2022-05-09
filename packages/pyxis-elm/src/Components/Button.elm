@@ -10,6 +10,7 @@ module Components.Button exposing
     , submit
     , reset
     , link
+    , linkWithTarget
     , withType
     , withTheme
     , withSize
@@ -26,6 +27,7 @@ module Components.Button exposing
     , withDisabled
     , withId
     , withLoading
+    , withOnClick
     , withShadow
     , withText
     , render
@@ -51,6 +53,7 @@ module Components.Button exposing
 @docs submit
 @docs reset
 @docs link
+@docs linkWithTarget
 @docs withType
 
 
@@ -83,6 +86,7 @@ module Components.Button exposing
 @docs withDisabled
 @docs withId
 @docs withLoading
+@docs withOnClick
 @docs withShadow
 @docs withText
 
@@ -95,8 +99,8 @@ module Components.Button exposing
 
 import Commons.ApiConstraints as API
 import Commons.Attributes
+import Commons.Attributes.LinkTarget exposing (LinkTarget)
 import Commons.Properties.Placement as Placement exposing (Placement)
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Properties.Theme as Theme exposing (Theme)
 import Commons.Render as CR
 import Components.Icon as Icon
@@ -116,11 +120,12 @@ type alias ConfigData msg =
     , icon : ButtonIcon
     , id : Maybe String
     , loading : Bool
+    , onClick : Maybe msg
     , shadow : Bool
     , size : Size
     , text : String
     , theme : Theme
-    , type_ : Type msg
+    , type_ : Type
     , variant : Variant
     }
 
@@ -234,6 +239,7 @@ config variant =
         , icon = None
         , id = Nothing
         , loading = False
+        , onClick = Nothing
         , shadow = False
         , size = Large
         , text = ""
@@ -390,47 +396,54 @@ pickIcon buttonIcon =
 
 {-| The available Button types.
 -}
-type Type msg
-    = Button msg
+type Type
+    = Button
     | Submit
     | Reset
-    | Link String
+    | Link String (Maybe LinkTarget)
 
 
 {-| Creates a button with [type="button"].
 -}
-button : msg -> Type msg
+button : Type
 button =
     Button
 
 
 {-| Creates a button with [type="submit"].
 -}
-submit : Type msg
+submit : Type
 submit =
     Submit
 
 
 {-| Creates a button with [type="reset"].
 -}
-reset : Type msg
+reset : Type
 reset =
     Reset
 
 
 {-| Creates an anchor tag with button-like skin.
 -}
-link : String -> Type msg
-link =
-    Link
+link : String -> Type
+link href =
+    Link href Nothing
+
+
+{-| Creates an anchor tag with button-like skin.
+-}
+linkWithTarget : String -> LinkTarget -> Type
+linkWithTarget href linkTarget =
+    Link href (Just linkTarget)
 
 
 {-| Internal.
 -}
-isLinkType : Type msg -> Bool
+isLinkType : Type -> Bool
 isLinkType type_ =
     case type_ of
-        Link _ ->
+        Link _ _ ->
             True
 
         _ ->
@@ -440,7 +453,7 @@ isLinkType type_ =
 {-| Sets a type to the Button.
 -}
 withType :
-    Type msg
+    Type
     -> Config { c | type_ : API.Allowed } msg
     -> Config { c | type_ : API.Denied } msg
 withType type_ (Config configuration) =
@@ -449,38 +462,22 @@ withType type_ (Config configuration) =
 
 {-| Internal.
 -}
-typeToAttribute : Type msg -> Html.Attribute msg
+typeToAttribute : Type -> List (Html.Attribute msg)
 typeToAttribute type_ =
     case type_ of
         Submit ->
-            Attributes.type_ "submit"
+            [ Attributes.type_ "submit" ]
 
         Reset ->
-            Attributes.type_ "reset"
+            [ Attributes.type_ "reset" ]
 
-        Button _ ->
-            Attributes.type_ "button"
+        Button ->
+            [ Attributes.type_ "button" ]
 
-        Link href ->
-            Attributes.href href
-
-
-{-| Internal.
--}
-typeToEventAttribute : Type msg -> Html.Attribute msg
-typeToEventAttribute type_ =
-    case type_ of
-        Button action ->
-            Events.onClick action
-
-        Submit ->
-            Commons.Attributes.none
-
-        Reset ->
-            Commons.Attributes.none
-
-        Link _ ->
-            Commons.Attributes.none
+        Link href target ->
+            [ Attributes.href href
+            , Commons.Attributes.maybe Commons.Attributes.target target
+            ]
 
 
 {-| Sets a theme to the Button.
@@ -602,13 +599,20 @@ withClassList classList (Config configuration) =
     Config { configuration | classList = classList }
 
 
+{-| Adds the event onClick to the Button.
+-}
+withOnClick : msg -> Config constraints msg -> Config a msg
+withOnClick onClick (Config configuration) =
+    Config { configuration | onClick = Just onClick }
+
+
 {-| Renders the Button.
 -}
 render : Config constraints msg -> Html msg
 render ((Config configData) as configuration) =
     renderTag
         configuration
-        [ Attributes.classList
+        ([ Attributes.classList
             ([ ( "button", True )
              , ( "button--prepend-icon", isPrepend configData.icon )
              , ( "button--append-icon", isAppend configData.icon )
@@ -629,13 +633,14 @@ render ((Config configData) as configuration) =
              ]
                 ++ configData.classList
             )
-        , Attributes.disabled configData.disabled
-        , typeToAttribute configData.type_
-        , typeToEventAttribute configData.type_
-        , Commons.Attributes.maybe Attributes.id configData.id
-        , Commons.Attributes.maybe Commons.Attributes.testId configData.id
-        , Commons.Attributes.maybe Commons.Attributes.ariaLabel configData.ariaLabel
-        ]
+         , Attributes.disabled configData.disabled
+         , Commons.Attributes.maybe Events.onClick configData.onClick
+         , Commons.Attributes.maybe Attributes.id configData.id
+         , Commons.Attributes.maybe Commons.Attributes.testId configData.id
+         , Commons.Attributes.maybe Commons.Attributes.ariaLabel configData.ariaLabel
+         ]
+            ++ typeToAttribute configData.type_
+        )
         [ configData.icon
             |> renderIcon configData.size
             |> CR.renderIf (isPrepend configData.icon || isStandalone configData.icon)
@@ -677,10 +682,10 @@ renderIcon size icon =
 applyIconSize : Size -> Icon.Config -> Icon.Config
 applyIconSize size =
     if size == Huge then
-        Icon.withSize Size.large
+        Icon.withSize Icon.large
 
     else if size == Large then
-        Icon.withSize Size.medium
+        Icon.withSize Icon.medium
 
     else
-        Icon.withSize Size.small
+        Icon.withSize Icon.small

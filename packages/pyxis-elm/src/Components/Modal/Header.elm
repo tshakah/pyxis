@@ -212,6 +212,7 @@ renderCloseButton { msg, ariaLabel } =
     Button.tertiary
         |> Button.withSize Button.medium
         |> Button.withAriaLabel ariaLabel
-        |> Button.withType (Button.button msg)
+        |> Button.withType Button.button
+        |> Button.withOnClick msg
         |> Button.withIconOnly IconSet.Close
         |> Button.render

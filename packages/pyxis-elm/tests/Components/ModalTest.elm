@@ -1,6 +1,5 @@
 module Components.ModalTest exposing (suite)
 
-import Commons.Properties.Size as Size
 import Commons.Properties.Theme as Theme
 import Components.Badge as Badge
 import Components.Button as Button
@@ -124,7 +123,7 @@ suite =
                                     (Icon.Car
                                         |> Icon.config
                                         |> Icon.withClassList [ ( "c-brand-base", True ) ]
-                                        |> Icon.withSize Size.large
+                                        |> Icon.withSize Icon.large
                                     )
                             )
                         |> renderConfig

@@ -47,7 +47,7 @@ checkboxGroupModel =
 
 checkboxGroup : formData -> Html Msg
 checkboxGroup formData =
-    CheckboxGroup.config "checkbox-id"
+    CheckboxGroup.config "checkbox-name"
         |> CheckboxGroup.withOptions
             [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
             , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
@@ -61,7 +61,7 @@ checkboxGroup formData =
 
 <component with-label="CheckboxGroup with vertical layout" />
 ```
-CheckboxGroup.config "checkbox-id"
+CheckboxGroup.config "checkbox-name"
     |> CheckboxGroup.withLayout CheckboxGroup.vertical
     |> CheckboxGroup.render
         OnCheckboxGroupMsg
@@ -81,7 +81,7 @@ options =
         |> CheckboxGroup.withDisabledOption True
     ]
 
-CheckboxGroup.config "checkbox-id"
+CheckboxGroup.config "checkbox-name"
     |> CheckboxGroup.withOptions options
     |> CheckboxGroup.render
         OnCheckboxGroupMsg
@@ -106,7 +106,7 @@ CheckboxGroup.single
          ", disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "
      ]
     )
-    "checkbox-id"
+    "checkbox-name"
     |> CheckboxGroup.render
         OnCheckboxGroupMsg
         formData
@@ -187,7 +187,7 @@ componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState 
 componentsList =
     [ ( "CheckboxGroup"
       , statefulComponent
-            { id = "checkbox-group"
+            { name = "checkbox-group"
             , configModifier = CheckboxGroup.withLabel (Label.config "Choose at least one language")
             , modelPicker = .base
             , update = \msg models -> { models | base = CheckboxGroup.update msg models.base }
@@ -195,7 +195,7 @@ componentsList =
       )
     , ( "CheckboxGroup with vertical layout"
       , statefulComponent
-            { id = "checkbox-group-vertical"
+            { name = "checkbox-group-vertical"
             , configModifier = CheckboxGroup.withLayout CheckboxGroup.vertical
             , modelPicker = .noValidation
             , update = \msg models -> { models | noValidation = CheckboxGroup.update msg models.noValidation }
@@ -203,7 +203,7 @@ componentsList =
       )
     , ( "CheckboxGroup with a disabled option"
       , statefulComponent
-            { id = "checkbox-group-disabled"
+            { name = "checkbox-group-disabled"
             , configModifier = CheckboxGroup.withOptions optionsWithDisabled
             , modelPicker = .disabled
             , update = \msg models -> { models | disabled = CheckboxGroup.update msg models.disabled }
@@ -225,8 +225,7 @@ componentsList =
                         ", disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "
                     ]
                 )
-                "checkbox-id"
-                |> CheckboxGroup.withName "checkbox-group-single"
+                "checkbox-name"
                 |> CheckboxGroup.render identity () sharedState.checkbox.single
                 |> Html.map
                     (ElmBook.Actions.mapUpdate
@@ -240,7 +239,7 @@ componentsList =
 
 
 type alias StatefulConfig =
-    { id : String
+    { name : String
     , configModifier : CheckboxGroup.Config Option -> CheckboxGroup.Config Option
     , modelPicker : CheckboxFieldModels -> CheckboxGroup.Model () Option (List Option)
     , update : CheckboxGroup.Msg Option -> CheckboxFieldModels -> CheckboxFieldModels
@@ -248,9 +247,8 @@ type alias StatefulConfig =
 
 
 statefulComponent : StatefulConfig -> SharedState x -> Html (ElmBook.Msg (SharedState x))
-statefulComponent { id, configModifier, modelPicker, update } sharedState =
-    CheckboxGroup.config id
-        |> CheckboxGroup.withName id
+statefulComponent { name, configModifier, modelPicker, update } sharedState =
+    CheckboxGroup.config name
         |> CheckboxGroup.withOptions options
         |> configModifier
         |> CheckboxGroup.render identity () (sharedState.checkbox |> modelPicker)

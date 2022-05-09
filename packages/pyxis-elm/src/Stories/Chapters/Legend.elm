@@ -1,0 +1,92 @@
+module Stories.Chapters.Legend exposing (docs)
+
+import Components.Form.Legend as Legend
+import Components.IconSet as Icon
+import ElmBook
+import ElmBook.Chapter
+import Html exposing (Html)
+
+
+docs : ElmBook.Chapter.Chapter sharedState
+docs =
+    "Legend"
+        |> ElmBook.Chapter.chapter
+        |> ElmBook.Chapter.withComponentList componentsList
+        |> ElmBook.Chapter.render """
+
+Legend
+<component with-label="Default" />
+```
+legend: Html msg
+legend =
+    Legend.config "Legend"
+        |> Legend.render
+```
+---
+## With Description
+<component with-label="WithDescription" />
+```
+Legend.config "Legend"
+    |> Legend.withDescription "Legend description"
+    |> Legend.render
+```
+---
+## With Image Addon
+<component with-label="WithImageAddon" />
+```
+Legend.config "Legend"
+    |> Legend.withAddon (Legend.imageAddon "../assets/placeholder.svg")
+    |> Legend.withDescription "Legend description"
+    |> Legend.render
+```
+---
+## With Icon Addon
+<component with-label="WithIconAddon" />
+```
+Legend.config "Legend"
+    |> Legend.withAddon (Legend.iconAddon Icon.Car)
+    |> Legend.withDescription "Legend description"
+    |> Legend.render
+```
+---
+## With Left Alignment
+<component with-label="WithLeftAlignment" />
+```
+Legend.config "Legend"
+    |> Legend.withAlignmentLeft
+    |> Legend.withDescription "Legend description"
+    |> Legend.render
+```
+"""
+
+
+componentsList : List ( String, Html (ElmBook.Msg state) )
+componentsList =
+    [ ( "Default"
+      , Legend.config "Legend"
+            |> Legend.render
+      )
+    , ( "WithDescription"
+      , Legend.config "Legend"
+            |> Legend.withDescription "Legend description"
+            |> Legend.render
+      )
+    , ( "WithImageAddon"
+      , Legend.config "Legend"
+            |> Legend.withAddon (Legend.imageAddon "../assets/placeholder.svg")
+            |> Legend.withDescription "Legend description"
+            |> Legend.render
+      )
+    , ( "WithIconAddon"
+      , Legend.config "Legend"
+            |> Legend.withAddon (Legend.iconAddon Icon.Car)
+            |> Legend.withDescription "Legend description"
+            |> Legend.render
+      )
+    , ( "WithLeftAlignment"
+      , Legend.config "Legend"
+            |> Legend.withDescription "Legend description"
+            |> Legend.withAlignmentLeft
+            |> Legend.render
+      )
+    ]

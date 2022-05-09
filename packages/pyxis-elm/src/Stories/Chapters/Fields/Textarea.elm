@@ -1,6 +1,5 @@
 module Stories.Chapters.Fields.Textarea exposing (Model, docs, init)
 
-import Commons.Properties.Size as Size
 import Components.Field.Label as Label
 import Components.Field.Textarea as Textarea
 import ElmBook
@@ -38,8 +37,8 @@ validation _ value =
 
 
 textareaField : String -> formData -> Html Msg
-textareaField id formData =
-    Textarea.config id
+textareaField name formData =
+    Textarea.config name
         |> Textarea.withLabel (Label.config "Textarea")
         |> Textarea.render OnTextareaMsg formData textareaModel
 ```
@@ -53,8 +52,8 @@ You can set your TextField with a _size_ of default or small.
 <component with-label="Textarea withSize small" />
 
 ```
-Textarea.config id
-    |> Textarea.withSize Size.small
+Textarea.config name
+    |> Textarea.withSize Textarea.small
     |> Textarea.render OnTextareaMsg formData textareaModel
 ```
 
@@ -62,14 +61,14 @@ Textarea.config id
 
 <component with-label="Textarea withPlaceholder" />
 ```
-Textarea.config id
+Textarea.config name
     |> Textarea.withPlaceholder "Custom placeholder"
     |> Textarea.render OnTextareaMsg formData textareaModel
 ```
 
 <component with-label="Textarea withDisabled" />
 ```
-Textarea.config id
+Textarea.config name
     |> Textarea.withDisabled True
     |> Textarea.render OnTextareaMsg formData textareaModel
 ```
@@ -115,7 +114,7 @@ componentsList =
             (\msg model -> { model | withValidation = Textarea.update msg model.withValidation })
       )
     , ( "Textarea withSize small"
-      , statelessComponent "Small" (Textarea.withSize Size.small)
+      , statelessComponent "Small" (Textarea.withSize Textarea.small)
       )
     , ( "Textarea withDisabled"
       , statelessComponent "Disabled" (Textarea.withDisabled True)
@@ -127,8 +126,8 @@ componentsList =
 
 
 statelessComponent : String -> (Textarea.Config -> Textarea.Config) -> SharedState x -> Html (ElmBook.Msg (SharedState x))
-statelessComponent id configModifier { textarea } =
-    Textarea.config id
+statelessComponent name configModifier { textarea } =
+    Textarea.config name
         |> configModifier
         |> Textarea.render identity () textarea.base
         |> Html.map
@@ -146,9 +145,9 @@ statefulComponent :
     -> (Textarea.Msg -> Model -> Model)
     -> SharedState x
     -> Html (ElmBook.Msg (SharedState x))
-statefulComponent id modelPicker update sharedState =
-    Textarea.config id
-        |> Textarea.withLabel (Label.config id)
+statefulComponent name modelPicker update sharedState =
+    Textarea.config name
+        |> Textarea.withLabel (Label.config name)
         |> Textarea.render identity () (sharedState.textarea |> modelPicker)
         |> Html.map
             (ElmBook.Actions.mapUpdate

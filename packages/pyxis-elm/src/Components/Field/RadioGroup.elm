@@ -13,8 +13,8 @@ module Components.Field.RadioGroup exposing
     , withClassList
     , withDisabled
     , withHint
+    , withId
     , withLabel
-    , withName
     , Msg
     , isOnCheck
     , update
@@ -61,8 +61,8 @@ module Components.Field.RadioGroup exposing
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withId
 @docs withLabel
-@docs withName
 
 
 ## Update
@@ -97,10 +97,10 @@ import Commons.String
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as InternalStrategy
-import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.Status as FieldStatus
+import Components.Form.FormItem as FormItem
 import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events as Events
@@ -137,7 +137,7 @@ type alias ConfigData value =
     , isSubmitted : Bool
     , label : Maybe Label.Config
     , layout : Layout
-    , name : Maybe String
+    , name : String
     , options : List (Option value)
     , strategy : Strategy
     }
@@ -152,17 +152,17 @@ type Config value
 {-| Initialize the RadioGroup Config.
 -}
 config : String -> Config value
-config id =
+config name =
     Config
         { additionalContent = Nothing
         , classList = []
         , hint = Nothing
-        , id = id
+        , id = "id-" ++ name
         , isDisabled = False
         , isSubmitted = False
         , label = Nothing
         , layout = Horizontal
-        , name = Nothing
+        , name = name
         , options = []
         , strategy = Strategy.onBlur
         }
@@ -264,11 +264,11 @@ withIsSubmitted isSubmitted (Config configuration) =
     Config { configuration | isSubmitted = isSubmitted }
 
 
-{-| Add a name to the inputs.
+{-| Add an id to the inputs.
 -}
-withName : String -> Config value -> Config value
-withName name (Config configuration) =
-    Config { configuration | name = Just name }
+withId : String -> Config value -> Config value
+withId id (Config configuration) =
+    Config { configuration | id = id }
 
 
 {-| Add a label to the inputs.
@@ -350,8 +350,8 @@ renderField shownValidation model ((Config configData) as configuration) =
 {-| Internal.
 -}
 labelId : String -> String
-labelId =
-    (++) "label-"
+labelId id =
+    id ++ "-label"
 
 
 {-| Internal.
@@ -371,7 +371,7 @@ renderRadio validationResult (Model { selectedValue }) (Config { id, name, isDis
             , Attributes.disabled isDisabled
             , Attributes.id (radioId id label)
             , Commons.Attributes.testId (radioId id label)
-            , Commons.Attributes.maybe Attributes.name name
+            , Attributes.name name
             , Events.onCheck (always (OnCheck value))
             , Events.onFocus (Focused value)
             , Events.onBlur (Blurred value)

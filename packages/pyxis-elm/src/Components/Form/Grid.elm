@@ -49,7 +49,6 @@ module Components.Form.Grid exposing
 -}
 
 import Commons.Properties.Gap as Gap exposing (Gap)
-import Commons.Properties.Size as Size exposing (Size)
 import Components.Form.Grid.Col as Col
 import Components.Form.Grid.Row as Row
 import Html exposing (Html)
@@ -107,7 +106,7 @@ type Row msg
 {-| Internal.
 -}
 type alias RowConfigData msg =
-    { size : Size
+    { size : Row.Size
     , children : List (Col msg)
     }
 
@@ -116,7 +115,7 @@ type alias RowConfigData msg =
 -}
 initialRowConfiguration : RowConfigData msg
 initialRowConfiguration =
-    { size = Size.large
+    { size = Row.large
     , children = []
     }
 
@@ -220,8 +219,8 @@ renderRow (Row configuration) =
     Html.div
         [ Attributes.classList
             [ ( "form-grid__row", True )
-            , ( "form-grid__row--medium", Size.isMedium configuration.size )
-            , ( "form-grid__row--small", Size.isSmall configuration.size )
+            , ( "form-grid__row--medium", Row.isMedium configuration.size )
+            , ( "form-grid__row--small", Row.isSmall configuration.size )
             ]
         ]
         (List.map renderCol configuration.children)

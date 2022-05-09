@@ -1,4 +1,4 @@
-module Components.Field.FormItem exposing
+module Components.Form.FormItem exposing
     ( PartialFieldConfig
     , config
     , withAdditionalContent

@@ -16,16 +16,19 @@ module Components.Field.Input exposing
     , iconAddon
     , textAddon
     , withAddon
+    , small
+    , medium
+    , Size
     , withSize
     , withAdditionalContent
     , withClassList
     , withDisabled
     , withHint
+    , withId
     , withIsSubmitted
     , withLabel
     , withMax
     , withMin
-    , withName
     , withPlaceholder
     , withStep
     , withStrategy
@@ -75,6 +78,9 @@ module Components.Field.Input exposing
 
 ## Size
 
+@docs small
+@docs medium
+@docs Size
 @docs withSize
 
 
@@ -84,11 +90,11 @@ module Components.Field.Input exposing
 @docs withClassList
 @docs withDisabled
 @docs withHint
+@docs withId
 @docs withIsSubmitted
 @docs withLabel
 @docs withMax
 @docs withMin
-@docs withName
 @docs withPlaceholder
 @docs withStep
 @docs withStrategy
@@ -120,15 +126,14 @@ module Components.Field.Input exposing
 import Commons.ApiConstraints as API
 import Commons.Attributes
 import Commons.Properties.Placement as Placement exposing (Placement)
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as StrategyInternal
-import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.Status as FieldStatus
+import Components.Form.FormItem as FormItem
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Date
@@ -250,6 +255,27 @@ validate ctx (Model { value, validation }) =
     validation ctx value
 
 
+{-| Input size
+-}
+type Size
+    = Small
+    | Medium
+
+
+{-| Input size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Input size medium
+-}
+medium : Size
+medium =
+    Medium
+
+
 {-| The view config.
 -}
 type Config constraints
@@ -264,7 +290,7 @@ type Config constraints
         , label : Maybe Label.Config
         , min : Maybe String
         , max : Maybe String
-        , name : Maybe String
+        , name : String
         , placeholder : Maybe String
         , size : Size
         , strategy : Strategy
@@ -282,9 +308,9 @@ type alias CommonConstraints specificConstraints =
         , classList : API.Allowed
         , disabled : API.Allowed
         , hint : API.Allowed
+        , id : API.Allowed
         , isSubmitted : API.Allowed
         , label : API.Allowed
-        , name : API.Allowed
         , size : API.Allowed
         , strategy : API.Allowed
         , valueMapper : API.Allowed
@@ -343,21 +369,21 @@ type alias TextConstraints =
 {-| Internal. Creates an Input field.
 -}
 config : Type -> String -> Config constraints
-config inputType id =
+config inputType name =
     Config
         { additionalContent = Nothing
         , addon = Nothing
         , classList = []
         , disabled = False
         , hint = Nothing
-        , id = id
+        , id = "id-" ++ name
         , isSubmitted = False
         , label = Nothing
         , max = Nothing
         , min = Nothing
-        , name = Nothing
+        , name = name
         , placeholder = Nothing
-        , size = Size.medium
+        , size = Medium
         , step = Nothing
         , strategy = Strategy.onBlur
         , type_ = inputType
@@ -641,12 +667,12 @@ withMin min (Config configuration) =
 
 {-| Sets a Name to the Input.
 -}
-withName :
+withId :
     String
-    -> Config { c | name : API.Allowed }
-    -> Config { c | name : API.Denied }
-withName name (Config configuration) =
-    Config { configuration | name = Just name }
+    -> Config { c | id : API.Allowed }
+    -> Config { c | id : API.Denied }
+withId id (Config configuration) =
+    Config { configuration | id = id }
 
 
 {-| Sets a Step to the Input.
@@ -783,15 +809,15 @@ renderInput validationResult (Model modelData) (Config configData) =
             , ( "form-field__text", configData.type_ == Number )
             , ( "form-field__text", configData.type_ == Password )
             , ( "form-field__text", configData.type_ == Email )
-            , ( "form-field__text--small", configData.type_ /= Date && Size.isSmall configData.size )
-            , ( "form-field__date--small", configData.type_ == Date && Size.isSmall configData.size )
+            , ( "form-field__text--small", configData.type_ /= Date && Small == configData.size )
+            , ( "form-field__date--small", configData.type_ == Date && Small == configData.size )
             ]
         , Attributes.classList configData.classList
         , Attributes.disabled configData.disabled
         , Attributes.value modelData.value
         , typeToAttribute configData.type_
         , Commons.Attributes.testId configData.id
-        , Commons.Attributes.maybe Attributes.name configData.name
+        , Attributes.name configData.name
         , Commons.Attributes.maybe Attributes.placeholder configData.placeholder
         , Commons.Attributes.maybe Attributes.min configData.min
         , Commons.Attributes.maybe Attributes.max configData.max

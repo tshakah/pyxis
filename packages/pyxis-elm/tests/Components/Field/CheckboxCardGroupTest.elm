@@ -23,13 +23,17 @@ type Lang
 
 langsConfig : CheckboxCardGroup.Config Lang
 langsConfig =
-    CheckboxCardGroup.config "checkbox-id"
-        |> CheckboxCardGroup.withOptions
-            [ CheckboxCardGroup.option { value = Elm, title = Just "Elm", text = Nothing, addon = Nothing }
-            , CheckboxCardGroup.option { value = Typescript, title = Just "Typescript", text = Nothing, addon = Nothing }
-            , CheckboxCardGroup.option { value = Rust, title = Just "Rust", text = Nothing, addon = Nothing }
-            , CheckboxCardGroup.option { value = Elixir, title = Just "Elixir", text = Nothing, addon = Nothing }
-            ]
+    CheckboxCardGroup.config "checkbox"
+        |> CheckboxCardGroup.withOptions langsOptions
+
+
+langsOptions : List (CheckboxCardGroup.Option Lang)
+langsOptions =
+    [ CheckboxCardGroup.option { value = Elm, title = Just "Elm", text = Nothing, addon = Nothing }
+    , CheckboxCardGroup.option { value = Typescript, title = Just "Typescript", text = Nothing, addon = Nothing }
+    , CheckboxCardGroup.option { value = Rust, title = Just "Rust", text = Nothing, addon = Nothing }
+    , CheckboxCardGroup.option { value = Elixir, title = Just "Elixir", text = Nothing, addon = Nothing }
+    ]
 
 
 suite : Test
@@ -38,7 +42,8 @@ suite =
         [ Test.describe "Id"
             [ Test.fuzz Fuzz.Extra.nonEmptyString "the CheckboxGroup has an id and a data-test-id" <|
                 \id ->
-                    CheckboxCardGroup.config id
+                    CheckboxCardGroup.config "name"
+                        |> CheckboxCardGroup.withId id
                         |> renderCheckboxGroup
                         |> Query.find [ Selector.class "form-card-group" ]
                         |> Query.has
@@ -55,7 +60,7 @@ suite =
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    CheckboxCardGroup.config "checkbox-id"
+                    CheckboxCardGroup.config "checkbox"
                         |> CheckboxCardGroup.withOptions
                             [ CheckboxCardGroup.option { value = Elm, title = Just "Elm", text = Nothing, addon = Nothing }
                             , CheckboxCardGroup.option { value = Typescript, title = Just "Typescript", text = Nothing, addon = Nothing }
@@ -76,8 +81,9 @@ suite =
                             [ Selector.attribute (Html.Attributes.name name)
                             ]
                 in
-                langsConfig
-                    |> CheckboxCardGroup.withName name
+                CheckboxCardGroup.config name
+                    |> CheckboxCardGroup.withOptions langsOptions
+                    |> CheckboxCardGroup.withId name
                     |> renderCheckboxGroup
                     |> Expect.all
                         [ findInput "Elm" >> hasName
@@ -88,7 +94,7 @@ suite =
         , Test.describe "ClassList attribute"
             [ Test.fuzzDistinctClassNames3 "should render correctly the given classes" <|
                 \s1 s2 s3 ->
-                    CheckboxCardGroup.config "checkbox-id"
+                    CheckboxCardGroup.config "checkbox"
                         |> CheckboxCardGroup.withClassList [ ( s1, True ), ( s2, False ), ( s3, True ) ]
                         |> renderCheckboxGroup
                         |> Expect.all
@@ -101,7 +107,7 @@ suite =
                             ]
             , Test.fuzzDistinctClassNames3 "should only render the last pipe value" <|
                 \s1 s2 s3 ->
-                    CheckboxCardGroup.config "checkbox-id"
+                    CheckboxCardGroup.config "checkbox"
                         |> CheckboxCardGroup.withClassList [ ( s1, True ), ( s2, True ) ]
                         |> CheckboxCardGroup.withClassList [ ( s3, True ) ]
                         |> renderCheckboxGroup

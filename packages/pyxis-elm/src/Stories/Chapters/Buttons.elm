@@ -1,5 +1,6 @@
 module Stories.Chapters.Buttons exposing (docs)
 
+import Commons.Attributes.LinkTarget as LinkType
 import Commons.Properties.Theme as Theme
 import Components.Button as Button
 import Components.IconSet as IconSet
@@ -34,7 +35,8 @@ btn: Html Msg
 btn =
     Button.primary
         |> Button.withText "Click me!"
-        |> Button.withType (Button.button OnClick)
+        |> Button.withType Button.button
+        |> Button.withOnClick OnClick
         |> Button.render
 ```
 
@@ -88,7 +90,8 @@ Button.primary
 ```
 Button.primary
     |> Button.withText "Click me!"
-    |> Button.withType (Button.button OnClick)
+    |> Button.withType Button.button
+    |> Button.withOnClick OnClick
     |> Button.render
 ```
 
@@ -109,6 +112,15 @@ Button.primary
     |> Button.withType (Button.link "https://www.prima.it")
     |> Button.render
 ```
+
+<component with-label="Type Link with target" />
+```
+Button.primary
+    |> Button.withText "Click me!"
+    |> Button.withType (Button.linkWithTarget "https://www.prima.it" LinkTarget.blank)
+    |> Button.render
+```
+
 ---
 ## Size
 Sizes set the occupied space of the button.
@@ -270,7 +282,8 @@ componentsList : List ( String, Html (ElmBook.Msg state) )
 componentsList =
     [ ( "Primary"
       , Button.primary
-            |> Button.withType (Button.button (ElmBook.Actions.logAction "Button clicked"))
+            |> Button.withType Button.button
+            |> Button.withOnClick (ElmBook.Actions.logAction "Button clicked")
             |> Button.withText "Click me!"
             |> Button.render
       )
@@ -315,6 +328,12 @@ componentsList =
       , Button.primary
             |> Button.withText "Click me!"
             |> Button.withType (Button.link "https://www.prima.it")
+            |> Button.render
+      )
+    , ( "Type Link with target"
+      , Button.primary
+            |> Button.withText "Click me!"
+            |> Button.withType (Button.linkWithTarget  "https://www.prima.it" LinkType.blank)
             |> Button.render
       )
     , ( "Huge"

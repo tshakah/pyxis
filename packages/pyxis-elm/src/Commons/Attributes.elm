@@ -5,6 +5,7 @@ module Commons.Attributes exposing
     , ariaLabel
     , ariaLabelledbyBy
     , role
+    , target
     , testId
     , renderIf
     , maybe
@@ -26,6 +27,8 @@ module Commons.Attributes exposing
 
 ## Attributes
 
+@docs LinkTarget
+@docs target
 @docs testId
 
 
@@ -37,10 +40,17 @@ module Commons.Attributes exposing
 
 -}
 
+import Commons.Attributes.LinkTarget as LinkTarget exposing (LinkTarget)
 import Html
 import Html.Attributes
 import Json.Encode
 import Maybe.Extra
+
+
+target : LinkTarget -> Html.Attribute msg
+target =
+    LinkTarget.toString
+        >> Html.Attributes.target
 
 
 {-| Creates an aria-label attribute.

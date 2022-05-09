@@ -1,6 +1,5 @@
 module Stories.Chapters.Fields.RadioCardGroup exposing (Model, docs, init)
 
-import Commons.Properties.Size as Size
 import Components.Field.Label as Label
 import Components.Field.RadioCardGroup as RadioCardGroup
 import Components.IconSet as IconSet
@@ -42,7 +41,7 @@ radioCardGroupModel =
 
 radioCardGroupView : formData -> Html Msg
 radioCardGroupView formData =
-    RadioCardGroup.config "radioCard-id"
+    RadioCardGroup.config "radioCard-name"
         |> RadioCardGroup.withLabel (Label.config "Choose the insurance type")
         |> RadioCardGroup.withName "insurance-type"
         |> RadioCardGroup.withOptions
@@ -65,7 +64,7 @@ radioCardGroupView formData =
 ## Vertical Layout
 <component with-label="RadioCardGroup vertical" />
 ```
-RadioCardGroup.config id
+RadioCardGroup.config name
     |> RadioCardGroup.withLayout RadioCardGroup.vertical
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
@@ -92,8 +91,8 @@ optionsWithImage =
         }
     ]
 
-RadioCardGroup.config id
-    |> RadioCardGroup.withSize Size.large
+RadioCardGroup.config name
+    |> RadioCardGroup.withSize RadioCardGroup.large
     |> RadioCardGroup.withOptions optionsWithImage
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
@@ -120,7 +119,7 @@ optionsWithIcon =
     ]
 
 
-RadioCardGroup.config id
+RadioCardGroup.config name
     |> RadioCardGroup.withOptions optionsWithIcon
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
@@ -147,7 +146,7 @@ optionsWithTextAddon =
     ]
 
 
-RadioCardGroup.config id
+RadioCardGroup.config name
     |> RadioCardGroup.withOptions optionsWithTextAddon
     |> RadioCardGroup.render
         OnRadioCardFieldMsg
@@ -271,7 +270,7 @@ componentsList : List ( String, SharedState x -> Html (ElmBook.Msg (SharedState 
 componentsList =
     [ ( "RadioCardGroup"
       , statefulComponent
-            { id = "radio-group"
+            { name = "radio-group"
             , configModifier = RadioCardGroup.withLabel (Label.config "Choose the insurance type")
             , modelPicker = .base
             , update = \msg models -> { models | base = RadioCardGroup.update msg models.base }
@@ -279,7 +278,7 @@ componentsList =
       )
     , ( "RadioCardGroup vertical"
       , statefulComponent
-            { id = "radio-group-vertical"
+            { name = "radio-group-vertical"
             , configModifier = RadioCardGroup.withLayout RadioCardGroup.vertical
             , modelPicker = .vertical
             , update = \msg models -> { models | vertical = RadioCardGroup.update msg models.vertical }
@@ -287,7 +286,7 @@ componentsList =
       )
     , ( "RadioCardGroup disabled"
       , statefulComponent
-            { id = "radio-group-disabled"
+            { name = "radio-group-disabled"
             , configModifier = RadioCardGroup.withDisabled True
             , modelPicker = .disabled
             , update = \msg models -> { models | disabled = RadioCardGroup.update msg models.disabled }
@@ -295,15 +294,15 @@ componentsList =
       )
     , ( "RadioCardGroup large"
       , statefulComponent
-            { id = "radio-group-large"
-            , configModifier = RadioCardGroup.withSize Size.large >> RadioCardGroup.withOptions optionsWithImage
+            { name = "radio-group-large"
+            , configModifier = RadioCardGroup.withSize RadioCardGroup.large >> RadioCardGroup.withOptions optionsWithImage
             , modelPicker = .large
             , update = \msg models -> { models | large = RadioCardGroup.update msg models.large }
             }
       )
     , ( "RadioCardGroup with icon"
       , statefulComponent
-            { id = "radio-group-icon"
+            { name = "radio-group-icon"
             , configModifier = RadioCardGroup.withOptions optionsWithIcon
             , modelPicker = .icon
             , update = \msg models -> { models | icon = RadioCardGroup.update msg models.icon }
@@ -311,7 +310,7 @@ componentsList =
       )
     , ( "RadioCardGroup with text"
       , statefulComponent
-            { id = "radio-group-text"
+            { name = "radio-group-text"
             , configModifier = RadioCardGroup.withOptions optionsWithTextAddon
             , modelPicker = .text
             , update = \msg models -> { models | text = RadioCardGroup.update msg models.text }
@@ -321,7 +320,7 @@ componentsList =
 
 
 type alias StatefulConfig =
-    { id : String
+    { name : String
     , configModifier : RadioCardGroup.Config Option -> RadioCardGroup.Config Option
     , modelPicker : Model -> RadioCardGroup.Model () Option Option
     , update : RadioCardGroup.Msg Option -> RadioCardFieldModels -> RadioCardFieldModels
@@ -329,9 +328,8 @@ type alias StatefulConfig =
 
 
 statefulComponent : StatefulConfig -> SharedState x -> Html (ElmBook.Msg (SharedState x))
-statefulComponent { id, configModifier, modelPicker, update } sharedState =
-    RadioCardGroup.config id
-        |> RadioCardGroup.withName id
+statefulComponent { name, configModifier, modelPicker, update } sharedState =
+    RadioCardGroup.config name
         |> RadioCardGroup.withOptions options
         |> configModifier
         |> RadioCardGroup.render identity () (sharedState.radioCard |> modelPicker)

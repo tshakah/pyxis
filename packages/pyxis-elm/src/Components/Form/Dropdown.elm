@@ -6,6 +6,7 @@ module Components.Form.Dropdown exposing
     , suggestion
     , SuggestionData
     , render
+    , Size, medium, small
     )
 
 {-|
@@ -28,7 +29,6 @@ module Components.Form.Dropdown exposing
 
 -}
 
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -36,6 +36,27 @@ import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events as Events
 import Html.Keyed
+
+
+{-| Dropdown size
+-}
+type Size
+    = Small
+    | Medium
+
+
+{-| Dropdown size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Dropdown size medium
+-}
+medium : Size
+medium =
+    Medium
 
 
 type Content msg
@@ -111,7 +132,7 @@ render id onBlur size content_ =
     Html.div
         [ Attributes.class "form-dropdown-wrapper"
         , Attributes.classList
-            [ ( "form-dropdown-wrapper--small", Size.isSmall size )
+            [ ( "form-dropdown-wrapper--small", Small == size )
             ]
         , Events.onBlur onBlur
         ]
@@ -190,7 +211,7 @@ renderSuggestion { icon, title, subtitle } =
 renderSuggestionIcon : IconSet.Icon -> Html msg
 renderSuggestionIcon =
     Icon.config
-        >> Icon.withSize Size.medium
+        >> Icon.withSize Icon.medium
         >> Icon.withClassList [ ( "form-dropdown__suggestion__icon", True ) ]
         >> Icon.render
 

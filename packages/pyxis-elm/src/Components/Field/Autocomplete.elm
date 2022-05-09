@@ -8,11 +8,14 @@ module Components.Field.Autocomplete exposing
     , withHint
     , withIsSubmitted
     , withLabel
-    , withName
     , withNoResultsFoundMessage
     , withPlaceholder
-    , withSize
     , withStrategy
+    , withId
+    , Size
+    , small
+    , medium
+    , withSize
     , withAddonAction
     , withAddonHeader
     , withAddonSuggestion
@@ -50,12 +53,19 @@ module Components.Field.Autocomplete exposing
 @docs withHint
 @docs withIsSubmitted
 @docs withLabel
-@docs withName
 
 @docs withNoResultsFoundMessage
 @docs withPlaceholder
-@docs withSize
 @docs withStrategy
+@docs withId
+
+
+## Size
+
+@docs Size
+@docs small
+@docs medium
+@docs withSize
 
 
 ## Suggestions Addon
@@ -89,16 +99,15 @@ module Components.Field.Autocomplete exposing
 -}
 
 import Commons.Attributes
-import Commons.Properties.Size as Size exposing (Size)
 import Commons.Render
 import Components.Field.Error as Error
 import Components.Field.Error.Strategy as Strategy exposing (Strategy)
 import Components.Field.Error.Strategy.Internal as StrategyInternal
-import Components.Field.FormItem as FormItem
 import Components.Field.Hint as Hint
 import Components.Field.Label as Label
 import Components.Field.Status as Status
 import Components.Form.Dropdown as FormDropdown
+import Components.Form.FormItem as FormItem
 import Components.Icon as Icon
 import Components.IconSet as IconSet
 import Html exposing (Html)
@@ -273,6 +282,27 @@ getOptions (Model modelData) (Config configData) =
         |> List.filter (configData.optionsFilter modelData.filter)
 
 
+{-| Autocomplete size
+-}
+type Size
+    = Small
+    | Medium
+
+
+{-| Autocomplete size small
+-}
+small : Size
+small =
+    Small
+
+
+{-| Autocomplete size medium
+-}
+medium : Size
+medium =
+    Medium
+
+
 {-| Represents the Autocomplete view configuration.
 -}
 type Config value msg
@@ -284,7 +314,7 @@ type Config value msg
         , id : String
         , isSubmitted : Bool
         , label : Maybe Label.Config
-        , name : Maybe String
+        , name : String
         , noResultsFoundMessage : String
         , addonAction : Maybe (Html msg)
         , addonSuggestion : Maybe FormDropdown.SuggestionData
@@ -299,22 +329,22 @@ type Config value msg
 {-| Creates the Autocomplete view configuration..
 -}
 config : (String -> value -> Bool) -> (value -> String) -> String -> Config value msg
-config optionsFilter optionToString id =
+config optionsFilter optionToString name =
     Config
         { additionalContent = Nothing
         , disabled = False
         , addonHeader = Nothing
         , hint = Nothing
-        , id = id
+        , id = "id-" ++ name
         , isSubmitted = False
         , label = Nothing
-        , name = Nothing
+        , name = name
         , noResultsFoundMessage = "No results found."
         , addonAction = Nothing
         , addonSuggestion = Nothing
         , placeholder = ""
         , strategy = Strategy.onBlur
-        , size = Size.medium
+        , size = Medium
         , optionsFilter = optionsFilter
         , optionToString = optionToString
         }
@@ -385,11 +415,11 @@ withLabel label (Config configData) =
     Config { configData | label = Just label }
 
 
-{-| Adds a name to the Autocomplete.
+{-| Adds an id to the Autocomplete.
 -}
-withName : String -> Config value msg -> Config value msg
-withName name (Config configData) =
-    Config { configData | name = Just name }
+withId : String -> Config value msg -> Config value msg
+withId id (Config configData) =
+    Config { configData | id = id }
 
 
 {-| Adds custom message instead of the default "No results found".
@@ -467,7 +497,7 @@ renderField validationResult msgMapper ((Model modelData) as model) (Config conf
         [ Html.input
             [ Attributes.classList
                 [ ( "form-field__autocomplete", True )
-                , ( "form-field__autocomplete--small", Size.isSmall configData.size )
+                , ( "form-field__autocomplete--small", Small == configData.size )
                 , ( "form-field__autocomplete--filled", Maybe.Extra.isJust modelData.value )
                 ]
 
@@ -476,7 +506,7 @@ renderField validationResult msgMapper ((Model modelData) as model) (Config conf
             , Events.onFocus OnFocus
             , Events.onInput OnInput
             , Attributes.id configData.id
-            , Commons.Attributes.maybe Attributes.name configData.name
+            , Attributes.name configData.name
             , Attributes.attribute "aria-autocomplete" "both"
             , Commons.Attributes.renderIf modelData.dropdownOpen (Attributes.attribute "aria-expanded" "true")
             , Attributes.attribute "role" "combobox"
@@ -515,7 +545,7 @@ renderFieldIconAddon ((Model modelData) as model) =
         ]
         [ model
             |> getFieldAddonIcon
-            |> Icon.withSize Size.small
+            |> Icon.withSize Icon.small
             |> Icon.render
             |> Commons.Render.renderIf (Maybe.Extra.isNothing modelData.value)
         , Html.button
@@ -524,7 +554,7 @@ renderFieldIconAddon ((Model modelData) as model) =
             ]
             [ model
                 |> getFieldAddonIcon
-                |> Icon.withSize Size.small
+                |> Icon.withSize Icon.small
                 |> Icon.render
             ]
             |> Commons.Render.renderIf (Maybe.Extra.isJust modelData.value)
@@ -565,13 +595,13 @@ renderDropdown msgMapper ((Model modelData) as model) ((Config configData) as co
     if String.isEmpty modelData.filter then
         configData.addonSuggestion
             |> Maybe.map FormDropdown.suggestion
-            |> Maybe.map (FormDropdown.render configData.id (msgMapper OnBlur) configData.size)
+            |> Maybe.map (FormDropdown.render configData.id (msgMapper OnBlur) (mapDropdownSize configData.size))
 
     else
         FormDropdown.render
             configData.id
             (msgMapper OnBlur)
-            configData.size
+            (mapDropdownSize configData.size)
             (if noAvailableOptions then
                 FormDropdown.noResult
                     { label = configData.noResultsFoundMessage
@@ -655,3 +685,13 @@ renderOptionText filter label =
     , Html.text labelCenter
     , Html.strong [ Attributes.class "text-m-bold" ] [ Html.text labelEnd ]
     ]
+
+
+mapDropdownSize : Size -> FormDropdown.Size
+mapDropdownSize size =
+    case size of
+        Small ->
+            FormDropdown.small
+
+        Medium ->
+            FormDropdown.medium

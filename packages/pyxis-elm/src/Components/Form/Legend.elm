@@ -4,7 +4,6 @@ module Components.Form.Legend exposing
     , iconAddon
     , imageAddon
     , withAddon
-    , withTitle
     , withDescription
     , withAlignmentLeft
     , render
@@ -28,7 +27,6 @@ module Components.Form.Legend exposing
 
 ## Generics
 
-@docs withTitle
 @docs withDescription
 @docs withAlignmentLeft
 
@@ -100,37 +98,26 @@ type alias ConfigData =
     , title : String
     , alignment : Alignment
     , description : Maybe String
-    , icon : Maybe Icon.Config
-    , imageUrl : Maybe String
     }
 
 
 {-| Creates a FieldSet with an empty legend.
 -}
-config : Config msg
-config =
+config : String -> Config msg
+config title =
     Config
         { addon = Nothing
-        , title = ""
+        , title = title
         , alignment = Center
         , description = Nothing
-        , icon = Nothing
-        , imageUrl = Nothing
         }
-
-
-{-| Adds a title to the Legend.
--}
-withTitle : String -> Config msg -> Config msg
-withTitle a (Config configuration) =
-    Config { configuration | title = a }
 
 
 {-| Adds a description to the Legend.
 -}
 withDescription : String -> Config msg -> Config msg
-withDescription a (Config configuration) =
-    Config { configuration | description = Just a }
+withDescription text (Config configuration) =
+    Config { configuration | description = Just text }
 
 
 {-| Adds a left alignment to the Legend.

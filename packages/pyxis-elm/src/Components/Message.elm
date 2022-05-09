@@ -56,7 +56,6 @@ module Components.Message exposing
 -}
 
 import Commons.Attributes as CommonsAttributes
-import Commons.Properties.Size as Size
 import Commons.Render
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -312,6 +311,6 @@ renderClose { onDismiss, ariaLabel } =
         ]
         [ IconSet.Close
             |> Icon.config
-            |> Icon.withSize Size.small
+            |> Icon.withSize Icon.small
             |> Icon.render
         ]

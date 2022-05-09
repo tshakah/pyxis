@@ -1,7 +1,6 @@
 module Components.IconTest exposing (suite)
 
 import Commons.Attributes as CA
-import Commons.Properties.Size as Size
 import Commons.Properties.Theme as Theme
 import Components.Icon as Icon
 import Components.IconSet as IconSet
@@ -36,7 +35,7 @@ suite =
                 \() ->
                     IconSet.Facebook
                         |> Icon.config
-                        |> Icon.withSize Size.large
+                        |> Icon.withSize Icon.large
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-l" ] ]
@@ -44,7 +43,7 @@ suite =
                 \() ->
                     IconSet.Book
                         |> Icon.config
-                        |> Icon.withSize Size.medium
+                        |> Icon.withSize Icon.medium
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-m" ] ]
@@ -52,7 +51,7 @@ suite =
                 \() ->
                     IconSet.Van
                         |> Icon.config
-                        |> Icon.withSize Size.small
+                        |> Icon.withSize Icon.small
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--size-s" ] ]

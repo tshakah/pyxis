@@ -24,13 +24,17 @@ type Lang
 
 langsConfig : CheckboxGroup.Config Lang
 langsConfig =
-    CheckboxGroup.config "checkbox-id"
-        |> CheckboxGroup.withOptions
-            [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
-            , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
-            , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
-            , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
-            ]
+    CheckboxGroup.config "checkbox"
+        |> CheckboxGroup.withOptions langsOptions
+
+
+langsOptions : List (CheckboxGroup.Option Lang)
+langsOptions =
+    [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
+    , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
+    , CheckboxGroup.option { value = Rust, label = Html.text "Rust" }
+    , CheckboxGroup.option { value = Elixir, label = Html.text "Elixir" }
+    ]
 
 
 suite : Test
@@ -39,7 +43,8 @@ suite =
         [ Test.describe "Id"
             [ Test.fuzz Fuzz.Extra.nonEmptyString "the CheckboxGroup has an id and a data-test-id" <|
                 \id ->
-                    CheckboxGroup.config id
+                    CheckboxGroup.config "name"
+                        |> CheckboxGroup.withId id
                         |> renderCheckboxGroup
                         |> Query.has
                             [ attribute (Html.Attributes.id id)
@@ -55,7 +60,7 @@ suite =
                         |> Query.has [ Selector.disabled False ]
             , Test.fuzz Fuzz.bool "should be rendered correctly" <|
                 \b ->
-                    CheckboxGroup.config "checkbox-id"
+                    CheckboxGroup.config "checkbox"
                         |> CheckboxGroup.withOptions
                             [ CheckboxGroup.option { value = Elm, label = Html.text "Elm" }
                             , CheckboxGroup.option { value = Typescript, label = Html.text "Typescript" }
@@ -76,8 +81,9 @@ suite =
                             [ Selector.attribute (Html.Attributes.name name)
                             ]
                 in
-                langsConfig
-                    |> CheckboxGroup.withName name
+                CheckboxGroup.config name
+                    |> CheckboxGroup.withOptions langsOptions
+                    |> CheckboxGroup.withId name
                     |> renderCheckboxGroup
                     |> Expect.all
                         [ findInput "Elm" >> hasName

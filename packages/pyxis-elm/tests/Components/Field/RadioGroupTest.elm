@@ -39,8 +39,7 @@ suite =
             ]
         , Test.fuzz Fuzz.string "name attribute should be rendered correctly" <|
             \name ->
-                radioGroupConfig
-                    |> RadioGroup.withName name
+                RadioGroup.config name
                     |> renderRadioGroup
                     |> findInputs
                     |> Query.each
@@ -125,7 +124,9 @@ radioOptions =
 
 radioGroupConfig : RadioGroup.Config Option
 radioGroupConfig =
-    RadioGroup.config "gender" |> RadioGroup.withOptions radioOptions
+    RadioGroup.config "gender"
+        |> RadioGroup.withOptions radioOptions
+        |> RadioGroup.withId "gender"
 
 
 renderRadioGroup : RadioGroup.Config Option -> Query.Single (RadioGroup.Msg Option)
