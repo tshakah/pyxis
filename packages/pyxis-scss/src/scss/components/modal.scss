@@ -136,7 +136,7 @@ $_sizesOnBp: (
   display: flex;
   flex-wrap: wrap;
   gap: foundations.spacing(xs);
-  justify-content: end;
+  justify-content: flex-end;
   z-index: 1;
 
   @include foundations.mq(base, xsmall) {
