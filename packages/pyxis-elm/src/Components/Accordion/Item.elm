@@ -53,7 +53,6 @@ module Components.Accordion.Item exposing
 -}
 
 import Commons.Attributes
-import Commons.Properties.Size as Size
 import Commons.Render
 import Commons.String
 import Components.Icon as Icon
@@ -237,7 +236,7 @@ renderAddonByType type_ =
                 [ Attributes.class "accordion-item__header__addon" ]
                 [ icon
                     |> Icon.config
-                    |> Icon.withSize Size.large
+                    |> Icon.withSize Icon.large
                     |> Icon.render
                 ]
 
@@ -289,7 +288,7 @@ renderButton onClick onFocus open (Config { title, subtitle, actionText, addon, 
                     , Attributes.classList [ ( "accordion-item__header__action-icon--open", open ) ]
                     ]
                     [ Icon.config IconSet.ChevronDown
-                        |> Icon.withSize Size.large
+                        |> Icon.withSize Icon.large
                         |> Icon.render
                     ]
                 ]
