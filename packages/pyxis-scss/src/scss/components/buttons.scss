@@ -173,7 +173,7 @@ $_sizes: (
 
 .button {
   cursor: pointer;
-  display: inline-grid;
+  display: inline-flex;
   grid-auto-flow: column;
   justify-content: center;
   place-items: center;
