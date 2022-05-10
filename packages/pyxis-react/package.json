@@ -1,14 +1,14 @@
 {
   "name": "@primauk/react",
-  "version": "0.1.0",
+  "version": "0.1.1-alpha.0",
   "private": false,
   "license": "ISC",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@primauk/icons": "^0.0.1",
-    "@primauk/tokens": "0.0.1",
+    "@primauk/icons": "^0.0.2-alpha.0",
+    "@primauk/tokens": "^0.0.2-alpha.0",
     "@rollup/plugin-alias": "^3.1.8",
     "@storybook/addon-docs": "^6.4.22",
     "@storybook/addon-storyshots": "^6.4.22",
