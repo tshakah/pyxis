@@ -1,5 +1,5 @@
 import { Spacing as SpacingShape } from './Spacing';
-import spacingTokens from '@pyxis/tokens/json/spacings.json';
+import spacingTokens from '@primauk/tokens/json/spacings.json';
 
 export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof SpacingShape> = () => ({
   title: 'Test/Spacing',

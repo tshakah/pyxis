@@ -1,19 +1,19 @@
-# @pyxis/react
+# @primauk/react
 This repository is part of the Pyxis Design System and contains all the React components.
 
 ## Getting started
-You can install and use `@pyxis/react` by following these steps:
+You can install and use `@primauk/react` by following these steps:
 ```sh
 # Go to your project root
 cd myproject
 
 # Add Pyxis React
-yarn add @pyxis/react
+yarn add @primauk/react
 ```
 
 ## Usage
 ```jsx
-import { Button } from '@pyxis/react';
+import { Button } from '@primauk/react';
 
 const MyComponent = () => (
   <Button>This is a button!</Button>
@@ -23,7 +23,7 @@ For more information about each component, check out our [Storybook](https://rea
 
 ## Development
 
-`@pyxis/react` is part of a `pyxis` monorepo, to develop it you need to download the [project](https://github.com/primait/pyxis).
+`@primauk/react` is part of a `pyxis` monorepo, to develop it you need to download the [project](https://github.com/primait/pyxis).
 
 Once you have installed the monorepo, you will be able to run commands directly from the root of `pyxis`.
 Remember that the commands launched by the root are global and could launch commands that also affect other repositories, like: `yarn build`.

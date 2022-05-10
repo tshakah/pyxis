@@ -1,5 +1,5 @@
 {
-  "name": "@pyxis/react",
+  "name": "@primauk/react",
   "version": "0.1.0",
   "private": false,
   "license": "ISC",
@@ -7,8 +7,8 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@pyxis/icons": "^0.0.1",
-    "@pyxis/tokens": "0.0.1",
+    "@primauk/icons": "^0.0.1",
+    "@primauk/tokens": "0.0.1",
     "@rollup/plugin-alias": "^3.1.8",
     "@storybook/addon-docs": "^6.4.22",
     "@storybook/addon-storyshots": "^6.4.22",
@@ -119,7 +119,7 @@
     "sass": "^1.43.2"
   },
   "peerDependencies": {
-    "@pyxis/scss": "0.0.9",
+    "@primauk/scss": "0.0.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }

@@ -1,5 +1,5 @@
-import breakpointsToken from '@pyxis/tokens/json/breakpoints.json';
-import containersToken from '@pyxis/tokens/json/containers.json';
+import breakpointsToken from '@primauk/tokens/json/breakpoints.json';
+import containersToken from '@primauk/tokens/json/containers.json';
 
 const fluidContainer = '100vw - 40px'
 

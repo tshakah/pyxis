@@ -121,7 +121,7 @@ Copied from <https://github.com/NoRedInk/noredink-ui/blob/15.6.1/src/Nri/Ui/Html
 -}
 none : Html.Attribute msg
 none =
-    Html.Attributes.property "none@pyxis-elm" Json.Encode.null
+    Html.Attributes.property "none@primauk-elm" Json.Encode.null
 
 
 {-| Renders the given attribute when the flag is True (else render Attribute.none)

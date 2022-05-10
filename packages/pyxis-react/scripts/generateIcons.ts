@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { kebabToPascalCase } from '../src/commons/utils/string';
 
-const iconsPath = resolve(__dirname, '../../../', 'node_modules/@pyxis/icons');
+const iconsPath = resolve(__dirname, '../../../', 'node_modules/@primauk/icons');
 const svgNameList = readdirSync(iconsPath).filter((name) => name.endsWith('.svg'));
 
 const svgElementsToRemove = [' xmlns:v="https://vecta.io/nano"'];
@@ -28,7 +28,7 @@ import React, { FC } from 'react';
 import Icon, { IconProps } from 'components/Icon';`;
 
 const importSvgAsComponents = iconNameList.map((name) => (
-  `import { ReactComponent as ${kebabToPascalCase(name)} } from '@pyxis/icons/${name}.svg';\n`))
+  `import { ReactComponent as ${kebabToPascalCase(name)} } from '@primauk/icons/${name}.svg';\n`))
   .join('');
 
 const generateExportedIcons = iconNameList.map((name) => `export const Icon${kebabToPascalCase(name)}: FC<IconProps> = (props) => <Icon {...props}><${kebabToPascalCase(name)} /></Icon>;`)

@@ -1,4 +1,4 @@
-## @pyxis/elm
+## @primauk/elm
 
 Here you can find the documentation for the Pyxis Elm UI kit.
 

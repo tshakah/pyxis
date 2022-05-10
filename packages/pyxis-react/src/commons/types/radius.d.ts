@@ -1,4 +1,4 @@
-import radiusTokens from '@pyxis/tokens/json/radius.json';
+import radiusTokens from '@primauk/tokens/json/radius.json';
 
 declare global {
   type RadiusSize = keyof (typeof radiusTokens);

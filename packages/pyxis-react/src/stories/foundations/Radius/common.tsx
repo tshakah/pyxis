@@ -1,5 +1,5 @@
 import Radius from './Radius';
-import radiusTokens from '@pyxis/tokens/json/radius.json';
+import radiusTokens from '@primauk/tokens/json/radius.json';
 
 export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof Radius> = () => ({
   title: 'Test/Radius',

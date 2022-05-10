@@ -13,11 +13,11 @@ In addition we also maintain two packages containing _icons_ and _design tokens_
 
 | Package name                               | Description                                                        |
 | ------------------------------------------ | ------------------------------------------------------------------ |
-| [`@pyxis/scss`](./packages/pyxis-scss)     | SCSS foundations and components documentation.                     |
-| [`@pyxis/elm`](./packages/pyxis-elm)       | Elm components and Elmbook documentation.                          |
-| [`@pyxis/react`](./packages/pyxis-react)   | React components and Storybook documentation.                      |
-| [`@pyxis/tokens`](./packages/pyxis-tokens) | Design Tokens are the bricks from which our foundations are built. |
-| [`@pyxis/icons`](./packages/pyxis-icons)   | A collection of svg icons used in our Design System.               |
+| [`@primauk/scss`](./packages/pyxis-scss)     | SCSS foundations and components documentation.                     |
+| [`@primauk/elm`](./packages/pyxis-elm)       | Elm components and Elmbook documentation.                          |
+| [`@primauk/react`](./packages/pyxis-react)   | React components and Storybook documentation.                      |
+| [`@primauk/tokens`](./packages/pyxis-tokens) | Design Tokens are the bricks from which our foundations are built. |
+| [`@primauk/icons`](./packages/pyxis-icons)   | A collection of svg icons used in our Design System.               |
 
 ## 📚 Documentation
 
@@ -57,7 +57,7 @@ For more in-depth instructions, development guidelines etc., see the README file
 
 ### Icons
 
-Pyxis also includes `@pyxis/icons`, a repository which contains all of our SVG icons.
+Pyxis also includes `@primauk/icons`, a repository which contains all of our SVG icons.
 
 Automatic _code generation_ lets us turn these icons into React components and Elm functions, by running the following command:
 

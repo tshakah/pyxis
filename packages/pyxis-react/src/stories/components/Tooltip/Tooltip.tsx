@@ -1,7 +1,7 @@
 import React, {Dispatch, FC, ReactElement, SetStateAction} from "react";
 import {IconCheckCircle, IconClose, IconQuestionCircle} from "components/Icon/Icons";
 import Button from "components/Button";
-import breakpointTokens from '@pyxis/tokens/json/breakpoints.json';
+import breakpointTokens from '@primauk/tokens/json/breakpoints.json';
 import classNames from "classnames";
 import {pascalToKebab} from "commons/utils/string";
 import styles from "./Tooltip.module.scss";

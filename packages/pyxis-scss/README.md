@@ -1,4 +1,4 @@
-# @pyxis/scss
+# @primauk/scss
 This repository is part of Pyxis Design System, and contain all the foundations and the components in SCSS.
 
 ## Usage
@@ -22,13 +22,13 @@ If you want to use Pyxis with a custom framework or for simple purposes please c
 ---
 
 #### Use Pyxis via SCSS
-You can install and use `@pyxis/scss` by following these steps:
+You can install and use `@primauk/scss` by following these steps:
 ```sh
 # Go to your project root
 cd myproject
 
 # Add Pyxis Scss
-yarn add @pyxis/scss
+yarn add @primauk/scss
 
 # Go to your `scss` entrypoint and import Pyxis
 # with `@use pyxis-scss/src/scss/pyxis.scss`
@@ -76,7 +76,7 @@ Each of these modules is paired with a [React](https://github.com/primait/pyxis/
 
 ### Development
 
-`@pyxis/scss` is part of a `pyxis` monorepo, to develop it you need to download the [project](https://github.com/primait/pyxis).
+`@primauk/scss` is part of a `pyxis` monorepo, to develop it you need to download the [project](https://github.com/primait/pyxis).
 
 Once you have installed the monorepo, you will be able to run commands directly from the root of `pyxis`.
 Remember that the commands launched by the root are global and could launch commands that also affect other repositories, like: `yarn build`.

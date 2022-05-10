@@ -1,6 +1,6 @@
 import { Color as ColorShape } from './Color';
-import colorTokens from '@pyxis/tokens/json/colors.json';
-import gradientTokens from '@pyxis/tokens/json/gradients.json';
+import colorTokens from '@primauk/tokens/json/colors.json';
+import gradientTokens from '@primauk/tokens/json/gradients.json';
 
 export const generateTestComponentMeta: GenerateAllStoriesComponentMeta<typeof ColorShape> = () => ({
   title: 'Test/Colors',
