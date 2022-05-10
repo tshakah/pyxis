@@ -1,10 +1,10 @@
 module Form.FieldSetTest exposing (suite)
 
-import Components.Form.FieldSet as FieldSet
-import Components.Form.Grid as Grid
 import Fuzz
 import Html
 import Html.Attributes
+import Pyxis.Components.Form.FieldSet as FieldSet
+import Pyxis.Components.Form.Grid as Grid
 import Test exposing (Test)
 import Test.Html.Query as Query
 

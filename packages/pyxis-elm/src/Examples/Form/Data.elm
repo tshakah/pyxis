@@ -12,13 +12,13 @@ module Examples.Form.Data exposing
     , notEmptyStringValidation
     )
 
-import Components.Field.Autocomplete as Autocomplete
-import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Input as Input
-import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.Field.Textarea as Textarea
 import Date exposing (Date)
 import Examples.Form.Api.City exposing (City)
+import Pyxis.Components.Field.Autocomplete as Autocomplete
+import Pyxis.Components.Field.CheckboxGroup as CheckboxGroup
+import Pyxis.Components.Field.Input as Input
+import Pyxis.Components.Field.RadioCardGroup as RadioCardGroup
+import Pyxis.Components.Field.Textarea as Textarea
 
 
 type Data

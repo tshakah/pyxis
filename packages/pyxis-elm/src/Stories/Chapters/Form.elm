@@ -1,16 +1,16 @@
 module Stories.Chapters.Form exposing (docs)
 
-import Components.Button as Button
-import Components.Form as Form
-import Components.Form.FieldSet as FieldSet
-import Components.Form.Grid as Grid
-import Components.Form.Grid.Col as Col
-import Components.Form.Grid.Row as Row
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
 import Html.Attributes
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Form as Form
+import Pyxis.Components.Form.FieldSet as FieldSet
+import Pyxis.Components.Form.Grid as Grid
+import Pyxis.Components.Form.Grid.Col as Col
+import Pyxis.Components.Form.Grid.Row as Row
 
 
 docs : ElmBook.Chapter.Chapter sharedState

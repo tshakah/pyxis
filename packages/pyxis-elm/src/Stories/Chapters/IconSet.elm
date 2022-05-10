@@ -1,12 +1,12 @@
 module Stories.Chapters.IconSet exposing (docs)
 
-import Components.Form.Grid as Grid
-import Components.Icon as Icon
-import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Chapter
 import Html
 import Html.Attributes
+import Pyxis.Components.Form.Grid as Grid
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as IconSet
 
 
 docs : ElmBook.Chapter.Chapter sharedState

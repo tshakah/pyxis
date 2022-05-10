@@ -1,17 +1,17 @@
 module Stories.Chapters.Modal exposing (Model, docs, init)
 
-import Commons.Properties.Theme as Theme
-import Components.Badge as Badge
-import Components.Button as Button
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-import Components.Modal as Modal
-import Components.Modal.Footer as ModalFooter
-import Components.Modal.Header as ModalHeader
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Components.Badge as Badge
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as IconSet
+import Pyxis.Components.Modal as Modal
+import Pyxis.Components.Modal.Footer as ModalFooter
+import Pyxis.Components.Modal.Header as ModalHeader
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

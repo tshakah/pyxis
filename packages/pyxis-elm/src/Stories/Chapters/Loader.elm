@@ -1,10 +1,10 @@
 module Stories.Chapters.Loader exposing (docs)
 
-import Commons.Properties.Theme as Theme
-import Components.Loaders.Loader as Loader
 import ElmBook
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Components.Loaders.Loader as Loader
 
 
 docs : ElmBook.Chapter.Chapter sharedState

@@ -1,13 +1,13 @@
 module Stories.Chapters.Fields.Input exposing (Model, docs, init)
 
-import Commons.Properties.Placement as Placement
-import Components.Field.Input as Input
-import Components.IconSet as IconSet
 import Date exposing (Date)
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Commons.Properties.Placement as Placement
+import Pyxis.Components.Field.Input as Input
+import Pyxis.Components.IconSet as IconSet
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

@@ -1,12 +1,12 @@
 module Stories.Chapters.Fields.RadioCardGroup exposing (Model, docs, init)
 
-import Components.Field.Label as Label
-import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Components.Field.Label as Label
+import Pyxis.Components.Field.RadioCardGroup as RadioCardGroup
+import Pyxis.Components.IconSet as IconSet
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

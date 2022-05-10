@@ -1,8 +1,8 @@
 module Components.LoaderTest exposing (suite)
 
-import Commons.Properties.Theme as Theme
-import Components.Loaders.Loader as Loader
 import Html.Attributes
+import Pyxis.Commons.Properties.Theme as CommonsTheme
+import Pyxis.Components.Loaders.Loader as Loader
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, class, classes, tag, text)
@@ -51,7 +51,7 @@ suite =
         , Test.test "has a the proper class if theme is alternative" <|
             \() ->
                 Loader.spinner
-                    |> Loader.withTheme Theme.alternative
+                    |> Loader.withTheme CommonsTheme.alternative
                     |> renderConfig
                     |> Query.has [ class "loader--alt" ]
         , Test.test "has `id` and `data-test-id` if one is set" <|

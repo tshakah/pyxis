@@ -1,11 +1,11 @@
 module Stories.Chapters.Icon exposing (docs)
 
-import Commons.Properties.Theme as Theme
-import Components.Icon as Icon
-import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as IconSet
 
 
 docs : ElmBook.Chapter.Chapter sharedState

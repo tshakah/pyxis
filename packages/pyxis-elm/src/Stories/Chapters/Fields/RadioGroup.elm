@@ -1,11 +1,11 @@
 module Stories.Chapters.Fields.RadioGroup exposing (Model, docs, init)
 
-import Components.Field.Label as Label
-import Components.Field.RadioGroup as RadioGroup
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Components.Field.Label as Label
+import Pyxis.Components.Field.RadioGroup as RadioGroup
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

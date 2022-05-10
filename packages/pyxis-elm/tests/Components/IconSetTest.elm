@@ -1,7 +1,7 @@
 module Components.IconSetTest exposing (suite)
 
-import Commons.Render as CR
-import Components.IconSet as IconSet
+import Pyxis.Commons.Render as CommonsRender
+import Pyxis.Components.IconSet as IconSet
 import SvgParser
 import Test exposing (Test)
 import Test.Html.Query as Query
@@ -24,6 +24,6 @@ iconTest icon =
                 |> IconSet.toString
                 |> SvgParser.parse
                 |> Result.toMaybe
-                |> CR.renderMaybe
+                |> CommonsRender.renderMaybe
                 |> Query.fromHtml
                 |> Query.has [ tag "svg" ]

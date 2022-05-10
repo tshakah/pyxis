@@ -1,9 +1,9 @@
 module Components.IconTest exposing (suite)
 
-import Commons.Attributes as CA
-import Commons.Properties.Theme as Theme
-import Components.Icon as Icon
-import Components.IconSet as IconSet
+import Pyxis.Commons.Attributes as CommonsAttributes
+import Pyxis.Commons.Properties.Theme as CommonsTheme
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as IconSet
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, classes)
@@ -17,7 +17,7 @@ suite =
                 \() ->
                     IconSet.User
                         |> Icon.config
-                        |> Icon.withTheme Theme.default
+                        |> Icon.withTheme CommonsTheme.default
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon" ] ]
@@ -25,7 +25,7 @@ suite =
                 \() ->
                     IconSet.Alarm
                         |> Icon.config
-                        |> Icon.withTheme Theme.alternative
+                        |> Icon.withTheme CommonsTheme.alternative
                         |> Icon.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "icon", "icon--alt" ] ]
@@ -114,7 +114,7 @@ suite =
                         |> Icon.withDescription "Natural events"
                         |> Icon.render
                         |> Query.fromHtml
-                        |> Query.has [ attribute (CA.ariaLabel "Natural events") ]
+                        |> Query.has [ attribute (CommonsAttributes.ariaLabel "Natural events") ]
             , Test.test "has accessible role" <|
                 \() ->
                     IconSet.VehicleVandalism
@@ -122,14 +122,14 @@ suite =
                         |> Icon.withDescription "Vehicle vandalism"
                         |> Icon.render
                         |> Query.fromHtml
-                        |> Query.has [ attribute (CA.role "img") ]
+                        |> Query.has [ attribute (CommonsAttributes.role "img") ]
             , Test.test "is hidden for screen readers when no description is provided" <|
                 \() ->
                     IconSet.Camera
                         |> Icon.config
                         |> Icon.render
                         |> Query.fromHtml
-                        |> Query.has [ attribute (CA.ariaHidden True) ]
+                        |> Query.has [ attribute (CommonsAttributes.ariaHidden True) ]
             , Test.test "has a classList" <|
                 \() ->
                     IconSet.Calendar

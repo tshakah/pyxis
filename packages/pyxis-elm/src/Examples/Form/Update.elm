@@ -1,16 +1,16 @@
 module Examples.Form.Update exposing (update)
 
-import Components.Accordion as Accordion
-import Components.Field.Autocomplete as Autocomplete
-import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Input as Input
-import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.Field.Textarea as Textarea
 import Examples.Form.Api.City as CityApi
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model exposing (Model)
 import PrimaCmd as PrimaUpdate
 import PrimaUpdate
+import Pyxis.Components.Accordion as Accordion
+import Pyxis.Components.Field.Autocomplete as Autocomplete
+import Pyxis.Components.Field.CheckboxGroup as CheckboxGroup
+import Pyxis.Components.Field.Input as Input
+import Pyxis.Components.Field.RadioCardGroup as RadioCardGroup
+import Pyxis.Components.Field.Textarea as Textarea
 import RemoteData
 
 

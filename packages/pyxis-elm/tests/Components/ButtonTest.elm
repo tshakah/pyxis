@@ -1,10 +1,9 @@
 module Components.ButtonTest exposing (suite)
 
-import Commons.Attributes.LinkTarget as LinkTarget
-import Commons.Properties.Theme as Theme
-import Components.Button as Button
-import Components.IconSet as IconSet
 import Html.Attributes
+import Pyxis.Commons.Properties.Theme as CommonsTheme
+import Pyxis.Components.Button as Button
+import Pyxis.Components.IconSet as IconSet
 import Test exposing (Test)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
@@ -72,14 +71,14 @@ suite =
             [ Test.test "is light" <|
                 \() ->
                     Button.primary
-                        |> Button.withTheme Theme.default
+                        |> Button.withTheme CommonsTheme.default
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.hasNot [ classes [ "button--alt" ] ]
             , Test.test "is dark" <|
                 \() ->
                     Button.primary
-                        |> Button.withTheme Theme.alternative
+                        |> Button.withTheme CommonsTheme.alternative
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--alt" ] ]
@@ -262,7 +261,7 @@ suite =
             , Test.test "has alternative theme" <|
                 \() ->
                     Button.brand
-                        |> Button.withTheme Theme.alternative
+                        |> Button.withTheme CommonsTheme.alternative
                         |> Button.render
                         |> Query.fromHtml
                         |> Query.has [ classes [ "button", "button--alt" ] ]

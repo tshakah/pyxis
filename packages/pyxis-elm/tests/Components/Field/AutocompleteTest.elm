@@ -1,14 +1,13 @@
 module Components.Field.AutocompleteTest exposing (suite)
 
-import Commons.Attributes.LinkTarget as LinkTarget
-import Components.Button as Button
-import Components.Field.Autocomplete as Autocomplete
-import Components.Field.Label as Label
-import Components.IconSet as IconSet
 import Expect
 import Fuzz
 import Html
 import Html.Attributes
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Field.Autocomplete as Autocomplete
+import Pyxis.Components.Field.Label as Label
+import Pyxis.Components.IconSet as IconSet
 import RemoteData
 import Test exposing (Test)
 import Test.Html.Event as Event

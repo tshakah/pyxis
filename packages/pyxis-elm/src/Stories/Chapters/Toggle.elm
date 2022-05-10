@@ -1,10 +1,10 @@
 module Stories.Chapters.Toggle exposing (Model, docs, init)
 
-import Components.Toggle as Toggle
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Components.Toggle as Toggle
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

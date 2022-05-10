@@ -1,12 +1,12 @@
 module Form.LegendTest exposing (suite)
 
-import Components.Form.Legend as Legend
-import Components.Icon as Icon
-import Components.IconSet as IconSet
 import Expect
 import Fuzz
 import Html
 import Html.Attributes
+import Pyxis.Components.Form.Legend as Legend
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as IconSet
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (class, classes, text)

@@ -1,8 +1,8 @@
 module ListExtraTest exposing (findNextTests, findPreviousTest, pairedTest, withPreviousAndNextTest)
 
-import Commons.List
 import Expect
 import Fuzz
+import Pyxis.Commons.List as CommonsList
 import Test exposing (Test)
 
 
@@ -12,7 +12,7 @@ findNextTests =
         [ Test.fuzz Fuzz.bool "should return Nothing when the list is empty" <|
             \b ->
                 []
-                    |> Commons.List.findNext (always b)
+                    |> CommonsList.findNext (always b)
                     |> Expect.equal Nothing
         , testFindNextAIsB "abc"
         , testFindNextAIsB "  ab"
@@ -29,7 +29,7 @@ testFindNextAIsB source =
         \() ->
             source
                 |> String.toList
-                |> Commons.List.findNext ((==) 'a')
+                |> CommonsList.findNext ((==) 'a')
                 |> Expect.equal (Just 'b')
 
 
@@ -39,7 +39,7 @@ findPreviousTest =
         [ Test.fuzz Fuzz.bool "should return Nothing when the list is empty" <|
             \b ->
                 []
-                    |> Commons.List.findPrevious (always b)
+                    |> CommonsList.findPrevious (always b)
                     |> Expect.equal Nothing
         , testFindPreviousAIsB "bac"
         , testFindPreviousAIsB "  ba"
@@ -55,7 +55,7 @@ testFindPreviousAIsB source =
         \() ->
             source
                 |> String.toList
-                |> Commons.List.findPrevious ((==) 'a')
+                |> CommonsList.findPrevious ((==) 'a')
                 |> Expect.equal (Just 'b')
 
 
@@ -65,12 +65,12 @@ pairedTest =
         [ Test.test "should return a empty list when a empty list is passed" <|
             \() ->
                 []
-                    |> Commons.List.paired
+                    |> CommonsList.paired
                     |> Expect.equal []
         , Test.test "should work on non empty list" <|
             \() ->
                 [ 1, 2, 3 ]
-                    |> Commons.List.paired
+                    |> CommonsList.paired
                     |> Expect.equal [ ( 1, 2 ), ( 2, 3 ), ( 3, 1 ) ]
         ]
 
@@ -95,28 +95,28 @@ withPreviousAndNextTest =
         [ Test.test "should return a empty list when a empty list is passed" <|
             \() ->
                 []
-                    |> Commons.List.withPreviousAndNext
+                    |> CommonsList.withPreviousAndNext
                     |> Expect.equal []
         , Test.test "singleton" <|
             \() ->
                 [ 1 ]
-                    |> Commons.List.withPreviousAndNext
+                    |> CommonsList.withPreviousAndNext
                     |> Expect.equal [ ( 1, 1, 1 ) ]
         , Test.test "should work on non empty list" <|
             \() ->
                 [ 0, 1, 2, 3 ]
-                    |> Commons.List.withPreviousAndNext
+                    |> CommonsList.withPreviousAndNext
                     |> Expect.equal [ ( 3, 0, 1 ), ( 0, 1, 2 ), ( 1, 2, 3 ), ( 2, 3, 0 ) ]
         , Test.fuzz (Fuzz.list Fuzz.int) "Invariant check" <|
             \lst ->
                 lst
-                    |> Commons.List.withPreviousAndNext
+                    |> CommonsList.withPreviousAndNext
                     |> checkPreviousNextInvariant
                     |> resultToExpectation
         , Test.fuzz (Fuzz.list Fuzz.int) "Invariant check 2" <|
             \lst ->
                 lst
-                    |> Commons.List.withPreviousAndNext
+                    |> CommonsList.withPreviousAndNext
                     |> checkBordersInvariant
                     |> resultToExpectation
         ]
@@ -136,7 +136,7 @@ checkBordersInvariant lst =
                 Ok ()
         )
         (List.head lst)
-        (Commons.List.last lst)
+        (CommonsList.last lst)
         |> Maybe.withDefault (Ok ())
 
 

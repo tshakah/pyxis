@@ -1,12 +1,12 @@
 module Stories.Chapters.Message exposing (docs)
 
-import Components.IconSet as IconSet
-import Components.Message as Message
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
 import Html.Attributes
+import Pyxis.Components.IconSet as IconSet
+import Pyxis.Components.Message as Message
 
 
 docs : ElmBook.Chapter.Chapter sharedState

@@ -1,13 +1,13 @@
 module Examples.Form.Views.InsuranceType exposing (view)
 
-import Components.Field.Error.Strategy as Strategy
-import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.Form.FieldSet as FieldSet
-import Components.Form.Grid as Grid
-import Components.Form.Grid.Row as Row
-import Components.Form.Legend as Legend
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model
+import Pyxis.Components.Field.Error.Strategy as Strategy
+import Pyxis.Components.Field.RadioCardGroup as RadioCardGroup
+import Pyxis.Components.Form.FieldSet as FieldSet
+import Pyxis.Components.Form.Grid as Grid
+import Pyxis.Components.Form.Grid.Row as Row
+import Pyxis.Components.Form.Legend as Legend
 
 
 view : Data -> FieldSet.Config Model.Msg

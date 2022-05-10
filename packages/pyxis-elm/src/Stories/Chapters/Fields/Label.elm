@@ -1,9 +1,9 @@
 module Stories.Chapters.Fields.Label exposing (docs)
 
-import Components.Field.Label as Label
 import ElmBook
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Components.Field.Label as Label
 
 
 docs : ElmBook.Chapter.Chapter sharedState

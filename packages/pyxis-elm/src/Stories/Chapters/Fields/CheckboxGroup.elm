@@ -1,12 +1,12 @@
 module Stories.Chapters.Fields.CheckboxGroup exposing (Model, docs, init)
 
-import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Label as Label
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import Html.Attributes as Attributes
+import Html.Attributes
+import Pyxis.Components.Field.CheckboxGroup as CheckboxGroup
+import Pyxis.Components.Field.Label as Label
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)
@@ -97,9 +97,9 @@ CheckboxGroup.single
      [ Html.text
          "Dichiaro di aver letto l’"
      , Html.a
-         [ Attributes.href "https://www.prima.it/app/privacy-policy"
-         , Attributes.target "blank"
-         , Attributes.class "link"
+         [ Html.Attributes.href "https://www.prima.it/app/privacy-policy"
+         , Html.Attributes.target "blank"
+         , Html.Attributes.class "link"
          ]
          [ Html.text "Informativa Privacy" ]
      , Html.text
@@ -216,9 +216,9 @@ componentsList =
                     [ Html.text
                         "Dichiaro di aver letto l’"
                     , Html.a
-                        [ Attributes.href "https://www.prima.it/app/privacy-policy"
-                        , Attributes.target "blank"
-                        , Attributes.class "link"
+                        [ Html.Attributes.href "https://www.prima.it/app/privacy-policy"
+                        , Html.Attributes.target "blank"
+                        , Html.Attributes.class "link"
                         ]
                         [ Html.text "Informativa Privacy" ]
                     , Html.text

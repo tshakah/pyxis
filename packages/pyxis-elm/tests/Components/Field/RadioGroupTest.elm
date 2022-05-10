@@ -1,11 +1,11 @@
 module Components.Field.RadioGroupTest exposing (suite)
 
-import Commons.Attributes as CA
-import Components.Field.RadioGroup as RadioGroup
 import Expect
 import Fuzz
 import Html
 import Html.Attributes
+import Pyxis.Commons.Attributes as CommonsAttributes
+import Pyxis.Components.Field.RadioGroup as RadioGroup
 import Test exposing (Test)
 import Test.Extra as Test
 import Test.Html.Event as Event
@@ -90,8 +90,8 @@ suite =
             [ Test.test "should not pass if the input is not compliant with the validation function" <|
                 \() ->
                     simulationWithValidation
-                        |> Simulation.simulate ( Event.focus, [ Selector.attribute (CA.testId "gender-male-option") ] )
-                        |> Simulation.simulate ( Event.blur, [ Selector.attribute (CA.testId "gender-male-option") ] )
+                        |> Simulation.simulate ( Event.focus, [ Selector.attribute (CommonsAttributes.testId "gender-male-option") ] )
+                        |> Simulation.simulate ( Event.blur, [ Selector.attribute (CommonsAttributes.testId "gender-male-option") ] )
                         |> Simulation.expectModel
                             (RadioGroup.validate ()
                                 >> Expect.equal (Err "Required")
@@ -157,4 +157,4 @@ validation _ value =
 simulateEvents : String -> Simulation.Simulation (RadioGroup.Model () Option Option) (RadioGroup.Msg Option) -> Simulation.Simulation (RadioGroup.Model () Option Option) (RadioGroup.Msg Option)
 simulateEvents testId simulation =
     simulation
-        |> Simulation.simulate ( Event.check True, [ Selector.attribute (CA.testId testId) ] )
+        |> Simulation.simulate ( Event.check True, [ Selector.attribute (CommonsAttributes.testId testId) ] )

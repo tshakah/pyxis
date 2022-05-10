@@ -1,10 +1,10 @@
 module Stories.Chapters.Legend exposing (docs)
 
-import Components.Form.Legend as Legend
-import Components.IconSet as Icon
 import ElmBook
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Components.Form.Legend as Legend
+import Pyxis.Components.IconSet as Icon
 
 
 docs : ElmBook.Chapter.Chapter sharedState

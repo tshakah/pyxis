@@ -1,17 +1,5 @@
 module Examples.Form.View exposing (view)
 
-import Commons.Properties.Theme as Theme
-import Commons.Render
-import Components.Accordion as Accordion
-import Components.Accordion.Item as AccordionItem
-import Components.Badge as Badge
-import Components.Button as Button
-import Components.Form as Form
-import Components.Icon as Icon
-import Components.IconSet as IconSet
-import Components.Modal as Modal
-import Components.Modal.Footer as ModalFooter
-import Components.Modal.Header as ModalHeader
 import Examples.Form.Data exposing (Data)
 import Examples.Form.Model as Model exposing (Model)
 import Examples.Form.Views.BaseInformation as BaseInformation
@@ -21,6 +9,18 @@ import Examples.Form.Views.InsuranceType as InsuranceType
 import Examples.Form.Views.ThankYouPage as ThankYouPage
 import Html exposing (Html)
 import Html.Attributes
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Commons.Render as CommonsRender
+import Pyxis.Components.Accordion as Accordion
+import Pyxis.Components.Accordion.Item as AccordionItem
+import Pyxis.Components.Badge as Badge
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Form as Form
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as IconSet
+import Pyxis.Components.Modal as Modal
+import Pyxis.Components.Modal.Footer as ModalFooter
+import Pyxis.Components.Modal.Header as ModalHeader
 import Result.Extra
 
 
@@ -45,7 +45,7 @@ view model =
             []
         , viewForm model.data
         , ThankYouPage.view
-            |> Commons.Render.renderIf
+            |> CommonsRender.renderIf
                 (model.response
                     |> Maybe.map Result.Extra.isOk
                     |> Maybe.withDefault False

@@ -1,12 +1,12 @@
 module Components.AccordionTest exposing (suite)
 
-import Commons.Properties.Theme as Theme
-import Components.Accordion as Accordion
-import Components.Accordion.Item as AccordionItem
-import Components.IconSet as IconSet
 import Expect
 import Html exposing (Html)
 import Html.Attributes
+import Pyxis.Commons.Properties.Theme as CommonsTheme
+import Pyxis.Components.Accordion as Accordion
+import Pyxis.Components.Accordion.Item as AccordionItem
+import Pyxis.Components.IconSet as IconSet
 import Test exposing (Test)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
@@ -186,7 +186,7 @@ suite =
                 \() ->
                     accordionItems
                         |> initialConfig
-                        |> Accordion.withTheme Theme.alternative
+                        |> Accordion.withTheme CommonsTheme.alternative
                         |> renderConfig
                         |> Query.find [ Selector.class "accordion-item" ]
                         |> Query.has [ Selector.class "accordion-item--alt" ]

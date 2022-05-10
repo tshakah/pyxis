@@ -1,12 +1,12 @@
 module Components.Field.RadioCardGroupTest exposing (suite)
 
-import Commons.Attributes as CommonsAttributes
-import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.IconSet as IconSet
 import Expect
 import Fuzz
 import Html
 import Html.Attributes
+import Pyxis.Commons.Attributes as CommonsAttributes
+import Pyxis.Components.Field.RadioCardGroup as RadioCardGroup
+import Pyxis.Components.IconSet as IconSet
 import Test exposing (Test)
 import Test.Extra as Test
 import Test.Html.Event as Event

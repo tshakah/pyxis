@@ -1,9 +1,9 @@
 module Components.Field.SelectTest exposing (suite)
 
-import Components.Field.Select as Select
 import Expect
 import Fuzz
 import Html.Attributes
+import Pyxis.Components.Field.Select as Select
 import Test exposing (Test)
 import Test.Extra as Test
 import Test.Html.Event as Event

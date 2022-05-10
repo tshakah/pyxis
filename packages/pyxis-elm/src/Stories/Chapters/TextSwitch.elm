@@ -1,11 +1,11 @@
 module Stories.Chapters.TextSwitch exposing (Model, docs, init)
 
-import Commons.Properties.Theme as Theme
-import Components.TextSwitch as TextSwitch
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Components.TextSwitch as TextSwitch
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

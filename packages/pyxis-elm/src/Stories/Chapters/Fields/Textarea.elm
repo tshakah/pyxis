@@ -1,11 +1,11 @@
 module Stories.Chapters.Fields.Textarea exposing (Model, docs, init)
 
-import Components.Field.Label as Label
-import Components.Field.Textarea as Textarea
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Components.Field.Label as Label
+import Pyxis.Components.Field.Textarea as Textarea
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

@@ -1,10 +1,10 @@
 module Examples.Form.Views.ThankYouPage exposing (view)
 
-import Components.Button as Button
-import Components.Icon as Icon
-import Components.IconSet as IconSet
 import Html
 import Html.Attributes
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as IconSet
 
 
 view : Html.Html msg

@@ -1,7 +1,7 @@
 module Components.Field.LabelTest exposing (suite)
 
-import Components.Field.Label as Label
 import Html.Attributes
+import Pyxis.Components.Field.Label as Label
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, classes, tag, text)

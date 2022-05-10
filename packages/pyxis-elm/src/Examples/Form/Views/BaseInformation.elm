@@ -1,20 +1,20 @@
 module Examples.Form.Views.BaseInformation exposing (view)
 
-import Components.Field.Autocomplete as Autocomplete
-import Components.Field.CheckboxGroup as CheckboxGroup
-import Components.Field.Error.Strategy as Strategy
-import Components.Field.Input as Input
-import Components.Field.Label as Label
-import Components.Form.FieldSet as FieldSet
-import Components.Form.Grid as Grid
-import Components.Form.Grid.Row as Row
-import Components.Form.Legend as Legend
-import Components.IconSet as IconSet
 import Examples.Form.Api.City as City
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model
 import Html
-import Html.Attributes as Attributes
+import Html.Attributes
+import Pyxis.Components.Field.Autocomplete as Autocomplete
+import Pyxis.Components.Field.CheckboxGroup as CheckboxGroup
+import Pyxis.Components.Field.Error.Strategy as Strategy
+import Pyxis.Components.Field.Input as Input
+import Pyxis.Components.Field.Label as Label
+import Pyxis.Components.Form.FieldSet as FieldSet
+import Pyxis.Components.Form.Grid as Grid
+import Pyxis.Components.Form.Grid.Row as Row
+import Pyxis.Components.Form.Legend as Legend
+import Pyxis.Components.IconSet as IconSet
 
 
 view : Data -> FieldSet.Config Model.Msg
@@ -88,7 +88,7 @@ view ((Data config) as data) =
                                 []
                                 [ Html.text
                                     "Dichiaro di aver letto l’"
-                                , Html.a [ Attributes.href "https://www.prima.it/app/privacy-policy" ]
+                                , Html.a [ Html.Attributes.href "https://www.prima.it/app/privacy-policy" ]
                                     [ Html.text "Informativa Privacy" ]
                                 , Html.text
                                     ", disposta ai sensi degli articoli 13 e 14 del Regolamento UE 2016/679. "

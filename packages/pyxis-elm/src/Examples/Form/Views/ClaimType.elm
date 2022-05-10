@@ -1,17 +1,17 @@
 module Examples.Form.Views.ClaimType exposing (view)
 
-import Components.Button as Button
-import Components.Field.Error.Strategy as Strategy
-import Components.Field.RadioCardGroup as RadioCardGroup
-import Components.Form.FieldSet as FieldSet
-import Components.Form.Grid as Grid
-import Components.Form.Grid.Row as Row
-import Components.Form.Legend as Legend
-import Components.IconSet as IconSet
 import Examples.Form.Data as Data exposing (Data(..))
 import Examples.Form.Model as Model
 import Html
 import Html.Attributes
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Field.Error.Strategy as Strategy
+import Pyxis.Components.Field.RadioCardGroup as RadioCardGroup
+import Pyxis.Components.Form.FieldSet as FieldSet
+import Pyxis.Components.Form.Grid as Grid
+import Pyxis.Components.Form.Grid.Row as Row
+import Pyxis.Components.Form.Legend as Legend
+import Pyxis.Components.IconSet as IconSet
 
 
 view : Data -> FieldSet.Config Model.Msg

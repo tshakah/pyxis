@@ -1,14 +1,14 @@
 module Stories.Chapters.Buttons exposing (docs)
 
-import Commons.Attributes.LinkTarget as LinkType
-import Commons.Properties.Theme as Theme
-import Components.Button as Button
-import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
-import Html.Attributes as Attribute
+import Html.Attributes
+import Pyxis.Commons.Attributes.LinkTarget as CommonsAttributesLinkTarget
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Components.Button as Button
+import Pyxis.Components.IconSet as IconSet
 
 
 docs : ElmBook.Chapter.Chapter sharedState
@@ -333,7 +333,7 @@ componentsList =
     , ( "Type Link with target"
       , Button.primary
             |> Button.withText "Click me!"
-            |> Button.withType (Button.linkWithTarget  "https://www.prima.it" LinkType.blank)
+            |> Button.withType (Button.linkWithTarget "https://www.prima.it" CommonsAttributesLinkTarget.blank)
             |> Button.render
       )
     , ( "Huge"
@@ -408,7 +408,7 @@ componentsList =
             |> Button.render
       )
     , ( "Alternative"
-      , Html.div [ Attribute.class "bg-neutral-base padding-s" ]
+      , Html.div [ Html.Attributes.class "bg-neutral-base padding-s" ]
             [ Button.primary
                 |> Button.withText "Click me!"
                 |> Button.withTheme Theme.alternative

@@ -1,11 +1,11 @@
 module Form.GridTest exposing (suite)
 
-import Components.Form.Grid as Grid
-import Components.Form.Grid.Col as Col
-import Components.Form.Grid.Row as Row
 import Fuzz
 import Html
 import Html.Attributes
+import Pyxis.Components.Form.Grid as Grid
+import Pyxis.Components.Form.Grid.Col as Col
+import Pyxis.Components.Form.Grid.Row as Row
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (classes)

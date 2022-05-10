@@ -1,10 +1,10 @@
 module Components.Field.TextareaTest exposing (suite)
 
-import Components.Field.Label as LabelField
-import Components.Field.Textarea as TextareaField
 import Expect
 import Fuzz
 import Html.Attributes
+import Pyxis.Components.Field.Label as LabelField
+import Pyxis.Components.Field.Textarea as TextareaField
 import Test exposing (Test)
 import Test.Extra as Test
 import Test.Html.Event as Event

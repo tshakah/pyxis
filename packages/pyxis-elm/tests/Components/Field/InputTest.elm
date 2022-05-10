@@ -1,12 +1,12 @@
 module Components.Field.InputTest exposing (suite)
 
-import Commons.Properties.Placement as Placement
-import Components.Field.Input as Input
-import Components.Field.Label as LabelField
-import Components.IconSet as IconSet
 import Expect
 import Fuzz
 import Html.Attributes
+import Pyxis.Commons.Properties.Placement as CommonsPlacement
+import Pyxis.Components.Field.Input as Input
+import Pyxis.Components.Field.Label as LabelField
+import Pyxis.Components.IconSet as IconSet
 import Test exposing (Test)
 import Test.Extra as Test
 import Test.Html.Query as Query
@@ -181,7 +181,7 @@ suite =
                     [ Test.test "append positioning should be rendered correctly" <|
                         \() ->
                             fieldConfig
-                                |> Input.withAddon Placement.append (Input.iconAddon IconSet.ArrowDown)
+                                |> Input.withAddon CommonsPlacement.append (Input.iconAddon IconSet.ArrowDown)
                                 |> Input.render identity () fieldModel
                                 |> Query.fromHtml
                                 |> Query.has
@@ -191,7 +191,7 @@ suite =
                     , Test.test "prepend positioning should be rendered correctly" <|
                         \() ->
                             fieldConfig
-                                |> Input.withAddon Placement.prepend (Input.iconAddon IconSet.ArrowDown)
+                                |> Input.withAddon CommonsPlacement.prepend (Input.iconAddon IconSet.ArrowDown)
                                 |> Input.render identity () fieldModel
                                 |> Query.fromHtml
                                 |> Query.has
@@ -203,7 +203,7 @@ suite =
                     [ Test.fuzz Fuzz.string "append positioning should be rendered correctly" <|
                         \s ->
                             fieldConfig
-                                |> Input.withAddon Placement.append (Input.textAddon s)
+                                |> Input.withAddon CommonsPlacement.append (Input.textAddon s)
                                 |> Input.render identity () fieldModel
                                 |> Query.fromHtml
                                 |> Query.has
@@ -214,7 +214,7 @@ suite =
                     , Test.fuzz Fuzz.string "prepend positioning should be rendered correctly" <|
                         \s ->
                             fieldConfig
-                                |> Input.withAddon Placement.prepend (Input.textAddon s)
+                                |> Input.withAddon CommonsPlacement.prepend (Input.textAddon s)
                                 |> Input.render identity () fieldModel
                                 |> Query.fromHtml
                                 |> Query.has

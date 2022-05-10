@@ -1,10 +1,10 @@
 module Stories.Chapters.Badge exposing (docs)
 
-import Commons.Properties.Theme as Theme
-import Components.Badge as Badge
 import ElmBook
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Components.Badge as Badge
 
 
 docs : ElmBook.Chapter.Chapter sharedState

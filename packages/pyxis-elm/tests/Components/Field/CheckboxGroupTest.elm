@@ -1,12 +1,12 @@
 module Components.Field.CheckboxGroupTest exposing (suite)
 
-import Components.Field.CheckboxGroup as CheckboxGroup
 import Expect
 import Fuzz
 import Fuzz.Extra
 import Html
 import Html.Attributes
 import Json.Encode exposing (Value)
+import Pyxis.Components.Field.CheckboxGroup as CheckboxGroup
 import Test exposing (Test)
 import Test.Extra as Test
 import Test.Html.Event as Event

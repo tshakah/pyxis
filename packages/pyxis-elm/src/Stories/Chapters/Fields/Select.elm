@@ -1,11 +1,11 @@
 module Stories.Chapters.Fields.Select exposing (Model, docs, init)
 
-import Components.Field.Label as Label
-import Components.Field.Select as Select
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Components.Field.Label as Label
+import Pyxis.Components.Field.Select as Select
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

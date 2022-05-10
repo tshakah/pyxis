@@ -1,16 +1,16 @@
 module Components.ModalTest exposing (suite)
 
-import Commons.Properties.Theme as Theme
-import Components.Badge as Badge
-import Components.Button as Button
-import Components.Icon as Icon
-import Components.IconSet as Icon
-import Components.Modal as Modal
-import Components.Modal.Footer as ModalFooter
-import Components.Modal.Header as ModalHeader
 import Expect
 import Html
 import Html.Attributes
+import Pyxis.Commons.Properties.Theme as CommonsTheme
+import Pyxis.Components.Badge as Badge
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Icon as Icon
+import Pyxis.Components.IconSet as Icon
+import Pyxis.Components.Modal as Modal
+import Pyxis.Components.Modal.Footer as ModalFooter
+import Pyxis.Components.Modal.Header as ModalHeader
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector as Selector
@@ -164,7 +164,7 @@ suite =
                     initialConfig
                         |> Modal.withFooter
                             (ModalFooter.config
-                                |> ModalFooter.withTheme Theme.alternative
+                                |> ModalFooter.withTheme CommonsTheme.alternative
                             )
                         |> renderConfig
                         |> Query.find [ Selector.tag "footer" ]

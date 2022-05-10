@@ -1,13 +1,13 @@
 module Stories.Chapters.Accordion exposing (Models, docs, init)
 
-import Commons.Properties.Theme as Theme
-import Components.Accordion as Accordion
-import Components.Accordion.Item as AccordionItem
-import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
+import Pyxis.Commons.Properties.Theme as Theme
+import Pyxis.Components.Accordion as Accordion
+import Pyxis.Components.Accordion.Item as AccordionItem
+import Pyxis.Components.IconSet as IconSet
 
 
 docs : ElmBook.Chapter.Chapter (SharedState x)

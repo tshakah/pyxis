@@ -1,8 +1,8 @@
 module Components.ToggleTest exposing (suite)
 
-import Components.Toggle as Toggle
 import Expect
 import Html.Attributes
+import Pyxis.Components.Toggle as Toggle
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, class, classes, id, tag, text)

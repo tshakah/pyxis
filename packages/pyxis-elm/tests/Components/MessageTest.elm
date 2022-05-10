@@ -1,11 +1,11 @@
 module Components.MessageTest exposing (suite)
 
-import Commons.Attributes as CommonsAttributes
-import Components.IconSet as IconSet
-import Components.Message as Message
 import Expect
 import Html
 import Html.Attributes
+import Pyxis.Commons.Attributes as CommonsAttributes
+import Pyxis.Components.IconSet as IconSet
+import Pyxis.Components.Message as Message
 import Test exposing (Test)
 import Test.Html.Event as Event
 import Test.Html.Query as Query

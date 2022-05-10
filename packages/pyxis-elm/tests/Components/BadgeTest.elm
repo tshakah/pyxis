@@ -1,10 +1,10 @@
 module Components.BadgeTest exposing (suite)
 
-import Commons.Properties.Theme as Theme
-import Components.Badge as Badge
 import Expect exposing (Expectation)
 import Html
 import Html.Attributes
+import Pyxis.Commons.Properties.Theme as CommonsTheme
+import Pyxis.Components.Badge as Badge
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, class, classes)
@@ -41,7 +41,7 @@ suite =
             ]
         , Test.test "has proper class with alternative theme" <|
             (Badge.neutral badgeText
-                |> Badge.withTheme Theme.alternative
+                |> Badge.withTheme CommonsTheme.alternative
                 |> hasProperClass "badge--alt"
             )
         , Test.test "has `id` and `data-test-id` if one is set" <|

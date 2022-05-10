@@ -1,10 +1,10 @@
 module Components.TextSwitchTest exposing (suite)
 
-import Commons.Attributes
-import Commons.Properties.Theme as Theme
-import Components.TextSwitch as TextSwitch
 import Expect
 import Html.Attributes
+import Pyxis.Commons.Attributes as CommonsAttributes
+import Pyxis.Commons.Properties.Theme as CommonsTheme
+import Pyxis.Components.TextSwitch as TextSwitch
 import Test exposing (Test)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, checked, class, classes, id, tag, text)
@@ -63,7 +63,7 @@ suite =
                                         [ id "id-name-label"
                                         , text "Label"
                                         ]
-                                , Query.has [ attribute (Commons.Attributes.ariaLabelledbyBy "id-name-label") ]
+                                , Query.has [ attribute (CommonsAttributes.ariaLabelledbyBy "id-name-label") ]
                                 ]
                 , Test.test "renders the label on top-left position" <|
                     \() ->
@@ -85,11 +85,11 @@ suite =
                     textSwitchConfig
                         |> TextSwitch.withAriaLabel "aria-label"
                         |> renderConfig
-                        |> Query.has [ attribute (Commons.Attributes.ariaLabel "aria-label") ]
+                        |> Query.has [ attribute (CommonsAttributes.ariaLabel "aria-label") ]
             , Test.test "can have the alternative theme" <|
                 \() ->
                     textSwitchConfig
-                        |> TextSwitch.withTheme Theme.alternative
+                        |> TextSwitch.withTheme CommonsTheme.alternative
                         |> renderConfig
                         |> Query.has [ class "text-switch-wrapper--alt" ]
             , Test.test "have the correct id" <|

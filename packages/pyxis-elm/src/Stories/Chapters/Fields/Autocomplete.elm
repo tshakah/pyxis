@@ -1,14 +1,14 @@
 module Stories.Chapters.Fields.Autocomplete exposing (Models, docs, init)
 
-import Components.Button as Button
-import Components.Field.Autocomplete as Autocomplete
-import Components.Field.Label as Label
-import Components.IconSet as IconSet
 import ElmBook
 import ElmBook.Actions
 import ElmBook.Chapter
 import Html exposing (Html)
 import PrimaFunction
+import Pyxis.Components.Button as Button
+import Pyxis.Components.Field.Autocomplete as Autocomplete
+import Pyxis.Components.Field.Label as Label
+import Pyxis.Components.IconSet as IconSet
 import RemoteData
 
 
